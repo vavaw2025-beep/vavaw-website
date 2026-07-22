@@ -61,7 +61,7 @@ export function BrandHero() {
           className="absolute inset-0"
         >
           <Image
-            src={currentSlide.backgroundImage}
+            src={currentSlide.media.backgroundImage}
             alt={currentSlide.title}
             fill
             priority
@@ -251,7 +251,7 @@ export function BrandHero() {
                       >
                         {/* Card Image */}
                         <Image
-                          src={slide.previewImage}
+                          src={slide.media.previewImage}
                           alt={slide.name}
                           fill
                           className="object-cover group-hover:scale-110 transition-transform duration-700"
