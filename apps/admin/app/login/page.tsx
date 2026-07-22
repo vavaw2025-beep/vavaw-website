@@ -1,9 +1,29 @@
 "use client";
 
+import { Suspense } from 'react';
 import Link from 'next/link';
-import { Lock, Mail, ArrowRight, AlertTriangle } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { Lock, Mail, ArrowRight, AlertTriangle, XCircle } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginContent() {
+  const searchParams = useSearchParams();
+  const errorParam = searchParams.get('error');
+
+  const getErrorMessage = (error: string | null) => {
+    switch (error) {
+      case 'no-admin-profile':
+        return 'Your account does not have an active admin profile assigned. Please contact an administrator.';
+      case 'disabled':
+        return 'Your admin account has been disabled. Access denied.';
+      case 'session-expired':
+        return 'Your session has expired or is invalid. Please sign in again.';
+      default:
+        return null;
+    }
+  };
+
+  const errorMessage = getErrorMessage(errorParam);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4">
       <div className="w-full max-w-md">
@@ -18,6 +38,14 @@ export default function LoginPage() {
 
         {/* Login Card */}
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+          {/* Error Alert from Middleware */}
+          {errorMessage && (
+            <div className="mb-6 flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-200 text-xs leading-relaxed">
+              <XCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
             {/* Email */}
             <div>
@@ -98,5 +126,17 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white text-sm">
+        Loading...
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

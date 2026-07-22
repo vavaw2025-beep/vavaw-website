@@ -13,6 +13,8 @@ import {
   Users
 } from 'lucide-react';
 
+import { LogoutButton } from '../components/LogoutButton';
+
 export const metadata: Metadata = {
   title: 'VAVAW Admin',
   description: 'Internal admin dashboard for VAVAW.',
@@ -69,6 +71,7 @@ export default function RootLayout({
             <div className="flex items-center gap-4">
               <span className="text-sm text-slate-500">Admin User</span>
               <div className="h-8 w-8 rounded-full bg-slate-200"></div>
+              <LogoutButton />
             </div>
           </header>
 

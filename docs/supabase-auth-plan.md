@@ -28,21 +28,39 @@ The `@vavaw/auth` package defines the following static `AdminRole` hierarchy:
 - **editor:** Can manage content entries (create, edit, delete).
 - **viewer:** Read-only access to the dashboard and content.
 
-## Middleware Plan
-Next.js Middleware will be added in `apps/admin` (e.g. `apps/admin/middleware.ts`) to intercept all requests.
-- It will refresh the Supabase session token.
-- It will redirect to `/login` if no valid session is found.
-- It will block access to protected settings pages based on user roles (enforced via database RLS or middleware server-side checks).
+## Middleware Implementation (Phase 17)
+
+`apps/admin/middleware.ts` intercepts incoming requests to enforce authentication boundaries.
+
+### Auth Modes: Mock vs Supabase
+- **Mock Mode (`NEXT_PUBLIC_ADMIN_AUTH_MODE=mock`):** Middleware bypasses session checks completely to allow local UI development without backend connectivity.
+- **Supabase Mode (`NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`):** Middleware invokes Supabase Auth via `@supabase/ssr` to validate user sessions and profile status.
+
+### Protected Route List
+- All administrative routes are protected by default: `/`, `/business`, `/hero`, `/media`, `/seo`, `/redirects`, `/content`, `/users`, `/settings`.
+- Only unauthenticated public access paths are bypassed: `/login`, `/_next/*`, `/favicon.ico`, `/robots.txt`.
+
+### Public `/login` Exemption
+- `/login` is exempted from protection to avoid redirect loops for unauthenticated users.
+- Query parameters on `/login` display error feedback:
+  - `?error=session-expired`: Session token is invalid or missing.
+  - `?error=no-admin-profile`: Authenticated user lacks an active record in `public.admin_profiles`.
+  - `?error=disabled`: Admin user profile status is `disabled`.
+
+### Admin Profile Guard
+Even when authenticated with Supabase Auth, middleware queries `public.admin_profiles` to verify:
+1. `status === 'active'`
+2. `role` belongs to `['owner', 'admin', 'editor', 'viewer']`
 
 ## Security Notes
 - **Never expose the service role key in the client.** `SUPABASE_SERVICE_ROLE_KEY` must never be prefixed with `NEXT_PUBLIC_` and must only be used in secure Node.js server environments or Edge functions.
 - **Admin app must remain noindex.** Due to its sensitive nature, the admin dashboard must block crawlers using `robots.txt` and metadata.
-- **Route protection is mandatory.** The admin app cannot be deployed to a production domain until Next.js Middleware route protection is implemented.
+- **Route protection is mandatory.** The admin app cannot be deployed to a production domain until Next.js Middleware route protection is enabled.
 
 ## Phase Plan
-- **Phase 14:** Env + helpers (Current Phase - sets up `@supabase/ssr` and placeholders)
-- **Phase 15:** Database schema (Design and define tables/types in `@vavaw/db`)
-- **Phase 16:** Real admin login (Replace mock UI with real Supabase sign in)
-- **Phase 17:** Middleware protection (Secure all admin routes)
+- **Phase 14:** Env + helpers ✅
+- **Phase 15:** Database schema ✅
+- **Phase 16:** Real admin login ✅
+- **Phase 17:** Middleware protection ✅ (Current Phase)
 - **Phase 18:** Admin CRUD (Implement content management)
 - **Phase 19:** Media upload (Integrate bucket storage)
