@@ -1,3 +1,13 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'VAVAW Admin',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default function RootLayout({
   children,
 }: {

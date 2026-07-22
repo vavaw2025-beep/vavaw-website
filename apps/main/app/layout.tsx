@@ -3,9 +3,20 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Prestige Holdings | Premium Multi-Brand Portfolio',
-  description: 'Discover iconic brands across beauty, technology, and lifestyle. Prestige Holdings crafts exceptional experiences through heritage and innovation.',
-  generator: 'v0.app',
+  metadataBase: new URL('https://vavaw.vn'),
+  title: {
+    default: 'VAVAW - Premium Multi-Brand Ecosystem',
+    template: '%s | VAVAW'
+  },
+  description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
+  openGraph: {
+    title: 'VAVAW - Premium Multi-Brand Ecosystem',
+    description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
+    url: 'https://vavaw.vn',
+    siteName: 'VAVAW Ecosystem',
+    locale: 'vi_VN',
+    type: 'website',
+  },
   icons: {
     icon: [
       {
@@ -38,9 +49,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'VAVAW Ecosystem',
+    url: 'https://vavaw.vn',
+    logo: 'https://vavaw.vn/icon.svg',
+    sameAs: [
+      'https://beauty.vavaw.vn',
+      'https://franchise.vavaw.vn'
+    ]
+  };
+
   return (
-    <html lang="en" className="bg-background" suppressHydrationWarning>
+    <html lang="vi" className="bg-background" suppressHydrationWarning>
       <body className="antialiased min-h-screen flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
