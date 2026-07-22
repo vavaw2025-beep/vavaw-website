@@ -13,6 +13,8 @@ This document tracks the readiness state of the VAVAW monorepo for production de
 - [x] **Database & CRUD Status:** Defined schema (`001_initial_cms_schema.sql`), `@vavaw/db` typed queries/mutations, and Server Actions for Business Entries and Hero Slides CRUD.
 - [x] **Storage Status:** Storage policies (`002_storage_policies.sql`) and image file uploads to Supabase Storage bucket `vavaw-media` (max 5MB, JPG/PNG/WEBP/AVIF) implemented. Video upload pending.
 - [x] **Public CMS Read (`apps/main`):** `CMS_DATA_SOURCE` env var controls data source. Default is `static` (@vavaw/brand-config). Set to `supabase` for live CMS data via anon client + RLS. Automatic fallback to static on error/empty. Never uses service role key in public apps.
+- [x] **Public Redirects Safety (`/go/[slug]`):** All redirect destinations validated via `isSafeRedirectUrl()`. Only internal paths and trusted VAVAW domains allowed. Protects against open-redirect attacks from arbitrary CMS data.
+- [x] **ISR Caching:** Homepage uses `export const revalidate = 60` (static constant, Next.js requirement). Prevents stale permanent build-time CMS data in supabase mode. Static mode pre-renders at build time with no revalidation overhead. To change the interval, update the constant in `apps/main/app/page.tsx` and redeploy.
 
 ## Quality & Monitoring
 - [ ] **Analytics Status:** Pending (Google Analytics / Vercel Web Analytics integration required).

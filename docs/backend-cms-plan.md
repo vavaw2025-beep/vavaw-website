@@ -169,3 +169,48 @@ In `NODE_ENV=development`, a small badge (`Data: Static` / `Data: Supabase`) app
 - `apps/main` only. `apps/beauty` and `apps/franchise` remain static for now.
 - Public apps are read-only — no CRUD, no auth on public routes.
 
+## Phase 23: CMS-Driven Public Redirects + Runtime Safety (Current)
+Phase 23 connects the `/go/[slug]` redirect route to Supabase CMS data and adds URL safety validation and ISR caching controls.
+
+### Redirect Architecture
+- **Redirect Loader:** `apps/main/lib/load-public-redirect.ts` — exports `loadPublicRedirectBySlug(slug)`. Returns a normalized `PublicRedirectResult` with `destinationUrl`, `source`, `status`, and optional `reason`.
+- **Safety Validator:** `apps/main/lib/safe-redirect.ts` — exports `isSafeRedirectUrl(url)` and `resolveSafeRedirectUrl(url)`. Validates all destinations before any redirect is issued.
+- **Route Handler:** `apps/main/app/go/[slug]/route.ts` — updated to use the new loader. Always `force-dynamic`. Falls back to "/" for unknown or unsafe slugs.
+
+### Redirect Resolution Order (Supabase mode)
+1. Query `public.business_entries` where `slug = input` and `status = active`.
+2. Use `href` as destination (falling back to `redirect_path`).
+3. Validate destination via `isSafeRedirectUrl()`.
+4. On any failure (query error, no record, unsafe URL) → fall back to static config.
+5. If no static entry either → redirect to `/`.
+
+### Safe Redirect Rules
+| URL type | Allowed? |
+|---|---|
+| Internal path starting with `/` (not `//`) | ✅ Yes |
+| `https://vavaw.vn/*` | ✅ Yes |
+| `https://beauty.vavaw.vn/*` | ✅ Yes |
+| `https://franchise.vavaw.vn/*` | ✅ Yes |
+| `https://admin.vavaw.vn/*` | ✅ Yes |
+| `NEXT_PUBLIC_BEAUTY_URL` hostname | ✅ Yes |
+| `NEXT_PUBLIC_FRANCHISE_URL` hostname | ✅ Yes |
+| `javascript:`, `data:`, `vbscript:` | ❌ No |
+| Protocol-relative `//evil.com` | ❌ No |
+| Unknown external domain | ❌ No |
+| Malformed URL | ❌ No |
+
+### ISR Caching (Homepage)
+- `CMS_PUBLIC_REVALIDATE_SECONDS` env var controls ISR interval (default: 60s).
+- Set to `0` for fully dynamic (every request).
+- In `static` mode, the page is pre-rendered at build time (no revalidation needed).
+- Webhook-based on-demand revalidation is planned for a future phase.
+
+### Development Diagnostics
+- `console.warn` / `console.info` logged in `development` mode when fallback is triggered.
+- Production: no diagnostic output, silent fallback.
+- Dev badge in hero remains as implemented in Phase 22.
+
+### Scope
+- `apps/main` only. `apps/beauty` and `apps/franchise` remain static.
+- Public apps are read-only — no CRUD, no admin auth on public routes.
+
