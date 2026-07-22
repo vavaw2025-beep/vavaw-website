@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import { getBusinessBySlug } from '@vavaw/brand-config';
+import { CosmeticContent } from './cosmetic-content';
+import { notFound } from 'next/navigation';
 
 const cosmeticEntry = getBusinessBySlug('cosmetic');
 
@@ -24,11 +26,9 @@ export const metadata: Metadata = {
 };
 
 export default function CosmeticPage() {
-  return (
-    <div style={{ padding: '4rem', fontFamily: 'sans-serif' }}>
-      <h1>{cosmeticEntry?.name || 'VAVAW Cosmetic'}</h1>
-      <p>{cosmeticEntry?.description}</p>
-      <a href="/" style={{ color: 'blue', textDecoration: 'underline' }}>Back to Homepage</a>
-    </div>
-  );
+  if (!cosmeticEntry) {
+    notFound();
+  }
+  
+  return <CosmeticContent entry={cosmeticEntry} />;
 }
