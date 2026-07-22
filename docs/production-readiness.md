@@ -19,6 +19,9 @@ This document tracks the readiness state of the VAVAW monorepo for production de
 - [x] **Public SEO Metadata (apps/main):** `generateMetadata()` on `/` and `/cosmetic` pages reads from Supabase `seo_settings` when `CMS_DATA_SOURCE=supabase`. Robots directives (`index`/`follow`) controlled per-page from CMS. Full static fallback. `apps/beauty` and `apps/franchise` remain static.
 - [x] **OG Image from Media:** Admin SEO form supports selecting `og_media_id` from uploaded `media_assets`. URL resolved at load time for public pages.
 - [ ] **SEO Seed (002):** `supabase/seed/002_seed_seo_settings.sql` is optional and should not be re-run after production data exists (overwrites manual edits).
+- [x] **Content Blocks CRUD (admin):** `content_blocks` table fully managed from `/content` admin page. Create/update: owner/admin/editor. Delete: owner/admin. Viewer read-only.
+- [ ] **Content Blocks Seed (003):** `supabase/seed/003_seed_content_blocks.sql` is optional and non-destructive but will duplicate rows if run multiple times.
+- [ ] **Content Blocks Rendering:** Not yet connected to public apps. Currently apps/main and others use static frontend components.
 
 ## Quality & Monitoring
 - [ ] **Analytics Status:** Pending (Google Analytics / Vercel Web Analytics integration required).

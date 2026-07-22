@@ -18,6 +18,9 @@ export default function SettingsPage() {
     { name: 'SEO Metadata Source (apps/main)', value: 'Reads from Supabase seo_settings when CMS_DATA_SOURCE=supabase, static fallback always available', icon: Database, status: 'Enabled' },
     { name: 'OG Image Support', value: mode === 'supabase' ? 'Enabled — select og_media_id from uploaded Media Assets' : 'Disabled (static fallback only)', icon: ImageIcon, status: mode === 'supabase' ? 'Active' : 'Static' },
     { name: 'Public Metadata Integration', value: 'apps/main only (apps/beauty and apps/franchise remain static)', icon: Server, status: 'Partial' },
+    { name: 'Content Blocks CRUD', value: mode === 'supabase' ? 'Enabled (owner/admin/editor can manage, owner/admin can delete)' : 'Requires Supabase Mode', icon: Pencil, status: mode === 'supabase' ? 'Active' : 'Disabled' },
+    { name: 'Content Blocks Rendering', value: 'Not connected yet (apps still use static frontend components)', icon: Database, status: 'Static' },
+    { name: 'Visual Page Builder', value: 'Not implemented (JSON based configuration for flexible blocks)', icon: SettingsIcon, status: 'Disabled' },
   ];
 
   const storageConfig = [

@@ -10,3 +10,4 @@ export * from './mutations/business-entries';
 export * from './mutations/hero-slides';
 export * from './mutations/media-assets';
 export * from './mutations/seo-settings';
+export * from './mutations/content-blocks';

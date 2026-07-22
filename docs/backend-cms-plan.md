@@ -267,3 +267,38 @@ Phase 24 enables admin management of `public.seo_settings` and connects `apps/ma
 - Public metadata: `apps/main` only. `apps/beauty` and `apps/franchise` remain static for now.
 - Public apps are read-only — no admin auth on public routes.
 
+## Phase 25: Content Blocks CRUD (Current)
+Phase 25 enables admin management of `public.content_blocks` so the CMS can manage flexible page sections later.
+
+### Admin Content Blocks CRUD
+
+#### Permissions
+| Action | Roles |
+|---|---|
+| Create / Update | owner, admin, editor |
+| Delete | owner, admin |
+| Read | all roles (including viewer) |
+
+#### New Files
+- `packages/db/src/mutations/content-blocks.ts` — `createContentBlock`, `updateContentBlock`, `deleteContentBlock`
+- `apps/admin/app/content/actions.ts` — Server Actions with auth guards + `revalidatePath('/content')`
+- `apps/admin/app/content/ContentBlockForm.tsx` — Client form: site_key, page_path, block_type, content (JSON with validation and example templates), sort_order, is_active
+- `apps/admin/app/content/DeleteContentBlockButton.tsx` — Client delete button with confirm dialog
+- `apps/admin/app/content/new/page.tsx` — Create Content Block page
+- `apps/admin/app/content/[id]/edit/page.tsx` — Edit Content Block page
+
+#### Updated Files
+- `apps/admin/app/content/page.tsx` — Full CRUD table with Edit/Delete actions, mock-mode notice
+- `packages/auth/src/types.ts` — Added `canManageContentBlocks(role)` and `canDeleteContentBlocks(role)`
+- `apps/admin/app/settings/page.tsx` — Added Content Blocks CRUD and Rendering status rows
+
+### Scope and Convention
+- **Supported block types:** `hero`, `rich_text`, `feature_grid`, `product_highlights`, `quality_promise`, `gallery`, `faq`, `cta`, `custom_json`.
+- **JSON Content Convention:** Block content is stored as unstructured JSON and requires UI forms to enforce schema at submission or on rendering.
+- **Public Integration:** Public pages still use static frontend components and are NOT connected to `content_blocks` yet. This prevents breaking live apps while the CMS matures.
+- **Visual Builder:** There is no visual drag-and-drop page builder. Configuration is done via JSON editor.
+
+### Seed File
+`supabase/seed/003_seed_content_blocks.sql` — Optional seed containing example blocks for `/cosmetic`.
+> ℹ️ **INFO:** This seed does not use `ON CONFLICT DO UPDATE` because there is no strict unique constraint on `(site_key, page_path, block_type)` (multiple identical block types can exist on a page). Running it multiple times will duplicate the example blocks.
+

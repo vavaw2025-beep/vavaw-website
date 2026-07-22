@@ -72,3 +72,13 @@ export function canManageSeo(role: AdminRole): boolean {
 export function canDeleteSeo(role: AdminRole): boolean {
   return role === "owner" || role === "admin";
 }
+
+/** Check if a role can create or update content blocks */
+export function canManageContentBlocks(role: AdminRole): boolean {
+  return role === "owner" || role === "admin" || role === "editor";
+}
+
+/** Check if a role can delete content blocks */
+export function canDeleteContentBlocks(role: AdminRole): boolean {
+  return role === "owner" || role === "admin";
+}

@@ -1,11 +1,25 @@
 import { businessEntries } from '@vavaw/brand-config';
 import { getContentBlocks } from '@vavaw/db';
-import { FileText, Lock } from 'lucide-react';
+import { FileText, Lock, PlusCircle, Pencil } from 'lucide-react';
+import Link from 'next/link';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
+import { getCurrentAdminProfile } from '../../lib/admin-profile';
+import { canManageContentBlocks, canDeleteContentBlocks } from '@vavaw/auth';
+import { DeleteContentBlockButton } from './DeleteContentBlockButton';
 
 export default async function ContentPage() {
   const mode = getAdminDataSourceMode();
+
+  let profile: { role: string; status: string } | null = null;
+  if (mode === 'supabase') {
+    profile = await getCurrentAdminProfile();
+  }
+
+  const isViewer = !profile || !canManageContentBlocks(profile.role as any);
+  const canEdit = profile ? canManageContentBlocks(profile.role as any) : false;
+  const canDelete = profile ? canDeleteContentBlocks(profile.role as any) : false;
+
   let blocks: Array<{
     id: string;
     siteKey: string;
@@ -46,12 +60,22 @@ export default async function ContentPage() {
           <h1 className="text-2xl font-bold text-slate-900">Website Content</h1>
           <p className="mt-1 text-sm text-slate-500">Manage rich text, sections, and marketing content blocks.</p>
         </div>
-        <div>
+        <div className="flex items-center gap-3">
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
             mode === 'supabase' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
           }`}>
             Data Source: {mode === 'supabase' ? 'Supabase' : 'Static Config'}
           </span>
+
+          {mode === 'supabase' && canEdit && (
+            <Link
+              href="/content/new"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow transition-colors"
+            >
+              <PlusCircle className="h-4 w-4" />
+              Add Content Block
+            </Link>
+          )}
         </div>
       </div>
 
@@ -59,10 +83,9 @@ export default async function ContentPage() {
         <>
           <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 text-center">
             <Lock className="mx-auto h-12 w-12 text-slate-400 mb-4" />
-            <h3 className="text-lg font-medium text-slate-900">CMS Integration Pending</h3>
+            <h3 className="text-lg font-medium text-slate-900">Content block management requires Supabase mode.</h3>
             <p className="mt-2 text-sm text-slate-500 max-w-xl mx-auto">
-              Content blocks will be connected to a headless CMS or backend database in a future phase. 
-              Currently, the marketing content is statically defined in the frontend components.
+              Set <code>NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase</code> to enable full Content Block CRUD. Currently, the marketing content is statically defined in the frontend components.
             </p>
           </div>
 
@@ -107,7 +130,15 @@ export default async function ContentPage() {
 
           {!queryError && blocks.length === 0 && (
             <div className="p-8 text-center bg-white border border-slate-200 rounded-lg text-slate-500 text-sm">
-              No content blocks found in database.
+              <div className="space-y-3">
+                <p>No content blocks found in database.</p>
+                {canEdit && (
+                  <Link href="/content/new" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm">
+                    <PlusCircle className="h-4 w-4" />
+                    Create your first content block
+                  </Link>
+                )}
+              </div>
             </div>
           )}
 
@@ -122,6 +153,9 @@ export default async function ContentPage() {
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Block Type</th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Sort Order</th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                      {!isViewer && (
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-200">
@@ -148,6 +182,24 @@ export default async function ContentPage() {
                             {block.isActive ? 'Active' : 'Disabled'}
                           </span>
                         </td>
+                        {!isViewer && (
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div className="flex items-center justify-end gap-3">
+                              {canEdit && (
+                                <Link
+                                  href={`/content/${block.id}/edit`}
+                                  className="text-blue-600 hover:text-blue-900 inline-flex items-center gap-1"
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                  Edit
+                                </Link>
+                              )}
+                              {canDelete && (
+                                <DeleteContentBlockButton id={block.id} title={`${block.blockType} at ${block.pagePath}`} />
+                              )}
+                            </div>
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>

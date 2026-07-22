@@ -1,0 +1,104 @@
+"use server";
+
+import { revalidatePath } from 'next/cache';
+import { canManageContentBlocks, canDeleteContentBlocks } from '@vavaw/auth';
+import {
+  createContentBlock,
+  updateContentBlock,
+  deleteContentBlock,
+  CreateContentBlockInput,
+  UpdateContentBlockInput,
+} from '@vavaw/db';
+import { getAdminDataSourceMode } from '../../lib/data-source';
+import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
+import { getCurrentAdminProfile } from '../../lib/admin-profile';
+
+export async function createContentBlockAction(input: CreateContentBlockInput) {
+  const mode = getAdminDataSourceMode();
+  if (mode !== 'supabase') {
+    return { success: false, error: 'Content management requires Supabase mode.' };
+  }
+
+  const profile = await getCurrentAdminProfile();
+  if (!profile || profile.status !== 'active') {
+    return { success: false, error: 'Unauthorized or disabled profile.' };
+  }
+
+  if (!canManageContentBlocks(profile.role)) {
+    return { success: false, error: 'Insufficient permissions to create content blocks.' };
+  }
+
+  try {
+    const supabase = await getAdminServerSupabaseClient();
+    const { data, error } = await createContentBlock(supabase, input);
+
+    if (error) {
+      return { success: false, error: error.message || 'Failed to create content block.' };
+    }
+
+    revalidatePath('/content');
+    return { success: true, data };
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Unexpected server error.' };
+  }
+}
+
+export async function updateContentBlockAction(id: string, input: UpdateContentBlockInput) {
+  const mode = getAdminDataSourceMode();
+  if (mode !== 'supabase') {
+    return { success: false, error: 'Content management requires Supabase mode.' };
+  }
+
+  const profile = await getCurrentAdminProfile();
+  if (!profile || profile.status !== 'active') {
+    return { success: false, error: 'Unauthorized or disabled profile.' };
+  }
+
+  if (!canManageContentBlocks(profile.role)) {
+    return { success: false, error: 'Insufficient permissions to update content blocks.' };
+  }
+
+  try {
+    const supabase = await getAdminServerSupabaseClient();
+    const { data, error } = await updateContentBlock(supabase, id, input);
+
+    if (error) {
+      return { success: false, error: error.message || 'Failed to update content block.' };
+    }
+
+    revalidatePath('/content');
+    return { success: true, data };
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Unexpected server error.' };
+  }
+}
+
+export async function deleteContentBlockAction(id: string) {
+  const mode = getAdminDataSourceMode();
+  if (mode !== 'supabase') {
+    return { success: false, error: 'Content management requires Supabase mode.' };
+  }
+
+  const profile = await getCurrentAdminProfile();
+  if (!profile || profile.status !== 'active') {
+    return { success: false, error: 'Unauthorized or disabled profile.' };
+  }
+
+  if (!canDeleteContentBlocks(profile.role)) {
+    return { success: false, error: 'Insufficient permissions to delete content blocks.' };
+  }
+
+  try {
+    const supabase = await getAdminServerSupabaseClient();
+    const { success, error } = await deleteContentBlock(supabase, id);
+
+    if (error || !success) {
+      return { success: false, error: error?.message || 'Failed to delete content block.' };
+    }
+
+    revalidatePath('/content');
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Unexpected server error.' };
+  }
+}
