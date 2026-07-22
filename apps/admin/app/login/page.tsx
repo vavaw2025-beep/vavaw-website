@@ -74,7 +74,9 @@ export default function LoginPage() {
           <div className="mt-6 flex items-start gap-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
             <AlertTriangle className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
             <p className="text-xs text-amber-200/80 leading-relaxed">
-              Mock login UI only. Supabase Auth will be connected in a later phase.
+              {process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE === 'supabase'
+                ? "Supabase login mode prepared, real login will be implemented in Phase 15"
+                : "Mock login UI only. Supabase Auth will be connected in a later phase."}
             </p>
           </div>
 

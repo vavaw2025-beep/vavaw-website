@@ -10,7 +10,10 @@
   "scripts": {
     "lint": "eslint src/"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.8"
+  },
   "devDependencies": {
     "typescript": "^5.5.0"
   }

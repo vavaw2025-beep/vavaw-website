@@ -19,12 +19,18 @@ export default function SettingsPage() {
     { name: 'CMS Write Actions', value: 'Disabled — read-only mode', icon: Pencil, status: 'Disabled' },
   ];
 
+  const authMode = process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE || "mock";
+  const hasSupabaseUrl = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const hasAnonKey = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const hasServiceRole = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+
   const authConfig = [
-    { name: 'Provider', value: 'Supabase Auth (planned)', icon: Lock, status: 'Planned' },
-    { name: 'Current Mode', value: 'Mock UI — no real authentication', icon: Shield, status: 'Mock' },
+    { name: 'Provider Planned', value: 'Supabase', icon: Lock, status: 'Planned' },
+    { name: 'Current Mode', value: authMode, icon: Shield, status: authMode === 'supabase' ? 'Active' : 'Mock' },
+    { name: 'Supabase URL Configured', value: hasSupabaseUrl ? 'Yes' : 'No', icon: Server, status: hasSupabaseUrl ? 'Configured' : 'Missing' },
+    { name: 'Anon Key Configured', value: hasAnonKey ? 'Yes' : 'No', icon: Lock, status: hasAnonKey ? 'Configured' : 'Missing' },
+    { name: 'Service Role Configured', value: hasServiceRole ? 'Yes' : 'No', icon: Shield, status: hasServiceRole ? 'Configured' : 'Missing' },
     { name: 'Route Protection', value: 'Not enabled — middleware will be added in real auth phase', icon: Lock, status: 'Disabled' },
-    { name: 'Roles Planned', value: ADMIN_ROLES.join(', '), icon: Users, status: 'Planned' },
-    { name: 'Next Step', value: 'Connect Supabase Auth and add Next.js middleware', icon: ArrowRight, status: 'Pending' },
   ];
 
   return (
