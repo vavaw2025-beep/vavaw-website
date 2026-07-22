@@ -177,3 +177,11 @@ export function getInternalBusinessEntries(): BusinessEntry[] {
     (entry) => entry.navigationType === "internal"
   );
 }
+
+export function getBusinessMedia(slug: string): BusinessMedia | undefined {
+  return getBusinessBySlug(slug)?.media;
+}
+
+export function getBusinessSeo(slug: string): BusinessSeo | undefined {
+  return getBusinessBySlug(slug)?.seo;
+}
