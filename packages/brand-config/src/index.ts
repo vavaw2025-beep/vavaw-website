@@ -90,7 +90,7 @@ export const businessEntries: BusinessEntry[] = [
     description:
       "A dedicated beauty brand experience within the VAVAW ecosystem.",
     navigationType: "external-app",
-    href: "https://beauty.vavaw.vn",
+    href: process.env.NEXT_PUBLIC_BEAUTY_URL || "https://beauty.vavaw.vn",
     redirectPath: "/go/beauty",
     status: "coming-soon",
     sortOrder: 2,
@@ -124,7 +124,7 @@ export const businessEntries: BusinessEntry[] = [
     description:
       "Learn about business partnership and franchise opportunities.",
     navigationType: "external-app",
-    href: "https://franchise.vavaw.vn",
+    href: process.env.NEXT_PUBLIC_FRANCHISE_URL || "https://franchise.vavaw.vn",
     redirectPath: "/go/franchise",
     status: "coming-soon",
     sortOrder: 3,
