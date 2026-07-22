@@ -8,3 +8,4 @@ export * from './queries/redirects';
 export * from './queries/content-blocks';
 export * from './mutations/business-entries';
 export * from './mutations/hero-slides';
+export * from './mutations/media-assets';

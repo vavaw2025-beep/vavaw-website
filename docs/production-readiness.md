@@ -9,9 +9,9 @@ This document tracks the readiness state of the VAVAW monorepo for production de
 - [x] **Media Asset Status:** Static placeholder media is currently used. Dynamic media (e.g., Cloudinary/AWS) is pending.
 
 ## Backend Infrastructure
-- [ ] **Admin Auth Status:** ⚠️ **NOT PRODUCTION READY**. Currently using a mock UI and mock roles. Do not expose the admin domain publicly until real Supabase Auth and Next.js middleware protection are implemented.
-- [ ] **Database Status:** ⚠️ **NOT PRODUCTION READY**. The `@vavaw/db` package is currently type-only. Real Supabase Postgres connection is pending.
-- [ ] **Storage Status:** ⚠️ **NOT PRODUCTION READY**. Currently serving images from the static `public` folder. Object storage integration is pending.
+- [x] **Admin Auth & Middleware Protection:** Enabled. Supabase Auth integration, Next.js Middleware route protection (`apps/admin/middleware.ts`), and RLS role guards (`owner`, `admin`, `editor`, `viewer`) implemented.
+- [x] **Database & CRUD Status:** Defined schema (`001_initial_cms_schema.sql`), `@vavaw/db` typed queries/mutations, and Server Actions for Business Entries and Hero Slides CRUD.
+- [x] **Storage Status:** Storage policies (`002_storage_policies.sql`) and image file uploads to Supabase Storage bucket `vavaw-media` (max 5MB, JPG/PNG/WEBP/AVIF) implemented. Video upload pending.
 
 ## Quality & Monitoring
 - [ ] **Analytics Status:** Pending (Google Analytics / Vercel Web Analytics integration required).

@@ -114,3 +114,13 @@ In Phase 19, full create, edit, update, and delete (CRUD) operations were enable
 - **Server Actions & Security:** Server actions in `apps/admin/app/business/actions.ts` and `apps/admin/app/hero/actions.ts` validate user authentication, status (`active`), and role permissions server-side before executing mutations in `@vavaw/db`.
 - **Mock Mode Safety:** In `mock` mode, CRUD operations remain completely disabled, UI buttons are hidden/notice displayed, and server actions reject mutation attempts.
 - **Pending Integrations:** Media file uploads remain pending (Phase 20+). Public applications (`apps/main`, `apps/beauty`, `apps/franchise`) continue reading from static config as designed.
+
+## Phase 20: Media Upload with Supabase Storage (Current)
+Phase 20 integrates Supabase Storage for visual asset uploads within `apps/admin/app/media`.
+
+### Key Highlights & Storage Policies
+- **Bucket:** `vavaw-media` (Public read enabled).
+- **Storage Policies (`supabase/migrations/002_storage_policies.sql`):** Public read access, upload/update access for active `owner`, `admin`, and `editor` profiles, delete access restricted to `owner` and `admin`.
+- **Upload Action (`apps/admin/app/media/actions.ts`):** Validates file presence, mime types (JPG, PNG, WEBP, AVIF), file size (<= 5MB), uploads to target folder in `vavaw-media`, retrieves public URL, and inserts a row into `public.media_assets`.
+- **UI Enhancements:** `/media` includes a Client upload form (`MediaUploadForm`), Copy URL button (`CopyUrlButton`), and Delete record button (`DeleteMediaButton`).
+- **Limitations:** Image uploads only (video upload planned for future phases). Public applications continue reading static fallback assets until future frontend database integration.

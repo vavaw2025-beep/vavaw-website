@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Table } from 'lucide-react';
+import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Table, Image as ImageIcon } from 'lucide-react';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 
 export default function SettingsPage() {
@@ -13,7 +13,15 @@ export default function SettingsPage() {
     { name: 'Domains', value: '*.vavaw.vn', icon: Globe, status: 'Configured' },
     { name: 'Data Source Mode', value: mode === 'supabase' ? 'Supabase Database' : 'Static Config (@vavaw/brand-config)', icon: HardDrive, status: mode === 'supabase' ? 'Active' : 'Static' },
     { name: 'CMS Read Mode', value: mode === 'supabase' ? 'Enabled (Reading from Supabase RLS)' : 'Enabled (Reading from Static Config)', icon: Database, status: 'Enabled' },
-    { name: 'CMS Write / Mutation', value: 'Disabled — read-only mode until Phase 19', icon: Pencil, status: 'Disabled' },
+    { name: 'CMS Write / Mutation', value: mode === 'supabase' ? 'Enabled (Business & Hero CRUD)' : 'Disabled in Mock Mode', icon: Pencil, status: mode === 'supabase' ? 'Active' : 'Disabled' },
+  ];
+
+  const storageConfig = [
+    { name: 'Storage Provider', value: 'Supabase Storage', icon: Cloud, status: 'Active' },
+    { name: 'Target Bucket', value: 'vavaw-media', icon: HardDrive, status: 'Configured' },
+    { name: 'Image Upload Enabled', value: mode === 'supabase' ? 'Yes (JPG, PNG, WEBP, AVIF)' : 'No (Requires Supabase Mode)', icon: ImageIcon, status: mode === 'supabase' ? 'Active' : 'Disabled' },
+    { name: 'Max Image File Size', value: '5 MB', icon: SettingsIcon, status: 'Configured' },
+    { name: 'Video Upload Enabled', value: 'Not Enabled (Planned for Future Phase)', icon: Cloud, status: 'Disabled' },
   ];
 
   const authConfig = [
@@ -70,6 +78,39 @@ export default function SettingsPage() {
         </ul>
       </div>
 
+      {/* Storage Section */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">Media & Storage Status</h2>
+        <p className="mt-1 text-sm text-slate-500">Supabase Storage bucket configuration for media uploads.</p>
+      </div>
+
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <ul role="list" className="divide-y divide-slate-200">
+          {storageConfig.map((item, idx) => (
+            <li key={idx} className="p-4 sm:px-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-blue-50 p-2 rounded-lg">
+                  <item.icon className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                  <p className="text-sm text-slate-500">{item.value}</p>
+                </div>
+              </div>
+              <div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  item.status === 'Active' || item.status === 'Configured'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {item.status}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/* Authentication Section */}
       <div>
         <h2 className="text-lg font-semibold text-slate-900">Authentication & Environment Status</h2>
@@ -108,7 +149,7 @@ export default function SettingsPage() {
       {/* Expected Tables Section */}
       <div>
         <h2 className="text-lg font-semibold text-slate-900">Expected Database Tables</h2>
-        <p className="mt-1 text-sm text-slate-500">Supabase public schema tables queried in Phase 18.</p>
+        <p className="mt-1 text-sm text-slate-500">Supabase public schema tables queried and managed in current CMS phases.</p>
       </div>
 
       <div className="bg-white shadow rounded-lg border border-slate-200 p-6">
