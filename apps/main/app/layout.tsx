@@ -5,17 +5,22 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL('https://vavaw.vn'),
   title: {
-    default: 'VAVAW - Premium Multi-Brand Ecosystem',
+    default: 'VAVAW | Brand Ecosystem',
     template: '%s | VAVAW'
   },
   description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
   openGraph: {
-    title: 'VAVAW - Premium Multi-Brand Ecosystem',
+    title: 'VAVAW | Brand Ecosystem',
     description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
     url: 'https://vavaw.vn',
     siteName: 'VAVAW Ecosystem',
     locale: 'vi_VN',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'VAVAW | Brand Ecosystem',
+    description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
   },
   icons: {
     icon: [
