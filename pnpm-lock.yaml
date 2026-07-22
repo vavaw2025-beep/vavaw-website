@@ -12,6 +12,37 @@ importers:
         specifier: ^2.0.0
         version: 2.10.5
 
+  apps/admin:
+    dependencies:
+      '@vavaw/brand-config':
+        specifier: workspace:*
+        version: link:../../packages/brand-config
+      '@vavaw/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      next:
+        specifier: 16.2.6
+        version: 16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      react:
+        specifier: ^19
+        version: 19.2.4
+      react-dom:
+        specifier: ^19
+        version: 19.2.4(react@19.2.4)
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.43
+      '@types/react':
+        specifier: ^19
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.14)
+      typescript:
+        specifier: ^5
+        version: 5.7.3
+
   apps/beauty:
     dependencies:
       '@vavaw/brand-config':
