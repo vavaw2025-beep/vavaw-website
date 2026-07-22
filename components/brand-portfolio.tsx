@@ -29,7 +29,7 @@ export function BrandPortfolio({ brands }: BrandPortfolioProps) {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: 'easeOut',
+        ease: 'easeOut' as const,
       },
     },
   };
@@ -75,7 +75,7 @@ export function BrandPortfolio({ brands }: BrandPortfolioProps) {
               <div className="relative h-64 w-full overflow-hidden bg-muted">
                 <Image
                   src={brand.image}
-                  alt={brand.name}
+                  alt={brand.brandName}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -88,7 +88,7 @@ export function BrandPortfolio({ brands }: BrandPortfolioProps) {
                   {brand.category}
                 </p>
                 <h3 className="mt-2 text-2xl font-bold text-foreground">
-                  {brand.name}
+                  {brand.brandName}
                 </h3>
                 <p className="mt-3 text-foreground/70 text-sm leading-relaxed">
                   {brand.description}
