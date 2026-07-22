@@ -133,3 +133,39 @@ Phase 21 connects uploaded `media_assets` to the Hero Slides CRUD workflow withi
 - **Hero Card Rendering:** `/hero` resolves linked `background_media_id` and `preview_media_id` UUIDs against `media_assets` to render background images directly on hero slide management cards.
 - **Empty State & UX:** If no media assets have been uploaded yet, a direct notice links administrators to `/media` to upload images first.
 - **Public Apps Independence:** Public applications (`apps/main`, `apps/beauty`, `apps/franchise`) continue reading static configuration as designed until full frontend database integration.
+
+## Phase 22: Public App CMS Read Integration (Current)
+Phase 22 connects `apps/main` to Supabase for public read access, while keeping full static `@vavaw/brand-config` fallback.
+
+### Architecture
+- **Data Source Env:** `CMS_DATA_SOURCE` (default: `static`). Set to `supabase` to enable live CMS data.
+- **Resolver:** `apps/main/lib/cms-source.ts` — reads the env var, returns `"static"` or `"supabase"`.
+- **Public Supabase Client:** `apps/main/lib/supabase-public.ts` — uses `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY`. No cookies, no service role key, no auth session.
+- **CMS Loader:** `apps/main/lib/load-public-cms.ts` — exports `loadPublicHomeCms()`, returns normalized `businessEntries`, `heroSlides`, `mediaAssets`, and `source`.
+- **Server Component:** `apps/main/app/page.tsx` is now `async` — fetches CMS data at request time and passes it to `BrandHero` as props.
+- **Client Component:** `BrandHero` now accepts `slides: NormalizedHeroSlide[]` and `dataSource` props instead of calling brand-config directly.
+
+### Fallback Strategy
+In `supabase` mode, `loadPublicHomeCms()` automatically falls back to static if:
+1. `NEXT_PUBLIC_SUPABASE_URL` or `NEXT_PUBLIC_SUPABASE_ANON_KEY` is missing.
+2. Any Supabase query returns an error.
+3. `business_entries` result is empty (no active CMS records yet).
+
+### Security
+- Uses **anon key only** — never the service role key.
+- RLS public read policies on `business_entries` (status=active), `hero_slides` (status=active), and `media_assets` must be enabled in Supabase.
+- Never logs, exposes, or passes Supabase credentials to the client.
+
+### Image Resolution (Hero)
+For each `hero_slide`, background and preview images are resolved in order:
+1. `background_media_id` → `media_assets.url`
+2. Linked `business_entry` → `media.backgroundImage`
+3. Empty string (gradient fallback rendered in UI)
+
+### Development Badge
+In `NODE_ENV=development`, a small badge (`Data: Static` / `Data: Supabase`) appears in the top-right corner of the hero so developers can confirm which data source is active. Hidden in production.
+
+### Scope
+- `apps/main` only. `apps/beauty` and `apps/franchise` remain static for now.
+- Public apps are read-only — no CRUD, no auth on public routes.
+
