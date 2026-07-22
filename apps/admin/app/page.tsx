@@ -1,11 +1,12 @@
-import { 
-  businessEntries, 
-  getActiveBusinessEntries, 
-  getComingSoonBusinessEntries, 
-  getExternalBusinessEntries, 
-  getInternalBusinessEntries 
+import {
+  businessEntries,
+  getActiveBusinessEntries,
+  getComingSoonBusinessEntries,
+  getExternalBusinessEntries,
+  getInternalBusinessEntries
 } from '@vavaw/brand-config';
-import { Building2, Globe, Rocket, Link2, MonitorPlay, Pencil } from 'lucide-react';
+import { MOCK_ADMIN_USER } from '@vavaw/auth';
+import { Building2, Globe, Rocket, Link2, MonitorPlay, Pencil, Shield, Database, Cloud, HardDrive } from 'lucide-react';
 
 export default function DashboardPage() {
   const total = businessEntries.length;
@@ -22,6 +23,13 @@ export default function DashboardPage() {
     { name: 'Draft Entries', value: draft, icon: Pencil },
     { name: 'Internal Apps', value: internal, icon: Globe },
     { name: 'External Apps', value: external, icon: Link2 },
+  ];
+
+  const authStatus = [
+    { label: 'Auth Mode', value: 'Mock UI', icon: Shield, badge: 'Mock', badgeColor: 'bg-amber-100 text-amber-800' },
+    { label: 'Current Role', value: `${MOCK_ADMIN_USER.role.charAt(0).toUpperCase() + MOCK_ADMIN_USER.role.slice(1)} / Mock`, icon: Shield, badge: 'Mock', badgeColor: 'bg-purple-100 text-purple-800' },
+    { label: 'Database', value: 'Not connected', icon: Database, badge: 'Offline', badgeColor: 'bg-slate-100 text-slate-600' },
+    { label: 'Storage', value: 'Not connected', icon: Cloud, badge: 'Offline', badgeColor: 'bg-slate-100 text-slate-600' },
   ];
 
   return (
@@ -47,6 +55,36 @@ export default function DashboardPage() {
         ))}
       </div>
 
+      {/* Auth Status Card */}
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <div className="px-4 py-5 sm:px-6 border-b border-slate-200 flex items-center gap-3">
+          <div className="bg-amber-50 p-2 rounded-lg">
+            <HardDrive className="h-5 w-5 text-amber-600" />
+          </div>
+          <div>
+            <h3 className="text-lg leading-6 font-medium text-slate-900">Backend &amp; Auth Status</h3>
+            <p className="text-sm text-slate-500">Current infrastructure connection state</p>
+          </div>
+        </div>
+        <ul role="list" className="divide-y divide-slate-200">
+          {authStatus.map((item, idx) => (
+            <li key={idx} className="px-4 py-3 sm:px-6 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <item.icon className="h-4 w-4 text-slate-400" />
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.label}</p>
+                  <p className="text-xs text-slate-500">{item.value}</p>
+                </div>
+              </div>
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.badgeColor}`}>
+                {item.badge}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Quick Overview */}
       <div className="bg-white shadow rounded-lg border border-slate-200">
         <div className="px-4 py-5 sm:px-6 border-b border-slate-200">
           <h3 className="text-lg leading-6 font-medium text-slate-900">Quick Overview</h3>

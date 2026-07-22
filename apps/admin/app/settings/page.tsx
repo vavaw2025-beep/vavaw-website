@@ -1,10 +1,11 @@
-import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil } from 'lucide-react';
+import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Users, ArrowRight } from 'lucide-react';
+import { ADMIN_ROLES } from '@vavaw/auth';
 
 export default function SettingsPage() {
   const configs = [
     { name: 'Environment', value: 'Production', icon: Server, status: 'Active' },
     { name: 'Domains', value: '*.vavaw.vn', icon: Globe, status: 'Configured' },
-    { name: 'Authentication', value: 'Pending Implementation', icon: Shield, status: 'Disabled' },
+    { name: 'Authentication', value: 'Mock UI — Supabase Auth planned', icon: Shield, status: 'Mock' },
     { name: 'Database', value: 'Pending Implementation', icon: Database, status: 'Disabled' },
     { name: 'Media Provider', value: 'Local Public Directory', icon: Cloud, status: 'Active' },
     { name: 'CMS Provider', value: 'Static @vavaw/brand-config', icon: SettingsIcon, status: 'Active' },
@@ -16,6 +17,14 @@ export default function SettingsPage() {
     { name: 'Database', value: 'Not connected', icon: Database, status: 'Not Connected' },
     { name: 'Storage', value: 'Not connected', icon: Cloud, status: 'Not Connected' },
     { name: 'CMS Write Actions', value: 'Disabled — read-only mode', icon: Pencil, status: 'Disabled' },
+  ];
+
+  const authConfig = [
+    { name: 'Provider', value: 'Supabase Auth (planned)', icon: Lock, status: 'Planned' },
+    { name: 'Current Mode', value: 'Mock UI — no real authentication', icon: Shield, status: 'Mock' },
+    { name: 'Route Protection', value: 'Not enabled — middleware will be added in real auth phase', icon: Lock, status: 'Disabled' },
+    { name: 'Roles Planned', value: ADMIN_ROLES.join(', '), icon: Users, status: 'Planned' },
+    { name: 'Next Step', value: 'Connect Supabase Auth and add Next.js middleware', icon: ArrowRight, status: 'Pending' },
   ];
 
   return (
@@ -40,8 +49,10 @@ export default function SettingsPage() {
               </div>
               <div>
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  config.status === 'Active' || config.status === 'Configured' 
-                    ? 'bg-green-100 text-green-800' 
+                  config.status === 'Active' || config.status === 'Configured'
+                    ? 'bg-green-100 text-green-800'
+                    : config.status === 'Mock'
+                    ? 'bg-amber-100 text-amber-800'
                     : 'bg-slate-100 text-slate-600'
                 }`}>
                   {config.status}
@@ -78,6 +89,43 @@ export default function SettingsPage() {
                     : item.status === 'Disabled'
                     ? 'bg-slate-100 text-slate-600'
                     : 'bg-amber-100 text-amber-800'
+                }`}>
+                  {item.status}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Authentication Section */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">Authentication</h2>
+        <p className="mt-1 text-sm text-slate-500">Auth provider configuration and route protection status.</p>
+      </div>
+
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <ul role="list" className="divide-y divide-slate-200">
+          {authConfig.map((item, idx) => (
+            <li key={idx} className="p-4 sm:px-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-indigo-50 p-2 rounded-lg">
+                  <item.icon className="h-5 w-5 text-indigo-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                  <p className="text-sm text-slate-500">{item.value}</p>
+                </div>
+              </div>
+              <div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  item.status === 'Mock'
+                    ? 'bg-amber-100 text-amber-800'
+                    : item.status === 'Planned'
+                    ? 'bg-indigo-100 text-indigo-800'
+                    : item.status === 'Pending'
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'bg-slate-100 text-slate-600'
                 }`}>
                   {item.status}
                 </span>

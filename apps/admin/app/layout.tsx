@@ -9,7 +9,8 @@ import {
   Link as LinkIcon, 
   FileText, 
   Settings,
-  Presentation
+  Presentation,
+  Users
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ const navigation = [
   { name: 'SEO', href: '/seo', icon: Search },
   { name: 'Redirects', href: '/redirects', icon: LinkIcon },
   { name: 'Content', href: '/content', icon: FileText },
+  { name: 'Users', href: '/users', icon: Users },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
