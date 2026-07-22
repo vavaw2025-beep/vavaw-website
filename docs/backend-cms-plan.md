@@ -94,3 +94,13 @@ To apply this schema manually to a remote Supabase project:
 2. Go to the SQL Editor.
 3. Copy the contents of `supabase/migrations/001_initial_cms_schema.sql` and run it.
 4. (Optional) Run `supabase/seed/001_seed_static_business_entries.sql` to populate default data.
+
+## Phase 18: Admin Read-Only Supabase Integration (Current)
+In Phase 18, `apps/admin` was upgraded to dynamically fetch live data from Supabase when running in `supabase` mode, while maintaining full backwards compatibility with static config fallback.
+
+### Key Highlights
+- **Data Source Utility:** `apps/admin/lib/data-source.ts` determines whether pages query Supabase or use `@vavaw/brand-config`.
+- **Typed Read Helpers:** `@vavaw/db` exports read functions for `business_entries`, `hero_slides`, `media_assets`, `seo_settings`, `redirects`, and `content_blocks`.
+- **RLS Read Enforcement:** Queries rely on the caller's authenticated Supabase session. Database RLS policies govern which rows are returned.
+- **Static Fallback:** In `mock` mode (`NEXT_PUBLIC_ADMIN_AUTH_MODE=mock`), zero database queries are executed; all admin routes read from static data.
+- **Mutations Disabled:** Create, Update, and Delete actions remain disabled across all admin pages until Phase 19.

@@ -26,6 +26,9 @@ importers:
       '@vavaw/brand-config':
         specifier: workspace:*
         version: link:../../packages/brand-config
+      '@vavaw/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@vavaw/ui':
         specifier: workspace:*
         version: link:../../packages/ui
