@@ -124,3 +124,12 @@ Phase 20 integrates Supabase Storage for visual asset uploads within `apps/admin
 - **Upload Action (`apps/admin/app/media/actions.ts`):** Validates file presence, mime types (JPG, PNG, WEBP, AVIF), file size (<= 5MB), uploads to target folder in `vavaw-media`, retrieves public URL, and inserts a row into `public.media_assets`.
 - **UI Enhancements:** `/media` includes a Client upload form (`MediaUploadForm`), Copy URL button (`CopyUrlButton`), and Delete record button (`DeleteMediaButton`).
 - **Limitations:** Image uploads only (video upload planned for future phases). Public applications continue reading static fallback assets until future frontend database integration.
+
+## Phase 21: Hero Media Selection & Linking (Current)
+Phase 21 connects uploaded `media_assets` to the Hero Slides CRUD workflow within `apps/admin`.
+
+### Key Highlights
+- **Media Asset Picker:** Create and Edit forms (`/hero/new`, `/hero/[id]/edit`) fetch registered `media_assets` and provide interactive `<select>` dropdowns with image thumbnail previews for `background_media_id` and `preview_media_id`.
+- **Hero Card Rendering:** `/hero` resolves linked `background_media_id` and `preview_media_id` UUIDs against `media_assets` to render background images directly on hero slide management cards.
+- **Empty State & UX:** If no media assets have been uploaded yet, a direct notice links administrators to `/media` to upload images first.
+- **Public Apps Independence:** Public applications (`apps/main`, `apps/beauty`, `apps/franchise`) continue reading static configuration as designed until full frontend database integration.

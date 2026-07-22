@@ -1,6 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
 import { canManageHero } from '@vavaw/auth';
-import { getBusinessEntries } from '@vavaw/db';
+import { getBusinessEntries, getMediaAssets } from '@vavaw/db';
 import { getAdminDataSourceMode } from '../../../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../../../lib/admin-profile';
@@ -33,6 +33,17 @@ export default async function EditHeroSlidePage({ params }: { params: Promise<{ 
   const { data: bData } = await getBusinessEntries(supabase);
   const businesses = bData ? bData.map((b) => ({ id: b.id, name: b.name })) : [];
 
+  const { data: mData } = await getMediaAssets(supabase);
+  const mediaAssets = mData
+    ? mData.map((m) => ({
+        id: m.id,
+        site_key: m.site_key,
+        type: m.type,
+        url: m.url,
+        alt_text: m.alt_text,
+      }))
+    : [];
+
   return (
     <div className="space-y-6">
       <div>
@@ -40,7 +51,7 @@ export default async function EditHeroSlidePage({ params }: { params: Promise<{ 
         <p className="mt-1 text-sm text-slate-500">Update slide content for "{slide.title}".</p>
       </div>
 
-      <HeroForm initialData={slide} businesses={businesses} isEdit />
+      <HeroForm initialData={slide} businesses={businesses} mediaAssets={mediaAssets} isEdit />
     </div>
   );
 }

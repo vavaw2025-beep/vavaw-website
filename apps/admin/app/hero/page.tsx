@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Plus, Edit3, ImageIcon, AlertCircle } from 'lucide-react';
 import { canManageHero, canDeleteHero } from '@vavaw/auth';
 import { getSortedBusinessEntries } from '@vavaw/brand-config';
-import { getHeroSlides, getBusinessEntries } from '@vavaw/db';
+import { getHeroSlides, getBusinessEntries, getMediaAssets } from '@vavaw/db';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
@@ -26,7 +26,9 @@ export default async function HeroPage() {
     ctaLabel?: string;
     redirectPath?: string;
     backgroundMediaId?: string;
+    backgroundMediaUrl?: string;
     previewMediaId?: string;
+    previewMediaUrl?: string;
     businessName?: string;
   }> = [];
 
@@ -37,25 +39,34 @@ export default async function HeroPage() {
       const supabase = await getAdminServerSupabaseClient();
       const { data: slidesData, error: slidesError } = await getHeroSlides(supabase);
       const { data: businessData } = await getBusinessEntries(supabase);
+      const { data: mediaData } = await getMediaAssets(supabase);
 
       if (slidesError) {
         queryError = slidesError.message || 'Failed to fetch hero slides from Supabase';
       } else if (slidesData) {
         const businessMap = new Map(businessData?.map((b) => [b.id, b.name]));
+        const mediaMap = new Map(mediaData?.map((m) => [m.id, m.url]));
 
-        slides = slidesData.map((slide) => ({
-          id: slide.id,
-          title: slide.title,
-          subtitle: slide.subtitle,
-          description: slide.description,
-          status: slide.status,
-          sortOrder: slide.sort_order,
-          ctaLabel: slide.cta_label,
-          redirectPath: slide.redirect_path,
-          backgroundMediaId: slide.background_media_id,
-          previewMediaId: slide.preview_media_id,
-          businessName: slide.business_entry_id ? businessMap.get(slide.business_entry_id) : undefined,
-        }));
+        slides = slidesData.map((slide) => {
+          const bgUrl = slide.background_media_id ? mediaMap.get(slide.background_media_id) || (slide.background_media_id.startsWith('http') || slide.background_media_id.startsWith('/') ? slide.background_media_id : undefined) : undefined;
+          const prevUrl = slide.preview_media_id ? mediaMap.get(slide.preview_media_id) || (slide.preview_media_id.startsWith('http') || slide.preview_media_id.startsWith('/') ? slide.preview_media_id : undefined) : undefined;
+
+          return {
+            id: slide.id,
+            title: slide.title,
+            subtitle: slide.subtitle,
+            description: slide.description,
+            status: slide.status,
+            sortOrder: slide.sort_order,
+            ctaLabel: slide.cta_label,
+            redirectPath: slide.redirect_path,
+            backgroundMediaId: slide.background_media_id,
+            backgroundMediaUrl: bgUrl,
+            previewMediaId: slide.preview_media_id,
+            previewMediaUrl: prevUrl,
+            businessName: slide.business_entry_id ? businessMap.get(slide.business_entry_id) : undefined,
+          };
+        });
       }
     } catch (err: any) {
       queryError = err?.message || 'Error connecting to Supabase';
@@ -73,7 +84,9 @@ export default async function HeroPage() {
       redirectPath: entry.redirectPath,
       businessName: entry.name,
       previewMediaId: entry.media.previewImage,
+      previewMediaUrl: entry.media.previewImage,
       backgroundMediaId: entry.media.backgroundImage,
+      backgroundMediaUrl: entry.media.backgroundImage,
     }));
   }
 
@@ -126,11 +139,15 @@ export default async function HeroPage() {
         <div className="space-y-6">
           {slides.map((slide) => (
             <div key={slide.id} className="bg-white shadow rounded-lg border border-slate-200 overflow-hidden flex flex-col md:flex-row">
-              <div className="md:w-1/3 bg-slate-100 border-r border-slate-200 relative min-h-[200px] flex items-center justify-center p-4">
-                <div className="relative z-10 flex flex-col items-center text-slate-500 text-center">
-                  <ImageIcon className="h-10 w-10 mb-2 text-slate-400" />
-                  <span className="text-xs font-mono text-slate-600">BG: {slide.backgroundMediaId || 'None'}</span>
-                  <span className="text-xs font-mono text-slate-600 mt-1">Preview: {slide.previewMediaId || 'None'}</span>
+              <div className="md:w-1/3 bg-slate-900 border-r border-slate-200 relative min-h-[220px] flex items-center justify-center p-4 overflow-hidden">
+                {slide.backgroundMediaUrl ? (
+                  <img src={slide.backgroundMediaUrl} alt={slide.title} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+                ) : null}
+
+                <div className="relative z-10 flex flex-col items-center text-slate-200 text-center bg-slate-950/70 p-3 rounded-lg backdrop-blur-sm border border-slate-800 max-w-[90%]">
+                  <ImageIcon className="h-8 w-8 mb-2 text-indigo-400" />
+                  <span className="text-[11px] font-mono text-slate-300 truncate w-full">BG: {slide.backgroundMediaId || 'None'}</span>
+                  <span className="text-[11px] font-mono text-slate-400 truncate w-full mt-0.5">Preview: {slide.previewMediaId || 'None'}</span>
                 </div>
               </div>
               
