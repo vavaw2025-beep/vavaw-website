@@ -4,12 +4,12 @@ import { getBusinessBySlug } from '@vavaw/brand-config';
 const cosmeticEntry = getBusinessBySlug('cosmetic');
 
 export const metadata: Metadata = {
-  title: cosmeticEntry?.seo?.title || 'VAVAW Cosmetic',
-  description: cosmeticEntry?.seo?.description || cosmeticEntry?.description || 'A dedicated cosmetic collection under the VAVAW ecosystem.',
+  title: cosmeticEntry?.seo.title || 'VAVAW Cosmetic',
+  description: cosmeticEntry?.seo.description || cosmeticEntry?.description || 'A dedicated cosmetic collection under the VAVAW ecosystem.',
   openGraph: {
-    title: cosmeticEntry?.seo?.title || 'VAVAW Cosmetic',
-    description: cosmeticEntry?.seo?.description || cosmeticEntry?.description,
-    url: 'https://vavaw.vn/cosmetic',
+    title: cosmeticEntry?.seo.title || 'VAVAW Cosmetic',
+    description: cosmeticEntry?.seo.description || cosmeticEntry?.description,
+    url: cosmeticEntry?.seo.canonicalUrl || 'https://vavaw.vn/cosmetic',
   },
 };
 

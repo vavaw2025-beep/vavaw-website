@@ -1,28 +1,30 @@
-export type NavigationType = 'internal' | 'external-app';
-export type BusinessStatus = 'active' | 'coming-soon';
+export type NavigationType = "internal" | "external-app";
 
-export interface BusinessTheme {
-  primaryColor?: string;
-  secondaryColor?: string;
-  accentColor?: string;
-  mode?: 'dark' | 'light';
-}
+export type BusinessStatus = "active" | "coming-soon" | "draft";
 
-export interface BusinessMedia {
+export type BusinessTheme = {
+  primary: string;
+  secondary: string;
+  background: string;
+  text: string;
+  accent: string;
+};
+
+export type BusinessMedia = {
   backgroundImage: string;
   previewImage: string;
-  logo?: string;
-  cardImage?: string;
-  ogImage?: string;
-}
+  ogImage: string;
+  introVideo?: string;
+};
 
-export interface BusinessSeo {
-  title?: string;
-  description?: string;
-  ogImage?: string;
-}
+export type BusinessSeo = {
+  title: string;
+  description: string;
+  keywords: string[];
+  canonicalUrl: string;
+};
 
-export interface BusinessEntry {
+export type BusinessEntry = {
   id: string;
   slug: string;
   name: string;
@@ -30,16 +32,18 @@ export interface BusinessEntry {
   title: string;
   subtitle: string;
   description: string;
+
   navigationType: NavigationType;
   href: string;
   redirectPath: string;
   status: BusinessStatus;
   sortOrder: number;
   ctaLabel: string;
+
   theme: BusinessTheme;
   media: BusinessMedia;
-  seo?: BusinessSeo;
-}
+  seo: BusinessSeo;
+};
 
 export const businessEntries: BusinessEntry[] = [
   {
@@ -49,7 +53,8 @@ export const businessEntries: BusinessEntry[] = [
     category: "Cosmetic",
     title: "VAVAW Cosmetic",
     subtitle: "Premium cosmetic line by VAVAW.",
-    description: "A dedicated cosmetic collection under the VAVAW ecosystem.",
+    description:
+      "A dedicated cosmetic collection under the VAVAW ecosystem.",
     navigationType: "internal",
     href: "/cosmetic",
     redirectPath: "/go/cosmetic",
@@ -57,18 +62,22 @@ export const businessEntries: BusinessEntry[] = [
     sortOrder: 1,
     ctaLabel: "Explore Cosmetic",
     theme: {
-      primaryColor: "#e11d48",
-      mode: "dark",
+      primary: "#e11d48",
+      secondary: "#9f1239",
+      background: "#0f0507",
+      text: "#ffffff",
+      accent: "#fb7185",
     },
     media: {
-      backgroundImage: "/media/hero/cosmetic-bg.png",
-      previewImage: "/media/preview/cosmetic-preview.png",
-      ogImage: "/media/og/vavaw-og.png",
+      backgroundImage: "/media/hero/cosmetic-hero.jpg",
+      previewImage: "/media/preview/cosmetic-preview.jpg",
+      ogImage: "/media/og/cosmetic-og.jpg",
     },
     seo: {
       title: "VAVAW Cosmetic - Premium Beauty Line",
       description: "Discover the VAVAW Cosmetic collection.",
-      ogImage: "/media/og/vavaw-og.png",
+      keywords: ["vavaw", "cosmetic", "beauty", "skincare", "premium"],
+      canonicalUrl: "https://vavaw.vn/cosmetic",
     },
   },
   {
@@ -78,7 +87,8 @@ export const businessEntries: BusinessEntry[] = [
     category: "Beauty & Care",
     title: "VAVAW Beauty & Co",
     subtitle: "A beauty and care destination by VAVAW.",
-    description: "A dedicated beauty brand experience within the VAVAW ecosystem.",
+    description:
+      "A dedicated beauty brand experience within the VAVAW ecosystem.",
     navigationType: "external-app",
     href: "https://beauty.vavaw.vn",
     redirectPath: "/go/beauty",
@@ -86,18 +96,22 @@ export const businessEntries: BusinessEntry[] = [
     sortOrder: 2,
     ctaLabel: "Visit Beauty & Co",
     theme: {
-      primaryColor: "#0284c7",
-      mode: "dark",
+      primary: "#0284c7",
+      secondary: "#0369a1",
+      background: "#020617",
+      text: "#ffffff",
+      accent: "#38bdf8",
     },
     media: {
-      backgroundImage: "/media/hero/beauty-bg.png",
-      previewImage: "/media/preview/beauty-preview.png",
-      ogImage: "/media/og/vavaw-og.png",
+      backgroundImage: "/media/hero/beauty-hero.jpg",
+      previewImage: "/media/preview/beauty-preview.jpg",
+      ogImage: "/media/og/beauty-og.jpg",
     },
     seo: {
       title: "VAVAW Beauty & Co",
       description: "Beauty and care destination.",
-      ogImage: "/media/og/vavaw-og.png",
+      keywords: ["vavaw", "beauty", "care", "skincare"],
+      canonicalUrl: "https://beauty.vavaw.vn",
     },
   },
   {
@@ -107,7 +121,8 @@ export const businessEntries: BusinessEntry[] = [
     category: "Franchise",
     title: "VAVAW Franchise",
     subtitle: "Franchise opportunities with VAVAW.",
-    description: "Learn about business partnership and franchise opportunities.",
+    description:
+      "Learn about business partnership and franchise opportunities.",
     navigationType: "external-app",
     href: "https://franchise.vavaw.vn",
     redirectPath: "/go/franchise",
@@ -115,18 +130,22 @@ export const businessEntries: BusinessEntry[] = [
     sortOrder: 3,
     ctaLabel: "Explore Franchise",
     theme: {
-      primaryColor: "#d97706",
-      mode: "dark",
+      primary: "#d97706",
+      secondary: "#b45309",
+      background: "#0c0a09",
+      text: "#ffffff",
+      accent: "#fbbf24",
     },
     media: {
-      backgroundImage: "/media/hero/franchise-bg.png",
-      previewImage: "/media/preview/franchise-preview.png",
-      ogImage: "/media/og/vavaw-og.png",
+      backgroundImage: "/media/hero/franchise-hero.jpg",
+      previewImage: "/media/preview/franchise-preview.jpg",
+      ogImage: "/media/og/franchise-og.jpg",
     },
     seo: {
       title: "VAVAW Franchise",
       description: "Franchise opportunities with VAVAW.",
-      ogImage: "/media/og/vavaw-og.png",
+      keywords: ["vavaw", "franchise", "business", "partnership"],
+      canonicalUrl: "https://franchise.vavaw.vn",
     },
   },
 ];
@@ -135,18 +154,26 @@ export function getBusinessBySlug(slug: string): BusinessEntry | undefined {
   return businessEntries.find((entry) => entry.slug === slug);
 }
 
+export function getSortedBusinessEntries(): BusinessEntry[] {
+  return [...businessEntries].sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
 export function getActiveBusinessEntries(): BusinessEntry[] {
-  return businessEntries.filter((entry) => entry.status === 'active');
+  return businessEntries.filter((entry) => entry.status === "active");
+}
+
+export function getComingSoonBusinessEntries(): BusinessEntry[] {
+  return businessEntries.filter((entry) => entry.status === "coming-soon");
 }
 
 export function getExternalBusinessEntries(): BusinessEntry[] {
-  return businessEntries.filter((entry) => entry.navigationType === 'external-app');
+  return businessEntries.filter(
+    (entry) => entry.navigationType === "external-app"
+  );
 }
 
 export function getInternalBusinessEntries(): BusinessEntry[] {
-  return businessEntries.filter((entry) => entry.navigationType === 'internal');
-}
-
-export function getSortedBusinessEntries(): BusinessEntry[] {
-  return [...businessEntries].sort((a, b) => a.sortOrder - b.sortOrder);
+  return businessEntries.filter(
+    (entry) => entry.navigationType === "internal"
+  );
 }
