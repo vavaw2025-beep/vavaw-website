@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, Server, Shield, Database, Cloud } from 'lucide-react';
+import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil } from 'lucide-react';
 
 export default function SettingsPage() {
   const configs = [
@@ -8,6 +8,14 @@ export default function SettingsPage() {
     { name: 'Database', value: 'Pending Implementation', icon: Database, status: 'Disabled' },
     { name: 'Media Provider', value: 'Local Public Directory', icon: Cloud, status: 'Active' },
     { name: 'CMS Provider', value: 'Static @vavaw/brand-config', icon: SettingsIcon, status: 'Active' },
+  ];
+
+  const cmsStatus = [
+    { name: 'Data Source', value: 'Static config (@vavaw/brand-config)', icon: HardDrive, status: 'Static' },
+    { name: 'Auth', value: 'Not connected', icon: Shield, status: 'Not Connected' },
+    { name: 'Database', value: 'Not connected', icon: Database, status: 'Not Connected' },
+    { name: 'Storage', value: 'Not connected', icon: Cloud, status: 'Not Connected' },
+    { name: 'CMS Write Actions', value: 'Disabled — read-only mode', icon: Pencil, status: 'Disabled' },
   ];
 
   return (
@@ -37,6 +45,41 @@ export default function SettingsPage() {
                     : 'bg-slate-100 text-slate-600'
                 }`}>
                   {config.status}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Backend / CMS Status */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">Backend / CMS Status</h2>
+        <p className="mt-1 text-sm text-slate-500">Current connection status for the backend CMS architecture.</p>
+      </div>
+
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <ul role="list" className="divide-y divide-slate-200">
+          {cmsStatus.map((item, idx) => (
+            <li key={idx} className="p-4 sm:px-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-amber-50 p-2 rounded-lg">
+                  <item.icon className="h-5 w-5 text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                  <p className="text-sm text-slate-500">{item.value}</p>
+                </div>
+              </div>
+              <div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  item.status === 'Static'
+                    ? 'bg-blue-100 text-blue-800'
+                    : item.status === 'Disabled'
+                    ? 'bg-slate-100 text-slate-600'
+                    : 'bg-amber-100 text-amber-800'
+                }`}>
+                  {item.status}
                 </span>
               </div>
             </li>
