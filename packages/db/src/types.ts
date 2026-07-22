@@ -1,67 +1,99 @@
 // Database record types reflecting the future Supabase schema
 
+export interface AdminProfileRecord {
+  id: string; // uuid
+  email: string;
+  full_name?: string;
+  role: 'owner' | 'admin' | 'editor' | 'viewer';
+  status: 'active' | 'disabled';
+  created_at: string;
+  updated_at: string;
+}
+
 export interface BusinessEntryRecord {
   id: string; // uuid
-  name: string;
   slug: string;
+  name: string;
   category: string;
-  status: 'active' | 'coming-soon' | 'draft';
+  title: string;
+  subtitle?: string;
+  description?: string;
   navigation_type: 'internal' | 'external-app';
+  href: string;
+  redirect_path: string;
+  status: 'active' | 'coming-soon' | 'draft';
   sort_order: number;
+  cta_label?: string;
+  theme: any; // jsonb
+  media: any; // jsonb
+  seo: any; // jsonb
   created_at: string;
   updated_at: string;
 }
 
 export interface HeroSlideRecord {
   id: string; // uuid
-  business_id: string; // fk
+  business_entry_id?: string; // fk
   title: string;
-  subtitle: string;
-  description: string;
-  cta_label: string;
-  is_active: boolean;
+  subtitle?: string;
+  description?: string;
+  background_media_id?: string;
+  preview_media_id?: string;
+  cta_label?: string;
+  redirect_path?: string;
+  status: 'active' | 'draft';
+  sort_order: number;
   created_at: string;
   updated_at: string;
 }
 
 export interface MediaAssetRecord {
   id: string; // uuid
-  business_id: string; // fk
-  asset_type: 'background' | 'preview' | 'og' | 'video' | 'gallery';
-  file_path: string;
-  file_size?: number;
-  mime_type?: string;
+  site_key: string;
+  type: 'image' | 'video' | 'og-image' | 'hero-image' | 'preview-image';
+  url: string;
+  alt_text?: string;
+  width?: number;
+  height?: number;
+  duration_seconds?: number;
+  storage_provider: string;
   created_at: string;
   updated_at: string;
 }
 
 export interface SeoSettingRecord {
   id: string; // uuid
-  business_id: string; // fk
+  site_key: string;
+  path: string;
   title: string;
-  description: string;
-  canonical_url: string;
+  description?: string;
   keywords: string[];
+  og_media_id?: string;
+  canonical_url?: string;
+  robots_index: boolean;
+  robots_follow: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export interface RedirectRecord {
   id: string; // uuid
-  business_id: string; // fk
   source_path: string;
   destination_url: string;
-  is_permanent: boolean;
+  type: 'permanent' | 'temporary';
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export interface ContentBlockRecord {
   id: string; // uuid
-  business_id: string; // fk
-  block_id: string;
-  content_json: string; // JSON string or object
-  is_published: boolean;
+  site_key: string;
+  page_path: string;
+  block_type: string;
+  content: any; // jsonb
+  sort_order: number;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }

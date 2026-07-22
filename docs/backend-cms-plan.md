@@ -76,3 +76,21 @@ To ensure stability, the migration is phased:
 - Admin dashboard enables media file uploads to Supabase Storage.
 - Automatic image optimization and CDN integration.
 - Media library management in `/media` admin route.
+
+## Phase 15: Schema & RLS Implementation (Current)
+The database schema has been defined in `supabase/migrations/001_initial_cms_schema.sql`.
+
+### RLS Policy Summary
+- **Public:** Can read active `business_entries`, active `redirects`, and `seo_settings` with `robots_index = true`.
+- **Authenticated (Admin Profiles):** Can read all CMS tables if their profile has status = 'active'.
+- **Editors:** Can update `content_blocks`, `hero_slides`, `seo_settings`, and `media_assets`.
+- **Admins/Owners:** Can manage all CMS tables including `business_entries` and `redirects`. Only Owners can manage `admin_profiles`.
+
+> **WARNING:** Always review RLS policies for security before deploying to a production Supabase instance.
+
+### Applying Migrations Manually
+To apply this schema manually to a remote Supabase project:
+1. Log in to the Supabase Dashboard.
+2. Go to the SQL Editor.
+3. Copy the contents of `supabase/migrations/001_initial_cms_schema.sql` and run it.
+4. (Optional) Run `supabase/seed/001_seed_static_business_entries.sql` to populate default data.
