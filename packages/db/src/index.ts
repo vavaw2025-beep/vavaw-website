@@ -6,3 +6,5 @@ export * from './queries/media-assets';
 export * from './queries/seo-settings';
 export * from './queries/redirects';
 export * from './queries/content-blocks';
+export * from './mutations/business-entries';
+export * from './mutations/hero-slides';

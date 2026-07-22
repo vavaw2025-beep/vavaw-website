@@ -42,3 +42,23 @@ export function canManageContent(role: AdminRole): boolean {
 export function canManageSettings(role: AdminRole): boolean {
   return role === "owner" || role === "admin";
 }
+
+/** Check if a role can create or update business entries */
+export function canManageBusiness(role: AdminRole): boolean {
+  return role === "owner" || role === "admin";
+}
+
+/** Check if a role can delete business entries */
+export function canDeleteBusiness(role: AdminRole): boolean {
+  return role === "owner" || role === "admin";
+}
+
+/** Check if a role can create or update hero slides */
+export function canManageHero(role: AdminRole): boolean {
+  return role === "owner" || role === "admin" || role === "editor";
+}
+
+/** Check if a role can delete hero slides */
+export function canDeleteHero(role: AdminRole): boolean {
+  return role === "owner" || role === "admin";
+}

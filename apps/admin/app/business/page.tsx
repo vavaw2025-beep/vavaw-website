@@ -1,10 +1,21 @@
+import Link from 'next/link';
+import { Plus, Edit3, AlertCircle } from 'lucide-react';
+import { canManageBusiness, canDeleteBusiness } from '@vavaw/auth';
 import { businessEntries } from '@vavaw/brand-config';
 import { getBusinessEntries } from '@vavaw/db';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
+import { getCurrentAdminProfile } from '../../lib/admin-profile';
+import { DeleteBusinessButton } from './DeleteBusinessButton';
 
 export default async function BusinessPage() {
   const mode = getAdminDataSourceMode();
+  const profile = await getCurrentAdminProfile();
+
+  const isSupabaseMode = mode === 'supabase';
+  const canManage = profile ? canManageBusiness(profile.role) : false;
+  const canDelete = profile ? canDeleteBusiness(profile.role) : false;
+
   let entries: Array<{
     id: string;
     slug: string;
@@ -19,7 +30,7 @@ export default async function BusinessPage() {
 
   let queryError: string | null = null;
 
-  if (mode === 'supabase') {
+  if (isSupabaseMode) {
     try {
       const supabase = await getAdminServerSupabaseClient();
       const { data, error } = await getBusinessEntries(supabase);
@@ -61,16 +72,32 @@ export default async function BusinessPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Business Entries</h1>
-          <p className="mt-1 text-sm text-slate-500">View all configured business brands in the ecosystem.</p>
+          <p className="mt-1 text-sm text-slate-500">View and manage configured business brands in the ecosystem.</p>
         </div>
-        <div>
+        <div className="flex items-center gap-3">
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-            mode === 'supabase' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
+            isSupabaseMode ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
           }`}>
-            Data Source: {mode === 'supabase' ? 'Supabase' : 'Static Config'}
+            Data Source: {isSupabaseMode ? 'Supabase' : 'Static Config'}
           </span>
+          {isSupabaseMode && canManage && (
+            <Link
+              href="/business/new"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md shadow transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Create Business</span>
+            </Link>
+          )}
         </div>
       </div>
+
+      {!isSupabaseMode && (
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-xs flex items-center gap-2">
+          <AlertCircle className="h-4 w-4 flex-shrink-0 text-amber-600" />
+          <span>CRUD operations are disabled in mock mode. Switch to Supabase mode to enable management actions.</span>
+        </div>
+      )}
 
       {queryError && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
@@ -96,6 +123,9 @@ export default async function BusinessPage() {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Order</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">CTA & Redirect</th>
+                  {isSupabaseMode && (canManage || canDelete) && (
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                  )}
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
@@ -127,6 +157,20 @@ export default async function BusinessPage() {
                       <div>{entry.ctaLabel || '-'}</div>
                       <code className="text-xs text-slate-600 bg-slate-100 px-1 rounded block mt-1">→ {entry.redirectPath}</code>
                     </td>
+                    {isSupabaseMode && (canManage || canDelete) && (
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
+                        {canManage && (
+                          <Link
+                            href={`/business/${entry.id}/edit`}
+                            className="text-blue-600 hover:text-blue-900 inline-flex items-center gap-1"
+                          >
+                            <Edit3 className="h-4 w-4" />
+                            <span>Edit</span>
+                          </Link>
+                        )}
+                        {canDelete && <DeleteBusinessButton id={entry.id} name={entry.name} />}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

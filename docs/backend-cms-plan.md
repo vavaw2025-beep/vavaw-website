@@ -104,3 +104,13 @@ In Phase 18, `apps/admin` was upgraded to dynamically fetch live data from Supab
 - **RLS Read Enforcement:** Queries rely on the caller's authenticated Supabase session. Database RLS policies govern which rows are returned.
 - **Static Fallback:** In `mock` mode (`NEXT_PUBLIC_ADMIN_AUTH_MODE=mock`), zero database queries are executed; all admin routes read from static data.
 - **Mutations Disabled:** Create, Update, and Delete actions remain disabled across all admin pages until Phase 19.
+
+## Phase 19: Business Entries and Hero Slides CRUD (Current)
+In Phase 19, full create, edit, update, and delete (CRUD) operations were enabled for `public.business_entries` and `public.hero_slides`.
+
+### Key Highlights & Permissions
+- **Business Entries Management:** Only `owner` and `admin` roles can create, edit, or delete records in `business_entries`.
+- **Hero Slides Management:** `owner`, `admin`, and `editor` roles can create/edit records in `hero_slides`. Only `owner` and `admin` roles can delete hero slides. `viewer` role is restricted to read-only.
+- **Server Actions & Security:** Server actions in `apps/admin/app/business/actions.ts` and `apps/admin/app/hero/actions.ts` validate user authentication, status (`active`), and role permissions server-side before executing mutations in `@vavaw/db`.
+- **Mock Mode Safety:** In `mock` mode, CRUD operations remain completely disabled, UI buttons are hidden/notice displayed, and server actions reject mutation attempts.
+- **Pending Integrations:** Media file uploads remain pending (Phase 20+). Public applications (`apps/main`, `apps/beauty`, `apps/franchise`) continue reading from static config as designed.
