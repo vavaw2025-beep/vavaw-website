@@ -1,61 +1,83 @@
-import Link from 'next/link';
 import { businessEntries } from '@vavaw/brand-config';
-
-const thStyle: React.CSSProperties = {
-  textAlign: 'left',
-  padding: '0.625rem 1rem',
-  borderBottom: '2px solid #e2e8f0',
-  color: '#475569',
-  fontWeight: 600,
-  fontSize: '0.875rem',
-};
-
-const tdStyle: React.CSSProperties = {
-  padding: '0.625rem 1rem',
-  borderBottom: '1px solid #f1f5f9',
-  color: '#0f172a',
-  fontSize: '0.875rem',
-  verticalAlign: 'top',
-};
-
-const monoStyle: React.CSSProperties = {
-  fontFamily: 'monospace',
-  fontSize: '0.8125rem',
-  color: '#475569',
-};
+import { AlertTriangle } from 'lucide-react';
 
 export default function SeoPage() {
   return (
-    <div style={{ padding: '2rem', maxWidth: '1100px', margin: '0 auto', fontFamily: 'system-ui, sans-serif' }}>
-      <Link href="/" style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem' }}>&larr; Back to Dashboard</Link>
-      <h1 style={{ marginTop: '1rem', fontSize: '1.75rem', fontWeight: 'bold', color: '#0f172a' }}>SEO Settings</h1>
-      <p style={{ color: '#64748b', marginBottom: '2rem' }}>
-        Read-only view of SEO metadata from <code>@vavaw/brand-config</code>.
-      </p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">SEO Settings</h1>
+        <p className="mt-1 text-sm text-slate-500">Manage global SEO metadata and OpenGraph tags.</p>
+      </div>
 
-      <div style={{ backgroundColor: '#ffffff', borderRadius: '0.75rem', border: '1px solid #e2e8f0', overflow: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th style={thStyle}>Business</th>
-              <th style={thStyle}>SEO Title</th>
-              <th style={thStyle}>Description</th>
-              <th style={thStyle}>Canonical URL</th>
-              <th style={thStyle}>OG Image</th>
-            </tr>
-          </thead>
-          <tbody>
-            {businessEntries.map((entry) => (
-              <tr key={entry.id}>
-                <td style={{ ...tdStyle, fontWeight: 500 }}>{entry.name}</td>
-                <td style={tdStyle}>{entry.seo.title}</td>
-                <td style={{ ...tdStyle, maxWidth: '240px' }}>{entry.seo.description}</td>
-                <td style={tdStyle}><span style={monoStyle}>{entry.seo.canonicalUrl}</span></td>
-                <td style={tdStyle}><span style={monoStyle}>{entry.media.ogImage}</span></td>
+      <div className="bg-white shadow rounded-lg border border-slate-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-slate-200">
+            <thead className="bg-slate-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/5">Business</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/4">Title & Desc</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/4">URLs & OG</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/5">Keywords</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-slate-200">
+              {businessEntries.map((entry) => {
+                const missingFields = [];
+                if (!entry.seo.title) missingFields.push('Title');
+                if (!entry.seo.description) missingFields.push('Description');
+                if (!entry.seo.canonicalUrl) missingFields.push('Canonical');
+                if (!entry.media.ogImage) missingFields.push('OG Image');
+
+                return (
+                  <tr key={entry.id} className="hover:bg-slate-50">
+                    <td className="px-6 py-4 align-top">
+                      <div className="text-sm font-medium text-slate-900">{entry.name}</div>
+                      {missingFields.length > 0 && (
+                        <div className="mt-2 flex items-start text-amber-600 text-xs bg-amber-50 p-2 rounded border border-amber-200">
+                          <AlertTriangle className="h-4 w-4 mr-1 flex-shrink-0" />
+                          <span>Missing: {missingFields.join(', ')}</span>
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 align-top">
+                      <div className="mb-2">
+                        <span className="block text-xs font-semibold text-slate-500 uppercase mb-1">Title</span>
+                        <div className="text-sm text-slate-900 font-medium">{entry.seo.title || <span className="text-slate-400 italic">None</span>}</div>
+                      </div>
+                      <div>
+                        <span className="block text-xs font-semibold text-slate-500 uppercase mb-1">Description</span>
+                        <div className="text-xs text-slate-600 line-clamp-3" title={entry.seo.description}>{entry.seo.description || <span className="text-slate-400 italic">None</span>}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 align-top">
+                      <div className="mb-2">
+                        <span className="block text-xs font-semibold text-slate-500 uppercase mb-1">Canonical URL</span>
+                        <code className="text-xs text-blue-600 bg-blue-50 px-1 py-0.5 rounded break-all">{entry.seo.canonicalUrl || 'None'}</code>
+                      </div>
+                      <div>
+                        <span className="block text-xs font-semibold text-slate-500 uppercase mb-1">OG Image</span>
+                        <code className="text-xs text-slate-600 bg-slate-100 px-1 py-0.5 rounded break-all">{entry.media.ogImage || 'None'}</code>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 align-top">
+                      <div className="flex flex-wrap gap-1">
+                        {entry.seo.keywords && entry.seo.keywords.length > 0 ? (
+                          entry.seo.keywords.map(kw => (
+                            <span key={kw} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                              {kw}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-xs text-slate-400 italic">No keywords defined</span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

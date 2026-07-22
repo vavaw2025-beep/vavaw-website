@@ -1,82 +1,56 @@
-import Link from 'next/link';
 import { getSortedBusinessEntries } from '@vavaw/brand-config';
+import Image from 'next/image';
+import { ImageIcon } from 'lucide-react';
 
 const entries = getSortedBusinessEntries();
 
-const labelStyle: React.CSSProperties = {
-  fontSize: '0.75rem',
-  fontWeight: 600,
-  color: '#64748b',
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  marginBottom: '0.125rem',
-};
-
-const valueStyle: React.CSSProperties = {
-  fontSize: '0.875rem',
-  color: '#0f172a',
-  marginBottom: '0.75rem',
-};
-
-const badgeStyle = (status: string): React.CSSProperties => ({
-  display: 'inline-block',
-  padding: '0.125rem 0.5rem',
-  borderRadius: '9999px',
-  fontSize: '0.75rem',
-  fontWeight: 500,
-  backgroundColor: status === 'active' ? '#dcfce7' : status === 'coming-soon' ? '#fef3c7' : '#f1f5f9',
-  color: status === 'active' ? '#166534' : status === 'coming-soon' ? '#92400e' : '#475569',
-});
-
 export default function HeroPage() {
   return (
-    <div style={{ padding: '2rem', maxWidth: '960px', margin: '0 auto', fontFamily: 'system-ui, sans-serif' }}>
-      <Link href="/" style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem' }}>&larr; Back to Dashboard</Link>
-      <h1 style={{ marginTop: '1rem', fontSize: '1.75rem', fontWeight: 'bold', color: '#0f172a' }}>Hero Slides Management</h1>
-      <p style={{ color: '#64748b', marginBottom: '2rem' }}>
-        Read-only view of hero slider configuration from <code>@vavaw/brand-config</code>.
-      </p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Hero Slides</h1>
+        <p className="mt-1 text-sm text-slate-500">Manage main homepage slider content.</p>
+      </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div className="space-y-6">
         {entries.map((entry) => (
-          <div
-            key={entry.id}
-            style={{
-              backgroundColor: '#ffffff',
-              borderRadius: '0.75rem',
-              border: '1px solid #e2e8f0',
-              padding: '1.5rem',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#0f172a', margin: 0 }}>{entry.title}</h2>
-              <span style={badgeStyle(entry.status)}>{entry.status}</span>
+          <div key={entry.id} className="bg-white shadow rounded-lg border border-slate-200 overflow-hidden flex flex-col md:flex-row">
+            <div className="md:w-1/3 bg-slate-100 border-r border-slate-200 relative min-h-[200px] flex items-center justify-center p-4">
+              <div className="absolute inset-0 z-0 opacity-20 bg-cover bg-center" style={{ backgroundImage: `url(${entry.media.previewImage})` }} />
+              <div className="relative z-10 flex flex-col items-center text-slate-400">
+                <ImageIcon className="h-12 w-12 mb-2" />
+                <span className="text-xs text-center font-mono break-all">{entry.media.backgroundImage}</span>
+              </div>
             </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem 2rem' }}>
-              <div>
-                <div style={labelStyle}>Subtitle</div>
-                <div style={valueStyle}>{entry.subtitle}</div>
+            
+            <div className="p-6 md:w-2/3">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">{entry.title}</h2>
+                  <p className="text-sm font-medium text-blue-600 mt-1">{entry.subtitle}</p>
+                </div>
+                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                  entry.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {entry.status}
+                </span>
               </div>
-              <div>
-                <div style={labelStyle}>Sort Order</div>
-                <div style={valueStyle}>{entry.sortOrder}</div>
-              </div>
-              <div>
-                <div style={labelStyle}>CTA Label</div>
-                <div style={valueStyle}>{entry.ctaLabel}</div>
-              </div>
-              <div>
-                <div style={labelStyle}>Redirect Path</div>
-                <div style={{ ...valueStyle, fontFamily: 'monospace', fontSize: '0.8125rem' }}>{entry.redirectPath}</div>
-              </div>
-              <div>
-                <div style={labelStyle}>Background Image</div>
-                <div style={{ ...valueStyle, fontFamily: 'monospace', fontSize: '0.8125rem' }}>{entry.media.backgroundImage}</div>
-              </div>
-              <div>
-                <div style={labelStyle}>Preview Image</div>
-                <div style={{ ...valueStyle, fontFamily: 'monospace', fontSize: '0.8125rem' }}>{entry.media.previewImage}</div>
+              
+              <p className="text-slate-600 text-sm mb-6">{entry.description}</p>
+              
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="block text-slate-500 text-xs uppercase tracking-wider font-semibold mb-1">Order</span>
+                  <span className="text-slate-900">{entry.sortOrder}</span>
+                </div>
+                <div>
+                  <span className="block text-slate-500 text-xs uppercase tracking-wider font-semibold mb-1">CTA</span>
+                  <span className="text-slate-900">{entry.ctaLabel}</span>
+                </div>
+                <div className="col-span-2">
+                  <span className="block text-slate-500 text-xs uppercase tracking-wider font-semibold mb-1">Link</span>
+                  <code className="text-slate-700 bg-slate-100 px-2 py-1 rounded">{entry.redirectPath}</code>
+                </div>
               </div>
             </div>
           </div>

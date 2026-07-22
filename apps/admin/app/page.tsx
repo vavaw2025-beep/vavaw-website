@@ -1,84 +1,83 @@
-import { businessEntries } from '@vavaw/brand-config';
-import Link from 'next/link';
+import { 
+  businessEntries, 
+  getActiveBusinessEntries, 
+  getComingSoonBusinessEntries, 
+  getExternalBusinessEntries, 
+  getInternalBusinessEntries 
+} from '@vavaw/brand-config';
+import { Building2, Globe, Rocket, Link2, MonitorPlay, Pencil } from 'lucide-react';
 
-export default function AdminDashboardPage() {
-  const totalEntries = businessEntries.length;
-  const activeEntries = businessEntries.filter(b => b.status === 'active').length;
-  const comingSoonEntries = businessEntries.filter(b => b.status === 'coming-soon').length;
-  const externalAppEntries = businessEntries.filter(b => b.navigationType === 'external-app').length;
+export default function DashboardPage() {
+  const total = businessEntries.length;
+  const active = getActiveBusinessEntries().length;
+  const comingSoon = getComingSoonBusinessEntries().length;
+  const draft = businessEntries.filter((e) => e.status === 'draft').length;
+  const external = getExternalBusinessEntries().length;
+  const internal = getInternalBusinessEntries().length;
 
-  const cards = [
-    { title: 'Business Entries', href: '/business', count: totalEntries, desc: 'Manage brand profiles & entries' },
-    { title: 'Hero Slides', href: '/hero', count: 'Active', desc: 'Configure main hero slider' },
-    { title: 'Media Library', href: '/media', count: 'Assets', desc: 'Images, banners & logos' },
-    { title: 'SEO Settings', href: '/seo', count: 'Global', desc: 'Meta tags & OpenGraph' },
-    { title: 'Redirects', href: '/redirects', count: '/go/*', desc: 'Shortlinks & routing rules' },
-    { title: 'Website Content', href: '/content', count: 'Sections', desc: 'Copy, stories & CTAs' },
+  const stats = [
+    { name: 'Total Businesses', value: total, icon: Building2 },
+    { name: 'Active Entries', value: active, icon: Rocket },
+    { name: 'Coming Soon', value: comingSoon, icon: MonitorPlay },
+    { name: 'Draft Entries', value: draft, icon: Pencil },
+    { name: 'Internal Apps', value: internal, icon: Globe },
+    { name: 'External Apps', value: external, icon: Link2 },
   ];
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-      <header style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>
-          VAVAW Admin Dashboard
-        </h1>
-        <p style={{ color: '#64748b', marginTop: '0.5rem' }}>
-          Manage the VAVAW brand ecosystem
-        </p>
-      </header>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">VAVAW Admin Dashboard</h1>
+        <p className="mt-1 text-sm text-slate-500">Manage the VAVAW brand ecosystem</p>
+      </div>
 
-      {/* Statistics Section */}
-      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
-        <div style={{ padding: '1.25rem', backgroundColor: '#ffffff', borderRadius: '0.75rem', border: '1px solid #e2e8f0' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748b' }}>Total Business Entries</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#0f172a', marginTop: '0.25rem' }}>{totalEntries}</div>
-        </div>
-        <div style={{ padding: '1.25rem', backgroundColor: '#ffffff', borderRadius: '0.75rem', border: '1px solid #e2e8f0' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748b' }}>Active Entries</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#16a34a', marginTop: '0.25rem' }}>{activeEntries}</div>
-        </div>
-        <div style={{ padding: '1.25rem', backgroundColor: '#ffffff', borderRadius: '0.75rem', border: '1px solid #e2e8f0' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748b' }}>Coming Soon Entries</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#d97706', marginTop: '0.25rem' }}>{comingSoonEntries}</div>
-        </div>
-        <div style={{ padding: '1.25rem', backgroundColor: '#ffffff', borderRadius: '0.75rem', border: '1px solid #e2e8f0' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748b' }}>External App Entries</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#2563eb', marginTop: '0.25rem' }}>{externalAppEntries}</div>
-        </div>
-      </section>
-
-      {/* Management Cards */}
-      <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#0f172a', marginBottom: '1rem' }}>
-        Management Modules
-      </h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-        {cards.map((card) => (
-          <Link
-            key={card.href}
-            href={card.href}
-            style={{
-              display: 'block',
-              padding: '1.5rem',
-              backgroundColor: '#ffffff',
-              borderRadius: '0.75rem',
-              border: '1px solid #e2e8f0',
-              textDecoration: 'none',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#0f172a', margin: 0 }}>
-                {card.title}
-              </h3>
-              <span style={{ fontSize: '0.875rem', fontWeight: '500', color: '#475569', backgroundColor: '#f1f5f9', padding: '0.25rem 0.625rem', borderRadius: '9999px' }}>
-                {card.count}
-              </span>
-            </div>
-            <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.5rem', marginBottom: 0 }}>
-              {card.desc}
-            </p>
-          </Link>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {stats.map((item) => (
+          <div key={item.name} className="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden border border-slate-200">
+            <dt>
+              <div className="absolute bg-blue-500 rounded-md p-3">
+                <item.icon className="h-6 w-6 text-white" aria-hidden="true" />
+              </div>
+              <p className="ml-16 text-sm font-medium text-slate-500 truncate">{item.name}</p>
+            </dt>
+            <dd className="ml-16 pb-6 flex items-baseline sm:pb-7">
+              <p className="text-2xl font-semibold text-slate-900">{item.value}</p>
+            </dd>
+          </div>
         ))}
+      </div>
+
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <div className="px-4 py-5 sm:px-6 border-b border-slate-200">
+          <h3 className="text-lg leading-6 font-medium text-slate-900">Quick Overview</h3>
+        </div>
+        <ul role="list" className="divide-y divide-slate-200">
+          {businessEntries.map((entry) => (
+            <li key={entry.id} className="px-4 py-4 sm:px-6 hover:bg-slate-50">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-blue-600 truncate">{entry.name}</p>
+                <div className="ml-2 flex-shrink-0 flex space-x-2">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    entry.status === 'active' ? 'bg-green-100 text-green-800' :
+                    entry.status === 'coming-soon' ? 'bg-yellow-100 text-yellow-800' : 'bg-slate-100 text-slate-800'
+                  }`}>
+                    {entry.status}
+                  </span>
+                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                    {entry.navigationType}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-2 sm:flex sm:justify-between">
+                <div className="sm:flex">
+                  <p className="flex items-center text-sm text-slate-500">
+                    Redirect Path: <code className="ml-1 text-slate-700 bg-slate-100 px-1 rounded">{entry.redirectPath}</code>
+                  </p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

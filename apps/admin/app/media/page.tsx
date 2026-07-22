@@ -1,89 +1,102 @@
-import Link from 'next/link';
 import { businessEntries } from '@vavaw/brand-config';
-
-const mediaCategories = [
-  {
-    title: 'Hero Images',
-    description: 'Full-screen background images for the hero slider.',
-    items: businessEntries.map((e) => ({ name: e.name, path: e.media.backgroundImage })),
-  },
-  {
-    title: 'Preview Images',
-    description: 'Thumbnail preview cards shown in the carousel.',
-    items: businessEntries.map((e) => ({ name: e.name, path: e.media.previewImage })),
-  },
-  {
-    title: 'Open Graph Images',
-    description: 'Social sharing images for SEO and link previews.',
-    items: businessEntries.map((e) => ({ name: e.name, path: e.media.ogImage })),
-  },
-  {
-    title: 'Videos',
-    description: 'Intro and promotional videos.',
-    items: businessEntries
-      .filter((e) => e.media.introVideo)
-      .map((e) => ({ name: e.name, path: e.media.introVideo! })),
-  },
-];
-
-const tableStyle: React.CSSProperties = {
-  width: '100%',
-  borderCollapse: 'collapse',
-  fontSize: '0.875rem',
-};
-
-const thStyle: React.CSSProperties = {
-  textAlign: 'left',
-  padding: '0.625rem 1rem',
-  borderBottom: '2px solid #e2e8f0',
-  color: '#475569',
-  fontWeight: 600,
-};
-
-const tdStyle: React.CSSProperties = {
-  padding: '0.625rem 1rem',
-  borderBottom: '1px solid #f1f5f9',
-  color: '#0f172a',
-};
+import { Info, Image as ImageIcon, ImagePlus, MonitorPlay } from 'lucide-react';
 
 export default function MediaPage() {
+  const groups = [
+    {
+      title: 'Hero Images',
+      icon: ImageIcon,
+      description: 'Main background images used in hero sections',
+      items: businessEntries.map(e => ({ name: e.name, path: e.media.backgroundImage, type: 'image/jpeg' }))
+    },
+    {
+      title: 'Preview Images',
+      icon: ImagePlus,
+      description: 'Thumbnail images used for cards and previews',
+      items: businessEntries.map(e => ({ name: e.name, path: e.media.previewImage, type: 'image/jpeg' }))
+    },
+    {
+      title: 'Open Graph Images',
+      icon: ImagePlus,
+      description: 'Images used when sharing links on social media',
+      items: businessEntries.map(e => ({ name: e.name, path: e.media.ogImage, type: 'image/jpeg' }))
+    },
+    {
+      title: 'Intro Videos',
+      icon: MonitorPlay,
+      description: 'Promotional video background loops',
+      items: businessEntries.filter(e => e.media.introVideo).map(e => ({ name: e.name, path: e.media.introVideo!, type: 'video/mp4' }))
+    }
+  ];
+
   return (
-    <div style={{ padding: '2rem', maxWidth: '960px', margin: '0 auto', fontFamily: 'system-ui, sans-serif' }}>
-      <Link href="/" style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem' }}>&larr; Back to Dashboard</Link>
-      <h1 style={{ marginTop: '1rem', fontSize: '1.75rem', fontWeight: 'bold', color: '#0f172a' }}>Media Library</h1>
-      <p style={{ color: '#64748b', marginBottom: '2rem' }}>
-        Static overview of all media assets referenced in <code>@vavaw/brand-config</code>. Upload and delete features coming soon.
-      </p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Media Library</h1>
+        <p className="mt-1 text-sm text-slate-500">View and manage visual assets across the ecosystem.</p>
+      </div>
 
-      {mediaCategories.map((cat) => (
-        <section key={cat.title} style={{ marginBottom: '2.5rem' }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.25rem' }}>{cat.title}</h2>
-          <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1rem' }}>{cat.description}</p>
+      <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <Info className="h-5 w-5 text-blue-400" aria-hidden="true" />
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-blue-700">
+              <strong>Static media registry.</strong> Upload management will be added in a later CMS phase.
+            </p>
+          </div>
+        </div>
+      </div>
 
-          {cat.items.length === 0 ? (
-            <p style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '0.875rem' }}>No assets configured yet.</p>
-          ) : (
-            <div style={{ backgroundColor: '#ffffff', borderRadius: '0.75rem', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-              <table style={tableStyle}>
-                <thead>
+      <div className="space-y-8">
+        {groups.map((group) => (
+          <section key={group.title} className="bg-white shadow rounded-lg border border-slate-200 overflow-hidden">
+            <div className="px-4 py-5 border-b border-slate-200 sm:px-6 flex items-center gap-3">
+              <div className="bg-slate-100 p-2 rounded-md">
+                <group.icon className="h-5 w-5 text-slate-600" />
+              </div>
+              <div>
+                <h3 className="text-lg leading-6 font-medium text-slate-900">{group.title}</h3>
+                <p className="max-w-2xl text-sm text-slate-500">{group.description}</p>
+              </div>
+            </div>
+            
+            <div className="border-t border-slate-200">
+              <table className="min-w-full divide-y divide-slate-200">
+                <thead className="bg-slate-50">
                   <tr>
-                    <th style={thStyle}>Business</th>
-                    <th style={thStyle}>Path</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Business</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">File Path</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {cat.items.map((item) => (
-                    <tr key={item.path}>
-                      <td style={tdStyle}>{item.name}</td>
-                      <td style={{ ...tdStyle, fontFamily: 'monospace', fontSize: '0.8125rem', color: '#475569' }}>{item.path}</td>
+                <tbody className="bg-white divide-y divide-slate-200">
+                  {group.items.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="px-6 py-4 text-center text-sm text-slate-500 italic">No assets configured</td>
                     </tr>
-                  ))}
+                  ) : (
+                    group.items.map((item, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{item.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                          <code className="bg-slate-100 text-slate-700 px-2 py-1 rounded">{item.path}</code>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                            {item.type}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
-          )}
-        </section>
-      ))}
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
