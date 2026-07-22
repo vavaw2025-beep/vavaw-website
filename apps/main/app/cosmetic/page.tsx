@@ -43,10 +43,40 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function CosmeticPage() {
+import { ContentBlockRenderer } from '../../components/content-block-renderer';
+import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
+
+export default async function CosmeticPage() {
   if (!cosmeticEntry) {
     notFound();
   }
 
-  return <CosmeticContent entry={cosmeticEntry} />;
+  const { blocks, source } = await loadPublicContentBlocks({
+    siteKey: 'cosmetic',
+    pagePath: '/cosmetic'
+  });
+
+  if (blocks.length > 0) {
+    return (
+      <>
+        {process.env.NODE_ENV === 'development' && (
+          <div className="fixed bottom-4 right-4 bg-black text-white text-xs px-2 py-1 rounded z-50 shadow">
+            Content: {source}
+          </div>
+        )}
+        <ContentBlockRenderer blocks={blocks} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 right-4 bg-black text-white text-xs px-2 py-1 rounded z-50 shadow">
+          Content: static (fallback)
+        </div>
+      )}
+      <CosmeticContent entry={cosmeticEntry} />
+    </>
+  );
 }

@@ -302,3 +302,19 @@ Phase 25 enables admin management of `public.content_blocks` so the CMS can mana
 `supabase/seed/003_seed_content_blocks.sql` — Optional seed containing example blocks for `/cosmetic`.
 > ℹ️ **INFO:** This seed does not use `ON CONFLICT DO UPDATE` because there is no strict unique constraint on `(site_key, page_path, block_type)` (multiple identical block types can exist on a page). Running it multiple times will duplicate the example blocks.
 
+## Phase 26: Public Cosmetic Page Reads Content Blocks (Current)
+Phase 26 integrates the `public.content_blocks` table with `apps/main/app/cosmetic/page.tsx` for dynamic rendering.
+
+### Scope and Strategy
+- **Public Cosmetic Read:** `apps/main` /cosmetic reads content blocks via `loadPublicContentBlocks` server utility using Supabase anon client (when `CMS_DATA_SOURCE=supabase`).
+- **Dynamic Renderer:** A new `ContentBlockRenderer` component maps the blocks to UI sections. Supported types: `hero`, `rich_text`, `feature_grid`, `product_highlights`, `quality_promise`, `gallery`, `faq`, `cta`.
+- **Safe Fallback:** If `CMS_DATA_SOURCE=static`, or if the database returns 0 blocks, or if an error occurs, the page safely falls back to the original static `CosmeticContent` component.
+- **Design Parity:** The dynamic sections maintain the Framer Motion animations and styling aesthetics of the original static layout.
+- **Development Feedback:** In development mode (`NODE_ENV=development`), a small corner badge indicates whether the content was loaded from 'supabase' or 'static' (fallback).
+- **Other Pages:** `apps/beauty` and `apps/franchise` remain completely static for now.
+
+### Files
+- `apps/main/lib/public-cms-types.ts`
+- `apps/main/lib/load-public-content-blocks.ts`
+- `apps/main/components/content-block-renderer.tsx`
+- `apps/main/app/cosmetic/page.tsx` (updated)

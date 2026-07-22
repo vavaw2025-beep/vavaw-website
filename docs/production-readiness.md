@@ -21,7 +21,7 @@ This document tracks the readiness state of the VAVAW monorepo for production de
 - [ ] **SEO Seed (002):** `supabase/seed/002_seed_seo_settings.sql` is optional and should not be re-run after production data exists (overwrites manual edits).
 - [x] **Content Blocks CRUD (admin):** `content_blocks` table fully managed from `/content` admin page. Create/update: owner/admin/editor. Delete: owner/admin. Viewer read-only.
 - [ ] **Content Blocks Seed (003):** `supabase/seed/003_seed_content_blocks.sql` is optional and non-destructive but will duplicate rows if run multiple times.
-- [ ] **Content Blocks Rendering:** Not yet connected to public apps. Currently apps/main and others use static frontend components.
+- [x] **Content Blocks Rendering:** Connected to `apps/main` /cosmetic page via `ContentBlockRenderer`. Full static fallback (`CosmeticContent`) handles DB errors or empty states gracefully. `apps/beauty` and `apps/franchise` remain static.
 
 ## Quality & Monitoring
 - [ ] **Analytics Status:** Pending (Google Analytics / Vercel Web Analytics integration required).
