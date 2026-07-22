@@ -4,52 +4,65 @@ import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { businessEntries } from '@vavaw/brand-config';
+import { getSortedBusinessEntries } from '@vavaw/brand-config';
 import { useRouter } from 'next/navigation';
 
 export function BrandHero() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const [autoplay, setAutoplay] = useState(true);
+  const [imageError, setImageError] = useState<Record<string, boolean>>({});
   const router = useRouter();
+
+  const sortedEntries = getSortedBusinessEntries();
 
   // Autoplay carousel
   useEffect(() => {
     if (!autoplay || isHovering) return;
 
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % businessEntries.length);
+      setActiveIndex((prev) => (prev + 1) % sortedEntries.length);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [autoplay, isHovering]);
+  }, [autoplay, isHovering, sortedEntries.length]);
 
   const handlePrevious = () => {
-    setActiveIndex((prev) => (prev - 1 + businessEntries.length) % businessEntries.length);
+    setActiveIndex((prev) => (prev - 1 + sortedEntries.length) % sortedEntries.length);
     setAutoplay(false);
     setTimeout(() => setAutoplay(true), 8000);
   };
 
   const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % businessEntries.length);
+    setActiveIndex((prev) => (prev + 1) % sortedEntries.length);
     setAutoplay(false);
     setTimeout(() => setAutoplay(true), 8000);
   };
 
-  const currentSlide = businessEntries[activeIndex];
+  if (sortedEntries.length === 0) {
+    return <div className="h-screen w-full bg-black flex items-center justify-center text-white">No business entries found.</div>;
+  }
 
-  // Calculate preview slides with modulo logic
-  const previewCount = Math.min(3, businessEntries.length - 1);
-  const previewSlides = Array.from({ length: previewCount }).map((_, offset) => {
-    const index = (activeIndex + offset + 1) % businessEntries.length;
+  const currentSlide = sortedEntries[activeIndex];
+
+  // Calculate preview slides using the requested logic
+  const previewCount = Math.min(3, sortedEntries.length - 1);
+  const previewEntries = Array.from({ length: previewCount }, (_, index) => {
+    const offset = index + 1;
+    const realIndex = (activeIndex + offset) % sortedEntries.length;
+
     return {
-      ...businessEntries[index],
-      realIndex: index,
+      ...sortedEntries[realIndex],
+      realIndex,
     };
   });
 
+  const handleImageError = (path: string) => {
+    setImageError(prev => ({ ...prev, [path]: true }));
+  };
+
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative w-full h-screen overflow-hidden bg-[#0a0a0a]">
       {/* Background Image */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -57,56 +70,64 @@ export function BrandHero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
           className="absolute inset-0"
         >
-          <Image
-            src={currentSlide.media.backgroundImage}
-            alt={currentSlide.title}
-            fill
-            priority
-            className="object-cover"
-          />
-          {/* Refined Dark Overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30 lg:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent lg:hidden" />
+          {imageError[currentSlide.media.backgroundImage] ? (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-950" />
+          ) : (
+            <Image
+              src={currentSlide.media.backgroundImage}
+              alt={currentSlide.title}
+              fill
+              priority
+              className="object-cover"
+              onError={() => handleImageError(currentSlide.media.backgroundImage)}
+            />
+          )}
+          {/* Cinematic Dark Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/30 lg:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent lg:hidden" />
         </motion.div>
       </AnimatePresence>
 
       {/* Content Container */}
-      <div className="relative h-full flex flex-col justify-center px-6 md:px-8 lg:px-16 pb-20 lg:pb-0">
-        <div className="w-full flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch lg:items-center h-full pt-20 lg:pt-0">
+      <div className="relative h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 pb-24 lg:pb-0">
+        <div className="w-full flex flex-col lg:flex-row gap-8 lg:gap-16 items-stretch lg:items-center h-full pt-24 lg:pt-0">
           
           {/* Left Content */}
           <motion.div
-            className="w-full lg:w-[45%] flex flex-col justify-center space-y-6 lg:space-y-8 z-10 flex-1 lg:flex-none"
+            className="w-full lg:w-[50%] flex flex-col justify-center space-y-6 lg:space-y-8 z-10 flex-1 lg:flex-none"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1 }}
           >
-            {/* Category */}
+            {/* Category & Status */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={`category-${activeIndex}`}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5 }}
-                className="text-xs font-light tracking-widest text-white/60 uppercase"
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="flex items-center gap-4 text-xs font-medium tracking-[0.2em] text-[#e5e5e5] uppercase"
               >
-                {currentSlide.category} • {String(activeIndex + 1).padStart(2, '0')}/{String(businessEntries.length).padStart(2, '0')}
+                <span>{currentSlide.category}</span>
+                <span className="w-8 h-[1px] bg-white/30" />
+                <span>{String(activeIndex + 1).padStart(2, '0')}/{String(sortedEntries.length).padStart(2, '0')}</span>
               </motion.div>
             </AnimatePresence>
 
-            {/* Title */}
+            {/* Title - Ensure exactly one H1 for SEO */}
             <AnimatePresence mode="wait">
               <motion.h1
                 key={`title-${activeIndex}`}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.7 }}
-                className="text-5xl md:text-6xl lg:text-8xl font-light text-white leading-none tracking-tight"
+                exit={{ opacity: 0, y: -30 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.1] tracking-tight"
+                style={{ textShadow: '0 4px 24px rgba(0,0,0,0.3)' }}
               >
                 {currentSlide.title}
               </motion.h1>
@@ -119,8 +140,8 @@ export function BrandHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.7, delay: 0.05 }}
-                className="text-lg md:text-xl text-white/90 font-light leading-relaxed"
+                transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                className="text-xl md:text-2xl text-white/90 font-light leading-relaxed max-w-2xl"
               >
                 {currentSlide.subtitle}
               </motion.p>
@@ -133,8 +154,8 @@ export function BrandHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-                className="text-base md:text-lg text-white/70 font-light leading-relaxed max-w-xl hidden md:block"
+                transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+                className="text-base md:text-lg text-[#a3a3a3] font-light leading-relaxed max-w-xl hidden md:block"
               >
                 {currentSlide.description}
               </motion.p>
@@ -145,59 +166,59 @@ export function BrandHero() {
               onClick={() => router.push(currentSlide.redirectPath)}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-fit px-8 md:px-10 py-3.5 bg-white text-black font-medium text-sm tracking-wide rounded-full hover:bg-white/90 transition-colors"
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              aria-label={`Go to ${currentSlide.title}`}
+              className="mt-4 w-fit px-10 py-4 bg-white/90 backdrop-blur-sm text-black font-medium text-sm tracking-[0.1em] uppercase rounded-none hover:bg-white transition-colors"
             >
               {currentSlide.ctaLabel}
             </motion.button>
 
             {/* Navigation Controls - Desktop Only */}
             <motion.div
-              className="hidden lg:flex items-center gap-6 pt-8"
+              className="hidden lg:flex items-center gap-8 pt-12"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
             >
               <motion.button
-                whileHover={{ scale: 1.12 }}
-                whileTap={{ scale: 0.92 }}
+                whileHover={{ x: -4, color: '#ffffff' }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handlePrevious}
-                className="w-11 h-11 rounded-full border border-white/40 hover:border-white/70 flex items-center justify-center text-white/70 hover:text-white transition-all"
+                className="flex items-center gap-3 text-white/60 transition-colors"
                 aria-label="Previous brand"
               >
                 <ChevronLeft className="w-5 h-5" />
+                <span className="text-xs uppercase tracking-[0.15em] font-medium">Prev</span>
               </motion.button>
 
-              {/* Progress Bar */}
-              <div className="flex-1 h-0.5 bg-white/20 rounded-full overflow-hidden">
+              {/* Progress Indicator */}
+              <div className="flex-1 max-w-[200px] h-[1px] bg-white/20 relative">
                 <motion.div
-                  className="h-full bg-white"
+                  className="absolute top-0 left-0 h-full bg-white"
                   initial={{ width: 0 }}
-                  animate={{ width: `${((activeIndex + 1) / businessEntries.length) * 100}%` }}
-                  transition={{ duration: 0.6 }}
+                  animate={{ width: `${((activeIndex + 1) / sortedEntries.length) * 100}%` }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
                 />
               </div>
 
               <motion.button
-                whileHover={{ scale: 1.12 }}
-                whileTap={{ scale: 0.92 }}
+                whileHover={{ x: 4, color: '#ffffff' }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleNext}
-                className="w-11 h-11 rounded-full border border-white/40 hover:border-white/70 flex items-center justify-center text-white/70 hover:text-white transition-all"
+                className="flex items-center gap-3 text-white/60 transition-colors"
                 aria-label="Next brand"
               >
+                <span className="text-xs uppercase tracking-[0.15em] font-medium">Next</span>
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
             </motion.div>
           </motion.div>
 
-          {/* Breathing Space */}
-          <div className="hidden lg:block w-[10%]" />
-
           {/* Right Preview Cards */}
           <motion.div
-            className="w-full lg:w-[45%] lg:h-full flex items-end lg:items-center justify-start overflow-x-auto lg:overflow-visible pb-8 lg:pb-0 z-10"
+            className="w-full lg:w-[50%] lg:h-full flex items-end lg:items-center justify-start lg:justify-end overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 z-10"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
@@ -208,65 +229,69 @@ export function BrandHero() {
               }
             `}</style>
             
-            <div className="relative flex gap-4 lg:gap-6 items-center justify-start min-w-max px-2 lg:px-0 lg:pl-8">
+            <div className="relative flex gap-4 lg:gap-8 items-center justify-start min-w-max px-2 lg:px-0">
               <AnimatePresence mode="wait">
-                {previewSlides.map((slide, index) => {
+                {previewEntries.map((slide, index) => {
                   const sizes = [
-                    { width: 140, height: 220, scale: 1, opacity: 1 },
-                    { width: 120, height: 190, scale: 0.9, opacity: 0.8 },
-                    { width: 100, height: 160, scale: 0.8, opacity: 0.6 },
+                    { width: 180, height: 280, scale: 1, opacity: 1 },
+                    { width: 150, height: 240, scale: 0.95, opacity: 0.7 },
+                    { width: 120, height: 200, scale: 0.9, opacity: 0.4 },
                   ];
                   const size = sizes[index] || sizes[2];
 
                   return (
                     <motion.div
                       key={`preview-${index}-${slide.realIndex}`}
-                      initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                      initial={{ opacity: 0, x: 40, scale: 0.8 }}
                       animate={{
                         opacity: size.opacity,
                         scale: size.scale,
                         x: 0,
                       }}
-                      exit={{ opacity: 0, x: 20, scale: 0.8 }}
+                      exit={{ opacity: 0, x: 40, scale: 0.8 }}
                       transition={{
                         type: 'spring',
-                        stiffness: 300,
-                        damping: 30,
-                        delay: index * 0.05,
+                        stiffness: 250,
+                        damping: 25,
+                        delay: index * 0.1,
                       }}
                       onClick={() => {
                         setActiveIndex(slide.realIndex);
                         setAutoplay(false);
                         setTimeout(() => setAutoplay(true), 8000);
                       }}
-                      className="relative flex-shrink-0 cursor-pointer lg:origin-center origin-bottom snap-start"
+                      className="relative flex-shrink-0 cursor-pointer lg:origin-right origin-bottom snap-start group"
                       style={{
                         width: `${size.width}px`,
                         height: `${size.height}px`,
                       }}
+                      aria-label={`Preview ${slide.title}`}
                     >
                       <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="relative w-full h-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/20 shadow-xl group"
+                        whileHover={{ scale: 1.03 }}
+                        className="relative w-full h-full bg-white/5 backdrop-blur-xl rounded-xl overflow-hidden border border-white/10 shadow-2xl"
                       >
                         {/* Card Image */}
-                        <Image
-                          src={slide.media.previewImage}
-                          alt={slide.name}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                        {/* Overlay gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        {imageError[slide.media.previewImage] ? (
+                          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900" />
+                        ) : (
+                          <Image
+                            src={slide.media.previewImage}
+                            alt={slide.name}
+                            fill
+                            className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                            onError={() => handleImageError(slide.media.previewImage)}
+                          />
+                        )}
+                        {/* Overlay gradient for text readability */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
                         {/* Card Content */}
-                        <div className="absolute bottom-0 left-0 right-0 p-3">
+                        <div className="absolute bottom-0 left-0 right-0 p-5">
+                          <p className="text-[10px] uppercase tracking-[0.15em] text-white/70 mb-1">{slide.category}</p>
                           <h3 className="text-sm font-medium text-white truncate drop-shadow-md">
                             {slide.name}
                           </h3>
-                          <p className="text-xs text-white/80 line-clamp-1 font-light drop-shadow-md">
-                            {slide.subtitle}
-                          </p>
                         </div>
                       </motion.div>
                     </motion.div>
@@ -280,21 +305,21 @@ export function BrandHero() {
 
       {/* Pagination Dots - Mobile Only */}
       <motion.div
-        className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex lg:hidden gap-2 z-20"
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex lg:hidden gap-3 z-20"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
+        transition={{ delay: 0.8 }}
       >
-        {businessEntries.map((_, index) => (
-          <motion.button
+        {sortedEntries.map((_, index) => (
+          <button
             key={index}
             onClick={() => {
               setActiveIndex(index);
               setAutoplay(false);
               setTimeout(() => setAutoplay(true), 8000);
             }}
-            className={`transition-all rounded-full ${
-              index === activeIndex ? 'bg-white w-6 h-1.5' : 'bg-white/40 w-2 h-1.5'
+            className={`transition-all duration-300 rounded-full ${
+              index === activeIndex ? 'bg-white w-8 h-1' : 'bg-white/30 w-2 h-1'
             }`}
             aria-label={`Go to brand ${index + 1}`}
           />
