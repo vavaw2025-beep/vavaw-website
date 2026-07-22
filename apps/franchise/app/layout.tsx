@@ -1,5 +1,10 @@
 import type { Metadata } from 'next';
 import { getBusinessBySlug } from '@vavaw/brand-config';
+import { Inter, Playfair_Display } from 'next/font/google';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif' });
 
 const franchiseEntry = getBusinessBySlug('franchise');
 
@@ -29,8 +34,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi">
-      <body>{children}</body>
+    <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
+      <body className="antialiased bg-[#FAFAFA] text-[#111111]">{children}</body>
     </html>
   );
 }
