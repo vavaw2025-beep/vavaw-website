@@ -13,6 +13,7 @@ export interface BusinessMedia {
   previewImage: string;
   logo?: string;
   cardImage?: string;
+  ogImage?: string;
 }
 
 export interface BusinessSeo {
@@ -60,12 +61,14 @@ export const businessEntries: BusinessEntry[] = [
       mode: "dark",
     },
     media: {
-      backgroundImage: "/images/cosmetic-bg.jpg",
-      previewImage: "/images/cosmetic-preview.jpg",
+      backgroundImage: "/media/hero/cosmetic-bg.png",
+      previewImage: "/media/preview/cosmetic-preview.png",
+      ogImage: "/media/og/vavaw-og.png",
     },
     seo: {
       title: "VAVAW Cosmetic - Premium Beauty Line",
       description: "Discover the VAVAW Cosmetic collection.",
+      ogImage: "/media/og/vavaw-og.png",
     },
   },
   {
@@ -87,12 +90,14 @@ export const businessEntries: BusinessEntry[] = [
       mode: "dark",
     },
     media: {
-      backgroundImage: "/images/beauty-bg.jpg",
-      previewImage: "/images/beauty-preview.jpg",
+      backgroundImage: "/media/hero/beauty-bg.png",
+      previewImage: "/media/preview/beauty-preview.png",
+      ogImage: "/media/og/vavaw-og.png",
     },
     seo: {
       title: "VAVAW Beauty & Co",
       description: "Beauty and care destination.",
+      ogImage: "/media/og/vavaw-og.png",
     },
   },
   {
@@ -114,12 +119,14 @@ export const businessEntries: BusinessEntry[] = [
       mode: "dark",
     },
     media: {
-      backgroundImage: "/images/franchise-bg.jpg",
-      previewImage: "/images/franchise-preview.jpg",
+      backgroundImage: "/media/hero/franchise-bg.png",
+      previewImage: "/media/preview/franchise-preview.png",
+      ogImage: "/media/og/vavaw-og.png",
     },
     seo: {
       title: "VAVAW Franchise",
       description: "Franchise opportunities with VAVAW.",
+      ogImage: "/media/og/vavaw-og.png",
     },
   },
 ];
