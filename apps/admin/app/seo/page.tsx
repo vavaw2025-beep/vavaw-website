@@ -1,11 +1,25 @@
 import { businessEntries } from '@vavaw/brand-config';
 import { getSeoSettings } from '@vavaw/db';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, PlusCircle, Pencil } from 'lucide-react';
+import Link from 'next/link';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
+import { getCurrentAdminProfile } from '../../lib/admin-profile';
+import { canManageSeo, canDeleteSeo } from '@vavaw/auth';
+import { DeleteSeoButton } from './DeleteSeoButton';
 
 export default async function SeoPage() {
   const mode = getAdminDataSourceMode();
+
+  let profile: { role: string; status: string } | null = null;
+  if (mode === 'supabase') {
+    profile = await getCurrentAdminProfile();
+  }
+
+  const isViewer = !profile || !canManageSeo(profile.role as any);
+  const canEdit = profile ? canManageSeo(profile.role as any) : false;
+  const canDelete = profile ? canDeleteSeo(profile.role as any) : false;
+
   let seoItems: Array<{
     id: string;
     siteKey: string;
@@ -64,14 +78,32 @@ export default async function SeoPage() {
           <h1 className="text-2xl font-bold text-slate-900">SEO Settings</h1>
           <p className="mt-1 text-sm text-slate-500">Manage global SEO metadata and OpenGraph tags.</p>
         </div>
-        <div>
+        <div className="flex items-center gap-3">
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
             mode === 'supabase' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
           }`}>
             Data Source: {mode === 'supabase' ? 'Supabase' : 'Static Config'}
           </span>
+
+          {mode === 'supabase' && canEdit && (
+            <Link
+              href="/seo/new"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow transition-colors"
+            >
+              <PlusCircle className="h-4 w-4" />
+              Add SEO Setting
+            </Link>
+          )}
         </div>
       </div>
+
+      {/* Mock mode notice */}
+      {mode !== 'supabase' && (
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+          <p className="font-semibold">SEO management requires Supabase mode.</p>
+          <p className="mt-1">Currently showing read-only static data from <code>@vavaw/brand-config</code>. Set <code>NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase</code> to enable full SEO CRUD.</p>
+        </div>
+      )}
 
       {queryError && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
@@ -82,7 +114,17 @@ export default async function SeoPage() {
 
       {!queryError && seoItems.length === 0 && (
         <div className="p-8 text-center bg-white border border-slate-200 rounded-lg text-slate-500 text-sm">
-          No SEO settings found.
+          {mode === 'supabase' ? (
+            <div className="space-y-3">
+              <p>No SEO settings found in Supabase.</p>
+              {canEdit && (
+                <Link href="/seo/new" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm">
+                  <PlusCircle className="h-4 w-4" />
+                  Create your first SEO setting
+                </Link>
+              )}
+            </div>
+          ) : 'No SEO settings found.'}
         </div>
       )}
 
@@ -96,6 +138,9 @@ export default async function SeoPage() {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Title & Description</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Robots & Canonical</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Keywords</th>
+                  {mode === 'supabase' && !isViewer && (
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                  )}
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
@@ -157,6 +202,24 @@ export default async function SeoPage() {
                           )}
                         </div>
                       </td>
+                      {mode === 'supabase' && !isViewer && (
+                        <td className="px-6 py-4 align-top text-right">
+                          <div className="flex items-center justify-end gap-3">
+                            {canEdit && (
+                              <Link
+                                href={`/seo/${item.id}/edit`}
+                                className="text-blue-600 hover:text-blue-900 font-medium text-sm inline-flex items-center gap-1"
+                              >
+                                <Pencil className="h-4 w-4" />
+                                Edit
+                              </Link>
+                            )}
+                            {canDelete && (
+                              <DeleteSeoButton id={item.id} title={`${item.siteKey}${item.path}`} />
+                            )}
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   );
                 })}

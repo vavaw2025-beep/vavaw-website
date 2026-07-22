@@ -214,3 +214,56 @@ Phase 23 connects the `/go/[slug]` redirect route to Supabase CMS data and adds 
 - `apps/main` only. `apps/beauty` and `apps/franchise` remain static.
 - Public apps are read-only — no CRUD, no admin auth on public routes.
 
+## Phase 24: SEO CRUD + Public Metadata From CMS (Current)
+Phase 24 enables admin management of `public.seo_settings` and connects `apps/main` page metadata to Supabase.
+
+### Admin SEO CRUD
+
+#### Permissions
+| Action | Roles |
+|---|---|
+| Create / Update | owner, admin, editor |
+| Delete | owner, admin |
+| Read | all roles (including viewer) |
+
+#### New Files
+- `packages/db/src/mutations/seo-settings.ts` — `createSeoSetting`, `updateSeoSetting`, `deleteSeoSetting`
+- `apps/admin/app/seo/actions.ts` — Server Actions with auth guards + `revalidatePath('/seo')`
+- `apps/admin/app/seo/SeoForm.tsx` — Client form: site_key, path, title, description, keywords (comma-separated), canonical_url, og_media_id (media picker), robots_index/follow toggles
+- `apps/admin/app/seo/DeleteSeoButton.tsx` — Client delete button with confirm dialog
+- `apps/admin/app/seo/new/page.tsx` — Create SEO setting page
+- `apps/admin/app/seo/[id]/edit/page.tsx` — Edit SEO setting page
+
+#### Updated Files
+- `apps/admin/app/seo/page.tsx` — Full CRUD table with Edit/Delete actions, mock-mode notice
+- `packages/auth/src/types.ts` — Added `canManageSeo(role)` and `canDeleteSeo(role)`
+- `apps/admin/app/settings/page.tsx` — Added SEO CRUD, metadata source, OG support, public integration status rows
+
+### Public SEO Integration (apps/main)
+- **Loader:** `apps/main/lib/load-public-seo.ts` — `loadPublicSeo(path)` returns normalized `PublicSeoData`
+- **Source routing:** Uses `getCmsDataSource()` to decide between static and Supabase
+- **Query:** `seo_settings` filtered by `site_key = "main"` and `path = input path`
+- **OG resolution:** If `og_media_id` is set, fetches `media_assets.url` for OG image
+- **Robots:** Reflects DB `robots_index` / `robots_follow` booleans in `Metadata.robots`
+
+#### Updated Pages
+- `apps/main/app/page.tsx` — Added `generateMetadata()` calling `loadPublicSeo('/')`
+- `apps/main/app/cosmetic/page.tsx` — Replaced static `export const metadata` with `generateMetadata()` calling `loadPublicSeo('/cosmetic')`
+
+### Fallback Rules
+`loadPublicSeo()` falls back to static @vavaw/brand-config data if:
+1. `CMS_DATA_SOURCE=static` (default)
+2. Supabase env vars missing
+3. Query error
+4. No matching `seo_settings` row
+5. `robots_index` or `robots_follow` are not valid booleans in the DB row
+
+### Seed File
+`supabase/seed/002_seed_seo_settings.sql` — Optional seed for homepage and `/cosmetic` pages.
+> ⚠️ **WARNING:** This seed uses `ON CONFLICT DO UPDATE` — re-running it in production **will overwrite** manually edited SEO content. Only run this seed on empty or development databases.
+
+### Scope
+- Admin CRUD: `seo_settings` table only. `content_blocks` and `redirects` CRUD is a future phase.
+- Public metadata: `apps/main` only. `apps/beauty` and `apps/franchise` remain static for now.
+- Public apps are read-only — no admin auth on public routes.
+

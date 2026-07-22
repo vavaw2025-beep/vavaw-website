@@ -62,3 +62,13 @@ export function canManageHero(role: AdminRole): boolean {
 export function canDeleteHero(role: AdminRole): boolean {
   return role === "owner" || role === "admin";
 }
+
+/** Check if a role can create or update SEO settings */
+export function canManageSeo(role: AdminRole): boolean {
+  return role === "owner" || role === "admin" || role === "editor";
+}
+
+/** Check if a role can delete SEO settings */
+export function canDeleteSeo(role: AdminRole): boolean {
+  return role === "owner" || role === "admin";
+}

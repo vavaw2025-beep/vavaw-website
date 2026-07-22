@@ -1,5 +1,7 @@
+import type { Metadata } from 'next';
 import { BrandHero } from '@/components/brand-hero';
 import { loadPublicHomeCms } from '@/lib/load-public-cms';
+import { loadPublicSeo } from '@/lib/load-public-seo';
 
 /**
  * Revalidation strategy for the public homepage (ISR):
@@ -18,6 +20,36 @@ import { loadPublicHomeCms } from '@/lib/load-public-cms';
  * for a future phase to enable instant cache invalidation.
  */
 export const revalidate = 60;
+
+/**
+ * Dynamic metadata for the homepage — reads from Supabase seo_settings if available,
+ * falls back to static brand-config values.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await loadPublicSeo('/');
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    keywords: seo.keywords,
+    alternates: seo.canonicalUrl ? { canonical: seo.canonicalUrl } : undefined,
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      url: seo.canonicalUrl || 'https://vavaw.vn',
+      images: seo.ogImageUrl ? [seo.ogImageUrl] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.title,
+      description: seo.description,
+    },
+    robots: {
+      index: seo.robotsIndex,
+      follow: seo.robotsFollow,
+    },
+  };
+}
 
 export default async function HomePage() {
   const cms = await loadPublicHomeCms();

@@ -15,6 +15,10 @@ This document tracks the readiness state of the VAVAW monorepo for production de
 - [x] **Public CMS Read (`apps/main`):** `CMS_DATA_SOURCE` env var controls data source. Default is `static` (@vavaw/brand-config). Set to `supabase` for live CMS data via anon client + RLS. Automatic fallback to static on error/empty. Never uses service role key in public apps.
 - [x] **Public Redirects Safety (`/go/[slug]`):** All redirect destinations validated via `isSafeRedirectUrl()`. Only internal paths and trusted VAVAW domains allowed. Protects against open-redirect attacks from arbitrary CMS data.
 - [x] **ISR Caching:** Homepage uses `export const revalidate = 60` (static constant, Next.js requirement). Prevents stale permanent build-time CMS data in supabase mode. Static mode pre-renders at build time with no revalidation overhead. To change the interval, update the constant in `apps/main/app/page.tsx` and redeploy.
+- [x] **SEO CRUD (admin):** `seo_settings` table fully managed from `/seo` admin page. Create/update: owner/admin/editor. Delete: owner/admin. Viewer read-only. Mock mode read-only with notice.
+- [x] **Public SEO Metadata (apps/main):** `generateMetadata()` on `/` and `/cosmetic` pages reads from Supabase `seo_settings` when `CMS_DATA_SOURCE=supabase`. Robots directives (`index`/`follow`) controlled per-page from CMS. Full static fallback. `apps/beauty` and `apps/franchise` remain static.
+- [x] **OG Image from Media:** Admin SEO form supports selecting `og_media_id` from uploaded `media_assets`. URL resolved at load time for public pages.
+- [ ] **SEO Seed (002):** `supabase/seed/002_seed_seo_settings.sql` is optional and should not be re-run after production data exists (overwrites manual edits).
 
 ## Quality & Monitoring
 - [ ] **Analytics Status:** Pending (Google Analytics / Vercel Web Analytics integration required).

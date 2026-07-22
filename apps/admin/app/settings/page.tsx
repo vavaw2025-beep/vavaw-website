@@ -13,7 +13,11 @@ export default function SettingsPage() {
     { name: 'Domains', value: '*.vavaw.vn', icon: Globe, status: 'Configured' },
     { name: 'Data Source Mode', value: mode === 'supabase' ? 'Supabase Database' : 'Static Config (@vavaw/brand-config)', icon: HardDrive, status: mode === 'supabase' ? 'Active' : 'Static' },
     { name: 'CMS Read Mode', value: mode === 'supabase' ? 'Enabled (Reading from Supabase RLS)' : 'Enabled (Reading from Static Config)', icon: Database, status: 'Enabled' },
-    { name: 'CMS Write / Mutation', value: mode === 'supabase' ? 'Enabled (Business & Hero CRUD)' : 'Disabled in Mock Mode', icon: Pencil, status: mode === 'supabase' ? 'Active' : 'Disabled' },
+    { name: 'CMS Write / Mutation', value: mode === 'supabase' ? 'Enabled (Business, Hero & SEO CRUD)' : 'Disabled in Mock Mode', icon: Pencil, status: mode === 'supabase' ? 'Active' : 'Disabled' },
+    { name: 'SEO CRUD', value: mode === 'supabase' ? 'Enabled (owner/admin/editor can manage, owner/admin can delete)' : 'Requires Supabase Mode', icon: Pencil, status: mode === 'supabase' ? 'Active' : 'Disabled' },
+    { name: 'SEO Metadata Source (apps/main)', value: 'Reads from Supabase seo_settings when CMS_DATA_SOURCE=supabase, static fallback always available', icon: Database, status: 'Enabled' },
+    { name: 'OG Image Support', value: mode === 'supabase' ? 'Enabled — select og_media_id from uploaded Media Assets' : 'Disabled (static fallback only)', icon: ImageIcon, status: mode === 'supabase' ? 'Active' : 'Static' },
+    { name: 'Public Metadata Integration', value: 'apps/main only (apps/beauty and apps/franchise remain static)', icon: Server, status: 'Partial' },
   ];
 
   const storageConfig = [
@@ -68,6 +72,8 @@ export default function SettingsPage() {
                     ? 'bg-green-100 text-green-800'
                     : config.status === 'Static'
                     ? 'bg-blue-100 text-blue-800'
+                    : config.status === 'Partial'
+                    ? 'bg-amber-100 text-amber-800'
                     : 'bg-slate-100 text-slate-600'
                 }`}>
                   {config.status}
