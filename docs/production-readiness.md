@@ -43,3 +43,17 @@ Phase 30 audited environments, RLS policies, safe redirects, CMS fallbacks, SEO 
 - Validation helpers and security warnings were added to the admin app.
 - Documentation for RLS (`security-rls-audit.md`) and deployment (`production-launch-checklist.md`) were created.
 - The repository is now structurally ready for secure Vercel deployment with Supabase.
+
+## Phase 31: First Production Deployment Test (Current)
+Phase 31 finalizes the preparation for the first live deployment test on Vercel and Supabase.
+
+### Recommended Rollout Strategy
+To ensure maximum stability, deploy components progressively:
+1. **Step 1:** Deploy all public apps (`apps/main`, `apps/beauty`, `apps/franchise`) with `CMS_DATA_SOURCE=static`.
+2. **Step 2:** Verify public UI, domain routing, and static fallbacks.
+3. **Step 3:** Deploy the admin dashboard (`apps/admin`) with `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.
+4. **Step 4:** Verify admin login, middleware protection, and ensure RLS is actively blocking unauthorized reads/writes.
+5. **Step 5:** Switch `apps/main` to `CMS_DATA_SOURCE=supabase` and redeploy.
+6. **Step 6:** Verify homepage content blocks, `/cosmetic`, and `/go/[slug]` live data.
+7. **Step 7:** Switch `apps/beauty` and `apps/franchise` to `CMS_DATA_SOURCE=supabase` and redeploy.
+8. **Step 8:** Run the full `docs/deployment-smoke-test.md` checklist.

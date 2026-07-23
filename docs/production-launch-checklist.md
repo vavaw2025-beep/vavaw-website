@@ -31,11 +31,17 @@ Configure specifically for **admin app**:
 - [ ] `SUPABASE_SERVICE_ROLE_KEY=[YOUR_SERVICE_ROLE_KEY]` (Do NOT use NEXT_PUBLIC_ prefix!)
 
 ## D. Supabase Validation
-- [ ] **Migrations**: All migrations applied (`001`, `002`, `003`).
-- [ ] **Seeds**: No static seeds run accidentally on production.
-- [ ] **RLS**: Row Level Security is ACTIVE on all tables.
-- [ ] **Storage**: Bucket `vavaw-media` is created and public. Storage policies applied.
-- [ ] **Admin Owner**: First owner account manually created in Supabase Auth, and corresponding UUID added to `admin_profiles` with `role = 'owner'`.
+- [ ] `001_initial_cms_schema.sql` applied
+- [ ] `002_storage_policies.sql` applied
+- [ ] `003_admin_profiles_management_policies.sql` applied
+- [ ] storage bucket `vavaw-media` created
+- [ ] storage policies active
+- [ ] first owner Auth user created
+- [ ] owner row exists in `public.admin_profiles`
+- [ ] seed files applied only intentionally
+- [ ] RLS enabled on all CMS tables
+- [ ] admin user can log in
+- [ ] viewer/editor/admin roles tested
 
 ## E. Security Rules Confirmed
 - [ ] Admin app is completely `noindex` (robots.txt and meta tags).
