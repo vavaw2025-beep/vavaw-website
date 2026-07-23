@@ -2,7 +2,12 @@ import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@vavaw/brand-config", "@vavaw/ui", "@vavaw/auth", "@vavaw/db"]
+  transpilePackages: ["@vavaw/brand-config", "@vavaw/ui", "@vavaw/auth", "@vavaw/db"],
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '55mb'
+    }
+  }
 };
 
 ;

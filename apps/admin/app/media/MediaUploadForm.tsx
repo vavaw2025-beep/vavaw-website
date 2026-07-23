@@ -44,18 +44,23 @@ export function MediaUploadForm() {
     formData.append('type', type);
     formData.append('alt_text', altText);
 
-    const result = await uploadMediaAction(formData);
+    try {
+      const result = await uploadMediaAction(formData);
 
-    if (!result.success) {
-      setError(result.error || 'Upload failed.');
-      setIsUploading(false);
-    } else {
-      setSuccess('Media asset uploaded and registered successfully!');
-      setIsUploading(false);
-      setAltText('');
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+      if (!result.success) {
+        setError(result.error || 'Upload failed.');
+      } else {
+        setSuccess('Media asset uploaded and registered successfully!');
+        setAltText('');
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
       }
+    } catch (err: any) {
+      // If Next.js rejects the request (e.g. 413 Payload Too Large) it throws an Error here
+      setError(err.message || 'An unexpected error occurred during upload.');
+    } finally {
+      setIsUploading(false);
     }
   };
 

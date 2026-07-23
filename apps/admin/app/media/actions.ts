@@ -24,49 +24,62 @@ export async function uploadMediaAction(formData: FormData) {
 
   const profile = await getCurrentAdminProfile();
   if (!profile || profile.status !== 'active') {
+    console.warn("[media] upload failed", { stage: 'missing_admin_profile', reason: 'Unauthorized or disabled profile' });
     return { success: false, error: 'Unauthorized or disabled profile.' };
   }
 
   if (!canManageContent(profile.role)) {
+    console.warn("[media] upload failed", { stage: 'missing_admin_profile', reason: 'Insufficient permissions' });
     return { success: false, error: 'Insufficient permissions to upload media.' };
   }
 
   const file = formData.get('file') as File | null;
-  if (!file || file.size === 0) {
-    return { success: false, error: 'Please select a valid file to upload.' };
-  }
-
   const siteKey = (formData.get('site_key') as string) || 'main';
   const requestedType = (formData.get('type') as any) || 'image';
   const altText = (formData.get('alt_text') as string) || undefined;
 
-  let isVideo = false;
-  if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
-    if (file.size > MAX_IMAGE_SIZE) {
-      console.warn("[media] upload failed", { reason: 'File is too large', stage: 'invalid file', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
-      return { success: false, error: `File is too large. Image file size exceeds maximum limit of 5MB.` };
-    }
-  } else if (ALLOWED_VIDEO_MIME_TYPES.includes(file.type)) {
-    isVideo = true;
-    if (file.size > MAX_VIDEO_SIZE) {
-      console.warn("[media] upload failed", { reason: 'File is too large', stage: 'invalid file', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
-      return { success: false, error: `File is too large. Video file size exceeds maximum limit of 50MB.` };
-    }
-  } else {
-    console.warn("[media] upload failed", { reason: 'File type is not allowed', stage: 'invalid mime type', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
-    return {
-      success: false,
-      error: `File type is not allowed (${file.type}). Supported formats: JPG, PNG, WEBP, AVIF, MP4, WEBM, MOV.`,
-    };
+  if (!file || file.size === 0) {
+    console.warn("[media] upload failed", { stage: 'missing_file', reason: 'No file provided', siteKey, assetType: requestedType });
+    return { success: false, error: 'Please select a valid file to upload.' };
+  }
+
+  const isImageMime = ALLOWED_IMAGE_MIME_TYPES.includes(file.type);
+  const isVideoMime = ALLOWED_VIDEO_MIME_TYPES.includes(file.type);
+
+  if (!isImageMime && !isVideoMime) {
+    console.warn("[media] upload failed", { stage: 'invalid_mime_type', reason: 'Unsupported MIME', siteKey, assetType: requestedType, mimeType: file.type, fileSize: file.size });
+    return { success: false, error: `File type is not allowed (${file.type}). Supported formats: JPG, PNG, WEBP, AVIF, MP4, WEBM, MOV.` };
+  }
+
+  if (requestedType === 'video' && !isVideoMime) {
+    console.warn("[media] upload failed", { stage: 'invalid_file_type', reason: 'Expected video, got image', siteKey, assetType: requestedType, mimeType: file.type, fileSize: file.size });
+    return { success: false, error: 'File type is not allowed. Expected a video file.' };
+  }
+
+  if (requestedType !== 'video' && !isImageMime) {
+    console.warn("[media] upload failed", { stage: 'invalid_file_type', reason: 'Expected image, got video', siteKey, assetType: requestedType, mimeType: file.type, fileSize: file.size });
+    return { success: false, error: 'File type is not allowed. Expected an image file.' };
+  }
+
+  const isVideo = isVideoMime;
+  const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
+  const maxMb = isVideo ? 50 : 5;
+
+  if (file.size > maxSize) {
+    console.warn("[media] upload failed", { stage: 'file_too_large', reason: `Size exceeds ${maxMb}MB`, siteKey, assetType: requestedType, mimeType: file.type, fileSize: file.size });
+    return { success: false, error: `File is too large. Size exceeds maximum limit of ${maxMb}MB.` };
   }
 
   try {
     const supabase = await getAdminServerSupabaseClient();
 
-    const ext = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
-    const randomId = crypto.randomUUID();
+    // Sanitize extension and generate safe path
+    const originalExt = (file.name.split('.').pop() || '').toLowerCase();
+    const safeExt = /^[a-z0-9]+$/.test(originalExt) ? originalExt : (isVideo ? 'mp4' : 'jpg');
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
     const folder = isVideo ? 'videos' : 'images';
-    const storagePath = `${siteKey}/${folder}/${randomId}.${ext}`;
+    const storagePath = `media/${siteKey}/${folder}/${timestamp}-${random}.${safeExt}`;
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -79,8 +92,7 @@ export async function uploadMediaAction(formData: FormData) {
       });
 
     if (uploadError) {
-      console.warn("[media] upload failed", { reason: uploadError.message, stage: 'storage bucket upload failed', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
-      // Clearer error for missing bucket or permission
+      console.warn("[media] upload failed", { stage: 'storage_upload_failed', reason: uploadError.message, siteKey, assetType: requestedType, mimeType: file.type, fileSize: file.size });
       if (uploadError.message.includes('Bucket not found') || uploadError.message.includes('row-level security')) {
         return { success: false, error: 'Storage bucket is not configured or accessible.' };
       }
@@ -92,13 +104,13 @@ export async function uploadMediaAction(formData: FormData) {
       .getPublicUrl(storagePath);
 
     if (!publicUrlData || !publicUrlData.publicUrl) {
-      console.warn("[media] upload failed", { reason: 'Public URL returned empty', stage: 'public URL failed', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
-      return { success: false, error: 'Failed to generate public URL for uploaded file.' };
+      console.warn("[media] upload failed", { stage: 'public_url_failed', reason: 'Public URL returned empty', siteKey, assetType: requestedType, mimeType: file.type, fileSize: file.size });
+      return { success: false, error: 'Failed to create public media URL.' };
     }
 
     const publicUrl = publicUrlData.publicUrl;
 
-    const { data: record, error: dbError } = await createMediaAsset(supabase, {
+    const { error: dbError } = await createMediaAsset(supabase, {
       site_key: siteKey,
       type: requestedType,
       url: publicUrl,
@@ -106,11 +118,11 @@ export async function uploadMediaAction(formData: FormData) {
       storage_provider: 'supabase',
       mime_type: file.type,
       size_bytes: file.size,
-      metadata: {},
+      metadata: { bucket: 'vavaw-media', path: storagePath },
     });
 
     if (dbError) {
-      console.warn("[media] upload failed", { reason: dbError.message, stage: 'media_assets insert failed', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
+      console.warn("[media] upload failed", { stage: 'media_asset_insert_failed', reason: dbError.message, siteKey, assetType: requestedType, mimeType: file.type, fileSize: file.size });
       return { success: false, error: 'Failed to save media asset to database.' };
     }
 
@@ -138,19 +150,17 @@ export async function uploadMediaAction(formData: FormData) {
     trackEvent(isVideo ? 'media_video_uploaded' : 'media_uploaded', {
       app: 'admin',
       entityType: 'media_asset',
-      entityId: record?.id,
       metadata: { role: profile.role, siteKey, type: requestedType, mimeType: file.type },
     });
     await writeAuditLog({
       action: isVideo ? 'media_video_uploaded' : 'media_uploaded',
       entityType: 'media',
-      entityId: record?.id,
       status: 'success',
       metadata: { media_type: isVideo ? 'video' : 'image', content_type: file.type }
     });
-    return { success: true, data: record };
+    return { success: true };
   } catch (err: any) {
-    console.warn("[media] upload failed", { reason: err.message, stage: 'unknown', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
+    console.warn("[media] upload failed", { stage: 'unknown_error', reason: err.message, siteKey, assetType: requestedType, mimeType: file.type, fileSize: file.size });
     captureError(err, { app: 'admin', severity: 'error' });
     trackEvent(isVideo ? 'media_video_upload_failed' : 'media_upload_failed' as any, { app: 'admin' });
     await writeAuditLog({
