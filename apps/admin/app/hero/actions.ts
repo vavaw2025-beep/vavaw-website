@@ -1,4 +1,5 @@
-"use server";
+﻿"use server";
+import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
 import { canManageHero, canDeleteHero } from '@vavaw/auth';
@@ -53,6 +54,7 @@ export async function createHeroSlideAction(input: CreateHeroSlideInput) {
     });
     return { success: true, data };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
@@ -95,6 +97,7 @@ export async function updateHeroSlideAction(id: string, input: UpdateHeroSlideIn
     });
     return { success: true, data };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
@@ -137,6 +140,9 @@ export async function deleteHeroSlideAction(id: string) {
     });
     return { success: true };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
+
+

@@ -1,4 +1,5 @@
-"use server";
+﻿"use server";
+import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
 import { trackEvent } from '@vavaw/analytics';
@@ -57,6 +58,7 @@ export async function createAdminProfileAction(input: CreateAdminProfileInput) {
     });
     return { success: true, data };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
@@ -111,6 +113,7 @@ export async function updateAdminProfileAction(id: string, input: UpdateAdminPro
     });
     return { success: true, data };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
@@ -157,6 +160,9 @@ export async function disableAdminProfileAction(id: string) {
     });
     return { success: true };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
+
+

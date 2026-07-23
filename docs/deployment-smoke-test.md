@@ -57,3 +57,8 @@ Ensure that REVALIDATION_SECRET and CMS_REVALIDATION_ENABLED=true are configured
 ## Lead Notification Verification
 - [ ] Submit a test lead to ensure no errors are thrown.
 - [ ] Check logs (if console provider) or inbox (if resend provider) to verify email dispatch.
+
+## Monitoring & Health Checks
+- [ ] Verify /api/health returns ok: true for all active deployments.
+- [ ] Trigger an intentional 404 or boundary error to ensure standard fallback UI renders.
+

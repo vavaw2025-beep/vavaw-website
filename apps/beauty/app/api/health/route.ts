@@ -1,0 +1,10 @@
+﻿import { NextResponse } from 'next/server';
+
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    app: 'beauty',
+    timestamp: new Date().toISOString(),
+    version: process.env.VERCEL_GIT_COMMIT_SHA ?? 'local'
+  });
+}

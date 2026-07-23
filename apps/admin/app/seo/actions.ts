@@ -1,4 +1,5 @@
-"use server";
+﻿"use server";
+import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
 import { canManageSeo, canDeleteSeo } from '@vavaw/auth';
@@ -73,6 +74,7 @@ export async function createSeoSettingAction(input: CreateSeoSettingInput) {
     });
     return { success: true, data };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
@@ -113,6 +115,7 @@ export async function updateSeoSettingAction(id: string, input: UpdateSeoSetting
     });
     return { success: true, data };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
@@ -157,6 +160,9 @@ export async function deleteSeoSettingAction(id: string) {
     });
     return { success: true };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
+
+

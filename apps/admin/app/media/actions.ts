@@ -1,4 +1,5 @@
-"use server";
+﻿"use server";
+import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
 import { canManageContent, canManageSettings } from '@vavaw/auth';
@@ -120,6 +121,7 @@ export async function uploadMediaAction(formData: FormData) {
     });
     return { success: true, data: record };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error during upload.' };
   }
 }
@@ -162,6 +164,9 @@ export async function deleteMediaAssetAction(id: string) {
     });
     return { success: true };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error during deletion.' };
   }
 }
+
+

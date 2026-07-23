@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { createLead } from '@vavaw/db';
 import { sendLeadNotification } from '@vavaw/notifications';
 import { trackEvent } from '@vavaw/analytics';
+import { captureError } from '@vavaw/monitoring';
 
 export async function POST(req: Request) {
   try {
@@ -39,6 +40,11 @@ export async function POST(req: Request) {
     });
 
     if (error) {
+      captureError(error, {
+        app: 'main',
+        feature: 'api_leads_insert',
+        severity: 'error',
+      });
       console.error('Lead insert error:', error.message);
       return NextResponse.json({ error: 'Failed to submit lead' }, { status: 500 });
     }
@@ -77,11 +83,21 @@ export async function POST(req: Request) {
         });
       }
     } catch (e) {
+      captureError(e, {
+        app: 'main',
+        feature: 'api_leads_notification',
+        severity: 'warning',
+      });
       console.error('Lead notification error:', e);
     }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {
+    captureError(err, {
+      app: 'main',
+      feature: 'api_leads_route',
+      severity: 'error',
+    });
     console.error('Lead API error:', err.message);
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }

@@ -1,4 +1,5 @@
-"use server";
+﻿"use server";
+import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
 import { canManageContentBlocks, canDeleteContentBlocks } from '@vavaw/auth';
@@ -73,6 +74,7 @@ export async function createContentBlockAction(input: CreateContentBlockInput) {
     });
     return { success: true, data };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
@@ -113,6 +115,7 @@ export async function updateContentBlockAction(id: string, input: UpdateContentB
     });
     return { success: true, data };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
@@ -155,6 +158,9 @@ export async function deleteContentBlockAction(id: string) {
     });
     return { success: true };
   } catch (err: any) {
+    captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
+
+
