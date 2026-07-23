@@ -104,7 +104,7 @@ export default async function AuditLogsPage(props: {
           <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
           <select
             name="status"
-            defaultValue={statusFilter}
+            defaultValue={statusFilterRaw}
             className="w-full text-xs rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 focus:outline-none"
           >
             <option value="">All Statuses</option>
