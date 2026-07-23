@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { createLead } from '@vavaw/db';
+import { createLead, createPublicLead } from '@vavaw/db';
 import { sendLeadNotification } from '@vavaw/notifications';
 import { trackEvent } from '@vavaw/analytics';
 import { captureError } from '@vavaw/monitoring';
@@ -64,9 +64,9 @@ export async function POST(req: Request) {
       metadata: {},
     };
 
-    const { data, error } = await createLead(supabase, insertPayload);
+    const { success, error } = await createPublicLead(supabase, insertPayload);
 
-    if (error) {
+    if (!success) {
       captureError(error, {
         app: 'main',
         feature: 'api_leads_insert',
@@ -90,8 +90,8 @@ export async function POST(req: Request) {
         phone: phone?.trim() || null,
         companyName: company_name?.trim() || null,
         message: message?.trim() || null,
-        leadId: data?.id || 'unknown',
-        createdAt: data?.created_at || new Date().toISOString(),
+        leadId: 'unknown',
+        createdAt: new Date().toISOString(),
       });
 
       if (emailResult.ok) {
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
           app: 'main',
           source_app: 'main',
           lead_type: lead_type || 'general_contact',
-          entityId: data?.id,
+          entityId: 'unknown',
           provider: process.env.EMAIL_PROVIDER || 'noop',
           status: emailResult.skipped ? 'skipped' : 'sent'
         });
@@ -108,7 +108,7 @@ export async function POST(req: Request) {
           app: 'main',
           source_app: 'main',
           lead_type: lead_type || 'general_contact',
-          entityId: data?.id,
+          entityId: 'unknown',
           provider: process.env.EMAIL_PROVIDER || 'noop',
           status: 'failed'
         });

@@ -18,6 +18,17 @@ export async function createLead(
   return { data, error };
 }
 
+export async function createPublicLead(
+  supabase: any,
+  input: CreateLeadInput
+): Promise<{ success: boolean; error: any }> {
+  const { error } = await supabase
+    .from(tables.leads)
+    .insert([input]);
+
+  return { success: !error, error };
+}
+
 export async function updateLeadStatus(
   supabase: any,
   id: string,

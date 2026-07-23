@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { createLead } from '@vavaw/db';
+import { createPublicLead } from '@vavaw/db';
 import { sendLeadNotification } from '@vavaw/notifications';
 import { trackEvent } from '@vavaw/analytics';
 import { captureError } from '@vavaw/monitoring';
@@ -8,43 +8,68 @@ import { captureError } from '@vavaw/monitoring';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { full_name, email, phone, company_name, message, source_path, website } = body;
+    const full_name = body.full_name ?? body.fullName;
+    const email = body.email;
+    const phone = body.phone;
+    const company_name = body.company_name ?? body.companyName;
+    const message = body.message;
+    const source_path = body.source_path ?? body.sourcePath;
+    const website = body.website;
 
     if (website) {
       return NextResponse.json({ success: true });
     }
 
-    if (!full_name || (!email && !phone)) {
-      return NextResponse.json({ error: 'Name and either email or phone are required' }, { status: 400 });
+    if (!full_name || full_name.trim() === '') {
+      return NextResponse.json({ error: 'Full name is required' }, { status: 400 });
+    }
+
+    if ((!email || email.trim() === '') && (!phone || phone.trim() === '')) {
+      return NextResponse.json({ error: 'Email or phone is required' }, { status: 400 });
     }
 
     if (message && message.length > 2000) {
       return NextResponse.json({ error: 'Message is too long' }, { status: 400 });
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseUrl.startsWith('http') || !supabaseKey) {
+      console.warn("[leads] Supabase env invalid", {
+        hasUrl: Boolean(supabaseUrl),
+        hasAnonKey: Boolean(supabaseKey)
+      });
+      return NextResponse.json({ error: 'Supabase environment is not configured' }, { status: 500 });
+    }
+
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { data, error } = await createLead(supabase, {
-      source_app: 'franchise',
+    const insertPayload = {
+      source_app: 'franchise' as const,
       source_path: source_path || '/',
-      lead_type: 'franchise_application',
+      lead_type: 'franchise_application' as const,
       full_name: full_name.trim(),
       email: email?.trim() || null,
       phone: phone?.trim() || null,
       company_name: company_name?.trim() || null,
       message: message?.trim() || null,
       metadata: {},
-    });
+    };
 
-    if (error) {
+    const { success, error } = await createPublicLead(supabase, insertPayload);
+
+    if (!success) {
       captureError(error, {
         app: 'franchise',
         feature: 'api_leads_insert',
         severity: 'error',
       });
-      console.error('Lead insert error:', error.message);
+      console.warn("[leads] Supabase insert failed", {
+        reason: error?.message || String(error),
+        source_app: insertPayload.source_app,
+        lead_type: insertPayload.lead_type
+      });
       return NextResponse.json({ error: 'Failed to submit lead' }, { status: 500 });
     }
 
@@ -58,8 +83,8 @@ export async function POST(req: Request) {
         phone: phone?.trim() || null,
         companyName: company_name?.trim() || null,
         message: message?.trim() || null,
-        leadId: data?.id || 'unknown',
-        createdAt: data?.created_at || new Date().toISOString(),
+        leadId: 'unknown',
+        createdAt: new Date().toISOString(),
       });
 
       if (emailResult.ok) {
@@ -67,7 +92,7 @@ export async function POST(req: Request) {
           app: 'franchise',
           source_app: 'franchise',
           lead_type: 'franchise_application',
-          entityId: data?.id,
+          entityId: 'unknown',
           provider: process.env.EMAIL_PROVIDER || 'noop',
           status: emailResult.skipped ? 'skipped' : 'sent'
         });
@@ -76,7 +101,7 @@ export async function POST(req: Request) {
           app: 'franchise',
           source_app: 'franchise',
           lead_type: 'franchise_application',
-          entityId: data?.id,
+          entityId: 'unknown',
           provider: process.env.EMAIL_PROVIDER || 'noop',
           status: 'failed'
         });
