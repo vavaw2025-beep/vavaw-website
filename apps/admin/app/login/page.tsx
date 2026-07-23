@@ -109,14 +109,26 @@ function LoginContent() {
             </button>
           </form>
 
-          {/* Mock Notice */}
-          <div className="mt-6 flex items-start gap-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-            <AlertTriangle className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-200/80 leading-relaxed">
-              {process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE === 'supabase'
-                ? "Supabase login mode prepared, real login will be implemented in Phase 15"
-                : "Mock login UI only. Supabase Auth will be connected in a later phase."}
-            </p>
+          {/* Mock / Production Notice */}
+          <div className="mt-6">
+            {process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE === 'mock' && process.env.NODE_ENV === 'production' ? (
+              <div className="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-red-200/90 leading-relaxed font-semibold">
+                  SECURITY WARNING: Mock Auth Mode is enabled in a production environment. 
+                  This is insecure and bypasses all route protection. Switch ADMIN_AUTH_MODE to supabase immediately.
+                </p>
+              </div>
+            ) : (
+              <div className="flex items-start gap-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                <AlertTriangle className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-amber-200/80 leading-relaxed">
+                  {process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE === 'supabase'
+                    ? "Supabase login mode prepared, real login will be implemented in a future phase"
+                    : "Mock login UI only. Supabase Auth will be connected in a later phase."}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Back to dashboard */}

@@ -69,3 +69,6 @@ Even when authenticated with Supabase Auth, middleware queries `public.admin_pro
   - Manual Supabase Auth user creation required first.
   - Delete is explicitly not implemented (relying on `disabled` status).
   - Safety rules: Cannot disable self, cannot remove last active owner.
+- **Phase 30:** Production Hardening + Security Audit ✅
+  - Security warning for mock mode in production.
+  - Comprehensive RLS audit and production launch checklist created.

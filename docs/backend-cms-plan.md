@@ -331,3 +331,12 @@ Phase 29 implements the foundation for managing admin user profiles directly fro
   - Owners cannot downgrade their own accounts.
   - The last active owner cannot be disabled or downgraded, preventing permanent lockout.
 - **Service Role Exclusion:** The `SUPABASE_SERVICE_ROLE_KEY` remains strictly omitted from this flow to maintain security hygiene. All management is performed via the active authenticated `owner` session and RLS policies.
+
+## Phase 30: Production Hardening + Security Audit (Current)
+Phase 30 focuses on ensuring the VAVAW monorepo is completely secure and ready for Vercel + Supabase production deployment. No new product features were added.
+
+### Key Outcomes
+- **Environment Verification:** Purged incorrect trailing characters from `.env.example` templates, documented correct variables for public vs admin contexts.
+- **Admin Warning:** Added a high-visibility security warning in `apps/admin/app/login/page.tsx` if Mock Auth mode is active in a Production environment.
+- **RLS Audit:** Documented Row Level Security constraints in `docs/security-rls-audit.md`, proving that public read logic is strictly gated to active content, and mutations require authenticated admin statuses.
+- **Launch Checklist:** Consolidated deployment procedures into `docs/production-launch-checklist.md` to ensure infrastructure matches code expectations before going live.

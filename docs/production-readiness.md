@@ -37,3 +37,9 @@ This document tracks the readiness state of the VAVAW monorepo for production de
 - [ ] **Performance Status:** 
   - Core web vitals baseline needed.
   - Image optimization (Next.js `<Image>`) to be reviewed across all apps.
+
+## Phase 30: Production Hardening
+Phase 30 audited environments, RLS policies, safe redirects, CMS fallbacks, SEO logic, and Analytics privacy. 
+- Validation helpers and security warnings were added to the admin app.
+- Documentation for RLS (`security-rls-audit.md`) and deployment (`production-launch-checklist.md`) were created.
+- The repository is now structurally ready for secure Vercel deployment with Supabase.
