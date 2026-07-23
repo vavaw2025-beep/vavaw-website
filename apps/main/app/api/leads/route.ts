@@ -52,8 +52,8 @@ export async function POST(req: Request) {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { data, error } = await createLead(supabase, {
-      source_app: 'main',
+    const insertPayload = {
+      source_app: 'main' as const,
       source_path: source_path || '/',
       lead_type: lead_type || 'general_contact',
       full_name: full_name.trim(),
@@ -62,7 +62,9 @@ export async function POST(req: Request) {
       company_name: company_name?.trim() || null,
       message: message?.trim() || null,
       metadata: {},
-    });
+    };
+
+    const { data, error } = await createLead(supabase, insertPayload);
 
     if (error) {
       captureError(error, {
@@ -70,7 +72,11 @@ export async function POST(req: Request) {
         feature: 'api_leads_insert',
         severity: 'error',
       });
-      console.error('Lead insert error:', error.message);
+      console.warn("[leads] Supabase insert failed", {
+        reason: error?.message || String(error),
+        source_app: insertPayload.source_app,
+        lead_type: insertPayload.lead_type
+      });
       return NextResponse.json({ error: 'Failed to submit lead' }, { status: 500 });
     }
 
