@@ -9,7 +9,11 @@ import { MediaUploadForm } from './MediaUploadForm';
 import { CopyUrlButton } from './CopyUrlButton';
 import { DeleteMediaButton } from './DeleteMediaButton';
 
-export default async function MediaPage() {
+export default async function MediaPage(props: { searchParams?: Promise<{ filter?: string }> | { filter?: string } }) {
+  // Handle both Next.js 14 and 15+ searchParams patterns
+  const params = props.searchParams instanceof Promise ? await props.searchParams : (props.searchParams || {});
+  const filter = params.filter || 'all';
+
   const mode = getAdminDataSourceMode();
   const profile = await getCurrentAdminProfile();
 
@@ -24,6 +28,8 @@ export default async function MediaPage() {
     url: string;
     altText?: string;
     storageProvider: string;
+    mimeType?: string;
+    sizeBytes?: number;
   }> = [];
 
   let queryError: string | null = null;
@@ -43,6 +49,8 @@ export default async function MediaPage() {
           url: item.url,
           altText: item.alt_text,
           storageProvider: item.storage_provider,
+          mimeType: item.mime_type,
+          sizeBytes: item.size_bytes,
         }));
       }
     } catch (err: any) {
@@ -51,15 +59,30 @@ export default async function MediaPage() {
   } else {
     businessEntries.forEach((e) => {
       assets.push(
-        { id: `${e.id}-hero`, siteKey: e.slug, type: 'hero-image', url: e.media.backgroundImage, storageProvider: 'static' },
-        { id: `${e.id}-preview`, siteKey: e.slug, type: 'preview-image', url: e.media.previewImage, storageProvider: 'static' },
-        { id: `${e.id}-og`, siteKey: e.slug, type: 'og-image', url: e.media.ogImage, storageProvider: 'static' }
+        { id: `${e.id}-hero`, siteKey: e.slug, type: 'image', url: e.media.backgroundImage, storageProvider: 'static' },
+        { id: `${e.id}-preview`, siteKey: e.slug, type: 'image', url: e.media.previewImage, storageProvider: 'static' },
+        { id: `${e.id}-og`, siteKey: e.slug, type: 'image', url: e.media.ogImage, storageProvider: 'static' }
       );
       if (e.media.introVideo) {
         assets.push({ id: `${e.id}-video`, siteKey: e.slug, type: 'video', url: e.media.introVideo, storageProvider: 'static' });
       }
     });
   }
+
+  const filteredAssets = assets.filter(asset => {
+    if (filter === 'image') return asset.type !== 'video' && asset.mimeType?.startsWith('image') !== false;
+    if (filter === 'video') return asset.type === 'video' || asset.mimeType?.startsWith('video') === true;
+    return true;
+  });
+
+  const formatSize = (bytes?: number) => {
+    if (!bytes) return '-';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  const isVideoAsset = (asset: any) => asset.type === 'video' || asset.mimeType?.startsWith('video');
 
   return (
     <div className="space-y-6">
@@ -101,48 +124,69 @@ export default async function MediaPage() {
 
       {assets.length > 0 && (
         <div className="bg-white shadow rounded-lg border border-slate-200 overflow-hidden">
-          <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-            <h3 className="text-sm font-semibold text-slate-700">Registered Media Registry</h3>
-            <span className="text-xs text-slate-500">{assets.length} items</span>
+          <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
+              <h3 className="text-sm font-semibold text-slate-700">Registered Media</h3>
+              <div className="flex bg-slate-200 p-1 rounded-md text-xs">
+                <a href="/media" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'all' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>All</a>
+                <a href="/media?filter=image" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'image' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>Images</a>
+                <a href="/media?filter=video" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'video' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>Videos</a>
+              </div>
+            </div>
+            <span className="text-xs text-slate-500">{filteredAssets.length} items</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200">
               <thead className="bg-slate-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Site Key</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">URL / Path</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Alt Text</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Provider</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Preview</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Site Key / Type</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Details</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">URL</th>
                   <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
-                {assets.map((asset) => (
+                {filteredAssets.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-500">
+                      No assets found matching the selected filter.
+                    </td>
+                  </tr>
+                )}
+                {filteredAssets.map((asset) => (
                   <tr key={asset.id} className="hover:bg-slate-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                      {asset.siteKey}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="w-20 h-14 bg-slate-100 rounded border border-slate-200 overflow-hidden flex items-center justify-center relative group">
+                        {isVideoAsset(asset) ? (
+                          <video src={asset.url} preload="metadata" className="w-full h-full object-cover" />
+                        ) : (
+                          <img src={asset.url} alt={asset.altText || ''} className="w-full h-full object-cover" />
+                        )}
+                        {isVideoAsset(asset) && (
+                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                            <MonitorPlay className="w-6 h-6 text-white opacity-80" />
+                          </div>
+                        )}
+                      </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
-                        {asset.type}
-                      </span>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-slate-900">{asset.siteKey}</div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${isVideoAsset(asset) ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
+                          {asset.type}
+                        </span>
+                      </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      <code className="bg-slate-100 text-slate-700 px-2 py-1 rounded max-w-xs truncate inline-block align-middle" title={asset.url}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-xs text-slate-600 font-mono">{asset.mimeType || '-'}</div>
+                      <div className="text-xs text-slate-500 mt-1">{formatSize(asset.sizeBytes)}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <code className="bg-slate-100 text-slate-700 px-2 py-1 rounded max-w-xs truncate inline-block align-middle text-xs" title={asset.url}>
                         {asset.url}
                       </code>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      {asset.altText || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                        asset.storageProvider === 'supabase' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-50 text-blue-700 border border-blue-200'
-                      }`}>
-                        {asset.storageProvider}
-                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                       <CopyUrlButton url={asset.url} />

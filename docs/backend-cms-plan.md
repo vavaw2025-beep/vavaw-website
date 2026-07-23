@@ -343,3 +343,9 @@ Phase 30 focuses on ensuring the VAVAW monorepo is completely secure and ready f
 
 ### Phase 33: Admin CMS Preview Center
 An internal Admin Preview Center was added in Phase 33 (pps/admin/app/preview). It uses the authenticated Admin Supabase Client to load both ctive and draft content directly from the database and renders approximations of the public UI. This prevents exposing draft data or preview endpoints on the public apps, maintaining strict separation of concerns and maximum edge caching performance.
+
+### Media Assets
+- Supports both Image and Video (MP4, WebM) uploads.
+- Maximum 50MB for video, 5MB for images.
+- Video blocks supported in public apps without autoplay.
+

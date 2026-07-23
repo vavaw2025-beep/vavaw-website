@@ -197,7 +197,47 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
            );
         }
 
-        // custom_json or unhandled
+        if (blockType === 'video') {
+          return (
+            <section key={id} className="py-24 px-6 bg-black">
+              <div className="max-w-5xl mx-auto">
+                <div className="text-center">
+                  {getString(content.title) && (
+                    <h2 className="text-3xl font-light text-white mb-6">
+                      {getString(content.title)}
+                    </h2>
+                  )}
+                  {getString(content.description) && (
+                    <p className="text-[#a3a3a3] text-lg font-light mb-12 max-w-2xl mx-auto">
+                      {getString(content.description)}
+                    </p>
+                  )}
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl">
+                    {getString(content.videoUrl) ? (
+                      <video 
+                        src={getString(content.videoUrl)} 
+                        poster={getString(content.posterUrl) || undefined}
+                        controls 
+                        playsInline 
+                        preload="metadata"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-[#525252]">
+                        <span className="text-sm tracking-widest uppercase font-medium">Video missing</span>
+                      </div>
+                    )}
+                  </div>
+                  {getString(content.caption) && (
+                    <p className="text-sm text-[#737373] mt-4 font-light">
+                      {getString(content.caption)}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </section>
+          );
+        }
         return null;
       })}
 

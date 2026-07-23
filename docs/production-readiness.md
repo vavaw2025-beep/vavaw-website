@@ -115,3 +115,9 @@ oop\ and \console\ providers for safe local testing.
 - CSV injection protection in all cells.
 - Analytics events: \leads_exported\, \leads_export_failed\ (no PII).
 
+
+### Phase 42: Video Upload Support (Completed)
+- Safely implemented video uploads.
+- Added 50MB video limit and UI preview.
+- Rendered <video> blocks in main, beauty, franchise.
+

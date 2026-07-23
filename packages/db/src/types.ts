@@ -56,6 +56,9 @@ export interface MediaAssetRecord {
   width?: number;
   height?: number;
   duration_seconds?: number;
+  mime_type?: string;
+  size_bytes?: number;
+  metadata?: Record<string, any>;
   storage_provider: string;
   created_at: string;
   updated_at: string;

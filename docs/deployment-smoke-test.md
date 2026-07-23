@@ -75,3 +75,8 @@ Ensure that REVALIDATION_SECRET and CMS_REVALIDATION_ENABLED=true are configured
 - [ ] Editor navigates to /leads — Export CSV button should NOT appear.
 - [ ] Direct GET /leads/export as editor returns 403 Forbidden.
 
+
+- [ ] Upload an MP4 video under 50MB, verify success and preview.
+- [ ] Upload an MP4 video over 50MB, verify size rejection.
+- [ ] Publish a video content block and verify it plays without autoplay on frontend apps.
+

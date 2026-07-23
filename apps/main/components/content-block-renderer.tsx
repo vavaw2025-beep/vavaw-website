@@ -252,7 +252,50 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
           );
         }
 
-        // custom_json or unhandled
+        if (blockType === 'video') {
+          return (
+            <section key={id} className="py-24 px-6 bg-black">
+              <div className="max-w-5xl mx-auto">
+                <motion.div 
+                  initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+                  className="text-center"
+                >
+                  {getString(content.title) && (
+                    <motion.h2 variants={fadeUp} className="text-3xl font-light text-white mb-6">
+                      {getString(content.title)}
+                    </motion.h2>
+                  )}
+                  {getString(content.description) && (
+                    <motion.p variants={fadeUp} className="text-[#a3a3a3] text-lg font-light mb-12 max-w-2xl mx-auto">
+                      {getString(content.description)}
+                    </motion.p>
+                  )}
+                  <motion.div variants={fadeUp} className="relative aspect-video rounded-xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl">
+                    {getString(content.videoUrl) ? (
+                      <video 
+                        src={getString(content.videoUrl)} 
+                        poster={getString(content.posterUrl) || undefined}
+                        controls 
+                        playsInline 
+                        preload="metadata"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-[#525252]">
+                        <span className="text-sm tracking-widest uppercase font-medium">Video missing</span>
+                      </div>
+                    )}
+                  </motion.div>
+                  {getString(content.caption) && (
+                    <motion.p variants={fadeUp} className="text-sm text-[#737373] mt-4 font-light">
+                      {getString(content.caption)}
+                    </motion.p>
+                  )}
+                </motion.div>
+              </div>
+            </section>
+          );
+        }
         return null;
       })}
     </div>

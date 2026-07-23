@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
@@ -10,8 +10,10 @@ import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
 import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+const ALLOWED_VIDEO_MIME_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50 MB
 
 export async function uploadMediaAction(formData: FormData) {
   const mode = getAdminDataSourceMode();
@@ -30,35 +32,37 @@ export async function uploadMediaAction(formData: FormData) {
 
   const file = formData.get('file') as File | null;
   if (!file || file.size === 0) {
-    return { success: false, error: 'Please select a valid image file to upload.' };
-  }
-
-  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-    return {
-      success: false,
-      error: `Invalid file type (${file.type}). Only JPG, PNG, WEBP, and AVIF are supported.`,
-    };
-  }
-
-  if (file.size > MAX_FILE_SIZE) {
-    return {
-      success: false,
-      error: `File size exceeds maximum limit of 5MB (${(file.size / (1024 * 1024)).toFixed(2)}MB).`,
-    };
+    return { success: false, error: 'Please select a valid file to upload.' };
   }
 
   const siteKey = (formData.get('site_key') as string) || 'main';
-  const type = (formData.get('type') as any) || 'image';
-  const folder = (formData.get('folder') as string) || 'main/hero';
+  const requestedType = (formData.get('type') as any) || 'image';
   const altText = (formData.get('alt_text') as string) || undefined;
+
+  let isVideo = false;
+  if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
+    if (file.size > MAX_IMAGE_SIZE) {
+      return { success: false, error: `Image file size exceeds maximum limit of 5MB.` };
+    }
+  } else if (ALLOWED_VIDEO_MIME_TYPES.includes(file.type)) {
+    isVideo = true;
+    if (file.size > MAX_VIDEO_SIZE) {
+      return { success: false, error: `Video file size exceeds maximum limit of 50MB.` };
+    }
+  } else {
+    return {
+      success: false,
+      error: `Invalid file type (${file.type}). Supported formats: JPG, PNG, WEBP, AVIF, MP4, WEBM, MOV.`,
+    };
+  }
 
   try {
     const supabase = await getAdminServerSupabaseClient();
 
-    const ext = file.name.split('.').pop() || 'jpg';
-    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const randomId = crypto.randomUUID().slice(0, 8);
-    const storagePath = `${folder}/${dateStr}-${randomId}.${ext}`;
+    const ext = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
+    const randomId = crypto.randomUUID();
+    const folder = isVideo ? 'videos' : 'images';
+    const storagePath = `${siteKey}/${folder}/${randomId}.${ext}`;
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -71,7 +75,7 @@ export async function uploadMediaAction(formData: FormData) {
       });
 
     if (uploadError) {
-      return { success: false, error: uploadError.message || 'Failed to upload image to Supabase Storage.' };
+      return { success: false, error: 'Failed to upload file to Supabase Storage.' };
     }
 
     const { data: publicUrlData } = supabase.storage
@@ -82,10 +86,13 @@ export async function uploadMediaAction(formData: FormData) {
 
     const { data: record, error: dbError } = await createMediaAsset(supabase, {
       site_key: siteKey,
-      type: type,
+      type: requestedType,
       url: publicUrl,
       alt_text: altText,
       storage_provider: 'supabase',
+      mime_type: file.type,
+      size_bytes: file.size,
+      metadata: {},
     });
 
     if (dbError) {
@@ -113,16 +120,17 @@ export async function uploadMediaAction(formData: FormData) {
       reason: 'media_uploaded'
     }).catch(console.error);
 
-    trackEvent('media_uploaded', {
+    trackEvent(isVideo ? 'media_video_uploaded' : 'media_uploaded', {
       app: 'admin',
       entityType: 'media_asset',
       entityId: record?.id,
-      metadata: { role: profile.role, siteKey, type },
+      metadata: { role: profile.role, siteKey, type: requestedType, mimeType: file.type },
     });
     return { success: true, data: record };
   } catch (err: any) {
     captureError(err, { app: 'admin', severity: 'error' });
-    return { success: false, error: err?.message || 'Unexpected server error during upload.' };
+    trackEvent(isVideo ? 'media_video_upload_failed' : 'media_upload_failed' as any, { app: 'admin' });
+    return { success: false, error: 'Unexpected server error during upload.' };
   }
 }
 
@@ -143,6 +151,11 @@ export async function deleteMediaAssetAction(id: string) {
 
   try {
     const supabase = await getAdminServerSupabaseClient();
+    
+    // Fetch the asset first to determine its type for analytics
+    const { data: asset } = await supabase.from('media_assets').select('type, mime_type').eq('id', id).single();
+    const isVideo = asset?.type === 'video' || asset?.mime_type?.startsWith('video');
+
     const { success, error } = await deleteMediaAsset(supabase, id);
 
     if (error || !success) {
@@ -156,7 +169,7 @@ export async function deleteMediaAssetAction(id: string) {
       reason: 'media_deleted'
     }).catch(console.error);
 
-    trackEvent('media_deleted', {
+    trackEvent(isVideo ? 'media_video_deleted' : 'media_deleted', {
       app: 'admin',
       entityType: 'media_asset',
       entityId: id,

@@ -9,7 +9,6 @@ export function MediaUploadForm() {
 
   const [siteKey, setSiteKey] = useState('main');
   const [type, setType] = useState('image');
-  const [folder, setFolder] = useState('main/hero');
   const [altText, setAltText] = useState('');
 
   const [isUploading, setIsUploading] = useState(false);
@@ -28,8 +27,12 @@ export function MediaUploadForm() {
     }
 
     const file = files[0];
-    if (file.size > 5 * 1024 * 1024) {
-      setError(`File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds maximum 5MB limit.`);
+    const isVideo = file.type.startsWith('video');
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    const maxMb = isVideo ? 50 : 5;
+
+    if (file.size > maxSize) {
+      setError(`File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds maximum ${maxMb}MB limit.`);
       return;
     }
 
@@ -39,7 +42,6 @@ export function MediaUploadForm() {
     formData.append('file', file);
     formData.append('site_key', siteKey);
     formData.append('type', type);
-    formData.append('folder', folder);
     formData.append('alt_text', altText);
 
     const result = await uploadMediaAction(formData);
@@ -48,7 +50,7 @@ export function MediaUploadForm() {
       setError(result.error || 'Upload failed.');
       setIsUploading(false);
     } else {
-      setSuccess('Image uploaded and registered successfully!');
+      setSuccess('Media asset uploaded and registered successfully!');
       setIsUploading(false);
       setAltText('');
       if (fileInputRef.current) {
@@ -61,7 +63,7 @@ export function MediaUploadForm() {
     <div className="bg-white p-6 shadow rounded-lg border border-slate-200 space-y-4">
       <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
         <Upload className="h-5 w-5 text-blue-600" />
-        <span>Upload New Image Asset</span>
+        <span>Upload New Asset</span>
       </h2>
 
       {error && (
@@ -79,7 +81,7 @@ export function MediaUploadForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Site Key *</label>
             <select
@@ -103,27 +105,10 @@ export function MediaUploadForm() {
               className="w-full text-sm border border-slate-300 rounded-md p-2 bg-white"
             >
               <option value="image">image</option>
+              <option value="video">video</option>
               <option value="og-image">og-image</option>
               <option value="hero-image">hero-image</option>
               <option value="preview-image">preview-image</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Storage Folder *</label>
-            <select
-              value={folder}
-              onChange={(e) => setFolder(e.target.value)}
-              className="w-full text-sm border border-slate-300 rounded-md p-2 bg-white"
-            >
-              <option value="main/hero">main/hero</option>
-              <option value="main/preview">main/preview</option>
-              <option value="main/og">main/og</option>
-              <option value="main/cosmetic">main/cosmetic</option>
-              <option value="beauty/hero">beauty/hero</option>
-              <option value="beauty/gallery">beauty/gallery</option>
-              <option value="franchise/hero">franchise/hero</option>
-              <option value="franchise/process">franchise/process</option>
             </select>
           </div>
 
@@ -140,16 +125,16 @@ export function MediaUploadForm() {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Select Image File *</label>
+          <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Select File *</label>
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,video/quicktime"
             required
             className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
           <p className="mt-1 text-xs text-slate-500">
-            Supported formats: JPG, PNG, WEBP, AVIF &bull; Maximum file size: 5 MB
+            Images: JPG, PNG, WEBP, AVIF (Max 5MB) &bull; Videos: MP4, WEBM, MOV (Max 50MB)
           </p>
         </div>
 
@@ -160,7 +145,7 @@ export function MediaUploadForm() {
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md shadow transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
           >
             <Upload className="h-4 w-4" />
-            <span>{isUploading ? 'Uploading to Supabase...' : 'Upload Image'}</span>
+            <span>{isUploading ? 'Uploading to Supabase...' : 'Upload File'}</span>
           </button>
         </div>
       </form>

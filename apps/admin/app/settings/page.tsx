@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Table, Image as ImageIcon, Users, Key } from 'lucide-react';
+import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Table, Image as ImageIcon, Users, Key, Link as LinkIcon } from 'lucide-react';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 
 export default function SettingsPage() {
@@ -41,11 +41,17 @@ export default function SettingsPage() {
   ];
 
   const storageConfig = [
-    { name: 'Storage Provider', value: 'Supabase Storage', icon: Cloud, status: 'Active' },
-    { name: 'Target Bucket', value: 'vavaw-media', icon: HardDrive, status: 'Configured' },
-    { name: 'Image Upload Enabled', value: mode === 'supabase' ? 'Yes (JPG, PNG, WEBP, AVIF)' : 'No (Requires Supabase Mode)', icon: ImageIcon, status: mode === 'supabase' ? 'Active' : 'Disabled' },
-    { name: 'Max Image File Size', value: '5 MB', icon: SettingsIcon, status: 'Configured' },
-    { name: 'Video Upload Enabled', value: 'Not Enabled (Planned for Future Phase)', icon: Cloud, status: 'Disabled' },
+    { name: 'Provider', value: 'Supabase Storage', icon: Server, status: 'Active' },
+    { name: 'Bucket Name', value: 'vavaw-media', icon: Database, status: 'Configured' },
+    { name: 'Public URL Access', value: 'Enabled', icon: LinkIcon, status: 'Active' },
+    { name: 'CDN Integration', value: 'Default Supabase CDN', icon: Globe, status: 'Active' },
+    { name: 'Max File Size (Images)', value: '5 MB', icon: Shield, status: 'Active' },
+    { name: 'Max File Size (Videos)', value: '50 MB', icon: Shield, status: 'Active' },
+    { name: 'Accepted Image Formats', value: 'JPG, PNG, WEBP, AVIF', icon: SettingsIcon, status: 'Configured' },
+    { name: 'Accepted Video Formats', value: 'MP4, WEBM, MOV', icon: SettingsIcon, status: 'Configured' },
+    { name: 'Video Upload', value: 'Enabled', icon: SettingsIcon, status: 'Active' },
+    { name: 'Video Transcoding', value: 'Pending Phase', icon: SettingsIcon, status: 'Pending' },
+    { name: 'External Video Hosting', value: 'Pending Phase', icon: SettingsIcon, status: 'Pending' },
   ];
 
   const authConfig = [
