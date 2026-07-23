@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { trackEvent } from '@vavaw/analytics';
@@ -45,7 +45,7 @@ export function LeadForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto bg-white p-8 rounded-xl shadow-sm border border-[#f4f1eb]">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-lg mx-auto bg-white/60 backdrop-blur-md p-10 rounded-2xl shadow-xl border border-[#f4f1eb]">
       <h3 className="text-2xl font-serif text-center mb-6">Book an Appointment</h3>
       
       {status === 'success' && (
@@ -67,31 +67,31 @@ export function LeadForm() {
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="full_name" className="block text-sm text-[#525252]">Full Name <span className="text-red-500">*</span></label>
-        <input required type="text" id="full_name" name="full_name" className="w-full rounded border border-[#e5e5e5] px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+        <label htmlFor="full_name" className="block text-xs uppercase tracking-widest text-[#a3a3a3] font-medium">Full Name <span className="text-red-500">*</span></label>
+        <input required type="text" id="full_name" name="full_name" className="w-full bg-transparent border-b border-[#e5e5e5] px-0 py-3 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="Your full name" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-1">
-          <label htmlFor="email" className="block text-sm text-[#525252]">Email</label>
-          <input type="email" id="email" name="email" className="w-full rounded border border-[#e5e5e5] px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+          <label htmlFor="email" className="block text-xs uppercase tracking-widest text-[#a3a3a3] font-medium">Email</label>
+          <input type="email" id="email" name="email" className="w-full bg-transparent border-b border-[#e5e5e5] px-0 py-3 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="email@example.com" />
         </div>
         <div className="space-y-1">
-          <label htmlFor="phone" className="block text-sm text-[#525252]">Phone</label>
-          <input type="tel" id="phone" name="phone" className="w-full rounded border border-[#e5e5e5] px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+          <label htmlFor="phone" className="block text-xs uppercase tracking-widest text-[#a3a3a3] font-medium">Phone</label>
+          <input type="tel" id="phone" name="phone" className="w-full bg-transparent border-b border-[#e5e5e5] px-0 py-3 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="+1 (555) 000-0000" />
         </div>
       </div>
       <p className="text-xs text-[#a3a3a3] -mt-1">Please provide at least an email or phone number.</p>
 
       <div className="space-y-1">
-        <label htmlFor="message" className="block text-sm text-[#525252]">Service requested / Notes</label>
-        <textarea id="message" name="message" rows={3} maxLength={2000} className="w-full rounded border border-[#e5e5e5] px-3 py-2 text-sm resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+        <label htmlFor="message" className="block text-xs uppercase tracking-widest text-[#a3a3a3] font-medium">Service requested / Notes</label>
+        <textarea id="message" name="message" rows={3} maxLength={2000} className="w-full bg-transparent border-b border-[#e5e5e5] px-0 py-3 text-sm resize-none focus:outline-none focus:border-primary transition-colors" placeholder="How can we help you?"></textarea>
       </div>
 
       <button 
         type="submit" 
         disabled={status === 'loading'}
-        className="w-full bg-primary text-primary-foreground font-serif py-3 px-4 rounded hover:bg-primary/90 disabled:opacity-50 transition-colors mt-4"
+        className="w-full bg-primary text-primary-foreground font-medium text-xs tracking-widest uppercase py-4 px-6 rounded hover:bg-primary/90 disabled:opacity-50 transition-colors mt-6 shadow-md"
       >
         {status === 'loading' ? 'Sending...' : 'Request Booking'}
       </button>

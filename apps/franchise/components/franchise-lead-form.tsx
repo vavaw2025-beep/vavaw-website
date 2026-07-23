@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { trackEvent } from '@vavaw/analytics';
@@ -45,7 +45,7 @@ export function FranchiseLeadForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto bg-white p-8 rounded-xl shadow-sm border border-[#e5e5e5]">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-lg mx-auto bg-white/60 backdrop-blur-md p-10 rounded-2xl shadow-xl border border-[#e5e5e5]">
       <h3 className="text-2xl font-serif text-[#18181b] text-center mb-6">Apply for Franchise</h3>
       
       {status === 'success' && (
@@ -67,36 +67,36 @@ export function FranchiseLeadForm() {
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="full_name" className="block text-sm font-medium text-[#3f3f46]">Full Name <span className="text-red-500">*</span></label>
-        <input required type="text" id="full_name" name="full_name" className="w-full rounded border border-[#d4d4d8] px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+        <label htmlFor="full_name" className="block text-xs uppercase tracking-widest text-[#71717a] font-medium">Full Name <span className="text-red-500">*</span></label>
+        <input required type="text" id="full_name" name="full_name" className="w-full bg-transparent border-b border-[#d4d4d8] px-0 py-3 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="Your full name" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-1">
-          <label htmlFor="email" className="block text-sm font-medium text-[#3f3f46]">Email</label>
-          <input type="email" id="email" name="email" className="w-full rounded border border-[#d4d4d8] px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+          <label htmlFor="email" className="block text-xs uppercase tracking-widest text-[#71717a] font-medium">Email</label>
+          <input type="email" id="email" name="email" className="w-full bg-transparent border-b border-[#d4d4d8] px-0 py-3 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="email@example.com" />
         </div>
         <div className="space-y-1">
-          <label htmlFor="phone" className="block text-sm font-medium text-[#3f3f46]">Phone</label>
-          <input type="tel" id="phone" name="phone" className="w-full rounded border border-[#d4d4d8] px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+          <label htmlFor="phone" className="block text-xs uppercase tracking-widest text-[#71717a] font-medium">Phone</label>
+          <input type="tel" id="phone" name="phone" className="w-full bg-transparent border-b border-[#d4d4d8] px-0 py-3 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="+1 (555) 000-0000" />
         </div>
       </div>
       <p className="text-xs text-[#71717a] -mt-1">Please provide at least an email or phone number.</p>
 
       <div className="space-y-1">
-        <label htmlFor="company_name" className="block text-sm font-medium text-[#3f3f46]">Company / Organization Name</label>
-        <input type="text" id="company_name" name="company_name" className="w-full rounded border border-[#d4d4d8] px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+        <label htmlFor="company_name" className="block text-xs uppercase tracking-widest text-[#71717a] font-medium">Company / Organization Name</label>
+        <input type="text" id="company_name" name="company_name" className="w-full bg-transparent border-b border-[#d4d4d8] px-0 py-3 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="Company Name" />
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="message" className="block text-sm font-medium text-[#3f3f46]">Why do you want to partner with us?</label>
-        <textarea id="message" name="message" rows={3} maxLength={2000} className="w-full rounded border border-[#d4d4d8] px-3 py-2 text-sm resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+        <label htmlFor="message" className="block text-xs uppercase tracking-widest text-[#71717a] font-medium">Why do you want to partner with us?</label>
+        <textarea id="message" name="message" rows={3} maxLength={2000} className="w-full bg-transparent border-b border-[#d4d4d8] px-0 py-3 text-sm resize-none focus:outline-none focus:border-primary transition-colors" placeholder="Briefly describe your interest"></textarea>
       </div>
 
       <button 
         type="submit" 
         disabled={status === 'loading'}
-        className="w-full bg-primary text-primary-foreground font-semibold py-3 px-4 rounded hover:bg-primary/90 disabled:opacity-50 transition-colors mt-4"
+        className="w-full bg-primary text-primary-foreground font-medium text-xs tracking-widest uppercase py-4 px-6 rounded hover:bg-primary/90 disabled:opacity-50 transition-colors mt-6 shadow-md"
       >
         {status === 'loading' ? 'Sending...' : 'Submit Application'}
       </button>

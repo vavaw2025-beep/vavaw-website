@@ -51,6 +51,7 @@ export const viewport: Viewport = {
 
 import { draftMode } from 'next/headers'
 import { PreviewBanner } from '@/components/preview-banner'
+import { SiteHeader } from '@/components/site-header'
 
 export default async function RootLayout({
   children,
@@ -78,6 +79,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <SiteHeader />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

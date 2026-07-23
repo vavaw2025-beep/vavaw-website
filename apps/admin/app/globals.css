@@ -1,4 +1,4 @@
-﻿@import 'tailwindcss';
+@import 'tailwindcss';
 @source "../../../packages/ui";
 
 @custom-variant dark (&:is(.dark *));
@@ -57,7 +57,7 @@
   --border: oklch(0.25 0.01 220);
   --input: oklch(0.25 0.01 220);
   --ring: oklch(0.6 0.2 250);
-  --radius: 0.5rem;
+  --radius: 0.3rem; /* Sharp, professional radii for dashboard */
   
   --sidebar: oklch(0.1 0.01 220);
   --sidebar-foreground: oklch(0.95 0.01 220);
@@ -74,6 +74,19 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased font-sans;
+  }
+
+  /* Admin Typography */
+  h1 {
+    @apply text-3xl font-semibold tracking-tight;
+  }
+  
+  h2 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+  
+  h3 {
+    @apply text-xl font-medium tracking-tight;
   }
 }

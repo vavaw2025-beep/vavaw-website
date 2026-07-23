@@ -2,6 +2,11 @@
 
 ## Pre-Launch Verification (T-24 Hours)
 
+### Brand & UI (Phase 48)
+- [ ] Visual polish completed across all apps (`vavaw-main`, `vavaw-beauty`, `vavaw-franchise`, `vavaw-admin`).
+- [ ] Responsive layouts checked on Mobile (360px), Tablet, Desktop.
+- [ ] Brand tokens applied without modifying backend logic.
+
 ### Security & Authentication
 - [ ] Production Admin is configured with `ADMIN_AUTH_MODE=supabase` and `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.
 - [ ] `ADMIN_AUTH_MODE=mock` is completely disabled in production environment variables.
