@@ -4,7 +4,7 @@ import { AuditLogFilters, AuditLogRecord } from '../types/audit-log';
 export async function getAuditLogs(
   supabase: SupabaseClient,
   filters: AuditLogFilters = {}
-): Promise<{ data: AuditLogRecord[]; count: number }> {
+): Promise<{ data: AuditLogRecord[]; count: number; error?: any }> {
   try {
     let query = supabase
       .from('audit_logs')
@@ -39,7 +39,7 @@ export async function getAuditLogs(
 
     if (error) {
       console.error('[DB AuditLog Query Error]', error);
-      return { data: [], count: 0 };
+      return { data: [], count: 0, error };
     }
 
     const formattedData: AuditLogRecord[] = (data || []).map((row: any) => ({
@@ -60,7 +60,7 @@ export async function getAuditLogs(
     return { data: formattedData, count: count ?? formattedData.length };
   } catch (err) {
     console.error('[DB AuditLog Query Exception]', err);
-    return { data: [], count: 0 };
+    return { data: [], count: 0, error: err };
   }
 }
 

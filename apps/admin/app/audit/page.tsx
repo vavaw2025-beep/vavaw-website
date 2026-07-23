@@ -11,16 +11,8 @@ export const metadata = {
   description: 'View administrative system audit logs.',
 };
 
-export default async function AuditLogsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    action?: string;
-    entity_type?: string;
-    status?: string;
-    date_from?: string;
-    date_to?: string;
-  }>;
+export default async function AuditLogsPage(props: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const profile = await getCurrentAdminProfile();
 
@@ -28,21 +20,48 @@ export default async function AuditLogsPage({
     redirect('/?error=forbidden');
   }
 
-  const params = await searchParams;
-  const actionFilter = params.action || '';
-  const entityTypeFilter = params.entity_type || '';
-  const statusFilter = params.status || '';
-  const dateFrom = params.date_from || '';
-  const dateTo = params.date_to || '';
+  const params = await props.searchParams;
+  const actionFilter = typeof params.action === 'string' ? params.action : '';
+  const entityTypeFilter = typeof params.entity_type === 'string' ? params.entity_type : '';
+  const statusFilterRaw = typeof params.status === 'string' ? params.status : '';
+  const dateFrom = typeof params.date_from === 'string' ? params.date_from : '';
+  const dateTo = typeof params.date_to === 'string' ? params.date_to : '';
 
   const supabase = await getAdminServerSupabaseClient();
-  const { data: logs, count } = await getAuditLogs(supabase, {
-    action: actionFilter === 'all' || !actionFilter ? undefined : actionFilter,
-    entity_type: entityTypeFilter === 'all' || !entityTypeFilter ? undefined : entityTypeFilter,
-    status: statusFilter === 'all' || !statusFilter ? undefined : (statusFilter as any),
-    date_from: dateFrom || undefined,
-    date_to: dateTo || undefined,
+  
+  const directResult = await supabase
+    .from("audit_logs")
+    .select("id, actor_id, actor_role, action, entity_type, entity_id, status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  console.warn("[audit] direct query result", {
+    count: directResult.data?.length ?? 0,
+    error: directResult.error?.message ?? null
+  });
+
+  const validStatuses = ['success', 'failure', 'failed'];
+  const finalStatus = validStatuses.includes(statusFilterRaw) ? statusFilterRaw : undefined;
+
+  const validDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  const finalDateFrom = validDateRegex.test(dateFrom) ? dateFrom : undefined;
+  const finalDateTo = validDateRegex.test(dateTo) ? dateTo : undefined;
+
+  const filters = {
+    action: actionFilter || undefined,
+    entity_type: entityTypeFilter || undefined,
+    status: finalStatus as any,
+    date_from: finalDateFrom,
+    date_to: finalDateTo,
     limit: 100,
+  };
+
+  const { data: logs, count, error: auditError } = await getAuditLogs(supabase, filters);
+
+  console.warn("[audit] getAuditLogs result", {
+    count: logs?.length || 0,
+    error: auditError?.message ?? null,
+    filters
   });
 
   return (
