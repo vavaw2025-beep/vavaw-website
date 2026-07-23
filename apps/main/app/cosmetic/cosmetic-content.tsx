@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
 import type { BusinessEntry } from '@vavaw/brand-config';
+import { CosmeticCtaTracker } from './cosmetic-tracker';
 
 interface CosmeticContentProps {
   entry: BusinessEntry;
@@ -185,19 +186,19 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
             Experience the full ecosystem
           </motion.h2>
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link 
+            <CosmeticCtaTracker
+              label="Back to VAVAW"
               href="/"
               className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
-            >
-              Back to VAVAW
-            </Link>
-            <Link 
+            />
+            <CosmeticCtaTracker
+              label="Explore Beauty & Co"
               href="/go/beauty"
               className="group flex items-center text-sm tracking-widest uppercase text-white/70 hover:text-white transition-colors"
             >
-              Explore Beauty & Co
+              Explore Beauty &amp; Co
               <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            </CosmeticCtaTracker>
           </motion.div>
         </motion.div>
       </section>

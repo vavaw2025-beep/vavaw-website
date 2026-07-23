@@ -5,6 +5,7 @@ import { ArrowRight, Sparkles, Heart, Droplets, ArrowUpRight } from 'lucide-reac
 import { loadPublicSeo } from '@/lib/load-public-seo';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
 import { ContentBlockRenderer } from '@/components/content-block-renderer';
+import { BeautyCtaButton } from '@/components/analytics-trackers';
 
 export const revalidate = 60;
 
@@ -102,10 +103,13 @@ export default async function BeautyLandingPage() {
             <p className="text-lg md:text-2xl font-light text-[#5C5855] max-w-2xl mx-auto leading-relaxed mb-12">
               {beautyEntry.subtitle}
             </p>
-            <button className="group flex items-center gap-4 bg-[#2C2A29] text-[#FDFBF7] px-8 py-4 text-sm uppercase tracking-widest hover:bg-[#4A4744] transition-all duration-300">
+            <BeautyCtaButton
+              label={beautyEntry.ctaLabel}
+              className="group flex items-center gap-4 bg-[#2C2A29] text-[#FDFBF7] px-8 py-4 text-sm uppercase tracking-widest hover:bg-[#4A4744] transition-all duration-300"
+            >
               {beautyEntry.ctaLabel}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </BeautyCtaButton>
           </div>
         </section>
 

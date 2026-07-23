@@ -24,7 +24,11 @@ This document tracks the readiness state of the VAVAW monorepo for production de
 - [x] **Content Blocks Rendering:** Connected to `apps/main` /cosmetic page via `ContentBlockRenderer`. Full static fallback (`CosmeticContent`) handles DB errors or empty states gracefully. `apps/beauty` and `apps/franchise` remain static.
 
 ## Quality & Monitoring
-- [ ] **Analytics Status:** Pending (Google Analytics / Vercel Web Analytics integration required).
+- [x] **Analytics Status:** `@vavaw/analytics` workspace package integrated.
+  - Analytics are strictly **disabled by default** via `NEXT_PUBLIC_ANALYTICS_ENABLED=false`.
+  - Privacy compliance: **No PII** (no emails, tokens, or sensitive passwords) is ever tracked.
+  - Provider configurable via `NEXT_PUBLIC_ANALYTICS_PROVIDER` (`noop`, `console`, `vercel`, `custom`).
+  - Validation: Requires starting the app with enabled flags to verify event payloads locally.
 - [ ] **Security Status:** 
   - Admin app requires route protection.
   - API routes require authentication verification.

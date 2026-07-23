@@ -6,6 +6,7 @@ import { createMediaAsset, deleteMediaAsset } from '@vavaw/db';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
+import { trackEvent } from '@vavaw/analytics';
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -90,6 +91,12 @@ export async function uploadMediaAction(formData: FormData) {
     }
 
     revalidatePath('/media');
+    trackEvent('media_uploaded', {
+      app: 'admin',
+      entityType: 'media_asset',
+      entityId: record?.id,
+      metadata: { role: profile.role, siteKey, type },
+    });
     return { success: true, data: record };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error during upload.' };
@@ -120,6 +127,12 @@ export async function deleteMediaAssetAction(id: string) {
     }
 
     revalidatePath('/media');
+    trackEvent('media_deleted', {
+      app: 'admin',
+      entityType: 'media_asset',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error during deletion.' };

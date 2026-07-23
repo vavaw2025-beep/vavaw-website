@@ -24,7 +24,8 @@
     "@supabase/supabase-js": "^2.110.8",
     "@vavaw/brand-config": "workspace:*",
     "@vavaw/db": "workspace:*",
-    "@vavaw/ui": "workspace:*"
+    "@vavaw/ui": "workspace:*",
+    "@vavaw/analytics": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

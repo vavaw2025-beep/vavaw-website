@@ -12,6 +12,7 @@ import {
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
+import { trackEvent } from '@vavaw/analytics';
 
 export async function createBusinessEntryAction(input: CreateBusinessEntryInput) {
   const mode = getAdminDataSourceMode();
@@ -37,6 +38,12 @@ export async function createBusinessEntryAction(input: CreateBusinessEntryInput)
     }
 
     revalidatePath('/business');
+    trackEvent('business_created', {
+      app: 'admin',
+      entityType: 'business',
+      entityId: data?.id,
+      metadata: { role: profile.role },
+    });
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
@@ -67,6 +74,12 @@ export async function updateBusinessEntryAction(id: string, input: UpdateBusines
     }
 
     revalidatePath('/business');
+    trackEvent('business_updated', {
+      app: 'admin',
+      entityType: 'business',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
@@ -97,6 +110,12 @@ export async function deleteBusinessEntryAction(id: string) {
     }
 
     revalidatePath('/business');
+    trackEvent('business_deleted', {
+      app: 'admin',
+      entityType: 'business',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };

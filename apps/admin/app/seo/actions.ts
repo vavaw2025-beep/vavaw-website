@@ -12,6 +12,7 @@ import {
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
+import { trackEvent } from '@vavaw/analytics';
 
 export async function createSeoSettingAction(input: CreateSeoSettingInput) {
   const mode = getAdminDataSourceMode();
@@ -37,6 +38,12 @@ export async function createSeoSettingAction(input: CreateSeoSettingInput) {
     }
 
     revalidatePath('/seo');
+    trackEvent('seo_created', {
+      app: 'admin',
+      entityType: 'seo_setting',
+      entityId: data?.id,
+      metadata: { role: profile.role },
+    });
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
@@ -67,6 +74,12 @@ export async function updateSeoSettingAction(id: string, input: UpdateSeoSetting
     }
 
     revalidatePath('/seo');
+    trackEvent('seo_updated', {
+      app: 'admin',
+      entityType: 'seo_setting',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
@@ -97,6 +110,12 @@ export async function deleteSeoSettingAction(id: string) {
     }
 
     revalidatePath('/seo');
+    trackEvent('seo_deleted', {
+      app: 'admin',
+      entityType: 'seo_setting',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };

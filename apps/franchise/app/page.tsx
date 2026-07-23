@@ -5,6 +5,7 @@ import { ArrowRight, CheckCircle2, TrendingUp, Building, Map, ArrowUpRight, Plus
 import { loadPublicSeo } from '@/lib/load-public-seo';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
 import { ContentBlockRenderer } from '@/components/content-block-renderer';
+import { FranchiseCtaButton } from '@/components/analytics-trackers';
 
 export const revalidate = 60;
 
@@ -104,10 +105,13 @@ export default async function FranchiseLandingPage() {
               <p className="text-lg md:text-xl font-light text-gray-300 max-w-xl leading-relaxed mb-10">
                 {franchiseEntry.subtitle} {franchiseEntry.description}
               </p>
-              <button className="group flex items-center gap-3 bg-[#D97706] text-white px-8 py-4 text-sm uppercase tracking-wider font-semibold hover:bg-[#B45309] transition-all duration-300 shadow-lg shadow-[#D97706]/20">
+              <FranchiseCtaButton
+                label={franchiseEntry.ctaLabel}
+                className="group flex items-center gap-3 bg-[#D97706] text-white px-8 py-4 text-sm uppercase tracking-wider font-semibold hover:bg-[#B45309] transition-all duration-300 shadow-lg shadow-[#D97706]/20"
+              >
                 {franchiseEntry.ctaLabel}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </FranchiseCtaButton>
             </div>
             <div className="hidden md:flex flex-col gap-6 text-sm font-medium text-gray-400">
               <div className="flex flex-col gap-1">

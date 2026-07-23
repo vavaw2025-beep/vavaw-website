@@ -2,6 +2,7 @@
 
 import { LogOut } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@vavaw/auth';
+import { trackEvent } from '@vavaw/analytics';
 
 export function LogoutButton() {
   const handleLogout = async () => {
@@ -15,6 +16,12 @@ export function LogoutButton() {
         console.error('Logout error:', err);
       }
     }
+
+    // Track logout event — no PII, no user identity
+    trackEvent('admin_logout', {
+      app: 'admin',
+      path: window.location.pathname,
+    });
 
     // Force full page navigation to /login to ensure session state is completely cleared
     window.location.href = '/login';

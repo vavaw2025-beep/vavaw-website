@@ -46,7 +46,18 @@ function LoginContent() {
             </div>
           )}
 
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            // In the future when real login is implemented here, fire this after successful auth.
+            // Using a dynamic import for analytics here in the client to avoid hydration issues 
+            // if we needed to, but we can just import it at the top.
+            import('@vavaw/analytics').then(({ trackEvent }) => {
+              trackEvent('admin_login_success', {
+                app: 'admin',
+                metadata: { role: 'unknown_mock_login' } // update when real auth added
+              });
+            });
+          }} className="space-y-5">
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1.5">

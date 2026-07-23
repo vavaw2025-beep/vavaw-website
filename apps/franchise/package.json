@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",
+    "@vavaw/analytics": "workspace:*",
     "@vavaw/brand-config": "workspace:*",
     "@vavaw/ui": "workspace:*",
     "lucide-react": "^0.475.0",

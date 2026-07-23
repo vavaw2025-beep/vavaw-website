@@ -20,6 +20,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.110.8
         version: 2.110.8
+      '@vavaw/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       '@vavaw/auth':
         specifier: workspace:*
         version: link:../../packages/auth
@@ -72,6 +75,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.110.8
         version: 2.110.8
+      '@vavaw/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       '@vavaw/brand-config':
         specifier: workspace:*
         version: link:../../packages/brand-config
@@ -118,6 +124,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.110.8
         version: 2.110.8
+      '@vavaw/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       '@vavaw/brand-config':
         specifier: workspace:*
         version: link:../../packages/brand-config
@@ -167,6 +176,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.110.8
         version: 2.110.8
+      '@vavaw/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       '@vavaw/brand-config':
         specifier: workspace:*
         version: link:../../packages/brand-config
@@ -230,6 +242,15 @@ importers:
         version: 4.3.3
       typescript:
         specifier: 5.7.3
+        version: 5.7.3
+
+  packages/analytics:
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.43
+      typescript:
+        specifier: ^5
         version: 5.7.3
 
   packages/auth:

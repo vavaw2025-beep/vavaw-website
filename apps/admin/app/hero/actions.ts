@@ -12,6 +12,7 @@ import {
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
+import { trackEvent } from '@vavaw/analytics';
 
 export async function createHeroSlideAction(input: CreateHeroSlideInput) {
   const mode = getAdminDataSourceMode();
@@ -37,6 +38,12 @@ export async function createHeroSlideAction(input: CreateHeroSlideInput) {
     }
 
     revalidatePath('/hero');
+    trackEvent('hero_created', {
+      app: 'admin',
+      entityType: 'hero_slide',
+      entityId: data?.id,
+      metadata: { role: profile.role },
+    });
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
@@ -67,6 +74,12 @@ export async function updateHeroSlideAction(id: string, input: UpdateHeroSlideIn
     }
 
     revalidatePath('/hero');
+    trackEvent('hero_updated', {
+      app: 'admin',
+      entityType: 'hero_slide',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
@@ -97,6 +110,12 @@ export async function deleteHeroSlideAction(id: string) {
     }
 
     revalidatePath('/hero');
+    trackEvent('hero_deleted', {
+      app: 'admin',
+      entityType: 'hero_slide',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };

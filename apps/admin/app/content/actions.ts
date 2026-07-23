@@ -12,6 +12,7 @@ import {
 import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
+import { trackEvent } from '@vavaw/analytics';
 
 export async function createContentBlockAction(input: CreateContentBlockInput) {
   const mode = getAdminDataSourceMode();
@@ -37,6 +38,12 @@ export async function createContentBlockAction(input: CreateContentBlockInput) {
     }
 
     revalidatePath('/content');
+    trackEvent('content_block_created', {
+      app: 'admin',
+      entityType: 'content_block',
+      entityId: data?.id,
+      metadata: { role: profile.role },
+    });
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
@@ -67,6 +74,12 @@ export async function updateContentBlockAction(id: string, input: UpdateContentB
     }
 
     revalidatePath('/content');
+    trackEvent('content_block_updated', {
+      app: 'admin',
+      entityType: 'content_block',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
@@ -97,6 +110,12 @@ export async function deleteContentBlockAction(id: string) {
     }
 
     revalidatePath('/content');
+    trackEvent('content_block_deleted', {
+      app: 'admin',
+      entityType: 'content_block',
+      entityId: id,
+      metadata: { role: profile.role },
+    });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'Unexpected server error.' };
