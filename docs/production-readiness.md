@@ -60,3 +60,6 @@ To ensure maximum stability, deploy components progressively:
 
 ## Phase 32: CMS Revalidation Hooks
 Phase 32 added on-demand ISR revalidation routes to the public apps. The admin dashboard can securely purge edge caches in the public apps (main, eauty, ranchise) after mutations using a shared secret (REVALIDATION_SECRET). This removes the need for arbitrary time-based revalidation (e.g. evalidate = 60) on slowly changing content, ensuring the frontend reflects backend changes instantly while retaining static performance. See docs/revalidation-plan.md for full implementation details.
+
+## Phase 33: Admin CMS Preview Center (Current)
+Phase 33 implemented a secure, read-only Admin Preview Center. It allows authorized admin users to view both active and draft content across all targets (Main, Cosmetic, Beauty, Franchise) before publishing, without exposing draft data to the public apps or bypassing static edge caching.

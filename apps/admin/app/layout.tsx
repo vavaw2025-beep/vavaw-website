@@ -32,6 +32,7 @@ const navigation = [
   { name: 'SEO', href: '/seo', icon: Search },
   { name: 'Redirects', href: '/redirects', icon: LinkIcon },
   { name: 'Content', href: '/content', icon: FileText },
+  { name: 'Preview', href: '/preview', icon: Search },
   { name: 'Users', href: '/users', icon: Users },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];

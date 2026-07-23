@@ -92,3 +92,8 @@ export function canManageAdminUsers(role: AdminRole): boolean {
 export function canViewAdminUsers(role: AdminRole): boolean {
   return role === "owner" || role === "admin";
 }
+
+/** Check if a role can access CMS Preview */
+export function canPreview(role: AdminRole): boolean {
+  return role === "owner" || role === "admin" || role === "editor" || role === "viewer";
+}

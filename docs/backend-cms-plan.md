@@ -340,3 +340,6 @@ Phase 30 focuses on ensuring the VAVAW monorepo is completely secure and ready f
 - **Admin Warning:** Added a high-visibility security warning in `apps/admin/app/login/page.tsx` if Mock Auth mode is active in a Production environment.
 - **RLS Audit:** Documented Row Level Security constraints in `docs/security-rls-audit.md`, proving that public read logic is strictly gated to active content, and mutations require authenticated admin statuses.
 - **Launch Checklist:** Consolidated deployment procedures into `docs/production-launch-checklist.md` to ensure infrastructure matches code expectations before going live.
+
+### Phase 33: Admin CMS Preview Center
+An internal Admin Preview Center was added in Phase 33 (pps/admin/app/preview). It uses the authenticated Admin Supabase Client to load both ctive and draft content directly from the database and renders approximations of the public UI. This prevents exposing draft data or preview endpoints on the public apps, maintaining strict separation of concerns and maximum edge caching performance.
