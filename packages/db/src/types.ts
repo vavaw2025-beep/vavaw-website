@@ -97,3 +97,18 @@ export interface ContentBlockRecord {
   created_at: string;
   updated_at: string;
 }
+export interface LeadRecord {
+  id: string; // uuid
+  source_app: 'main' | 'cosmetic' | 'beauty' | 'franchise';
+  source_path: string;
+  lead_type: 'general_contact' | 'cosmetic_interest' | 'beauty_booking' | 'franchise_application';
+  full_name: string;
+  email?: string | null;
+  phone?: string | null;
+  company_name?: string | null;
+  message?: string | null;
+  status: 'new' | 'contacted' | 'qualified' | 'closed' | 'spam';
+  metadata: any; // jsonb
+  created_at: string;
+  updated_at: string;
+}

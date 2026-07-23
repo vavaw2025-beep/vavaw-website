@@ -53,3 +53,7 @@ Ensure that REVALIDATION_SECRET and CMS_REVALIDATION_ENABLED=true are configured
 - [ ] Hard refresh the main app homepage (https://vavaw.vn/).
 - [ ] Verify that the hero slide update is immediately visible without waiting for a revalidate timeout.
 - [ ] Revert the hero slide edit.
+
+## Lead Notification Verification
+- [ ] Submit a test lead to ensure no errors are thrown.
+- [ ] Check logs (if console provider) or inbox (if resend provider) to verify email dispatch.

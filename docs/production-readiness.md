@@ -78,3 +78,16 @@ Completed a Tailwind CSS v4 setup normalization across pps/admin, pps/beauty, 
 - Phase 35 UI QA completed. Verified responsive layout, typography, dark/light contrast, and shared component rendering across all applications.
 - Tailwind v4 setup normalized ensuring all apps properly utilize @tailwindcss/postcss.
 - Shared UI source scanning (@source "../../../packages/ui") verified, ensuring @vavaw/ui components receive styling properly across the monorepo.
+
+### Phase 36: Public Contact / Lead Forms (Completed)
+- Created \public.leads\ table with RLS (INSERT only for public, SELECT for admins, UPDATE for editors+).
+- Implemented honeypot anti-spam protection instead of complex CAPTCHA.
+- Integrated Lead capture forms in Main (\/contact\), Beauty, and Franchise apps.
+- Built Admin Leads Dashboard (\/leads\) to view and manage lead statuses securely.
+
+### Phase 37: Lead Email Notifications (Completed)
+- Added \packages/notifications\ with Resend integration.
+- Added email delivery with 5-second timeout and robust \	ry/catch\ blocks.
+- Implemented \
+oop\ and \console\ providers for safe local testing.
+- Added tracking events for email notification success/failure.

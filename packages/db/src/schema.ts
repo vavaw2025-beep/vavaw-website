@@ -7,4 +7,5 @@ export const tables = {
   seo_settings: 'seo_settings',
   redirects: 'redirects',
   content_blocks: 'content_blocks',
+  leads: 'leads',
 } as const;

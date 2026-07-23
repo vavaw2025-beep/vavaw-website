@@ -192,6 +192,11 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
               className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
             />
             <CosmeticCtaTracker
+              label="Contact Us"
+              href="/contact?type=cosmetic_interest"
+              className="px-8 py-4 bg-transparent border border-white text-white text-sm tracking-widest uppercase hover:bg-white/10 transition-colors"
+            />
+            <CosmeticCtaTracker
               label="Explore Beauty & Co"
               href="/go/beauty"
               className="group flex items-center text-sm tracking-widest uppercase text-white/70 hover:text-white transition-colors"

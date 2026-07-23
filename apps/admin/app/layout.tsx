@@ -10,7 +10,8 @@ import {
   FileText, 
   Settings,
   Presentation,
-  Users
+  Users,
+  Mail
 } from 'lucide-react';
 
 import { LogoutButton } from '../components/LogoutButton';
@@ -34,6 +35,7 @@ const navigation = [
   { name: 'Content', href: '/content', icon: FileText },
   { name: 'Preview', href: '/preview', icon: Search },
   { name: 'Users', href: '/users', icon: Users },
+  { name: 'Leads', href: '/leads', icon: Mail },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 

@@ -24,6 +24,7 @@
     "@supabase/supabase-js": "^2.110.8",
     "@vavaw/brand-config": "workspace:*",
     "@vavaw/db": "workspace:*",
+    "@vavaw/notifications": "workspace:*",
     "@vavaw/ui": "workspace:*",
     "@vavaw/analytics": "workspace:*"
   },

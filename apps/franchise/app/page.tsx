@@ -4,6 +4,7 @@ import { getBusinessBySlug } from '@vavaw/brand-config';
 import { ArrowRight, CheckCircle2, TrendingUp, Building, Map, ArrowUpRight, Plus, HelpCircle, Briefcase, FileSignature, Target, ShieldCheck } from 'lucide-react';
 import { loadPublicSeo } from '@/lib/load-public-seo';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
+import { FranchiseLeadForm } from '@/components/franchise-lead-form';
 import { ContentBlockRenderer } from '@/components/content-block-renderer';
 import { FranchiseCtaButton } from '@/components/analytics-trackers';
 
@@ -304,22 +305,24 @@ export default async function FranchiseLandingPage() {
           </div>
         </section>
 
-        {/* 6. CTA Section */}
-        <section className="py-24 md:py-32 px-6 text-center bg-[#111111] text-white">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-serif font-medium mb-8">
-              Build the future of beauty.
-            </h2>
-            <p className="text-lg text-gray-400 font-light mb-12 max-w-xl mx-auto">
-              Take the first step towards a lucrative partnership. Submit your inquiry today and our franchise development team will be in touch.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <button className="w-full sm:w-auto bg-[#D97706] text-white px-8 py-4 text-sm uppercase tracking-wider font-semibold hover:bg-[#B45309] transition-all">
-                Apply Now
-              </button>
+        {/* 6. CTA / Form Section */}
+        <section className="py-24 md:py-32 px-6 bg-[#111111] text-white">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-5xl font-serif font-medium mb-6">
+                Build the future of beauty.
+              </h2>
+              <p className="text-lg text-gray-400 font-light mb-12 max-w-xl mx-auto">
+                Take the first step towards a lucrative partnership. Submit your inquiry today and our franchise development team will be in touch.
+              </p>
+            </div>
+            <div className="bg-white text-black p-1 rounded-xl">
+              <FranchiseLeadForm />
+            </div>
+            <div className="mt-12 text-center">
               <Link 
                 href="https://vavaw.vn"
-                className="w-full sm:w-auto inline-flex justify-center items-center gap-2 border-b border-gray-600 pb-1 text-sm uppercase tracking-wider hover:text-gray-300 hover:border-gray-300 transition-colors"
+                className="inline-flex justify-center items-center gap-2 border-b border-gray-600 pb-1 text-sm uppercase tracking-wider hover:text-gray-300 hover:border-gray-300 transition-colors"
               >
                 Back to VAVAW
                 <ArrowUpRight className="w-4 h-4" />

@@ -14,6 +14,11 @@ export default function SettingsPage() {
   const hasBeautyRevalidateUrl = !!process.env.BEAUTY_REVALIDATE_URL;
   const hasFranchiseRevalidateUrl = !!process.env.FRANCHISE_REVALIDATE_URL;
 
+  const emailProvider = process.env.EMAIL_PROVIDER || 'noop';
+  const hasResendKey = !!process.env.RESEND_API_KEY;
+  const hasLeadTo = !!process.env.LEAD_NOTIFICATION_TO;
+  const hasLeadFrom = !!process.env.LEAD_NOTIFICATION_FROM;
+
   const configs = [
     { name: 'Environment', value: 'Production', icon: Server, status: 'Active' },
     { name: 'Domains', value: '*.vavaw.vn', icon: Globe, status: 'Configured' },
@@ -55,6 +60,15 @@ export default function SettingsPage() {
     { name: 'Franchise Target URL', value: hasFranchiseRevalidateUrl ? 'Configured' : 'Missing', icon: Globe, status: hasFranchiseRevalidateUrl ? 'Configured' : 'Missing' },
   ];
 
+  const leadCaptureConfig = [
+    { name: 'Public Lead Capture', value: 'Enabled via Honeypot', icon: SettingsIcon, status: 'Active' },
+    { name: 'Email Provider', value: emailProvider, icon: SettingsIcon, status: emailProvider === 'resend' ? 'Active' : emailProvider === 'console' ? 'Mock' : 'Disabled' },
+    { name: 'Email Recipient (TO)', value: hasLeadTo ? 'Configured (Hidden)' : 'Missing', icon: Users, status: hasLeadTo ? 'Configured' : 'Missing' },
+    { name: 'Email Sender (FROM)', value: hasLeadFrom ? 'Configured (Hidden)' : 'Missing', icon: Server, status: hasLeadFrom ? 'Configured' : 'Missing' },
+    { name: 'Resend API Key', value: hasResendKey ? 'Configured (Hidden)' : 'Missing', icon: Lock, status: hasResendKey ? 'Configured' : 'Missing' },
+    { name: 'CRM Integration', value: 'Pending Phase', icon: SettingsIcon, status: 'Pending' },
+  ];
+
   const expectedTables = [
     'business_entries',
     'hero_slides',
@@ -62,6 +76,7 @@ export default function SettingsPage() {
     'seo_settings',
     'redirects',
     'content_blocks',
+    'leads',
   ];
 
   return (
@@ -193,6 +208,41 @@ export default function SettingsPage() {
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                   item.status === 'Active' || item.status === 'Configured'
                     ? 'bg-green-100 text-green-800'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {item.status}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Lead Capture Section */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">Lead Capture Settings</h2>
+        <p className="mt-1 text-sm text-slate-500">Public form configuration and third-party integrations.</p>
+      </div>
+
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <ul role="list" className="divide-y divide-slate-200">
+          {leadCaptureConfig.map((item, idx) => (
+            <li key={idx} className="p-4 sm:px-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-orange-50 p-2 rounded-lg">
+                  <item.icon className="h-5 w-5 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                  <p className="text-sm text-slate-500">{item.value}</p>
+                </div>
+              </div>
+              <div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  item.status === 'Active' || item.status === 'Configured'
+                    ? 'bg-green-100 text-green-800'
+                    : item.status === 'Pending'
+                    ? 'bg-amber-100 text-amber-800'
                     : 'bg-slate-100 text-slate-600'
                 }`}>
                   {item.status}

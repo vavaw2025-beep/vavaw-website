@@ -69,3 +69,10 @@ NEXT_PUBLIC_ANALYTICS_PROVIDER=vercel
 ### Phase 32 Updates: Revalidation
 - Public apps (main, eauty, ranchise) require REVALIDATION_SECRET.
 - Admin app requires REVALIDATION_SECRET, MAIN_REVALIDATE_URL, BEAUTY_REVALIDATE_URL, FRANCHISE_REVALIDATE_URL, and CMS_REVALIDATION_ENABLED=true.
+
+### Lead Notifications
+- [ ] EMAIL_PROVIDER (Set to 'resend' for production)
+- [ ] RESEND_API_KEY
+- [ ] LEAD_NOTIFICATION_TO
+- [ ] LEAD_NOTIFICATION_FROM
+

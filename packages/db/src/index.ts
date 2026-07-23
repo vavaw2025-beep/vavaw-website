@@ -13,3 +13,5 @@ export * from './mutations/seo-settings';
 export * from './mutations/content-blocks';
 export * from './queries/admin-profiles';
 export * from './mutations/admin-profiles';
+export * from './queries/leads';
+export * from './mutations/leads';

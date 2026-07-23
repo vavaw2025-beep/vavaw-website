@@ -6,6 +6,7 @@ import { loadPublicSeo } from '@/lib/load-public-seo';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
 import { ContentBlockRenderer } from '@/components/content-block-renderer';
 import { BeautyCtaButton } from '@/components/analytics-trackers';
+import { LeadForm } from '@/components/lead-form';
 
 export const revalidate = 60;
 
@@ -219,22 +220,10 @@ export default async function BeautyLandingPage() {
           </div>
         </section>
 
-        {/* 6. CTA Section */}
-        <section className="py-32 md:py-48 px-6 text-center bg-[#F7F4EE]">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-4xl md:text-6xl font-serif font-light mb-8 text-[#2C2A29]">
-              Begin your journey.
-            </h2>
-            <p className="text-lg text-[#5C5855] font-light mb-12">
-              Join the waitlist to be notified when our sanctuary officially opens.
-            </p>
-            <Link 
-              href="https://vavaw.vn"
-              className="inline-flex items-center gap-3 border-b border-[#2C2A29] pb-1 text-sm uppercase tracking-widest hover:text-[#5C5855] hover:border-[#5C5855] transition-colors"
-            >
-              Return to VAVAW
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
+        {/* 6. CTA / Booking Section */}
+        <section className="py-24 md:py-32 px-6 bg-[#F7F4EE]">
+          <div className="max-w-4xl mx-auto">
+            <LeadForm />
           </div>
         </section>
 

@@ -29,7 +29,11 @@ export type AnalyticsEventName =
   | 'admin_user_disabled'
   | 'admin_user_deleted'
   | 'cms_revalidation_triggered'
-  | 'cms_revalidation_failed';
+  | 'cms_revalidation_failed'
+  | 'lead_submitted'
+  | 'lead_status_updated'
+  | 'lead_notification_sent'
+  | 'lead_notification_failed';
 
 export interface AnalyticsEventPayload {
   app: 'main' | 'beauty' | 'franchise' | 'admin';
@@ -38,5 +42,9 @@ export interface AnalyticsEventPayload {
   target?: string;
   entityType?: string;
   entityId?: string;
+  source_app?: string;
+  lead_type?: string;
+  status?: string;
+  provider?: string;
   metadata?: Record<string, string | number | boolean | null>;
 }
