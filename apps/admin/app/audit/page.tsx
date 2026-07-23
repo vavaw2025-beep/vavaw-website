@@ -29,16 +29,6 @@ export default async function AuditLogsPage(props: {
 
   const supabase = await getAdminServerSupabaseClient();
   
-  const directResult = await supabase
-    .from("audit_logs")
-    .select("id, actor_id, actor_role, action, entity_type, entity_id, status, created_at")
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  console.warn("[audit] direct query result", {
-    count: directResult.data?.length ?? 0,
-    error: directResult.error?.message ?? null
-  });
 
   const validStatuses = ['success', 'failure', 'failed'];
   const finalStatus = validStatuses.includes(statusFilterRaw) ? statusFilterRaw : undefined;
@@ -58,14 +48,6 @@ export default async function AuditLogsPage(props: {
 
   const { data: logs, count, error: auditError } = await getAuditLogs(supabase, filters);
 
-  console.warn("[audit] getAuditLogs result", {
-    count: logs?.length || 0,
-    error: auditError?.message ?? null,
-    filters
-  });
-
-  const isDebug = params.debug === '1' && ['owner', 'admin'].includes(profile.role);
-
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -79,22 +61,6 @@ export default async function AuditLogsPage(props: {
           Total: {count} logs
         </div>
       </div>
-
-      {isDebug && (
-        <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg p-4 font-mono text-xs text-amber-900 dark:text-amber-200 space-y-2">
-          <h3 className="font-bold border-b border-amber-200 dark:border-amber-800 pb-1 mb-2">Owner Diagnostics</h3>
-          <div>currentUserId exists: {profile ? 'true' : 'false'}</div>
-          <div>currentProfileRole: {profile?.role}</div>
-          <div>currentProfileStatus: {profile?.status}</div>
-          <div>directAuditCount: {directResult.data?.length ?? 0}</div>
-          <div>directAuditError: {directResult.error?.message || 'null'}</div>
-          <div>getAuditLogsCount: {logs?.length ?? 0}</div>
-          <div>getAuditLogsError: {auditError?.message || 'null'}</div>
-          <div>
-            normalizedFilters: {JSON.stringify(filters)}
-          </div>
-        </div>
-      )}
 
       {/* Filters Form */}
       <form method="GET" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
