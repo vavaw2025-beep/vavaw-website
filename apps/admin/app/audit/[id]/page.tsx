@@ -68,7 +68,7 @@ export default async function AuditLogDetailPage({
           </div>
           <div>
             <span className="text-slate-500 block">Actor</span>
-            <span className="font-medium">{log.actor_email || log.actor_id || 'System'}</span>
+            <span className="font-medium">{log.actor_id || 'System'}</span>
           </div>
           <div>
             <span className="text-slate-500 block">Actor Role</span>

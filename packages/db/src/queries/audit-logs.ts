@@ -8,7 +8,7 @@ export async function getAuditLogs(
   try {
     let query = supabase
       .from('audit_logs')
-      .select('*, admin_profiles(email)', { count: 'exact' });
+      .select('*', { count: 'exact' });
 
     if (filters.action) {
       query = query.eq('action', filters.action);
@@ -54,7 +54,7 @@ export async function getAuditLogs(
       ip_address: row.ip_address,
       user_agent: row.user_agent,
       created_at: row.created_at,
-      actor_email: row.admin_profiles?.email || null,
+      actor_email: null,
     }));
 
     return { data: formattedData, count: count ?? formattedData.length };
@@ -71,7 +71,7 @@ export async function getAuditLogById(
   try {
     const { data, error } = await supabase
       .from('audit_logs')
-      .select('*, admin_profiles(email)')
+      .select('*')
       .eq('id', id)
       .single();
 
@@ -91,7 +91,7 @@ export async function getAuditLogById(
       ip_address: data.ip_address,
       user_agent: data.user_agent,
       created_at: data.created_at,
-      actor_email: data.admin_profiles?.email || null,
+      actor_email: null,
     };
   } catch (err) {
     console.error('[DB AuditLogById Exception]', err);

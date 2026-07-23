@@ -184,7 +184,7 @@ export default async function AuditLogsPage(props: {
                     {new Date(log.created_at).toLocaleString('vi-VN')}
                   </td>
                   <td className="py-2.5 px-4 font-medium text-slate-900 dark:text-slate-100">
-                    {log.actor_email || log.actor_id || 'System'}
+                    {log.actor_id ? `${log.actor_id.slice(0, 8)}...` : 'System'}
                   </td>
                   <td className="py-2.5 px-4">
                     <span className="capitalize px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono text-[10px]">
