@@ -11,10 +11,9 @@ export async function createMediaAsset(
   const { data, error } = await supabase
     .from(tables.media_assets)
     .insert([input])
-    .select()
-    .single();
+    .select();
 
-  return { data, error };
+  return { data: data && data.length > 0 ? data[0] : null, error };
 }
 
 export async function updateMediaAsset(

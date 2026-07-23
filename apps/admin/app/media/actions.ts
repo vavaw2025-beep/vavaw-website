@@ -43,17 +43,20 @@ export async function uploadMediaAction(formData: FormData) {
   let isVideo = false;
   if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
     if (file.size > MAX_IMAGE_SIZE) {
-      return { success: false, error: `Image file size exceeds maximum limit of 5MB.` };
+      console.warn("[media] upload failed", { reason: 'File is too large', stage: 'invalid file', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
+      return { success: false, error: `File is too large. Image file size exceeds maximum limit of 5MB.` };
     }
   } else if (ALLOWED_VIDEO_MIME_TYPES.includes(file.type)) {
     isVideo = true;
     if (file.size > MAX_VIDEO_SIZE) {
-      return { success: false, error: `Video file size exceeds maximum limit of 50MB.` };
+      console.warn("[media] upload failed", { reason: 'File is too large', stage: 'invalid file', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
+      return { success: false, error: `File is too large. Video file size exceeds maximum limit of 50MB.` };
     }
   } else {
+    console.warn("[media] upload failed", { reason: 'File type is not allowed', stage: 'invalid mime type', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
     return {
       success: false,
-      error: `Invalid file type (${file.type}). Supported formats: JPG, PNG, WEBP, AVIF, MP4, WEBM, MOV.`,
+      error: `File type is not allowed (${file.type}). Supported formats: JPG, PNG, WEBP, AVIF, MP4, WEBM, MOV.`,
     };
   }
 
@@ -76,12 +79,22 @@ export async function uploadMediaAction(formData: FormData) {
       });
 
     if (uploadError) {
+      console.warn("[media] upload failed", { reason: uploadError.message, stage: 'storage bucket upload failed', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
+      // Clearer error for missing bucket or permission
+      if (uploadError.message.includes('Bucket not found') || uploadError.message.includes('row-level security')) {
+        return { success: false, error: 'Storage bucket is not configured or accessible.' };
+      }
       return { success: false, error: 'Failed to upload file to Supabase Storage.' };
     }
 
     const { data: publicUrlData } = supabase.storage
       .from('vavaw-media')
       .getPublicUrl(storagePath);
+
+    if (!publicUrlData || !publicUrlData.publicUrl) {
+      console.warn("[media] upload failed", { reason: 'Public URL returned empty', stage: 'public URL failed', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
+      return { success: false, error: 'Failed to generate public URL for uploaded file.' };
+    }
 
     const publicUrl = publicUrlData.publicUrl;
 
@@ -90,14 +103,14 @@ export async function uploadMediaAction(formData: FormData) {
       type: requestedType,
       url: publicUrl,
       alt_text: altText,
-      storage_provider: 'supabase',
       mime_type: file.type,
       size_bytes: file.size,
       metadata: {},
     });
 
     if (dbError) {
-      return { success: false, error: dbError.message || 'Uploaded image to storage, but failed to register in media_assets database.' };
+      console.warn("[media] upload failed", { reason: dbError.message, stage: 'media_assets insert failed', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
+      return { success: false, error: 'Failed to save media asset to database.' };
     }
 
     revalidatePath('/media');
@@ -136,6 +149,7 @@ export async function uploadMediaAction(formData: FormData) {
     });
     return { success: true, data: record };
   } catch (err: any) {
+    console.warn("[media] upload failed", { reason: err.message, stage: 'unknown', assetType: requestedType, mimeType: file.type, sizeBytes: file.size, siteKey });
     captureError(err, { app: 'admin', severity: 'error' });
     trackEvent(isVideo ? 'media_video_upload_failed' : 'media_upload_failed' as any, { app: 'admin' });
     await writeAuditLog({
@@ -144,7 +158,7 @@ export async function uploadMediaAction(formData: FormData) {
       status: 'failure',
       metadata: { media_type: isVideo ? 'video' : 'image', reason_code: 'exception' }
     });
-    return { success: false, error: 'Unexpected server error during upload.' };
+    return { success: false, error: 'Failed to upload file due to an unexpected server error.' };
   }
 }
 

@@ -26,7 +26,16 @@ Before finalizing the transition, verify that DNS records in your domain registr
 
 *Note: DNS propagation may take up to 24-48 hours, though it typically takes a few minutes if using Cloudflare/Vercel nameservers.*
 
-## 3. SSL Verification Checklist
+## 3. Production Migration & Storage Expectations
+
+Before finalizing the launch, ensure the production Supabase project has the correct schema:
+
+- [ ] Ensure **`vavaw-media`** storage bucket is created and set to public.
+- [ ] Ensure migration `002_storage_policies.sql` is applied.
+- [ ] Ensure migration `005_video_media_support.sql` is applied.
+- [ ] Verify `media_assets` table contains columns: `mime_type`, `size_bytes`, `metadata`.
+
+## 4. SSL Verification Checklist
 
 Vercel automatically provisions Let's Encrypt SSL certificates for custom domains. After adding domains in the Vercel dashboard:
 
@@ -34,14 +43,14 @@ Vercel automatically provisions Let's Encrypt SSL certificates for custom domain
 - [ ] Test access to all URLs over `https://` in an incognito window.
 - [ ] Ensure that `www.vavaw.vn` correctly redirects to `vavaw.vn` (configured in Vercel domain settings).
 
-## 4. Environment Variables Update
+## 5. Environment Variables Update
 
 After domain launch, update environment variables across the platform:
 
 - [ ] Update CORS or allowed origins in Supabase Authentication Settings (Site URL and Redirect URLs) to include the new custom domains.
 - [ ] Verify `NEXT_PUBLIC_SITE_URL` (if used) is updated in Vercel for all projects.
 
-## 5. Post-Domain Smoke Tests
+## 6. Post-Domain Smoke Tests
 
 Once DNS is propagated and SSL is active, perform the following checks on the live domains:
 
@@ -50,7 +59,7 @@ Once DNS is propagated and SSL is active, perform the following checks on the li
 - [ ] **Franchise (`franchise.vavaw.vn`)**: Verify professional UI loads properly, submit a franchise application.
 - [ ] **Admin (`admin.vavaw.vn`)**: Log in with owner credentials via Supabase Auth, verify lead forms successfully created entries, check that the audit log recorded the actions.
 
-## 6. Rollback Steps
+## 7. Rollback Steps
 
 In the event of a critical failure during domain launch:
 
