@@ -3,9 +3,15 @@
 ## Pre-Launch Verification (T-24 Hours)
 
 ### Brand & UI (Phase 48)
-- [ ] Visual polish completed across all apps (`vavaw-main`, `vavaw-beauty`, `vavaw-franchise`, `vavaw-admin`).
-- [ ] Responsive layouts checked on Mobile (360px), Tablet, Desktop.
-- [ ] Brand tokens applied without modifying backend logic.
+- [x] Visual polish completed across all apps (`vavaw-main`, `vavaw-beauty`, `vavaw-franchise`, `vavaw-admin`).
+- [x] Responsive layouts checked on Mobile (360px), Tablet, Desktop.
+- [x] Brand tokens applied without modifying backend logic.
+
+### Domain Launch Preparation (Phase 49)
+- [x] Visual QA and responsive QA completed.
+- [x] Simple favicons added.
+- [x] Production core flow smoke test passed.
+- [x] `docs/domain-launch-checklist.md` created.
 
 ### Security & Authentication
 - [ ] Production Admin is configured with `ADMIN_AUTH_MODE=supabase` and `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.
