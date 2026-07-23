@@ -13,6 +13,10 @@
 - [x] Production core flow smoke test passed.
 - [x] `docs/domain-launch-checklist.md` created.
 
+### Admin Feature Map (Phase 50A)
+- [x] Admin Feature Map documentation page added.
+- [x] `docs/admin-feature-map.md` created.
+
 ### Security & Authentication
 - [ ] Production Admin is configured with `ADMIN_AUTH_MODE=supabase` and `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.
 - [ ] `ADMIN_AUTH_MODE=mock` is completely disabled in production environment variables.

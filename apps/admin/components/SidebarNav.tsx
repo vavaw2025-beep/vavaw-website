@@ -13,7 +13,8 @@ import {
   Presentation,
   Users,
   Mail,
-  ShieldCheck
+  ShieldCheck,
+  Map
 } from 'lucide-react';
 
 const navigation = [
@@ -28,6 +29,7 @@ const navigation = [
   { name: 'Users', href: '/users', icon: Users },
   { name: 'Leads', href: '/leads', icon: Mail },
   { name: 'Audit Logs', href: '/audit', icon: ShieldCheck, roles: ['owner', 'admin'] },
+  { name: 'Feature Map', href: '/features', icon: Map },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
