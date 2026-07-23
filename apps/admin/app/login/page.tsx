@@ -1,13 +1,20 @@
 "use client";
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { Lock, Mail, ArrowRight, AlertTriangle, XCircle } from 'lucide-react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Lock, Mail, ArrowRight, AlertTriangle, XCircle, Loader2 } from 'lucide-react';
+import { createBrowserSupabaseClient } from '@vavaw/auth';
 
 function LoginContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const errorParam = searchParams.get('error');
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const getErrorMessage = (error: string | null) => {
     switch (error) {
@@ -22,7 +29,53 @@ function LoginContent() {
     }
   };
 
-  const errorMessage = getErrorMessage(errorParam);
+  const errorMessage = authError || getErrorMessage(errorParam);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+
+    if (process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE === 'mock') {
+      import('@vavaw/analytics').then(({ trackEvent }) => {
+        trackEvent('admin_login_success', {
+          app: 'admin',
+          metadata: { role: 'mock_bypass' }
+        });
+      });
+      router.push('/');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const supabase = createBrowserSupabaseClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setAuthError(error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      if (data.session) {
+        import('@vavaw/analytics').then(({ trackEvent }) => {
+          trackEvent('admin_login_success', {
+            app: 'admin',
+            metadata: { method: 'password' }
+          });
+        });
+        // Hard refresh to ensure middleware catches the new session cookies
+        window.location.href = '/';
+      }
+    } catch (err: any) {
+      setAuthError(err.message || 'An unexpected error occurred during login');
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4">
@@ -32,13 +85,13 @@ function LoginContent() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/25 mb-4">
             <Lock className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">VAVAW Admin Login</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">VAVAW Admin</h1>
           <p className="mt-2 text-sm text-slate-400">Internal dashboard access</p>
         </div>
 
         {/* Login Card */}
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
-          {/* Error Alert from Middleware */}
+          {/* Error Alert from Middleware or Auth */}
           {errorMessage && (
             <div className="mb-6 flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-200 text-xs leading-relaxed">
               <XCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
@@ -46,18 +99,7 @@ function LoginContent() {
             </div>
           )}
 
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            // In the future when real login is implemented here, fire this after successful auth.
-            // Using a dynamic import for analytics here in the client to avoid hydration issues 
-            // if we needed to, but we can just import it at the top.
-            import('@vavaw/analytics').then(({ trackEvent }) => {
-              trackEvent('admin_login_success', {
-                app: 'admin',
-                metadata: { role: 'unknown_mock_login' } // update when real auth added
-              });
-            });
-          }} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-5">
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1.5">
@@ -72,6 +114,9 @@ function LoginContent() {
                   name="email"
                   type="email"
                   autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@vavaw.vn"
                   className="block w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm"
                 />
@@ -92,6 +137,9 @@ function LoginContent() {
                   name="password"
                   type="password"
                   autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="block w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm"
                 />
@@ -101,11 +149,20 @@ function LoginContent() {
             {/* Sign In Button */}
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium rounded-lg shadow-lg shadow-blue-600/25 transition-all text-sm cursor-not-allowed opacity-60"
-              disabled
+              disabled={isLoading || !email || !password}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium rounded-lg shadow-lg shadow-blue-600/25 transition-all text-sm disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Sign in
-              <ArrowRight className="h-4 w-4" />
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  Sign in
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
             </button>
           </form>
 
@@ -119,16 +176,7 @@ function LoginContent() {
                   This is insecure and bypasses all route protection. Switch ADMIN_AUTH_MODE to supabase immediately.
                 </p>
               </div>
-            ) : (
-              <div className="flex items-start gap-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                <AlertTriangle className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-200/80 leading-relaxed">
-                  {process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE === 'supabase'
-                    ? "Supabase login mode prepared, real login will be implemented in a future phase"
-                    : "Mock login UI only. Supabase Auth will be connected in a later phase."}
-                </p>
-              </div>
-            )}
+            ) : null}
           </div>
 
           {/* Back to dashboard */}
