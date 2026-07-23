@@ -20,7 +20,12 @@ function SubmitButton() {
 
 export function LeadStatusForm({ leadId, currentStatus }: { leadId: string, currentStatus: string }) {
   return (
-    <form action={updateLeadStatusAction} className="space-y-4">
+    <form action={async (formData: FormData) => {
+      const res = await updateLeadStatusAction(formData);
+      if (res && !res.success) {
+        alert(res.error || 'Failed to update status');
+      }
+    }} className="space-y-4">
       <input type="hidden" name="leadId" value={leadId} />
       <div>
         <label htmlFor="status" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Update Status</label>
