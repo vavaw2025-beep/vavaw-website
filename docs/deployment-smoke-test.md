@@ -66,3 +66,7 @@ Ensure that REVALIDATION_SECRET and CMS_REVALIDATION_ENABLED=true are configured
 - [ ] Ensure SENTRY_AUTH_TOKEN is not exposed in client-side code.
 - [ ] Ensure PII is being successfully stripped from Sentry payloads.
 
+
+- [ ] Verify Owner can send automated email invites to new users.
+- [ ] Verify invited user receives the email, clicks link, sets password, and logs in.
+

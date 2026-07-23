@@ -49,3 +49,8 @@ This document outlines the security architecture and Row Level Security (RLS) po
 2. **Mock Mode**: Admin mock mode is explicitly flagged as non-production and is strictly read-only.
 3. **Public Apps**: All public apps (`apps/main`, `apps/beauty`, `apps/franchise`) only use the `NEXT_PUBLIC_SUPABASE_ANON_KEY` and depend on the `public` RLS policies for reading content.
 4. **Analytics**: The `@vavaw/analytics` package tracks no PII, emails, or tokens.
+
+### Admin Invites
+- The \SUPABASE_SECRET_KEY\ bypasses RLS and is used exclusively on the server in \supabase-admin.ts\ for automated admin invites.
+- Client components never receive this key.
+

@@ -28,6 +28,8 @@ export type AnalyticsEventName =
   | 'admin_user_updated'
   | 'admin_user_disabled'
   | 'admin_user_deleted'
+  | 'admin_user_invited'
+  | 'admin_user_invite_failed'
   | 'cms_revalidation_triggered'
   | 'cms_revalidation_failed'
   | 'lead_submitted'

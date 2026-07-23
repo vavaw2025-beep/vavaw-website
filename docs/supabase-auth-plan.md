@@ -72,3 +72,7 @@ Even when authenticated with Supabase Auth, middleware queries `public.admin_pro
 - **Phase 30:** Production Hardening + Security Audit ✅
   - Security warning for mock mode in production.
   - Comprehensive RLS audit and production launch checklist created.
+
+### Automated Invites
+Automated email invites can be sent by an active owner via the admin dashboard. This utilizes the Supabase Admin Auth API and requires the \SUPABASE_SECRET_KEY\ to be set on the server.
+

@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
@@ -166,3 +166,106 @@ export async function disableAdminProfileAction(id: string) {
 }
 
 
+
+export async function inviteAdminUserAction(input: {
+  email: string;
+  display_name: string;
+  role: string;
+  confirm_owner_invite?: boolean;
+}) {
+  const mode = getAdminDataSourceMode();
+  if (mode !== 'supabase') {
+    return { success: false, error: 'User management requires Supabase mode.' };
+  }
+
+  const profile = await getCurrentAdminProfile();
+  if (!profile || profile.status !== 'active' || profile.role !== 'owner') {
+    return { success: false, error: 'Insufficient permissions. Active owner role required.' };
+  }
+
+  if (!input.email || !input.email.includes('@')) {
+    return { success: false, error: 'Invalid email address.' };
+  }
+
+  if (!input.display_name || input.display_name.trim().length === 0 || input.display_name.length > 120) {
+    return { success: false, error: 'Display name is required (max 120 chars).' };
+  }
+
+  const allowedRoles = ['owner', 'admin', 'editor', 'viewer'];
+  if (!allowedRoles.includes(input.role)) {
+    return { success: false, error: 'Unknown role.' };
+  }
+
+  if (input.role === 'owner' && !input.confirm_owner_invite) {
+    return { success: false, error: 'Explicit confirmation is required to invite an owner.' };
+  }
+
+  try {
+    const { createAdminClient } = await import('../../lib/supabase-admin');
+    const supabaseAdmin = createAdminClient();
+    
+    if (!supabaseAdmin) {
+      return { success: false, error: 'Automated invites are not configured. Missing Service Role Key.' };
+    }
+
+    const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3002';
+    
+    // 1. Send invite
+    const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(input.email.trim(), {
+      data: {
+        display_name: input.display_name.trim(),
+        invited_role: input.role,
+      },
+      redirectTo: `${adminUrl}/login?invited=true`,
+    });
+
+    if (inviteError) {
+      if (inviteError.message.includes('already exists')) {
+        return { success: false, error: 'A user with this email already exists. Please use Manual UID Entry to connect them.' };
+      }
+      throw inviteError;
+    }
+
+    if (!inviteData.user?.id) {
+      throw new Error('No user ID returned from invite.');
+    }
+
+    const invitedUserId = inviteData.user.id;
+
+    // 2. Create profile using standard client
+    const supabase = await getAdminServerSupabaseClient();
+    const { error: profileError } = await createAdminProfile(supabase, {
+      id: invitedUserId,
+      email: input.email.trim(),
+      full_name: input.display_name.trim(),
+      role: input.role as any,
+      status: 'active',
+    });
+
+    if (profileError) {
+      // Invite succeeded, but profile creation failed
+      captureError(profileError, { app: 'admin', feature: 'admin_user_invite', severity: 'error', metadata: { role: input.role, status: 'active' } });
+      return { 
+        success: false, 
+        error: 'Invite was sent, but profile creation failed. Please reconcile manually using Manual UID Entry.' 
+      };
+    }
+
+    revalidatePath('/users');
+    trackEvent('admin_user_invited', {
+      app: 'admin',
+      entityType: 'admin_profile',
+      entityId: invitedUserId,
+      metadata: { role: input.role, status: 'active' },
+    });
+
+    return { success: true, data: { id: invitedUserId } };
+  } catch (err: any) {
+    captureError(err, { app: 'admin', feature: 'admin_user_invite', severity: 'error', metadata: { role: input.role, status: 'active' } });
+    trackEvent('admin_user_invite_failed', {
+      app: 'admin',
+      metadata: { role: input.role, status: 'active' },
+    });
+    return { success: false, error: 'Failed to send invite. Please try again or use manual fallback.' };
+  }
+}

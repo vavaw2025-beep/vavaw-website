@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Table, Image as ImageIcon, Users } from 'lucide-react';
+import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Table, Image as ImageIcon, Users, Key } from 'lucide-react';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 
 export default function SettingsPage() {
@@ -6,7 +6,8 @@ export default function SettingsPage() {
   const authMode = process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE || process.env.ADMIN_AUTH_MODE || "mock";
   const hasSupabaseUrl = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
   const hasAnonKey = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const hasServiceRole = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const hasServiceRole = !!process.env.SUPABASE_SERVICE_ROLE_KEY || !!process.env.SUPABASE_SECRET_KEY;
+  const hasAdminUrl = !!process.env.NEXT_PUBLIC_ADMIN_URL;
   
   const hasRevalidationSecret = !!process.env.REVALIDATION_SECRET;
   const isRevalidationEnabled = process.env.CMS_REVALIDATION_ENABLED === 'true';
@@ -54,6 +55,9 @@ export default function SettingsPage() {
     { name: 'Anon Key Configured', value: hasAnonKey ? 'Yes' : 'No', icon: Lock, status: hasAnonKey ? 'Configured' : 'Missing' },
     { name: 'Service Role Configured', value: hasServiceRole ? 'Yes (Hidden for Security)' : 'No', icon: Shield, status: hasServiceRole ? 'Configured' : 'Missing' },
     { name: 'Route Protection', value: authMode === 'supabase' ? 'Active (Next.js Middleware + RLS)' : 'Bypassed in Mock Mode', icon: Lock, status: authMode === 'supabase' ? 'Active' : 'Disabled' },
+    { name: 'Automated Admin Invites', value: hasServiceRole && hasAdminUrl ? 'Enabled' : 'Disabled (Requires Service Key & Admin URL)', icon: Users, status: hasServiceRole && hasAdminUrl ? 'Active' : 'Disabled' },
+    { name: 'Admin Invite Redirect URL', value: hasAdminUrl ? 'Configured' : 'Missing', icon: Globe, status: hasAdminUrl ? 'Configured' : 'Missing' },
+    { name: 'Manual UID Fallback', value: 'Available', icon: Key, status: 'Active' },
   ];
 
   const revalidationConfig = [

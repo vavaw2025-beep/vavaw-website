@@ -102,3 +102,10 @@ oop\ and \console\ providers for safe local testing.
 - Added @sentry/nextjs to all apps with dynamic initialization.
 - Implemented strict PII scrubber in @vavaw/monitoring.
 
+
+### Phase 40: Automated Supabase Auth Invite Flow (Completed)
+- Implemented \supabase-admin.ts\ with \SUPABASE_SECRET_KEY\.
+- Added \inviteAdminUserAction\ in admin users management.
+- Updated Admin Profile Form with an Invite by Email default mode.
+- Tracked via \dmin_user_invited\ analytics event.
+
