@@ -2,9 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { trackEvent } from '@vavaw/analytics';
-import { createBrowserClient } from '@supabase/ssr';
-import { updateLeadStatus } from '@vavaw/db';
+import { updateLeadStatusAction } from '../status-actions';
 
 export function LeadStatusForm({ leadId, currentStatus }: { leadId: string, currentStatus: string }) {
   const [status, setStatus] = useState(currentStatus);
@@ -12,23 +10,12 @@ export function LeadStatusForm({ leadId, currentStatus }: { leadId: string, curr
   const router = useRouter();
 
   const handleUpdate = async () => {
-    setIsUpdating(true);
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-    
-    const { error } = await updateLeadStatus(supabase, leadId, status as any);
+    const res = await updateLeadStatusAction(leadId, status, currentStatus);
     setIsUpdating(false);
 
-    if (error) {
-      alert('Failed to update status');
+    if (!res.success) {
+      alert(res.error || 'Failed to update status');
     } else {
-      trackEvent('lead_status_updated', {
-        app: 'admin',
-        source_app: 'admin',
-        status: status,
-      });
       router.refresh();
     }
   };

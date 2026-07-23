@@ -5,6 +5,7 @@ import { canGeneratePreviewLink } from '@vavaw/auth';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
 import { captureError } from '@vavaw/monitoring';
+import { writeAuditLog } from '../../lib/audit-log';
 
 export async function generateSignedPreviewLinkAction(
   app: 'main' | 'beauty' | 'franchise',
@@ -20,6 +21,12 @@ export async function generateSignedPreviewLinkAction(
         status: 'unauthorized',
         metadata: { role: profile?.role ?? 'anonymous' }
       });
+      await writeAuditLog({
+        action: 'preview_link_generation_failed',
+        entityType: 'preview',
+        status: 'failure',
+        metadata: { role: profile?.role ?? 'anonymous', target_app: app, target, reason_code: 'unauthorized' }
+      });
       return { success: false, error: 'Unauthorized to generate preview links.' };
     }
 
@@ -29,6 +36,12 @@ export async function generateSignedPreviewLinkAction(
         app: 'admin', target, path, 
         status: 'missing_secret',
         metadata: { role: profile.role }
+      });
+      await writeAuditLog({
+        action: 'preview_link_generation_failed',
+        entityType: 'preview',
+        status: 'failure',
+        metadata: { role: profile.role, target_app: app, target, reason_code: 'missing_secret' }
       });
       return { success: false, error: 'Preview secret is not configured on the server.' };
     }
@@ -53,12 +66,25 @@ export async function generateSignedPreviewLinkAction(
       metadata: { role: profile.role, target_app: app }
     });
 
+    await writeAuditLog({
+      action: 'preview_link_generated',
+      entityType: 'preview',
+      status: 'success',
+      metadata: { role: profile.role, target_app: app, target }
+    });
+
     return { success: true, previewUrl, ttl };
   } catch (error: any) {
     captureError(error, {
       feature: 'signed_preview',
       app: 'admin', path,
       metadata: { target, status: 'error', target_app: app }
+    });
+    await writeAuditLog({
+      action: 'preview_link_generation_failed',
+      entityType: 'preview',
+      status: 'failure',
+      metadata: { target_app: app, target, reason_code: 'exception' }
     });
     return { success: false, error: 'An unexpected error occurred while generating the preview link.' };
   }

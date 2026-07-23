@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
@@ -15,6 +15,7 @@ import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
 import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
+import { writeAuditLog } from '../../lib/audit-log';
 
 function revalidateSeo(siteKey: string, path: string, reason: string) {
   let targetApp: 'main' | 'beauty' | 'franchise' | 'all' = 'all';
@@ -72,6 +73,13 @@ export async function createSeoSettingAction(input: CreateSeoSettingInput) {
       entityId: data?.id,
       metadata: { role: profile.role },
     });
+    await writeAuditLog({
+      action: 'seo_created',
+      entityType: 'seo',
+      entityId: data?.id,
+      status: 'success',
+      metadata: { role: profile.role }
+    });
     return { success: true, data };
   } catch (err: any) {
     captureError(err, { app: 'admin', severity: 'error' });
@@ -112,6 +120,13 @@ export async function updateSeoSettingAction(id: string, input: UpdateSeoSetting
       entityType: 'seo_setting',
       entityId: id,
       metadata: { role: profile.role },
+    });
+    await writeAuditLog({
+      action: 'seo_updated',
+      entityType: 'seo',
+      entityId: id,
+      status: 'success',
+      metadata: { role: profile.role }
     });
     return { success: true, data };
   } catch (err: any) {
@@ -157,6 +172,13 @@ export async function deleteSeoSettingAction(id: string) {
       entityType: 'seo_setting',
       entityId: id,
       metadata: { role: profile.role },
+    });
+    await writeAuditLog({
+      action: 'seo_deleted',
+      entityType: 'seo',
+      entityId: id,
+      status: 'success',
+      metadata: { role: profile.role }
     });
     return { success: true };
   } catch (err: any) {

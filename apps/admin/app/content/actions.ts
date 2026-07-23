@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
@@ -15,6 +15,7 @@ import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
 import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
+import { writeAuditLog } from '../../lib/audit-log';
 
 function revalidateContent(siteKey: string, pagePath: string, reason: string) {
   let targetApp: 'main' | 'beauty' | 'franchise' | 'all' = 'all';
@@ -72,6 +73,13 @@ export async function createContentBlockAction(input: CreateContentBlockInput) {
       entityId: data?.id,
       metadata: { role: profile.role },
     });
+    await writeAuditLog({
+      action: 'content_block_created',
+      entityType: 'content_block',
+      entityId: data?.id,
+      status: 'success',
+      metadata: { role: profile.role }
+    });
     return { success: true, data };
   } catch (err: any) {
     captureError(err, { app: 'admin', severity: 'error' });
@@ -112,6 +120,13 @@ export async function updateContentBlockAction(id: string, input: UpdateContentB
       entityType: 'content_block',
       entityId: id,
       metadata: { role: profile.role },
+    });
+    await writeAuditLog({
+      action: 'content_block_updated',
+      entityType: 'content_block',
+      entityId: id,
+      status: 'success',
+      metadata: { role: profile.role }
     });
     return { success: true, data };
   } catch (err: any) {
@@ -155,6 +170,13 @@ export async function deleteContentBlockAction(id: string) {
       entityType: 'content_block',
       entityId: id,
       metadata: { role: profile.role },
+    });
+    await writeAuditLog({
+      action: 'content_block_deleted',
+      entityType: 'content_block',
+      entityId: id,
+      status: 'success',
+      metadata: { role: profile.role }
     });
     return { success: true };
   } catch (err: any) {

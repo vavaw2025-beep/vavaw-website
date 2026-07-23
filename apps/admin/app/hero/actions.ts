@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
@@ -15,6 +15,7 @@ import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
 import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
+import { writeAuditLog } from '../../lib/audit-log';
 
 export async function createHeroSlideAction(input: CreateHeroSlideInput) {
   const mode = getAdminDataSourceMode();
@@ -51,6 +52,13 @@ export async function createHeroSlideAction(input: CreateHeroSlideInput) {
       entityType: 'hero_slide',
       entityId: data?.id,
       metadata: { role: profile.role },
+    });
+    await writeAuditLog({
+      action: 'hero_created',
+      entityType: 'hero',
+      entityId: data?.id,
+      status: 'success',
+      metadata: { role: profile.role }
     });
     return { success: true, data };
   } catch (err: any) {
@@ -95,6 +103,13 @@ export async function updateHeroSlideAction(id: string, input: UpdateHeroSlideIn
       entityId: id,
       metadata: { role: profile.role },
     });
+    await writeAuditLog({
+      action: 'hero_updated',
+      entityType: 'hero',
+      entityId: id,
+      status: 'success',
+      metadata: { role: profile.role }
+    });
     return { success: true, data };
   } catch (err: any) {
     captureError(err, { app: 'admin', severity: 'error' });
@@ -137,6 +152,13 @@ export async function deleteHeroSlideAction(id: string) {
       entityType: 'hero_slide',
       entityId: id,
       metadata: { role: profile.role },
+    });
+    await writeAuditLog({
+      action: 'hero_deleted',
+      entityType: 'hero',
+      entityId: id,
+      status: 'success',
+      metadata: { role: profile.role }
     });
     return { success: true };
   } catch (err: any) {

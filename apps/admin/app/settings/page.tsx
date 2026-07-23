@@ -355,6 +355,45 @@ export default function SettingsPage() {
         </ul>
       </div>
 
+      {/* Audit Log Section */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">Audit Logs Settings</h2>
+        <p className="mt-1 text-sm text-slate-500">Administrative activity audit logging and access policies.</p>
+      </div>
+
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <ul role="list" className="divide-y divide-slate-200">
+          {[
+            { name: 'Audit Logging', value: 'Enabled', icon: Shield, status: 'Active' },
+            { name: 'Audit Logs Access', value: 'Owner, Admin', icon: Lock, status: 'Configured' },
+            { name: 'Append-Only Storage', value: 'Yes (No UI/RLS update/delete)', icon: Database, status: 'Active' },
+            { name: 'Audit Retention Policy', value: 'Pending Phase', icon: Server, status: 'Pending' },
+            { name: 'Audit Export', value: 'Pending Phase', icon: SettingsIcon, status: 'Pending' },
+          ].map((item, idx) => (
+            <li key={idx} className="p-4 sm:px-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-cyan-50 p-2 rounded-lg">
+                  <item.icon className="h-5 w-5 text-cyan-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                  <p className="text-sm text-slate-500">{item.value}</p>
+                </div>
+              </div>
+              <div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  item.status === 'Active' || item.status === 'Configured'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {item.status}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/* Expected Tables Section */}
       <div>
         <h2 className="text-lg font-semibold text-slate-900">Expected Database Tables</h2>
@@ -363,7 +402,16 @@ export default function SettingsPage() {
 
       <div className="bg-white shadow rounded-lg border border-slate-200 p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-          {expectedTables.map((tableName) => (
+          {[
+            'business_entries',
+            'hero_slides',
+            'media_assets',
+            'seo_settings',
+            'redirects',
+            'content_blocks',
+            'leads',
+            'audit_logs',
+          ].map((tableName) => (
             <div key={tableName} className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200 text-slate-800 font-mono text-sm">
               <Table className="h-4 w-4 text-emerald-600 flex-shrink-0" />
               <span>{tableName}</span>

@@ -6,6 +6,7 @@ import { getLeads } from '@vavaw/db';
 import { rowsToCsv } from '../../../lib/csv';
 import { captureError, captureMessage } from '@vavaw/monitoring';
 import { trackEvent } from '@vavaw/analytics';
+import { writeAuditLog } from '../../../lib/audit-log';
 
 const EXPORT_HARD_LIMIT = 5000;
 
@@ -99,7 +100,7 @@ export async function GET(request: NextRequest) {
 
     const csv = rowsToCsv(headers, rows);
 
-    // 6. Track analytics (no PII in payload)
+    // 6. Track analytics and write audit log (no PII in payload)
     trackEvent('leads_exported', {
       app: 'admin',
       metadata: {
@@ -108,6 +109,19 @@ export async function GET(request: NextRequest) {
         source_app: source_app || 'all',
         lead_type: lead_type || 'all',
       },
+    });
+
+    await writeAuditLog({
+      action: 'lead_exported',
+      entityType: 'lead',
+      status: 'success',
+      metadata: {
+        count: leads.length,
+        status_filter: status || 'all',
+        source_app_filter: source_app || 'all',
+        lead_type_filter: lead_type || 'all',
+        date_range_present: Boolean(date_from || date_to)
+      }
     });
 
     const filename = `leads-export-${new Date().toISOString().split('T')[0]}.csv`;
@@ -132,6 +146,16 @@ export async function GET(request: NextRequest) {
     trackEvent('leads_export_failed', {
       app: 'admin',
       metadata: { status: status || 'all', source_app: source_app || 'all' },
+    });
+    await writeAuditLog({
+      action: 'lead_export_failed',
+      entityType: 'lead',
+      status: 'failure',
+      metadata: {
+        status_filter: status || 'all',
+        source_app_filter: source_app || 'all',
+        reason_code: 'exception'
+      }
     });
     return NextResponse.json({ error: 'Unexpected error during export.' }, { status: 500 });
   }

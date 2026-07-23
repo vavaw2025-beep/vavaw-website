@@ -3,6 +3,7 @@ import { captureError } from '@vavaw/monitoring';
 
 import { revalidatePath } from 'next/cache';
 import { trackEvent } from '@vavaw/analytics';
+import { writeAuditLog } from '../../lib/audit-log';
 import {
   createAdminProfile,
   updateAdminProfile,
@@ -55,6 +56,13 @@ export async function createAdminProfileAction(input: CreateAdminProfileInput) {
       entityType: 'admin_profile',
       entityId: data?.id,
       metadata: { role: input.role, status: input.status || 'active' },
+    });
+    await writeAuditLog({
+      action: 'admin_user_created',
+      entityType: 'user',
+      entityId: data?.id,
+      status: 'success',
+      metadata: { role: input.role }
     });
     return { success: true, data };
   } catch (err: any) {
@@ -111,6 +119,13 @@ export async function updateAdminProfileAction(id: string, input: UpdateAdminPro
       entityId: id,
       metadata: { role: data?.role || 'unknown', status: data?.status || 'unknown' },
     });
+    await writeAuditLog({
+      action: 'admin_user_updated',
+      entityType: 'user',
+      entityId: id,
+      status: 'success',
+      metadata: { role: data?.role, status_after: data?.status }
+    });
     return { success: true, data };
   } catch (err: any) {
     captureError(err, { app: 'admin', severity: 'error' });
@@ -158,14 +173,19 @@ export async function disableAdminProfileAction(id: string) {
       entityId: id,
       metadata: { role: targetProfile?.role || 'unknown' },
     });
+    await writeAuditLog({
+      action: 'admin_user_disabled',
+      entityType: 'user',
+      entityId: id,
+      status: 'success',
+      metadata: { role: targetProfile?.role }
+    });
     return { success: true };
   } catch (err: any) {
     captureError(err, { app: 'admin', severity: 'error' });
     return { success: false, error: err?.message || 'Unexpected server error.' };
   }
 }
-
-
 
 export async function inviteAdminUserAction(input: {
   email: string;
@@ -245,6 +265,13 @@ export async function inviteAdminUserAction(input: {
     if (profileError) {
       // Invite succeeded, but profile creation failed
       captureError(profileError, { app: 'admin', feature: 'admin_user_invite', severity: 'error', metadata: { role: input.role, status: 'active' } });
+      await writeAuditLog({
+        action: 'admin_user_invite_failed',
+        entityType: 'user',
+        entityId: invitedUserId,
+        status: 'failure',
+        metadata: { role: input.role, reason_code: 'profile_creation_failed' }
+      });
       return { 
         success: false, 
         error: 'Invite was sent, but profile creation failed. Please reconcile manually using Manual UID Entry.' 
@@ -258,6 +285,13 @@ export async function inviteAdminUserAction(input: {
       entityId: invitedUserId,
       metadata: { role: input.role, status: 'active' },
     });
+    await writeAuditLog({
+      action: 'admin_user_invited',
+      entityType: 'user',
+      entityId: invitedUserId,
+      status: 'success',
+      metadata: { role: input.role }
+    });
 
     return { success: true, data: { id: invitedUserId } };
   } catch (err: any) {
@@ -265,6 +299,12 @@ export async function inviteAdminUserAction(input: {
     trackEvent('admin_user_invite_failed', {
       app: 'admin',
       metadata: { role: input.role, status: 'active' },
+    });
+    await writeAuditLog({
+      action: 'admin_user_invite_failed',
+      entityType: 'user',
+      status: 'failure',
+      metadata: { role: input.role, reason_code: 'exception' }
     });
     return { success: false, error: 'Failed to send invite. Please try again or use manual fallback.' };
   }

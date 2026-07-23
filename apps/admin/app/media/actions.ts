@@ -9,6 +9,7 @@ import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
 import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
+import { writeAuditLog } from '../../lib/audit-log';
 
 const ALLOWED_IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 const ALLOWED_VIDEO_MIME_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
@@ -126,10 +127,23 @@ export async function uploadMediaAction(formData: FormData) {
       entityId: record?.id,
       metadata: { role: profile.role, siteKey, type: requestedType, mimeType: file.type },
     });
+    await writeAuditLog({
+      action: isVideo ? 'media_video_uploaded' : 'media_uploaded',
+      entityType: 'media',
+      entityId: record?.id,
+      status: 'success',
+      metadata: { media_type: isVideo ? 'video' : 'image', content_type: file.type }
+    });
     return { success: true, data: record };
   } catch (err: any) {
     captureError(err, { app: 'admin', severity: 'error' });
     trackEvent(isVideo ? 'media_video_upload_failed' : 'media_upload_failed' as any, { app: 'admin' });
+    await writeAuditLog({
+      action: isVideo ? 'media_video_upload_failed' : 'media_upload_failed',
+      entityType: 'media',
+      status: 'failure',
+      metadata: { media_type: isVideo ? 'video' : 'image', reason_code: 'exception' }
+    });
     return { success: false, error: 'Unexpected server error during upload.' };
   }
 }
@@ -174,6 +188,13 @@ export async function deleteMediaAssetAction(id: string) {
       entityType: 'media_asset',
       entityId: id,
       metadata: { role: profile.role },
+    });
+    await writeAuditLog({
+      action: isVideo ? 'media_video_deleted' : 'media_deleted',
+      entityType: 'media',
+      entityId: id,
+      status: 'success',
+      metadata: { media_type: isVideo ? 'video' : 'image' }
     });
     return { success: true };
   } catch (err: any) {

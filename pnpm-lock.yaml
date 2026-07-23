@@ -320,6 +320,10 @@ importers:
   packages/brand-config: {}
 
   packages/db:
+    dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.110.8
+        version: 2.110.8
     devDependencies:
       typescript:
         specifier: ^5.5.0

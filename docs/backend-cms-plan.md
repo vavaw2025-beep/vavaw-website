@@ -364,3 +364,12 @@ Phase 43 allows authorized admin users to generate short-lived, cryptographicall
   - Privileged clients are strictly server-only and never exposed to the browser.
   - Draft Mode inherently bypasses edge and CDN caching (no `no-store` required manually).
   - Draft Mode only activates with a valid, unexpired signature from the Admin dashboard.
+
+## Phase 44: Role Activity Audit Log (Completed)
+Phase 44 introduces an append-only administrative audit log system (`public.audit_logs`) to track privileged actions across user management, leads, media, CMS content, and signed preview link generations.
+
+### Architecture & Security
+- **Append-Only RLS**: No `UPDATE` or `DELETE` RLS policies exist on `public.audit_logs`.
+- **RBAC**: Viewing `/audit` is restricted to active `owner` and `admin` roles only (`canViewAuditLogs`).
+- **Metadata Privacy Sanitization**: Evaluated using both a denylist (redacting emails, tokens, secrets, PII, full payloads) and a strict allowlist.
+- **Fail-Safe**: Audit logging failures capture error metrics silently without rolling back main business operations.

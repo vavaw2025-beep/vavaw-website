@@ -15,3 +15,6 @@ export * from './queries/admin-profiles';
 export * from './mutations/admin-profiles';
 export * from './queries/leads';
 export * from './mutations/leads';
+export * from './types/audit-log';
+export * from './queries/audit-logs';
+export * from './mutations/audit-logs';

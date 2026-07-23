@@ -45,7 +45,9 @@ export type AnalyticsEventName =
   | 'preview_link_generation_failed'
   | 'public_preview_opened'
   | 'public_preview_denied'
-  | 'public_preview_exited';
+  | 'public_preview_exited'
+  | 'audit_log_created'
+  | 'audit_log_failed';
 
 export interface AnalyticsEventPayload {
   app: 'main' | 'beauty' | 'franchise' | 'admin';

@@ -110,3 +110,9 @@ export function canExportLeads(role: AdminRole, status: "active" | "disabled"): 
 export function canGeneratePreviewLink(role: AdminRole): boolean {
   return role === "owner" || role === "admin" || role === "editor";
 }
+
+/** Check if a role can view audit logs */
+export function canViewAuditLogs(profile?: { role: AdminRole; status: 'active' | 'invited' | 'disabled' } | null): boolean {
+  if (!profile || profile.status !== 'active') return false;
+  return profile.role === 'owner' || profile.role === 'admin';
+}
