@@ -63,3 +63,13 @@ Phase 32 added on-demand ISR revalidation routes to the public apps. The admin d
 
 ## Phase 33: Admin CMS Preview Center (Current)
 Phase 33 implemented a secure, read-only Admin Preview Center. It allows authorized admin users to view both active and draft content across all targets (Main, Cosmetic, Beauty, Franchise) before publishing, without exposing draft data to the public apps or bypassing static edge caching.
+
+## Phase 34: Styling Recovery for Admin, Beauty, and Franchise
+Completed a Tailwind CSS v4 setup normalization across pps/admin, pps/beauty, and pps/franchise. 
+- Added missing postcss.config.mjs with @tailwindcss/postcss plugin.
+- Added @source "../../../packages/ui" in globals.css of all apps to ensure shared UI components are scanned and styled correctly.
+- Created standalone, customized @theme definitions in globals.css for each app:
+  - Admin: Dark dashboard theme.
+  - Beauty: Premium elegant light rose palette.
+  - Franchise: Professional business amber palette.
+- Verified build and transpilation across all apps.
