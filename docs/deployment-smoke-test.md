@@ -62,3 +62,7 @@ Ensure that REVALIDATION_SECRET and CMS_REVALIDATION_ENABLED=true are configured
 - [ ] Verify /api/health returns ok: true for all active deployments.
 - [ ] Trigger an intentional 404 or boundary error to ensure standard fallback UI renders.
 
+
+- [ ] Ensure SENTRY_AUTH_TOKEN is not exposed in client-side code.
+- [ ] Ensure PII is being successfully stripped from Sentry payloads.
+
