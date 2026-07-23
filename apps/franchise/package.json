@@ -12,6 +12,7 @@
         "@sentry/nextjs": "^10.67.0",
         "@supabase/supabase-js": "^2.110.8",
         "@vavaw/analytics": "workspace:*",
+        "@vavaw/auth": "workspace:*",
         "@vavaw/brand-config": "workspace:*",
         "@vavaw/db": "workspace:*",
         "@vavaw/monitoring": "workspace:*",

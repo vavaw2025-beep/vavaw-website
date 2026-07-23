@@ -349,3 +349,18 @@ An internal Admin Preview Center was added in Phase 33 (pps/admin/app/preview).
 - Maximum 50MB for video, 5MB for images.
 - Video blocks supported in public apps without autoplay.
 
+## Phase 43: Public Signed Preview Mode (Completed)
+Phase 43 allows authorized admin users to generate short-lived, cryptographically signed preview links to view draft CMS content securely on public apps.
+
+### Architecture
+- **Admin App**: Generates a signed JWT-like token (using `CMS_PREVIEW_SECRET` and HMAC-SHA256) valid for a configurable TTL (default 15 minutes).
+- **Public Apps (main, beauty, franchise)**:
+  - `/api/preview` endpoint verifies the token.
+  - If valid, enables Next.js Draft Mode (`draftMode().enable()`) and redirects.
+  - Public layouts read `draftMode().isEnabled` to display a Preview Banner and pass `isPreview=true` to loaders.
+  - Loaders (`load-public-cms.ts`, `load-public-content-blocks.ts`, `load-public-seo.ts`) switch to a privileged server-only Supabase client (`supabase-preview.ts`) that bypasses standard RLS using `SUPABASE_SERVICE_ROLE_KEY` or `SUPABASE_SECRET_KEY`.
+  - Content queries bypass the `status = 'active'` filter.
+- **Security**: 
+  - Privileged clients are strictly server-only and never exposed to the browser.
+  - Draft Mode inherently bypasses edge and CDN caching (no `no-store` required manually).
+  - Draft Mode only activates with a valid, unexpired signature from the Admin dashboard.

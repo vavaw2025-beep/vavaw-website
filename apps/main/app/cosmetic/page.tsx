@@ -11,8 +11,11 @@ const cosmeticEntry = getBusinessBySlug('cosmetic');
  * Reads from Supabase seo_settings (site_key=main, path=/cosmetic) when
  * CMS_DATA_SOURCE=supabase, falls back to @vavaw/brand-config SEO values.
  */
+import { draftMode } from 'next/headers';
+
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await loadPublicSeo('/cosmetic');
+  const isPreview = (await draftMode()).isEnabled;
+  const seo = await loadPublicSeo('/cosmetic', 'main', isPreview);
 
   return {
     title: seo.title || cosmeticEntry?.seo.title || 'VAVAW Cosmetic',
@@ -51,9 +54,11 @@ export default async function CosmeticPage() {
     notFound();
   }
 
+  const isPreview = (await draftMode()).isEnabled;
   const { blocks, source } = await loadPublicContentBlocks({
     siteKey: 'cosmetic',
-    pagePath: '/cosmetic'
+    pagePath: '/cosmetic',
+    isPreview
   });
 
   if (blocks.length > 0) {
@@ -61,7 +66,7 @@ export default async function CosmeticPage() {
       <>
         {process.env.NODE_ENV === 'development' && (
           <div className="fixed bottom-4 right-4 bg-black text-white text-xs px-2 py-1 rounded z-50 shadow">
-            Content: {source}
+            Content: {source} {isPreview ? '(Preview)' : ''}
           </div>
         )}
         <ContentBlockRenderer blocks={blocks} />

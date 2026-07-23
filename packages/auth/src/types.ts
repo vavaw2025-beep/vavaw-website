@@ -98,8 +98,7 @@ export function canPreview(role: AdminRole): boolean {
   return role === "owner" || role === "admin" || role === "editor" || role === "viewer";
 }
 
-/**
- * Check if a role can export leads as CSV.
+/** Check if a role can export leads as CSV.
  * Restricted to owner and admin because exports contain bulk PII.
  */
 export function canExportLeads(role: AdminRole, status: "active" | "disabled"): boolean {
@@ -107,3 +106,7 @@ export function canExportLeads(role: AdminRole, status: "active" | "disabled"): 
   return role === "owner" || role === "admin";
 }
 
+/** Check if a role can generate public signed preview links */
+export function canGeneratePreviewLink(role: AdminRole): boolean {
+  return role === "owner" || role === "admin" || role === "editor";
+}

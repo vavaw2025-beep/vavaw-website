@@ -3,6 +3,7 @@ import { loadPreviewData } from '../../../lib/load-preview-data';
 import { PreviewShell } from '../../../components/preview/PreviewShell';
 import { PreviewContentBlocks } from '../../../components/preview/PreviewContentBlocks';
 import { PreviewSeoPanel } from '../../../components/preview/PreviewSeoPanel';
+import { GenerateSignedPreviewButton } from '../../../components/preview/GenerateSignedPreviewButton';
 
 export default async function BeautyPreviewPage() {
   const data = await loadPreviewData('beauty');
@@ -43,6 +44,9 @@ export default async function BeautyPreviewPage() {
     >
       <div className="max-w-7xl mx-auto p-6 lg:p-8 space-y-12 pb-24">
         <section>
+          <div className="mb-8">
+            <GenerateSignedPreviewButton app="beauty" target="beauty" path="/" />
+          </div>
           <PreviewSeoPanel seo={seo} />
         </section>
 

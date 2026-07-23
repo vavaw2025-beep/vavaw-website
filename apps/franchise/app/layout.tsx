@@ -32,10 +32,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+import { draftMode } from 'next/headers';
+import { PreviewBanner } from '@/components/preview-banner';
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const isPreview = (await draftMode()).isEnabled;
+
   return (
     <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="antialiased bg-[#FAFAFA] text-[#111111]">{children}</body>
+      <body className="antialiased bg-[#FAFAFA] text-[#111111] min-h-screen flex flex-col">
+        {isPreview && <PreviewBanner />}
+        {children}
+      </body>
     </html>
   );
 }

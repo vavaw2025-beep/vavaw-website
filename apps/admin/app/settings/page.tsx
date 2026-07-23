@@ -24,6 +24,9 @@ export default function SettingsPage() {
   const monitoringProvider = process.env.NEXT_PUBLIC_MONITORING_PROVIDER || 'console';
   const hasSentryDsn = !!process.env.SENTRY_DSN;
 
+  const hasPreviewSecret = !!process.env.CMS_PREVIEW_SECRET;
+  const previewTtl = process.env.CMS_PREVIEW_TOKEN_TTL_SECONDS || '900';
+
   const configs = [
     { name: 'Environment', value: 'Production', icon: Server, status: 'Active' },
     { name: 'Domains', value: '*.vavaw.vn', icon: Globe, status: 'Configured' },
@@ -92,6 +95,12 @@ export default function SettingsPage() {
     { name: 'Sentry DSN', value: hasSentryDsn ? 'Configured (Hidden)' : 'Missing', icon: Lock, status: hasSentryDsn ? 'Configured' : 'Missing' },
     { name: 'Health Endpoints', value: '/api/health across all apps', icon: Globe, status: 'Active' },
     { name: 'Deploy Version', value: process.env.VERCEL_GIT_COMMIT_SHA || 'local', icon: Server, status: 'Active' },
+  ];
+
+  const previewConfig = [
+    { name: 'Signed Preview Mode', value: hasPreviewSecret ? 'Enabled' : 'Disabled (Requires Secret)', icon: Shield, status: hasPreviewSecret ? 'Active' : 'Disabled' },
+    { name: 'Preview Secret', value: hasPreviewSecret ? 'Configured (Hidden)' : 'Missing', icon: Lock, status: hasPreviewSecret ? 'Configured' : 'Missing' },
+    { name: 'Token TTL', value: `${previewTtl} seconds`, icon: Server, status: 'Configured' },
   ];
 
   const expectedTables = [
@@ -303,6 +312,39 @@ export default function SettingsPage() {
                     ? 'bg-green-100 text-green-800'
                     : item.status === 'Mock'
                     ? 'bg-amber-100 text-amber-800'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {item.status}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Preview Mode Section */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">Signed Preview Settings</h2>
+        <p className="mt-1 text-sm text-slate-500">Draft content preview configuration for public apps.</p>
+      </div>
+
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <ul role="list" className="divide-y divide-slate-200">
+          {previewConfig.map((item, idx) => (
+            <li key={idx} className="p-4 sm:px-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-fuchsia-50 p-2 rounded-lg">
+                  <item.icon className="h-5 w-5 text-fuchsia-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                  <p className="text-sm text-slate-500">{item.value}</p>
+                </div>
+              </div>
+              <div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  item.status === 'Active' || item.status === 'Configured'
+                    ? 'bg-green-100 text-green-800'
                     : 'bg-slate-100 text-slate-600'
                 }`}>
                   {item.status}

@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { getBusinessBySlug } from '@vavaw/brand-config';
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
+import { draftMode } from 'next/headers';
+import { PreviewBanner } from '@/components/preview-banner';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif' });
@@ -32,10 +35,32 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const isPreview = (await draftMode()).isEnabled;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'VAVAW Beauty',
+    url: 'https://beauty.vavaw.vn',
+    logo: 'https://vavaw.vn/icon.svg',
+    parentOrganization: {
+      '@type': 'Organization',
+      name: 'VAVAW Ecosystem',
+      url: 'https://vavaw.vn'
+    }
+  };
+
   return (
-    <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="antialiased">{children}</body>
+    <html lang="vi" className={`${inter.variable} ${playfair.variable} bg-background`} suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col">
+        {isPreview && <PreviewBanner />}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {children}
+        {process.env.NODE_ENV === 'production' && <Analytics />}
+      </body>
     </html>
   );
 }

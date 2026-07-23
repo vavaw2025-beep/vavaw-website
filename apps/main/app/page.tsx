@@ -25,8 +25,11 @@ export const revalidate = 60;
  * Dynamic metadata for the homepage — reads from Supabase seo_settings if available,
  * falls back to static brand-config values.
  */
+import { draftMode } from 'next/headers';
+
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await loadPublicSeo('/');
+  const isPreview = (await draftMode()).isEnabled;
+  const seo = await loadPublicSeo('/', 'main', isPreview);
 
   return {
     title: seo.title,
@@ -52,7 +55,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const cms = await loadPublicHomeCms();
+  const isPreview = (await draftMode()).isEnabled;
+  const cms = await loadPublicHomeCms(isPreview);
 
   return (
     <main>

@@ -4,9 +4,11 @@ import { NormalizedContentBlock } from './public-cms-types';
 export async function loadPublicContentBlocks({
   siteKey,
   pagePath,
+  isPreview = false,
 }: {
   siteKey: string;
   pagePath: string;
+  isPreview?: boolean;
 }): Promise<{
   blocks: NormalizedContentBlock[];
   source: "static" | "supabase";
@@ -14,35 +16,45 @@ export async function loadPublicContentBlocks({
 }> {
   const dataSource = process.env.CMS_DATA_SOURCE || 'static';
 
-  if (dataSource !== 'supabase') {
+  if (!isPreview && dataSource !== 'supabase') {
     return {
       blocks: [],
       source: 'static',
     };
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  let supabase;
+  if (isPreview) {
+    const { getPreviewSupabaseClient } = await import('./supabase-preview');
+    supabase = getPreviewSupabaseClient();
+  } else {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('Supabase env vars missing. Falling back to static blocks.');
-    return {
-      blocks: [],
-      source: 'static',
-      error: 'Supabase credentials missing',
-    };
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.warn('Supabase env vars missing. Falling back to static blocks.');
+      return {
+        blocks: [],
+        source: 'static',
+        error: 'Supabase credentials missing',
+      };
+    }
+    supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
   try {
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-    const { data, error } = await supabase
+    let query = supabase
       .from('content_blocks')
       .select('*')
       .in('site_key', [siteKey, 'main']) // Support siteKey or 'main' as requested (though usually just matching what we pass)
       .eq('page_path', pagePath)
-      .eq('is_active', true)
       .order('sort_order', { ascending: true });
+
+    if (!isPreview) {
+      query = query.eq('is_active', true);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error(`Error loading content blocks for ${siteKey}${pagePath}:`, error);

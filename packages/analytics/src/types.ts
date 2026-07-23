@@ -40,7 +40,12 @@ export type AnalyticsEventName =
   | 'leads_export_failed'
   | 'media_video_uploaded'
   | 'media_video_upload_failed'
-  | 'media_video_deleted';
+  | 'media_video_deleted'
+  | 'preview_link_generated'
+  | 'preview_link_generation_failed'
+  | 'public_preview_opened'
+  | 'public_preview_denied'
+  | 'public_preview_exited';
 
 export interface AnalyticsEventPayload {
   app: 'main' | 'beauty' | 'franchise' | 'admin';

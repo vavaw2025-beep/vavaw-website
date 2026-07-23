@@ -49,11 +49,15 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
+import { draftMode } from 'next/headers'
+import { PreviewBanner } from '@/components/preview-banner'
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const isPreview = (await draftMode()).isEnabled;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -69,6 +73,7 @@ export default function RootLayout({
   return (
     <html lang="vi" className="bg-background" suppressHydrationWarning>
       <body className="antialiased min-h-screen flex flex-col">
+        {isPreview && <PreviewBanner />}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

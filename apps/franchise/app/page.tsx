@@ -12,8 +12,11 @@ export const revalidate = 60;
 
 const franchiseEntry = getBusinessBySlug('franchise');
 
+import { draftMode } from 'next/headers';
+
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await loadPublicSeo('/', 'franchise'); // Note: load-public-seo assumes it might accept siteKey, or defaults based on path. We will pass it if supported.
+  const isPreview = (await draftMode()).isEnabled;
+  const seo = await loadPublicSeo('/', 'franchise', isPreview); // Pass isPreview
 
   return {
     title: seo.title || franchiseEntry?.seo.title || 'VAVAW Franchise',
@@ -47,9 +50,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function FranchiseLandingPage() {
   if (!franchiseEntry) return null;
 
+  const isPreview = (await draftMode()).isEnabled;
   const { blocks, source } = await loadPublicContentBlocks({
     siteKey: 'franchise',
-    pagePath: '/'
+    pagePath: '/',
+    isPreview
   });
 
   if (blocks.length > 0) {
@@ -57,7 +62,7 @@ export default async function FranchiseLandingPage() {
       <>
         {process.env.NODE_ENV === 'development' && (
           <div className="fixed bottom-4 right-4 bg-black text-white text-xs px-2 py-1 rounded z-50 shadow">
-            Content: {source}
+            Content: {source} {isPreview ? '(Preview)' : ''}
           </div>
         )}
         <ContentBlockRenderer blocks={blocks} />

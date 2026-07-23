@@ -12,8 +12,11 @@ export const revalidate = 60;
 
 const beautyEntry = getBusinessBySlug('beauty');
 
+import { draftMode } from 'next/headers';
+
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await loadPublicSeo('/', 'beauty'); // Note: loadPublicSeo in apps/main assumes '/cosmetic' but accepts path. Wait, load-public-seo takes (path: string). I should pass siteKey if it supports it, or I might need to update load-public-seo. Let's just use loadPublicSeo('/' ) for now or see what's in load-public-seo.
+  const isPreview = (await draftMode()).isEnabled;
+  const seo = await loadPublicSeo('/', 'beauty', isPreview); // Pass isPreview to seo
 
   return {
     title: seo.title || beautyEntry?.seo.title || 'VAVAW Beauty',
@@ -47,9 +50,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function BeautyLandingPage() {
   if (!beautyEntry) return null;
 
+  const isPreview = (await draftMode()).isEnabled;
   const { blocks, source } = await loadPublicContentBlocks({
     siteKey: 'beauty',
-    pagePath: '/'
+    pagePath: '/',
+    isPreview
   });
 
   if (blocks.length > 0) {
@@ -57,7 +62,7 @@ export default async function BeautyLandingPage() {
       <>
         {process.env.NODE_ENV === 'development' && (
           <div className="fixed bottom-4 right-4 bg-black text-white text-xs px-2 py-1 rounded z-50 shadow">
-            Content: {source}
+            Content: {source} {isPreview ? '(Preview)' : ''}
           </div>
         )}
         <ContentBlockRenderer blocks={blocks} />

@@ -73,8 +73,14 @@ function loadStaticSeo(path: string): PublicSeoData {
 // Supabase loader
 // ---------------------------------------------------------------------------
 
-async function loadSupabaseSeo(path: string): Promise<PublicSeoData> {
-  const supabase = getPublicSupabaseClient();
+async function loadSupabaseSeo(path: string, siteKey: string = 'main', isPreview = false): Promise<PublicSeoData> {
+  let supabase;
+  if (isPreview) {
+    const { getPreviewSupabaseClient } = await import('./supabase-preview');
+    supabase = getPreviewSupabaseClient();
+  } else {
+    supabase = getPublicSupabaseClient();
+  }
 
   if (!supabase) {
     return loadStaticSeo(path);
@@ -84,7 +90,7 @@ async function loadSupabaseSeo(path: string): Promise<PublicSeoData> {
     const { data: rawData, error } = await supabase
       .from('seo_settings')
       .select('id, title, description, keywords, canonical_url, og_media_id, robots_index, robots_follow')
-      .eq('site_key', 'main')
+      .eq('site_key', siteKey)
       .eq('path', path)
       .maybeSingle();
 
@@ -147,12 +153,14 @@ async function loadSupabaseSeo(path: string): Promise<PublicSeoData> {
  * Always returns valid metadata — never throws.
  *
  * @param path - Public page path, e.g. "/" or "/cosmetic"
+ * @param siteKey - Site key for SEO, default 'main'
+ * @param isPreview - Bypass cache/RLS if true
  */
-export async function loadPublicSeo(path: string): Promise<PublicSeoData> {
+export async function loadPublicSeo(path: string, siteKey: string = 'main', isPreview = false): Promise<PublicSeoData> {
   const source = getCmsDataSource();
 
-  if (source === 'supabase') {
-    return loadSupabaseSeo(path);
+  if (isPreview || source === 'supabase') {
+    return loadSupabaseSeo(path, siteKey, isPreview);
   }
 
   return loadStaticSeo(path);

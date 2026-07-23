@@ -119,8 +119,14 @@ function loadStaticCmsData(): PublicCmsData {
 // Supabase loader
 // ---------------------------------------------------------------------------
 
-async function loadSupabaseCmsData(): Promise<PublicCmsData> {
-  const supabase = getPublicSupabaseClient();
+async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
+  let supabase;
+  if (isPreview) {
+    const { getPreviewSupabaseClient } = await import('./supabase-preview');
+    supabase = getPreviewSupabaseClient();
+  } else {
+    supabase = getPublicSupabaseClient();
+  }
 
   if (!supabase) {
     const fallback = loadStaticCmsData();
@@ -131,17 +137,27 @@ async function loadSupabaseCmsData(): Promise<PublicCmsData> {
   }
 
   try {
+    const entriesQuery = supabase
+      .from('business_entries')
+      .select('*')
+      .order('sort_order', { ascending: true });
+    
+    if (!isPreview) {
+      entriesQuery.eq('status', 'active');
+    }
+
+    const slidesQuery = supabase
+      .from('hero_slides')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (!isPreview) {
+      slidesQuery.eq('status', 'active');
+    }
+
     const [entriesResult, slidesResult, mediaResult] = await Promise.all([
-      supabase
-        .from('business_entries')
-        .select('*')
-        .eq('status', 'active')
-        .order('sort_order', { ascending: true }),
-      supabase
-        .from('hero_slides')
-        .select('*')
-        .eq('status', 'active')
-        .order('sort_order', { ascending: true }),
+      entriesQuery,
+      slidesQuery,
       supabase
         .from('media_assets')
         .select('id, url, type, alt_text'),
@@ -271,11 +287,12 @@ async function loadSupabaseCmsData(): Promise<PublicCmsData> {
  * Loads public homepage CMS data from the configured source.
  * Always returns a valid result — never throws.
  */
-export async function loadPublicHomeCms(): Promise<PublicCmsData> {
+export async function loadPublicHomeCms(isPreview = false): Promise<PublicCmsData> {
   const source = getCmsDataSource();
 
-  if (source === 'supabase') {
-    return loadSupabaseCmsData();
+  // If preview mode is requested, force Supabase source
+  if (isPreview || source === 'supabase') {
+    return loadSupabaseCmsData(isPreview);
   }
 
   return loadStaticCmsData();

@@ -73,8 +73,14 @@ function loadStaticSeo(path: string): PublicSeoData {
 // Supabase loader
 // ---------------------------------------------------------------------------
 
-async function loadSupabaseSeo(path: string, siteKey: string): Promise<PublicSeoData> {
-  const supabase = getPublicSupabaseClient();
+async function loadSupabaseSeo(path: string, siteKey: string, isPreview = false): Promise<PublicSeoData> {
+  let supabase;
+  if (isPreview) {
+    const { getPreviewSupabaseClient } = await import('./supabase-preview');
+    supabase = getPreviewSupabaseClient();
+  } else {
+    supabase = getPublicSupabaseClient();
+  }
 
   if (!supabase) {
     return loadStaticSeo(path);
@@ -149,11 +155,11 @@ async function loadSupabaseSeo(path: string, siteKey: string): Promise<PublicSeo
  * @param path - Public page path, e.g. "/" or "/cosmetic"
  * @param siteKey - Site key for SEO, default 'main'
  */
-export async function loadPublicSeo(path: string, siteKey: string = 'main'): Promise<PublicSeoData> {
+export async function loadPublicSeo(path: string, siteKey: string = 'main', isPreview = false): Promise<PublicSeoData> {
   const source = getCmsDataSource();
 
-  if (source === 'supabase') {
-    return loadSupabaseSeo(path, siteKey);
+  if (isPreview || source === 'supabase') {
+    return loadSupabaseSeo(path, siteKey, isPreview);
   }
 
   return loadStaticSeo(path);

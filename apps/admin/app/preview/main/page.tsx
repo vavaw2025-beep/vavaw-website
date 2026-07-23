@@ -4,6 +4,7 @@ import { PreviewShell } from '../../../components/preview/PreviewShell';
 import { PreviewHero } from '../../../components/preview/PreviewHero';
 import { PreviewBusinessEntries } from '../../../components/preview/PreviewBusinessEntries';
 import { PreviewSeoPanel } from '../../../components/preview/PreviewSeoPanel';
+import { GenerateSignedPreviewButton } from '../../../components/preview/GenerateSignedPreviewButton';
 
 export default async function MainPreviewPage() {
   const data = await loadPreviewData('main');
@@ -49,6 +50,9 @@ export default async function MainPreviewPage() {
     >
       <div className="max-w-7xl mx-auto p-6 lg:p-8 space-y-12 pb-24">
         <section>
+          <div className="mb-8">
+            <GenerateSignedPreviewButton app="main" target="home" path="/" />
+          </div>
           <PreviewSeoPanel seo={seo} />
         </section>
 
