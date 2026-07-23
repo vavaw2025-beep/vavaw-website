@@ -74,6 +74,9 @@ export default function SettingsPage() {
     { name: 'Email Recipient (TO)', value: hasLeadTo ? 'Configured (Hidden)' : 'Missing', icon: Users, status: hasLeadTo ? 'Configured' : 'Missing' },
     { name: 'Email Sender (FROM)', value: hasLeadFrom ? 'Configured (Hidden)' : 'Missing', icon: Server, status: hasLeadFrom ? 'Configured' : 'Missing' },
     { name: 'Resend API Key', value: hasResendKey ? 'Configured (Hidden)' : 'Missing', icon: Lock, status: hasResendKey ? 'Configured' : 'Missing' },
+    { name: 'Lead CSV Export', value: 'Enabled (owner/admin only)', icon: SettingsIcon, status: 'Active' },
+    { name: 'Export Roles', value: 'Owner, Admin', icon: Shield, status: 'Configured' },
+    { name: 'Max Rows Per Export', value: '5,000', icon: SettingsIcon, status: 'Configured' },
     { name: 'CRM Integration', value: 'Pending Phase', icon: SettingsIcon, status: 'Pending' },
   ];
 

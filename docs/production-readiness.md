@@ -109,3 +109,9 @@ oop\ and \console\ providers for safe local testing.
 - Updated Admin Profile Form with an Invite by Email default mode.
 - Tracked via \dmin_user_invited\ analytics event.
 
+
+### Phase 41: Lead CSV Export (Completed)
+- Added /leads/export GET route — owner/admin only, RLS-enforced.
+- CSV injection protection in all cells.
+- Analytics events: \leads_exported\, \leads_export_failed\ (no PII).
+

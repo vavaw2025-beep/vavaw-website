@@ -97,3 +97,13 @@ export function canViewAdminUsers(role: AdminRole): boolean {
 export function canPreview(role: AdminRole): boolean {
   return role === "owner" || role === "admin" || role === "editor" || role === "viewer";
 }
+
+/**
+ * Check if a role can export leads as CSV.
+ * Restricted to owner and admin because exports contain bulk PII.
+ */
+export function canExportLeads(role: AdminRole, status: "active" | "disabled"): boolean {
+  if (status !== "active") return false;
+  return role === "owner" || role === "admin";
+}
+

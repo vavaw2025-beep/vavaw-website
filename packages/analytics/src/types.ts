@@ -35,7 +35,9 @@ export type AnalyticsEventName =
   | 'lead_submitted'
   | 'lead_status_updated'
   | 'lead_notification_sent'
-  | 'lead_notification_failed';
+  | 'lead_notification_failed'
+  | 'leads_exported'
+  | 'leads_export_failed';
 
 export interface AnalyticsEventPayload {
   app: 'main' | 'beauty' | 'franchise' | 'admin';

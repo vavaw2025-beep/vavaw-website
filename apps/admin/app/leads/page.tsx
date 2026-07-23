@@ -3,8 +3,10 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getLeads } from '@vavaw/db';
+import { canExportLeads } from '@vavaw/auth';
+import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import Link from 'next/link';
-import { Eye } from 'lucide-react';
+import { Eye, Download } from 'lucide-react';
 
 export const revalidate = 0;
 
@@ -34,6 +36,9 @@ export default async function LeadsPage() {
     redirect('/login');
   }
 
+  const profile = await getCurrentAdminProfile();
+  const canExport = profile ? canExportLeads(profile.role, profile.status) : false;
+
   const { data: leads, error } = await getLeads(supabase, { limit: 100 });
 
   if (error) {
@@ -45,6 +50,22 @@ export default async function LeadsPage() {
     <div className="p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Leads</h1>
+
+        {canExport && (
+          <div className="flex items-center gap-3">
+            <div className="text-xs text-slate-500 max-w-xs text-right leading-snug">
+              Exports may contain personal data. Handle securely.
+            </div>
+            <a
+              href="/leads/export"
+              download
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Export CSV
+            </a>
+          </div>
+        )}
       </div>
 
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">

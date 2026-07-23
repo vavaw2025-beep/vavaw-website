@@ -54,3 +54,9 @@ This document outlines the security architecture and Row Level Security (RLS) po
 - The \SUPABASE_SECRET_KEY\ bypasses RLS and is used exclusively on the server in \supabase-admin.ts\ for automated admin invites.
 - Client components never receive this key.
 
+
+### Lead CSV Export
+- /leads/export enforces RLS via normal authenticated Supabase client.
+- Service role key is NOT used for CSV export.
+- Only active owner/admin can access. Returns 403 for editor/viewer/anonymous.
+

@@ -70,3 +70,8 @@ Ensure that REVALIDATION_SECRET and CMS_REVALIDATION_ENABLED=true are configured
 - [ ] Verify Owner can send automated email invites to new users.
 - [ ] Verify invited user receives the email, clicks link, sets password, and logs in.
 
+
+- [ ] Owner logs in and downloads CSV from /leads — opens correctly in spreadsheet app.
+- [ ] Editor navigates to /leads — Export CSV button should NOT appear.
+- [ ] Direct GET /leads/export as editor returns 403 Forbidden.
+
