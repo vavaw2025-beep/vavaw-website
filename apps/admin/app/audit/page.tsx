@@ -37,9 +37,9 @@ export default async function AuditLogsPage({
 
   const supabase = await getAdminServerSupabaseClient();
   const { data: logs, count } = await getAuditLogs(supabase, {
-    action: actionFilter || undefined,
-    entity_type: entityTypeFilter || undefined,
-    status: (statusFilter as any) || undefined,
+    action: actionFilter === 'all' || !actionFilter ? undefined : actionFilter,
+    entity_type: entityTypeFilter === 'all' || !entityTypeFilter ? undefined : entityTypeFilter,
+    status: statusFilter === 'all' || !statusFilter ? undefined : (statusFilter as any),
     date_from: dateFrom || undefined,
     date_to: dateTo || undefined,
     limit: 100,
