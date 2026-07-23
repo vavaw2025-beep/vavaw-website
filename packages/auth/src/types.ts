@@ -82,3 +82,13 @@ export function canManageContentBlocks(role: AdminRole): boolean {
 export function canDeleteContentBlocks(role: AdminRole): boolean {
   return role === "owner" || role === "admin";
 }
+
+/** Check if a role can manage (create, edit, disable) admin users */
+export function canManageAdminUsers(role: AdminRole): boolean {
+  return role === "owner";
+}
+
+/** Check if a role can view admin users */
+export function canViewAdminUsers(role: AdminRole): boolean {
+  return role === "owner" || role === "admin";
+}

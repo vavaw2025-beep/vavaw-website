@@ -11,3 +11,5 @@ export * from './mutations/hero-slides';
 export * from './mutations/media-assets';
 export * from './mutations/seo-settings';
 export * from './mutations/content-blocks';
+export * from './queries/admin-profiles';
+export * from './mutations/admin-profiles';

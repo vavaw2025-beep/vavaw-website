@@ -62,5 +62,10 @@ Even when authenticated with Supabase Auth, middleware queries `public.admin_pro
 - **Phase 15:** Database schema ✅
 - **Phase 16:** Real admin login ✅
 - **Phase 17:** Middleware protection ✅ (Current Phase)
-- **Phase 18:** Admin CRUD (Implement content management)
-- **Phase 19:** Media upload (Integrate bucket storage)
+- **Phase 18:** Admin CRUD (Implement content management) ✅
+- **Phase 19:** Media upload (Integrate bucket storage) ✅
+- **Phase 29:** Admin Users Management ✅
+  - Owner can manage `admin_profiles` (create, edit, disable).
+  - Manual Supabase Auth user creation required first.
+  - Delete is explicitly not implemented (relying on `disabled` status).
+  - Safety rules: Cannot disable self, cannot remove last active owner.

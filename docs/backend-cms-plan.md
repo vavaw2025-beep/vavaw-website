@@ -318,3 +318,16 @@ Phase 26 integrates the `public.content_blocks` table with `apps/main/app/cosmet
 - `apps/main/lib/load-public-content-blocks.ts`
 - `apps/main/components/content-block-renderer.tsx`
 - `apps/main/app/cosmetic/page.tsx` (updated)
+
+## Phase 29: Admin Users Management (Current)
+Phase 29 implements the foundation for managing admin user profiles directly from the admin dashboard, restricted securely via RLS and Server Actions.
+
+### Scope and Strategy
+- **Permissions:** Only `owner` profiles can create, update, or disable `admin_profiles`. `admin` profiles can view the list of users.
+- **Manual Flow:** In this phase, there is no email invite or automated Supabase Auth user creation. The Owner must manually create the user in the Supabase Dashboard, copy their Auth UID, and paste it into the admin form.
+- **Deactivation vs Deletion:** Hard deletion (`DELETE`) is explicitly disabled and not implemented to prevent orphaned CMS records. Instead, `status = 'disabled'` is used to revoke access.
+- **Safety Constraints:** 
+  - Owners cannot disable their own accounts.
+  - Owners cannot downgrade their own accounts.
+  - The last active owner cannot be disabled or downgraded, preventing permanent lockout.
+- **Service Role Exclusion:** The `SUPABASE_SERVICE_ROLE_KEY` remains strictly omitted from this flow to maintain security hygiene. All management is performed via the active authenticated `owner` session and RLS policies.

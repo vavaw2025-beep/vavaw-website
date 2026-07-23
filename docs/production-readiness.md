@@ -22,6 +22,7 @@ This document tracks the readiness state of the VAVAW monorepo for production de
 - [x] **Content Blocks CRUD (admin):** `content_blocks` table fully managed from `/content` admin page. Create/update: owner/admin/editor. Delete: owner/admin. Viewer read-only.
 - [ ] **Content Blocks Seed (003):** `supabase/seed/003_seed_content_blocks.sql` is optional and non-destructive but will duplicate rows if run multiple times.
 - [x] **Content Blocks Rendering:** Connected to `apps/main` /cosmetic page via `ContentBlockRenderer`. Full static fallback (`CosmeticContent`) handles DB errors or empty states gracefully. `apps/beauty` and `apps/franchise` remain static.
+- [x] **Admin Users Management:** `owner` role can manage `admin_profiles` (create, edit, disable). Manual Supabase Auth creation required. Delete operation disabled. Strict safety guards prevent accidental owner lockouts.
 
 ## Quality & Monitoring
 - [x] **Analytics Status:** `@vavaw/analytics` workspace package integrated.

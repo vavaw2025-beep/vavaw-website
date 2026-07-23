@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Table, Image as ImageIcon } from 'lucide-react';
+import { Settings as SettingsIcon, Server, Shield, Database, Cloud, HardDrive, Pencil, Lock, Table, Image as ImageIcon, Users } from 'lucide-react';
 import { getAdminDataSourceMode } from '../../lib/data-source';
 
 export default function SettingsPage() {
@@ -21,6 +21,7 @@ export default function SettingsPage() {
     { name: 'Content Blocks CRUD', value: mode === 'supabase' ? 'Enabled (owner/admin/editor can manage, owner/admin can delete)' : 'Requires Supabase Mode', icon: Pencil, status: mode === 'supabase' ? 'Active' : 'Disabled' },
     { name: 'Content Blocks Rendering', value: 'Not connected yet (apps still use static frontend components)', icon: Database, status: 'Static' },
     { name: 'Visual Page Builder', value: 'Not implemented (JSON based configuration for flexible blocks)', icon: SettingsIcon, status: 'Disabled' },
+    { name: 'Admin Users Management', value: mode === 'supabase' ? 'Enabled (owner can manage users, manual Auth creation required)' : 'Requires Supabase Mode', icon: Users, status: mode === 'supabase' ? 'Active' : 'Disabled' },
   ];
 
   const storageConfig = [

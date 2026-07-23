@@ -23,7 +23,11 @@ export type AnalyticsEventName =
   | 'seo_deleted'
   | 'content_block_created'
   | 'content_block_updated'
-  | 'content_block_deleted';
+  | 'content_block_deleted'
+  | 'admin_user_created'
+  | 'admin_user_updated'
+  | 'admin_user_disabled'
+  | 'admin_user_deleted';
 
 export interface AnalyticsEventPayload {
   app: 'main' | 'beauty' | 'franchise' | 'admin';
