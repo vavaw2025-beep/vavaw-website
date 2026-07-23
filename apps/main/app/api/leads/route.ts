@@ -8,15 +8,31 @@ import { captureError } from '@vavaw/monitoring';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { full_name, email, phone, company_name, message, source_path, lead_type, website } = body;
+    const full_name = body.full_name ?? body.fullName;
+    const email = body.email;
+    const phone = body.phone;
+    const company_name = body.company_name ?? body.companyName;
+    const message = body.message;
+    const source_path = body.source_path ?? body.sourcePath;
+    const lead_type = body.lead_type ?? body.leadType;
+    const website = body.website;
 
     // Honeypot check
     if (website) {
       return NextResponse.json({ success: true }); // Silently drop spam
     }
 
-    if (!full_name || (!email && !phone)) {
-      return NextResponse.json({ error: 'Name and either email or phone are required' }, { status: 400 });
+    if (!full_name || full_name.trim() === '') {
+      return NextResponse.json({ error: 'Full name is required' }, { status: 400 });
+    }
+
+    if ((!email || email.trim() === '') && (!phone || phone.trim() === '')) {
+      return NextResponse.json({ error: 'Email or phone is required' }, { status: 400 });
+    }
+
+    const validLeadTypes = ['general_contact', 'cosmetic_interest', 'beauty_booking', 'franchise_application'];
+    if (lead_type && !validLeadTypes.includes(lead_type)) {
+      return NextResponse.json({ error: 'Invalid lead type' }, { status: 400 });
     }
 
     if (message && message.length > 2000) {

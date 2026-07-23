@@ -6,7 +6,9 @@ import { useSearchParams } from 'next/navigation';
 
 export function LeadForm() {
   const searchParams = useSearchParams();
-  const defaultType = searchParams?.get('type') || 'general_contact';
+  const typeParam = searchParams?.get('type');
+  const validTypes = ['general_contact', 'cosmetic_interest', 'beauty_booking', 'franchise_application'];
+  const defaultType = typeParam && validTypes.includes(typeParam) ? typeParam : 'general_contact';
   
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -24,9 +26,14 @@ export function LeadForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...data,
+          source_app: 'main',
           source_path: window.location.pathname,
           lead_type: data.lead_type || defaultType,
+          full_name: data.full_name,
+          email: data.email,
+          phone: data.phone,
+          message: data.message,
+          website: data.website
         }),
       });
 
