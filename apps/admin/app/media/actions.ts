@@ -103,6 +103,7 @@ export async function uploadMediaAction(formData: FormData) {
       type: requestedType,
       url: publicUrl,
       alt_text: altText,
+      storage_provider: 'supabase',
       mime_type: file.type,
       size_bytes: file.size,
       metadata: {},
