@@ -45,3 +45,11 @@ Use this checklist immediately after deploying to the production environment to 
 - [ ] disabled by default
 - [ ] no client errors on load
 - [ ] console provider only logs in development (no logs in production client unless intentionally configured)
+
+### 7. Revalidation Smoke Test (Phase 32)
+Ensure that REVALIDATION_SECRET and CMS_REVALIDATION_ENABLED=true are configured.
+- [ ] Make a minor edit to a Hero slide via the Admin Dashboard.
+- [ ] Verify that a cms_revalidation_triggered analytics event is logged (if configured).
+- [ ] Hard refresh the main app homepage (https://vavaw.vn/).
+- [ ] Verify that the hero slide update is immediately visible without waiting for a revalidate timeout.
+- [ ] Revert the hero slide edit.

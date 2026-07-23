@@ -7,6 +7,7 @@ import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
+import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -91,6 +92,26 @@ export async function uploadMediaAction(formData: FormData) {
     }
 
     revalidatePath('/media');
+    
+    let targetApp: 'main' | 'beauty' | 'franchise' | 'all' = 'all';
+    let targetPaths = ['/'];
+    if (siteKey === 'main') {
+      targetApp = 'main';
+    } else if (siteKey === 'cosmetic') {
+      targetApp = 'main';
+      targetPaths = ['/cosmetic'];
+    } else if (siteKey === 'beauty') {
+      targetApp = 'beauty';
+    } else if (siteKey === 'franchise') {
+      targetApp = 'franchise';
+    }
+    
+    triggerPublicRevalidation({
+      app: targetApp,
+      paths: targetPaths,
+      reason: 'media_uploaded'
+    }).catch(console.error);
+
     trackEvent('media_uploaded', {
       app: 'admin',
       entityType: 'media_asset',
@@ -127,6 +148,12 @@ export async function deleteMediaAssetAction(id: string) {
     }
 
     revalidatePath('/media');
+    triggerPublicRevalidation({
+      app: 'all',
+      paths: ['/'],
+      reason: 'media_deleted'
+    }).catch(console.error);
+
     trackEvent('media_deleted', {
       app: 'admin',
       entityType: 'media_asset',

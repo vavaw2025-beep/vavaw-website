@@ -13,6 +13,7 @@ import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
+import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
 
 export async function createBusinessEntryAction(input: CreateBusinessEntryInput) {
   const mode = getAdminDataSourceMode();
@@ -38,6 +39,12 @@ export async function createBusinessEntryAction(input: CreateBusinessEntryInput)
     }
 
     revalidatePath('/business');
+    triggerPublicRevalidation({
+      app: 'main',
+      paths: ['/'],
+      reason: 'business_created'
+    }).catch(console.error);
+
     trackEvent('business_created', {
       app: 'admin',
       entityType: 'business',
@@ -74,6 +81,12 @@ export async function updateBusinessEntryAction(id: string, input: UpdateBusines
     }
 
     revalidatePath('/business');
+    triggerPublicRevalidation({
+      app: 'main',
+      paths: ['/'],
+      reason: 'business_updated'
+    }).catch(console.error);
+
     trackEvent('business_updated', {
       app: 'admin',
       entityType: 'business',
@@ -110,6 +123,12 @@ export async function deleteBusinessEntryAction(id: string) {
     }
 
     revalidatePath('/business');
+    triggerPublicRevalidation({
+      app: 'main',
+      paths: ['/'],
+      reason: 'business_deleted'
+    }).catch(console.error);
+
     trackEvent('business_deleted', {
       app: 'admin',
       entityType: 'business',

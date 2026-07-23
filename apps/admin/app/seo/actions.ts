@@ -13,6 +13,31 @@ import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
+import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
+
+function revalidateSeo(siteKey: string, path: string, reason: string) {
+  let targetApp: 'main' | 'beauty' | 'franchise' | 'all' = 'all';
+  let targetPaths = [path];
+  
+  if (siteKey === 'main') {
+    targetApp = 'main';
+  } else if (siteKey === 'cosmetic') {
+    targetApp = 'main';
+    targetPaths = ['/cosmetic'];
+  } else if (siteKey === 'beauty') {
+    targetApp = 'beauty';
+    targetPaths = ['/'];
+  } else if (siteKey === 'franchise') {
+    targetApp = 'franchise';
+    targetPaths = ['/'];
+  }
+
+  triggerPublicRevalidation({
+    app: targetApp,
+    paths: targetPaths,
+    reason,
+  }).catch(console.error);
+}
 
 export async function createSeoSettingAction(input: CreateSeoSettingInput) {
   const mode = getAdminDataSourceMode();
@@ -38,6 +63,8 @@ export async function createSeoSettingAction(input: CreateSeoSettingInput) {
     }
 
     revalidatePath('/seo');
+    revalidateSeo(input.site_key, input.path, 'seo_created');
+
     trackEvent('seo_created', {
       app: 'admin',
       entityType: 'seo_setting',
@@ -74,6 +101,10 @@ export async function updateSeoSettingAction(id: string, input: UpdateSeoSetting
     }
 
     revalidatePath('/seo');
+    if (input.site_key && input.path) {
+      revalidateSeo(input.site_key, input.path, 'seo_updated');
+    }
+
     trackEvent('seo_updated', {
       app: 'admin',
       entityType: 'seo_setting',
@@ -110,6 +141,14 @@ export async function deleteSeoSettingAction(id: string) {
     }
 
     revalidatePath('/seo');
+    // On delete, we don't easily know the site_key and path without fetching first.
+    // We can fallback to revalidating all known apps/paths for safety.
+    triggerPublicRevalidation({
+      app: 'all',
+      paths: ['/', '/cosmetic'],
+      reason: 'seo_deleted'
+    }).catch(console.error);
+
     trackEvent('seo_deleted', {
       app: 'admin',
       entityType: 'seo_setting',

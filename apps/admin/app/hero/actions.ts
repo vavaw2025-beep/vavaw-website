@@ -13,6 +13,7 @@ import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
+import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
 
 export async function createHeroSlideAction(input: CreateHeroSlideInput) {
   const mode = getAdminDataSourceMode();
@@ -38,6 +39,12 @@ export async function createHeroSlideAction(input: CreateHeroSlideInput) {
     }
 
     revalidatePath('/hero');
+    triggerPublicRevalidation({
+      app: 'main',
+      paths: ['/'],
+      reason: 'hero_created'
+    }).catch(console.error);
+
     trackEvent('hero_created', {
       app: 'admin',
       entityType: 'hero_slide',
@@ -74,6 +81,12 @@ export async function updateHeroSlideAction(id: string, input: UpdateHeroSlideIn
     }
 
     revalidatePath('/hero');
+    triggerPublicRevalidation({
+      app: 'main',
+      paths: ['/'],
+      reason: 'hero_updated'
+    }).catch(console.error);
+
     trackEvent('hero_updated', {
       app: 'admin',
       entityType: 'hero_slide',
@@ -110,6 +123,12 @@ export async function deleteHeroSlideAction(id: string) {
     }
 
     revalidatePath('/hero');
+    triggerPublicRevalidation({
+      app: 'main',
+      paths: ['/'],
+      reason: 'hero_deleted'
+    }).catch(console.error);
+
     trackEvent('hero_deleted', {
       app: 'admin',
       entityType: 'hero_slide',

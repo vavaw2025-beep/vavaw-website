@@ -13,6 +13,31 @@ import { getAdminDataSourceMode } from '../../lib/data-source';
 import { getAdminServerSupabaseClient } from '../../lib/supabase-server';
 import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { trackEvent } from '@vavaw/analytics';
+import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
+
+function revalidateContent(siteKey: string, pagePath: string, reason: string) {
+  let targetApp: 'main' | 'beauty' | 'franchise' | 'all' = 'all';
+  let targetPaths = [pagePath];
+  
+  if (siteKey === 'main') {
+    targetApp = 'main';
+  } else if (siteKey === 'cosmetic') {
+    targetApp = 'main';
+    targetPaths = ['/cosmetic'];
+  } else if (siteKey === 'beauty') {
+    targetApp = 'beauty';
+    targetPaths = ['/'];
+  } else if (siteKey === 'franchise') {
+    targetApp = 'franchise';
+    targetPaths = ['/'];
+  }
+
+  triggerPublicRevalidation({
+    app: targetApp,
+    paths: targetPaths,
+    reason,
+  }).catch(console.error);
+}
 
 export async function createContentBlockAction(input: CreateContentBlockInput) {
   const mode = getAdminDataSourceMode();
@@ -38,6 +63,8 @@ export async function createContentBlockAction(input: CreateContentBlockInput) {
     }
 
     revalidatePath('/content');
+    revalidateContent(input.site_key, input.page_path, 'content_created');
+
     trackEvent('content_block_created', {
       app: 'admin',
       entityType: 'content_block',
@@ -74,6 +101,10 @@ export async function updateContentBlockAction(id: string, input: UpdateContentB
     }
 
     revalidatePath('/content');
+    if (input.site_key && input.page_path) {
+      revalidateContent(input.site_key, input.page_path, 'content_updated');
+    }
+
     trackEvent('content_block_updated', {
       app: 'admin',
       entityType: 'content_block',
@@ -110,6 +141,12 @@ export async function deleteContentBlockAction(id: string) {
     }
 
     revalidatePath('/content');
+    triggerPublicRevalidation({
+      app: 'all',
+      paths: ['/', '/cosmetic'],
+      reason: 'content_deleted'
+    }).catch(console.error);
+
     trackEvent('content_block_deleted', {
       app: 'admin',
       entityType: 'content_block',

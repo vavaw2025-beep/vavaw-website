@@ -27,7 +27,9 @@ export type AnalyticsEventName =
   | 'admin_user_created'
   | 'admin_user_updated'
   | 'admin_user_disabled'
-  | 'admin_user_deleted';
+  | 'admin_user_deleted'
+  | 'cms_revalidation_triggered'
+  | 'cms_revalidation_failed';
 
 export interface AnalyticsEventPayload {
   app: 'main' | 'beauty' | 'franchise' | 'admin';

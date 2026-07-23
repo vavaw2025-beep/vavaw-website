@@ -57,3 +57,6 @@ To ensure maximum stability, deploy components progressively:
 6. **Step 6:** Verify homepage content blocks, `/cosmetic`, and `/go/[slug]` live data.
 7. **Step 7:** Switch `apps/beauty` and `apps/franchise` to `CMS_DATA_SOURCE=supabase` and redeploy.
 8. **Step 8:** Run the full `docs/deployment-smoke-test.md` checklist.
+
+## Phase 32: CMS Revalidation Hooks
+Phase 32 added on-demand ISR revalidation routes to the public apps. The admin dashboard can securely purge edge caches in the public apps (main, eauty, ranchise) after mutations using a shared secret (REVALIDATION_SECRET). This removes the need for arbitrary time-based revalidation (e.g. evalidate = 60) on slowly changing content, ensuring the frontend reflects backend changes instantly while retaining static performance. See docs/revalidation-plan.md for full implementation details.

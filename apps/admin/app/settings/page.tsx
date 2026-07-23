@@ -7,6 +7,12 @@ export default function SettingsPage() {
   const hasSupabaseUrl = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
   const hasAnonKey = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const hasServiceRole = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  const hasRevalidationSecret = !!process.env.REVALIDATION_SECRET;
+  const isRevalidationEnabled = process.env.CMS_REVALIDATION_ENABLED === 'true';
+  const hasMainRevalidateUrl = !!process.env.MAIN_REVALIDATE_URL;
+  const hasBeautyRevalidateUrl = !!process.env.BEAUTY_REVALIDATE_URL;
+  const hasFranchiseRevalidateUrl = !!process.env.FRANCHISE_REVALIDATE_URL;
 
   const configs = [
     { name: 'Environment', value: 'Production', icon: Server, status: 'Active' },
@@ -39,6 +45,14 @@ export default function SettingsPage() {
     { name: 'Anon Key Configured', value: hasAnonKey ? 'Yes' : 'No', icon: Lock, status: hasAnonKey ? 'Configured' : 'Missing' },
     { name: 'Service Role Configured', value: hasServiceRole ? 'Yes (Hidden for Security)' : 'No', icon: Shield, status: hasServiceRole ? 'Configured' : 'Missing' },
     { name: 'Route Protection', value: authMode === 'supabase' ? 'Active (Next.js Middleware + RLS)' : 'Bypassed in Mock Mode', icon: Lock, status: authMode === 'supabase' ? 'Active' : 'Disabled' },
+  ];
+
+  const revalidationConfig = [
+    { name: 'CMS Revalidation Trigger', value: isRevalidationEnabled ? 'Enabled' : 'Disabled', icon: Server, status: isRevalidationEnabled ? 'Active' : 'Disabled' },
+    { name: 'Revalidation Secret', value: hasRevalidationSecret ? 'Configured (Hidden)' : 'Missing', icon: Lock, status: hasRevalidationSecret ? 'Configured' : 'Missing' },
+    { name: 'Main Target URL', value: hasMainRevalidateUrl ? 'Configured' : 'Missing', icon: Globe, status: hasMainRevalidateUrl ? 'Configured' : 'Missing' },
+    { name: 'Beauty Target URL', value: hasBeautyRevalidateUrl ? 'Configured' : 'Missing', icon: Globe, status: hasBeautyRevalidateUrl ? 'Configured' : 'Missing' },
+    { name: 'Franchise Target URL', value: hasFranchiseRevalidateUrl ? 'Configured' : 'Missing', icon: Globe, status: hasFranchiseRevalidateUrl ? 'Configured' : 'Missing' },
   ];
 
   const expectedTables = [
@@ -146,6 +160,39 @@ export default function SettingsPage() {
                     ? 'bg-green-100 text-green-800'
                     : item.status === 'Mock'
                     ? 'bg-amber-100 text-amber-800'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {item.status}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Revalidation Section */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">CMS Revalidation Status</h2>
+        <p className="mt-1 text-sm text-slate-500">On-demand revalidation trigger configuration for public apps.</p>
+      </div>
+
+      <div className="bg-white shadow rounded-lg border border-slate-200">
+        <ul role="list" className="divide-y divide-slate-200">
+          {revalidationConfig.map((item, idx) => (
+            <li key={idx} className="p-4 sm:px-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-emerald-50 p-2 rounded-lg">
+                  <item.icon className="h-5 w-5 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                  <p className="text-sm text-slate-500">{item.value}</p>
+                </div>
+              </div>
+              <div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  item.status === 'Active' || item.status === 'Configured'
+                    ? 'bg-green-100 text-green-800'
                     : 'bg-slate-100 text-slate-600'
                 }`}>
                   {item.status}
