@@ -137,6 +137,12 @@ export async function writeAuditLog(params: WriteAuditLogParams): Promise<void> 
     }
   } catch (err: any) {
     console.error('[writeAuditLog Exception]', err);
+    console.warn("[audit] failed to write audit log", {
+      action: params.action,
+      entity_type: params.entityType,
+      status: 'exception',
+      reason: err.message
+    });
     captureError(err, {
       app: 'admin',
       feature: 'audit_log',

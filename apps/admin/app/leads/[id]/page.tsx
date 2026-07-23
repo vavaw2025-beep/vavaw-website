@@ -9,7 +9,8 @@ import { LeadStatusForm } from './lead-status-form';
 
 export const revalidate = 0;
 
-export default async function LeadDetailPage({ params }: { params: { id: string } }) {
+export default async function LeadDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
