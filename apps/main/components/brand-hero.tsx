@@ -296,11 +296,11 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             style={{ background: getBrandAccentTokens(currentSlide).background }}
           />
           {/* Left text-safe scrim — deliberate reading zone on left, atmosphere on right */}
-          <div className="absolute inset-0 z-30 bg-gradient-to-r from-black/88 via-black/58 to-transparent" />
+          <div className="absolute inset-0 z-30 bg-gradient-to-r from-black/90 via-black/50 to-transparent md:from-black/88 md:via-black/58" />
           {/* Vertical vignette — top subtle, bottom anchoring */}
-          <div className="absolute inset-0 z-30 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
-          {/* Mobile: stronger base for readability */}
-          <div className="absolute inset-0 z-30 bg-gradient-to-t from-[#050505]/85 via-[#050505]/35 to-transparent lg:hidden" />
+          <div className="absolute inset-0 z-30 bg-gradient-to-t from-black/60 via-transparent to-black/30 md:from-black/55 md:to-black/20" />
+          {/* Mobile: stronger base for readability since text flows downwards */}
+          <div className="absolute inset-0 z-30 bg-gradient-to-b from-black/60 via-black/20 to-[#050505]/95 md:hidden" />
         </motion.div>
       </AnimatePresence>
 
@@ -332,10 +332,10 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
 
                 {/* Title */}
                 <h1
-                  className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light leading-[1.08] tracking-tight relative z-40 opacity-100"
+                  className="text-[48px] sm:text-[56px] md:text-7xl xl:text-8xl font-light leading-[1.05] tracking-tight relative z-40 opacity-100"
                   style={{
                     color: '#F8F7F2',
-                    textShadow: '0 8px 28px rgba(0,0,0,0.65), 0 2px 8px rgba(0,0,0,0.45)',
+                    textShadow: '0 8px 28px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5)',
                   }}
                 >
                   {currentSlide.title}
@@ -378,7 +378,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
 
             {/* Navigation Controls — Desktop Only */}
             <motion.div
-              className="hidden lg:flex items-center gap-8 pt-16"
+              className="hidden md:flex items-center gap-8 pt-16"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
@@ -499,7 +499,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
 
       {/* Pagination Dots — Mobile Only */}
       <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex lg:hidden gap-3 z-20"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex md:hidden gap-3 z-20"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
