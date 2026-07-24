@@ -20,7 +20,7 @@
 | **Lead CSV Export** | ✅ PASSED | Owner and Admin only (`canExportLeads`). Bulk PII protected. Max 5,000 rows. |
 | **Monitoring** | ✅ PASSED | Unified `@vavaw/monitoring` package supporting Console and Sentry integration. |
 | **SEO & Sitemap** | ✅ PASSED | Dynamic `/sitemap.xml`, `/robots.txt`, openGraph, JSON-LD, Admin `noindex/nofollow`. |
-| **Brand & UI** | ✅ PASSED | Premium Korean luxury aesthetic applied. Clean typography, generous spacing, mobile-first responsive. Phase 54, Phase 56, Phase 56B Launch Media attached and verified. Phase 56C Clinical Blue direction applied to Cosmetic. Phase 56D Main Hero Experience Polished. Phase 56E Hero Image Connections added. Phase 56F schema and host rules fixed. Phase 56G normalized hero image props for rendering. |
+| **Brand & UI** | ✅ PASSED | Premium Korean luxury aesthetic applied. Clean typography, generous spacing, mobile-first responsive. Phase 54, Phase 56, Phase 56B Launch Media attached and verified. Phase 56C Clinical Blue direction applied to Cosmetic. Phase 56D Main Hero Experience Polished. Phase 56E Hero Image Connections added. Phase 56F schema and host rules fixed. Phase 56G normalized hero image props for rendering. Phase 56H forced raw img tags for reliable Supabase URL resolution. |
 | **Domain Prep**| ✅ PASSED | Custom domain mapping verified, DNS/SSL checklists created, Phase 52 checks completed. |
 | **Admin Docs** | ✅ PASSED | Phase 50A — Admin Feature Map added. Phase 51 — Admin Operating Guide created. |
 | **Admin QA**   | ✅ PASSED | Phase 51 — Admin operating workflows verified. |

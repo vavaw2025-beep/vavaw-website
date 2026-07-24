@@ -79,20 +79,42 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
       : "from-black to-[#c69c6d]";
   };
 
+  const showDebug = process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
+  const resolvedImagesCount = slides.filter(s => s.backgroundImageUrl || s.previewImageUrl).length;
+
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-[#050505]">
-      {isDev && dataSource && (
-        <div className="absolute top-3 right-3 z-50">
-          <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider backdrop-blur-sm border ${
-              dataSource === 'supabase'
-                ? 'bg-emerald-900/70 border-emerald-700 text-emerald-300'
-                : 'bg-blue-900/70 border-blue-700 text-blue-300'
-            }`}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-current" />
-            Data: {dataSource === 'supabase' ? 'Supabase' : 'Static'}
-          </span>
+      {showDebug && dataSource && (
+        <div className="absolute top-3 right-3 z-50 bg-black/80 backdrop-blur-md p-4 rounded-md text-[10px] font-mono border border-gray-700 text-gray-300 shadow-2xl max-w-xs w-full">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-bold text-white uppercase tracking-wider">CMS Debug</span>
+            <span className={`px-2 py-0.5 rounded-full font-bold ${
+              dataSource === 'supabase' ? 'bg-emerald-900 text-emerald-300' : 'bg-blue-900 text-blue-300'
+            }`}>
+              {dataSource}
+            </span>
+          </div>
+          <div className="mb-2 space-y-1">
+            <div className="flex justify-between">
+              <span>Total Slides:</span>
+              <span className="text-white font-medium">{slides.length}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Images Resolved:</span>
+              <span className="text-white font-medium">{resolvedImagesCount}/{slides.length}</span>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 pt-2 mt-2 space-y-2">
+            {slides.map((s, i) => (
+              <div key={i} className="flex flex-col gap-0.5 pb-2 border-b border-gray-800 last:border-0 last:pb-0">
+                <span className="text-white font-medium truncate">{s.title}</span>
+                <div className="flex justify-between text-gray-400">
+                  <span>bg: <span className={s.backgroundImageUrl ? "text-emerald-400" : "text-red-400"}>{s.backgroundImageUrl ? 'yes' : 'no'}</span></span>
+                  <span>prev: <span className={s.previewImageUrl ? "text-emerald-400" : "text-red-400"}>{s.previewImageUrl ? 'yes' : 'no'}</span></span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -105,22 +127,21 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
           className="absolute inset-0"
+          data-has-bg-url={Boolean(currentSlide.backgroundImageUrl)}
         >
           {!currentSlide.backgroundImageUrl || imageError[currentSlide.backgroundImageUrl] ? (
-            <div className={`absolute inset-0 bg-gradient-to-br ${getBrandGradient(currentSlide, true)} opacity-20`} />
+            <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(currentSlide, true)} opacity-20`} />
           ) : (
-            <Image
+            <img
               src={currentSlide.backgroundImageUrl}
-              alt={currentSlide.title}
-              fill
-              priority
-              className="object-cover"
+              alt={currentSlide.backgroundAlt || ""}
+              className="absolute inset-0 z-10 h-full w-full object-cover"
               onError={() => handleImageError(currentSlide.backgroundImageUrl as string)}
             />
           )}
           {/* Cinematic Dark Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-black/30 lg:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent lg:hidden" />
+          <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/90 via-black/50 to-black/30 lg:to-transparent opacity-65" />
+          <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent lg:hidden" />
         </motion.div>
       </AnimatePresence>
 
@@ -303,20 +324,20 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                     >
                       <motion.div
                         className="relative w-full h-full bg-[#18181b] rounded-sm overflow-hidden border border-[#27272a] shadow-2xl transition-all duration-500 hover:border-[#52525b] group-hover:-translate-y-2"
+                        data-has-preview-url={Boolean(slide.previewImageUrl)}
                       >
                         {!slide.previewImageUrl || imageError[slide.previewImageUrl] ? (
-                          <div className={`absolute inset-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-80`} />
+                          <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-80`} />
                         ) : (
-                          <Image
+                          <img
                             src={slide.previewImageUrl}
-                            alt={slide.title}
-                            fill
-                            className="object-cover opacity-70 group-hover:opacity-100 transition-all duration-700"
+                            alt={slide.previewAlt || slide.title}
+                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-700"
                             onError={() => handleImageError(slide.previewImageUrl as string)}
                           />
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90" />
-                        <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5">
+                        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/70 via-black/25 to-transparent opacity-90" />
+                        <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5 z-30">
                           <h3 className="text-[11px] lg:text-xs font-medium text-white tracking-[0.1em] uppercase drop-shadow-md">
                             {slide.title}
                           </h3>

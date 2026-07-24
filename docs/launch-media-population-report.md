@@ -27,3 +27,4 @@ If `CMS_DATA_SOURCE=static`, Admin hero changes will not appear on public homepa
 - Public `media_assets` SELECT policy is required for anon public rendering.
 - `preview-image` type is acceptable for Main hero visuals.
 - The `NormalizedHeroSlide` type is now `PublicHeroSlide` providing explicit `backgroundImageUrl` and `previewImageUrl` fields directly to the `BrandHero` component.
+- The `BrandHero` uses raw `<img />` tags for `backgroundImageUrl` and `previewImageUrl` to guarantee immediate image resolution from Supabase storage URLs.

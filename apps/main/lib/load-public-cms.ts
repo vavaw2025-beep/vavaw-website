@@ -52,6 +52,8 @@ export interface PublicHeroSlide {
   backgroundImageUrl?: string;
   /** Resolved from media_assets or fallback */
   previewImageUrl?: string;
+  backgroundAlt?: string;
+  previewAlt?: string;
   businessEntryId?: string;
 }
 
