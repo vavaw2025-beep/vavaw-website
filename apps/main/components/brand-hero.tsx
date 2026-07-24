@@ -30,12 +30,50 @@ function preloadImage(url?: string | null) {
 
 // Per-brand cinematic tint — applied above background, below text scrims.
 // Very subtle; connects slide mood without breaking black/ivory/silver identity.
-function getBrandTint(slide: { title: string; redirectPath?: string | null }): string {
-  const t = slide.title.toLowerCase();
-  const r = slide.redirectPath ?? '';
-  if (t.includes('cosmetic') || r.includes('cosmetic')) return 'rgba(5, 10, 92, 0.10)';
-  if (t.includes('beauty') || r.includes('beauty')) return 'rgba(92, 58, 48, 0.10)';
-  return 'rgba(217, 119, 6, 0.08)';
+function getBrandAccentTokens(slide: { title: string; redirectPath?: string | null }) {
+  const text = `${slide.title ?? ''} ${slide.redirectPath ?? ''}`.toLowerCase();
+
+  if (text.includes('cosmetic')) {
+    return {
+      name: 'cosmetic',
+      border: 'rgba(120, 150, 255, 0.58)',
+      borderHover: 'rgba(170, 195, 255, 0.9)',
+      glow: 'rgba(5, 10, 92, 0.22)',
+      line: 'rgba(170, 195, 255, 0.75)',
+      background: 'radial-gradient(circle at 68% 42%, rgba(5,10,92,0.18), transparent 34%)',
+    };
+  }
+
+  if (text.includes('beauty')) {
+    return {
+      name: 'beauty',
+      border: 'rgba(190, 135, 125, 0.55)',
+      borderHover: 'rgba(225, 170, 155, 0.88)',
+      glow: 'rgba(92, 58, 48, 0.18)',
+      line: 'rgba(225, 170, 155, 0.72)',
+      background: 'radial-gradient(circle at 68% 42%, rgba(92,58,48,0.16), transparent 34%)',
+    };
+  }
+
+  if (text.includes('franchise')) {
+    return {
+      name: 'franchise',
+      border: 'rgba(217, 119, 6, 0.52)',
+      borderHover: 'rgba(245, 185, 95, 0.9)',
+      glow: 'rgba(217, 119, 6, 0.16)',
+      line: 'rgba(245, 185, 95, 0.72)',
+      background: 'radial-gradient(circle at 68% 42%, rgba(217,119,6,0.15), transparent 34%)',
+    };
+  }
+
+  return {
+    name: 'default',
+    border: 'rgba(255,255,255,0.2)',
+    borderHover: 'rgba(255,255,255,0.45)',
+    glow: 'rgba(255,255,255,0.08)',
+    line: 'rgba(255,255,255,0.5)',
+    background: 'radial-gradient(circle at 68% 42%, rgba(255,255,255,0.08), transparent 34%)',
+  };
 }
 
 export interface BrandHeroProps {
@@ -230,13 +268,20 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             <img
               src={currentSlide.backgroundImageUrl}
               alt={currentSlide.backgroundAlt || ""}
-              className="absolute inset-0 z-10 h-full w-full object-cover opacity-85"
-              style={{ transform: 'scale(1.02)' }}
+              className="absolute inset-0 z-10 h-full w-full object-cover opacity-75 scale-[1.01]"
               onError={() => handleImageError(currentSlide.backgroundImageUrl as string)}
             />
           )}
           {/* Per-brand cinematic tint — subtle mood above image, below scrims */}
-          <div className="absolute inset-0 z-20" style={{ backgroundColor: getBrandTint(currentSlide) }} />
+          <motion.div
+            key={`accent-${activeIndex}`}
+            className="absolute inset-0 z-20 pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
+            style={{ background: getBrandAccentTokens(currentSlide).background }}
+          />
           {/* Left text-safe scrim — deliberate reading zone on left, atmosphere on right */}
           <div className="absolute inset-0 z-30 bg-gradient-to-r from-black/88 via-black/58 to-transparent" />
           {/* Vertical vignette — top subtle, bottom anchoring */}
@@ -255,15 +300,21 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             <AnimatePresence initial={false} mode="sync">
               <motion.div
                 key={`copy-${activeIndex}`}
-                initial={{ opacity: 0, y: 18 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.38, ease: [0.25, 1, 0.5, 1] }}
                 className="flex flex-col justify-center space-y-6 lg:space-y-8"
               >
-                {/* Slide counter */}
-                <div className="flex items-center gap-4 text-[10px] md:text-xs font-medium tracking-[0.3em] text-[#a3a3a3] uppercase">
-                  <span>{String(activeIndex + 1).padStart(2, '0')} — {String(slides.length).padStart(2, '0')}</span>
+                {/* Slide counter & accent line */}
+                <div className="flex items-center gap-4">
+                  <div
+                    className="h-px w-12"
+                    style={{ backgroundColor: getBrandAccentTokens(currentSlide).line }}
+                  />
+                  <div className="text-[10px] md:text-xs font-medium tracking-[0.3em] text-[#a3a3a3] uppercase">
+                    <span>{String(activeIndex + 1).padStart(2, '0')} — {String(slides.length).padStart(2, '0')}</span>
+                  </div>
                 </div>
 
                 {/* Title */}
@@ -294,21 +345,23 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                     {currentSlide.description}
                   </p>
                 )}
-
-                {/* CTA Button */}
-                <button
-                  onClick={() => {
-                    if (currentSlide.redirectPath) {
-                      router.push(currentSlide.redirectPath);
-                    }
-                  }}
-                  aria-label={currentSlide.ctaLabel}
-                  className="mt-6 md:mt-10 h-[52px] md:h-[54px] w-fit px-9 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-transform transition-colors duration-200 hover:bg-white hover:-translate-y-0.5 shadow-[0_2px_18px_rgba(248,247,242,0.14)] flex items-center justify-center"
-                >
-                  {currentSlide.ctaLabel}
-                </button>
               </motion.div>
             </AnimatePresence>
+
+            {/* CTA Button — Outside AnimatePresence to stay stable */}
+            <div className="mt-6 md:mt-10">
+              <button
+                onClick={() => {
+                  if (currentSlide.redirectPath) {
+                    router.push(currentSlide.redirectPath);
+                  }
+                }}
+                aria-label={currentSlide.ctaLabel}
+                className="h-[52px] md:h-[54px] w-fit px-9 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-transform transition-colors duration-200 hover:bg-white hover:-translate-y-[1px] shadow-[0_2px_18px_rgba(248,247,242,0.14)] flex items-center justify-center"
+              >
+                {currentSlide.ctaLabel}
+              </button>
+            </div>
 
             {/* Navigation Controls — Desktop Only */}
             <motion.div
@@ -365,6 +418,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                   const width = isPrimary ? 215 : 172;
                   const height = isPrimary ? 330 : 278;
                   const cardOpacity = isPrimary ? 1 : 0.62;
+                  const cardAccent = getBrandAccentTokens(slide);
 
                   return (
                     <motion.div
@@ -382,11 +436,17 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                         setTimeout(() => setAutoplay(true), 7000);
                       }}
                       className="relative flex-shrink-0 cursor-pointer origin-bottom"
-                      style={{ width: `${width}px`, height: `${height}px` }}
+                      style={{ 
+                        width: `${width}px`, 
+                        height: `${height}px`,
+                        '--card-border': cardAccent.border,
+                        '--card-border-hover': cardAccent.borderHover,
+                        '--card-glow': cardAccent.glow,
+                      } as React.CSSProperties}
                       aria-label={`Preview ${slide.title}`}
                     >
                       <div
-                        className="relative w-full h-full bg-[#18181b] overflow-hidden border border-white/20 shadow-2xl shadow-black/40 transition-all duration-200 hover:border-white/40 hover:-translate-y-0.5"
+                        className="relative w-full h-full bg-[#18181b] overflow-hidden transition-all duration-200 hover:-translate-y-[2px] card-hover-effect"
                         data-has-preview-url={isValidHeroImageUrl(slide.previewImageUrl)}
                       >
                         {!isValidHeroImageUrl(slide.previewImageUrl) || imageError[slide.previewImageUrl] ? (
@@ -439,6 +499,14 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
         ))}
       </motion.div>
       <style jsx global>{`
+        .card-hover-effect {
+          border: 1px solid var(--card-border);
+          box-shadow: 0 24px 70px rgba(0,0,0,0.45), 0 0 0 1px var(--card-border);
+        }
+        .card-hover-effect:hover {
+          border: 1px solid var(--card-border-hover);
+          box-shadow: 0 28px 80px rgba(0,0,0,0.55), 0 0 28px var(--card-glow);
+        }
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
         }
