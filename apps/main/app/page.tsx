@@ -63,26 +63,38 @@ export default async function HomePage() {
   const cms = await loadPublicHomeCms(isPreview);
 
   // Server-side CMS diagnostic — safe, never logs actual key values
-  console.info("[main cms source]", {
-    source: cms.source,
+  console.info('[main cms source]', {
+    cmsSource: cms.source,
     hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
     hasAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+    rawHeroRowsCount: cms.rawHeroRowsCount ?? 'n/a',
+    activeHeroRowsCount: cms.activeHeroRowsCount ?? 'n/a',
+    normalizedSlidesCount: cms.heroSlides.length,
+    fallbackUsed: cms.fallbackUsed ?? false,
+    fallbackReason: cms.fallbackReason ?? null,
     error: cms.error ?? null,
   });
   if (process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true') {
-    console.info("[main cms slides]", {
+    console.info('[main cms slides]', {
       slideCount: cms.heroSlides.length,
       slides: cms.heroSlides.map((slide) => ({
         title: slide.title,
-        bgValid: slide.backgroundImageUrl ? !slide.backgroundImageUrl.includes('PASTE_') && slide.backgroundImageUrl !== '' : false,
-        previewValid: slide.previewImageUrl ? !slide.previewImageUrl.includes('PASTE_') && slide.previewImageUrl !== '' : false,
+        isDerived: slide.id.startsWith('derived-'),
+        bgValid: Boolean(slide.backgroundImageUrl) && !slide.backgroundImageUrl!.includes('PASTE_'),
+        previewValid: Boolean(slide.previewImageUrl) && !slide.previewImageUrl!.includes('PASTE_'),
       }))
     });
   }
 
   return (
     <main>
-      <BrandHero slides={cms.heroSlides} dataSource={cms.source} />
+      <BrandHero
+        slides={cms.heroSlides}
+        dataSource={cms.source}
+        fallbackUsed={cms.fallbackUsed}
+        fallbackReason={cms.fallbackReason}
+        rawHeroRowsCount={cms.rawHeroRowsCount}
+      />
       <BusinessEcosystem />
       <SiteFooter variant="main" />
     </main>

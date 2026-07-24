@@ -24,9 +24,12 @@ function isValidHeroImageUrl(value?: string | null): value is string {
 export interface BrandHeroProps {
   slides: PublicHeroSlide[];
   dataSource?: 'static' | 'supabase';
+  fallbackUsed?: boolean;
+  fallbackReason?: string;
+  rawHeroRowsCount?: number;
 }
 
-export function BrandHero({ slides, dataSource }: BrandHeroProps) {
+export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, rawHeroRowsCount }: BrandHeroProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const [autoplay, setAutoplay] = useState(true);
@@ -104,11 +107,16 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
           <div className="flex items-center justify-between mb-2">
             <span className="font-bold text-white uppercase tracking-wider">CMS Debug</span>
             <span className={`px-2 py-0.5 rounded-full font-bold ${
-              dataSource === 'supabase' ? 'bg-emerald-900 text-emerald-300' : 'bg-yellow-900 text-yellow-300'
+              dataSource === 'static'
+                ? 'bg-yellow-900 text-yellow-300'
+                : fallbackUsed
+                  ? 'bg-orange-900 text-orange-300'
+                  : 'bg-emerald-900 text-emerald-300'
             }`}>
-              {dataSource ?? 'unknown'}
+              {dataSource ?? 'unknown'}{fallbackUsed ? ' ⚠' : ''}
             </span>
           </div>
+
           {dataSource === 'static' ? (
             <div className="text-yellow-400 text-[9px] leading-relaxed border border-yellow-800 bg-yellow-900/30 rounded p-2">
               ⚠ Static mode active — Admin-uploaded images will NOT render.<br />
@@ -116,15 +124,28 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
             </div>
           ) : (
             <>
+              {/* Fallback warning */}
+              {fallbackUsed && (
+                <div className="text-orange-400 text-[9px] leading-relaxed border border-orange-800 bg-orange-900/30 rounded p-2 mb-2">
+                  ⚠ Fallback used — this is NOT real hero_slides data.<br />
+                  <span className="text-orange-300">{fallbackReason}</span>
+                </div>
+              )}
               <div className="mb-2 space-y-1">
                 <div className="flex justify-between">
-                  <span>Total Slides:</span>
+                  <span>Raw hero rows (DB):</span>
+                  <span className={`font-medium ${(rawHeroRowsCount ?? 0) > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {rawHeroRowsCount ?? 0}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Rendered slides:</span>
                   <span className="text-white font-medium">{slides.length}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Images Resolved:</span>
+                  <span>Images resolved:</span>
                   <span className={`font-medium ${
-                    resolvedImagesCount === slides.length ? 'text-emerald-400' : 'text-orange-400'
+                    resolvedImagesCount === slides.length && slides.length > 0 ? 'text-emerald-400' : 'text-orange-400'
                   }`}>{resolvedImagesCount}/{slides.length}</span>
                 </div>
                 {hasPlaceholder && (
@@ -136,7 +157,12 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
               <div className="border-t border-gray-700 pt-2 mt-2 space-y-2">
                 {slides.map((s, i) => (
                   <div key={i} className="flex flex-col gap-0.5 pb-2 border-b border-gray-800 last:border-0 last:pb-0">
-                    <span className="text-white font-medium truncate">{s.title}</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-white font-medium truncate">{s.title}</span>
+                      {s.id.startsWith('derived-') && (
+                        <span className="text-orange-400 text-[8px] shrink-0">[derived]</span>
+                      )}
+                    </div>
                     <div className="flex justify-between text-gray-400">
                       <span>bg: <span className={isValidHeroImageUrl(s.backgroundImageUrl) ? "text-emerald-400" : "text-red-400"}>{isValidHeroImageUrl(s.backgroundImageUrl) ? 'yes' : 'no'}</span></span>
                       <span>prev: <span className={isValidHeroImageUrl(s.previewImageUrl) ? "text-emerald-400" : "text-red-400"}>{isValidHeroImageUrl(s.previewImageUrl) ? 'yes' : 'no'}</span></span>

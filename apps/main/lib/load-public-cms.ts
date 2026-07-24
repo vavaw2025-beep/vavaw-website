@@ -70,6 +70,14 @@ export interface PublicCmsData {
   mediaAssets: NormalizedMediaAsset[];
   source: 'static' | 'supabase';
   error?: string;
+  /** True when Supabase had no active hero_slides and slides were derived from business_entries */
+  fallbackUsed?: boolean;
+  /** Human-readable reason why fallback was used */
+  fallbackReason?: string;
+  /** Number of raw rows returned from hero_slides query (before normalization) */
+  rawHeroRowsCount?: number;
+  /** Number of rows that matched status = active */
+  activeHeroRowsCount?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -114,6 +122,9 @@ function loadStaticCmsData(): PublicCmsData {
     heroSlides,
     mediaAssets: [],
     source: 'static',
+    fallbackUsed: false,
+    rawHeroRowsCount: 0,
+    activeHeroRowsCount: 0,
   };
 }
 
@@ -168,6 +179,9 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
       const fallback = loadStaticCmsData();
       return {
         ...fallback,
+        source: 'supabase',
+        fallbackUsed: true,
+        fallbackReason: `Query error (entries): ${entriesResult.error.message}`,
         error: `Supabase error (entries): ${entriesResult.error.message}`,
       };
     }
@@ -175,6 +189,9 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
       const fallback = loadStaticCmsData();
       return {
         ...fallback,
+        source: 'supabase',
+        fallbackUsed: true,
+        fallbackReason: `Query error (slides): ${slidesResult.error.message}`,
         error: `Supabase error (slides): ${slidesResult.error.message}`,
       };
     }
@@ -210,6 +227,11 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
       const fallback = loadStaticCmsData();
       return {
         ...fallback,
+        source: 'supabase',
+        fallbackUsed: true,
+        fallbackReason: 'No active hero_slides or business_entries found in Supabase',
+        rawHeroRowsCount: 0,
+        activeHeroRowsCount: 0,
         error: 'No active data in Supabase — using static fallback.',
       };
     }
@@ -350,13 +372,18 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
           businessEntryId: e.id,
         }));
 
+    // Track whether we used real hero_slides or fell back to derived-from-entries
+    const usedDerivedFallback = rawSlides.length === 0;
+
     if (isDiagMode) {
       console.info('[main cms normalized slides]', {
         normalizedCount: heroSlides.length,
+        usingDerivedFallback: usedDerivedFallback,
         normalizedTitles: heroSlides.map(s => ({
           title: s.title,
           bgResolved: Boolean(s.backgroundImageUrl),
           prevResolved: Boolean(s.previewImageUrl),
+          isDerived: s.id.startsWith('derived-'),
         })),
       });
     }
@@ -373,11 +400,22 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
       heroSlides,
       mediaAssets,
       source: 'supabase',
+      fallbackUsed: usedDerivedFallback,
+      fallbackReason: usedDerivedFallback
+        ? 'hero_slides table is empty — slides derived from business_entries (no images)'
+        : undefined,
+      rawHeroRowsCount: rawSlides.length,
+      activeHeroRowsCount: rawSlides.length,
     };
   } catch (err: any) {
     const fallback = loadStaticCmsData();
     return {
       ...fallback,
+      source: 'supabase',
+      fallbackUsed: true,
+      fallbackReason: `Unexpected error: ${err?.message ?? String(err)}`,
+      rawHeroRowsCount: 0,
+      activeHeroRowsCount: 0,
       error: `Unexpected error: ${err?.message ?? String(err)}`,
     };
   }
