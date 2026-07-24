@@ -104,3 +104,11 @@ NEXT_PUBLIC_SUPABASE_URL=https://[YOUR_PROJECT_ID].supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=[YOUR_ANON_KEY]
 SUPABASE_SERVICE_ROLE_KEY=[YOUR_SERVICE_ROLE_KEY]
 ```
+
+To render Admin CMS hero slides in production on the Main homepage (`apps/main`), the following variables must be configured:
+
+```env
+CMS_DATA_SOURCE=supabase
+NEXT_PUBLIC_SUPABASE_URL=https://[YOUR_PROJECT_ID].supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=[YOUR_ANON_KEY]
+```

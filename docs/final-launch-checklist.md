@@ -32,6 +32,7 @@
 - [x] Phase 56B: Attach Launch Media and Verify Main/Cosmetic Visual QA completed.
 - [x] Phase 56C: Cosmetic Blue Clinical Luxury CSS Direction applied.
 - [x] Phase 56D: Main Banner / Hero Experience Polish completed.
+- [x] Phase 56E: Connect Uploaded Hero Images to Main Public Homepage completed.
 
 ### Security & Authentication
 - [ ] Production Admin is configured with `ADMIN_AUTH_MODE=supabase` and `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.

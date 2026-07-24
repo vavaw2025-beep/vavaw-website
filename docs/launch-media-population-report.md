@@ -11,3 +11,12 @@
 | `cosmetic-clean-promise` | Cosmetic Landing | Yes | ✅ Yes | `PASTE_ACTUAL_PUBLIC_URL` | Clean Beauty Promise | ✅ Yes | Inserted into Quality Promise section |
 
 > **Note**: Do not mark actual media as uploaded until real assets are uploaded via Admin Dashboard and assigned to the CMS configurations.
+
+## Vercel Production Environment for vavaw-main
+
+To render Admin CMS hero slides in production, configure the following in Vercel for `vavaw-main`:
+- `CMS_DATA_SOURCE=supabase`
+- `NEXT_PUBLIC_SUPABASE_URL=required`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY=required`
+
+If `CMS_DATA_SOURCE=static`, Admin hero changes will not appear on public homepage.

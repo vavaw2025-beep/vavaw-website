@@ -216,15 +216,17 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
       ? slides.map((s: any) => {
           const linkedEntry = s.business_entry_id ? entryMap.get(s.business_entry_id) : undefined;
 
-          // Resolve background image: media asset → entry fallback → empty
-          const bgUrl = s.background_media_id
-            ? (mediaMap.get(s.background_media_id) ?? linkedEntry?.backgroundImage ?? '')
-            : (linkedEntry?.backgroundImage ?? '');
+          const resolveMedia = (val?: string, fallback?: string) => {
+            if (!val) return fallback ?? '';
+            if (val.startsWith('http') || val.startsWith('/')) return val; // Directly pasted URL
+            return mediaMap.get(val) ?? fallback ?? '';
+          };
 
-          // Resolve preview image: media asset → entry fallback → empty
-          const prevUrl = s.preview_media_id
-            ? (mediaMap.get(s.preview_media_id) ?? linkedEntry?.previewImage ?? '')
-            : (linkedEntry?.previewImage ?? '');
+          // Resolve background image: URL → media asset ID → entry fallback → empty
+          const bgUrl = resolveMedia(s.background_media_id, linkedEntry?.backgroundImage);
+
+          // Resolve preview image: URL → media asset ID → entry fallback → empty
+          const prevUrl = resolveMedia(s.preview_media_id, linkedEntry?.previewImage);
 
           return {
             id: s.id,

@@ -61,6 +61,14 @@ export default async function HomePage() {
   const isPreview = (await draftMode()).isEnabled;
   const cms = await loadPublicHomeCms(isPreview);
 
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(`[CMS Diagnostics] Source: ${cms.source}`);
+    console.warn(`[CMS Diagnostics] Error: ${cms.error ?? 'none'}`);
+    console.warn(`[CMS Diagnostics] Business Entries: ${cms.businessEntries.length}`);
+    console.warn(`[CMS Diagnostics] Hero Slides: ${cms.heroSlides.length}`);
+    console.warn(`[CMS Diagnostics] Media Assets: ${cms.mediaAssets.length}`);
+  }
+
   return (
     <main>
       <BrandHero slides={cms.heroSlides} dataSource={cms.source} />
