@@ -186,73 +186,88 @@ export function HeroForm({ initialData, businesses, mediaAssets = [], isEdit = f
       </div>
 
       {/* Media Selection Section */}
-      <div className="pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-slate-700">Background Media Asset</label>
-          {mediaAssets.length > 0 ? (
-            <select
-              value={backgroundMediaId}
-              onChange={(e) => setBackgroundMediaId(e.target.value)}
-              className="mt-1 block w-full border border-slate-300 rounded-md p-2 text-sm bg-white"
-            >
-              <option value="">-- No media selected --</option>
-              {mediaAssets.map((m) => (
-                <option key={m.id} value={m.id}>
-                  [{m.site_key}] {m.type} - {m.alt_text || m.url.slice(-25)}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <input
-              type="text"
-              value={backgroundMediaId}
-              onChange={(e) => setBackgroundMediaId(e.target.value)}
-              placeholder="Media Asset ID or path"
-              className="mt-1 block w-full border border-slate-300 rounded-md p-2 text-sm"
-            />
-          )}
-
-          {selectedBgMedia && (
-            <div className="mt-2 p-2 bg-slate-50 border border-slate-200 rounded-md flex items-center gap-3">
-              <div className="w-12 h-12 relative bg-slate-200 rounded overflow-hidden flex-shrink-0 flex items-center justify-center">
-                {selectedBgMedia.url.startsWith('http') || selectedBgMedia.url.startsWith('/') ? (
-                  <img src={selectedBgMedia.url} alt={selectedBgMedia.alt_text || 'BG Preview'} className="object-cover w-full h-full" />
-                ) : (
-                  <ImageIcon className="h-6 w-6 text-slate-400" />
-                )}
-              </div>
-              <div className="text-xs text-slate-600 truncate">
-                <span className="font-semibold block text-slate-900">{selectedBgMedia.alt_text || 'Background Asset'}</span>
-                <span className="truncate block font-mono text-[10px] text-slate-500">{selectedBgMedia.url}</span>
-              </div>
-            </div>
-          )}
+      <div className="pt-4 border-t border-slate-200">
+        <div className="mb-6 p-4 bg-slate-50 border border-slate-200 rounded-md">
+          <h4 className="text-sm font-semibold text-slate-800 mb-2">Recommended media workflow:</h4>
+          <ol className="list-decimal list-inside text-xs text-slate-600 space-y-1 mb-3">
+            <li>Go to Media.</li>
+            <li>Upload image with <code className="bg-slate-200 px-1 rounded">site_key = main</code>.</li>
+            <li>Use asset type <code className="bg-slate-200 px-1 rounded">preview-image</code> (acceptable for hero visuals).</li>
+            <li>Return to Hero.</li>
+            <li>Select or paste the uploaded Media Asset ID / URL.</li>
+          </ol>
+          <div className="text-xs text-slate-500">
+            <strong>Main hero preview sizes:</strong> Cosmetic (1600x2000, 4:5), Beauty (1600x2000, 4:5), Franchise (1600x2000, 4:5). Use centered subjects for safe mobile/desktop crop.
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700">Preview Media Asset</label>
-          {mediaAssets.length > 0 ? (
-            <select
-              value={previewMediaId}
-              onChange={(e) => setPreviewMediaId(e.target.value)}
-              className="mt-1 block w-full border border-slate-300 rounded-md p-2 text-sm bg-white"
-            >
-              <option value="">-- No media selected --</option>
-              {mediaAssets.map((m) => (
-                <option key={m.id} value={m.id}>
-                  [{m.site_key}] {m.type} - {m.alt_text || m.url.slice(-25)}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <input
-              type="text"
-              value={previewMediaId}
-              onChange={(e) => setPreviewMediaId(e.target.value)}
-              placeholder="Media Asset ID or path"
-              className="mt-1 block w-full border border-slate-300 rounded-md p-2 text-sm"
-            />
-          )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-700">Background Media Asset / URL</label>
+            {mediaAssets.length > 0 ? (
+              <select
+                value={backgroundMediaId}
+                onChange={(e) => setBackgroundMediaId(e.target.value)}
+                className="mt-1 block w-full border border-slate-300 rounded-md p-2 text-sm bg-white"
+              >
+                <option value="">-- No media selected --</option>
+                {mediaAssets.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    [{m.site_key}] {m.type} - {m.alt_text || m.url.slice(-25)}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                value={backgroundMediaId}
+                onChange={(e) => setBackgroundMediaId(e.target.value)}
+                placeholder="Paste media asset ID or public image URL"
+                className="mt-1 block w-full border border-slate-300 rounded-md p-2 text-sm"
+              />
+            )}
+
+            {selectedBgMedia && (
+              <div className="mt-2 p-2 bg-slate-50 border border-slate-200 rounded-md flex items-center gap-3">
+                <div className="w-12 h-12 relative bg-slate-200 rounded overflow-hidden flex-shrink-0 flex items-center justify-center">
+                  {selectedBgMedia.url.startsWith('http') || selectedBgMedia.url.startsWith('/') ? (
+                    <img src={selectedBgMedia.url} alt={selectedBgMedia.alt_text || 'BG Preview'} className="object-cover w-full h-full" />
+                  ) : (
+                    <ImageIcon className="h-6 w-6 text-slate-400" />
+                  )}
+                </div>
+                <div className="text-xs text-slate-600 truncate">
+                  <span className="font-semibold block text-slate-900">{selectedBgMedia.alt_text || 'Background Asset'}</span>
+                  <span className="truncate block font-mono text-[10px] text-slate-500">{selectedBgMedia.url}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700">Preview Media Asset / URL</label>
+            {mediaAssets.length > 0 ? (
+              <select
+                value={previewMediaId}
+                onChange={(e) => setPreviewMediaId(e.target.value)}
+                className="mt-1 block w-full border border-slate-300 rounded-md p-2 text-sm bg-white"
+              >
+                <option value="">-- No media selected --</option>
+                {mediaAssets.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    [{m.site_key}] {m.type} - {m.alt_text || m.url.slice(-25)}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                value={previewMediaId}
+                onChange={(e) => setPreviewMediaId(e.target.value)}
+                placeholder="Paste media asset ID or public image URL"
+                className="mt-1 block w-full border border-slate-300 rounded-md p-2 text-sm"
+              />
+            )}
 
           {selectedPreviewMedia && (
             <div className="mt-2 p-2 bg-slate-50 border border-slate-200 rounded-md flex items-center gap-3">
@@ -270,6 +285,7 @@ export function HeroForm({ initialData, businesses, mediaAssets = [], isEdit = f
             </div>
           )}
         </div>
+      </div>
       </div>
 
       <div>

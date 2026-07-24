@@ -9,15 +9,15 @@ This document outlines the final production-ready content structure, brand direc
   - **H1 SEO Strategy**: Only one `H1` is active per slide, providing clear SEO hierarchy.
   - **Copy**: Refined to feel less like a SaaS product and more like a luxury lifestyle brand.
 - **Business Ecosystem Section**: A new section located below the hero. Uses minimalist cards to define the three pillars of VAVAW.
-  - **Cosmetic**: "A refined ritual of beauty."
+  - **Cosmetic**: "Clinical Korean cosmetic ritual."
   - **Beauty & Co**: "Sanctuary for skin and self."
-  - **Franchise**: "Partnership in premium growth."
+  - **Franchise**: "Build with the VAVAW ecosystem."
 - **Footer**: Uses the `main` variant (slate/black tones).
 
 ### Media Slots Needed
 - **Hero Atmosphere Images**: Cinematic, dark-overlay backgrounds for the slider.
-- **Preview Cards**: Three distinct images representing Cosmetic, Beauty, and Franchise. 
-- *Current State*: Handled via elegant gradient placeholders (`bg-gradient-to-br from-slate-100 to-slate-200`) if real assets are missing, avoiding broken UI.
+- **Preview Cards**: Three distinct images representing Cosmetic, Beauty, and Franchise (Recommended size: 1600x2000, 4:5). 
+- *Current State (Phase 56D)*: Handled via elegant gradient placeholders and premium abstract designs if real assets are missing, avoiding broken UI. Mobile layout optimized for stacking.
 
 ## 2. Cosmetic Page (`vavaw.vn/cosmetic`)
 

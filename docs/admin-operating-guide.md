@@ -39,11 +39,18 @@ Before the final domain launch, you must upload the core aesthetic assets for th
 1. Navigate to **Media** in the sidebar.
 2. Click **Upload New Asset**.
 3. Select the target `site_key` (e.g., `main` or `beauty`).
-4. Select the file type (`Image` or `Video`).
+4. Select the file type (`Image`, `Video`, or `preview-image`).
 5. Choose a file from your computer. Note the size limits (5MB for images, 50MB for videos) and allowed formats.
 6. Provide an optional `Alt Text` for SEO and accessibility.
 7. Click **Upload Media**. 
 8. The file will be securely uploaded to the Supabase `vavaw-media` bucket and recorded in the database.
+
+### Hero Media Workflow (Phase 56D):
+1. Go to Media.
+2. Upload image with `site_key = main`.
+3. Use asset type `preview-image`.
+4. Return to Hero.
+5. Select or paste the uploaded Media Asset ID / URL in the "Background Media Asset / URL" or "Preview Media Asset / URL" field.
 
 ### How to use media in content:
 1. In the Media list, find your uploaded asset.

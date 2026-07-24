@@ -55,9 +55,9 @@ export const businessEntries: BusinessEntry[] = [
     name: "VAVAW Cosmetic",
     category: "Cosmetic",
     title: "VAVAW Cosmetic",
-    subtitle: "A refined ritual of beauty.",
+    subtitle: "Clinical Korean cosmetic ritual.",
     description:
-      "Curated formulations and sophisticated palettes designed to elevate your daily routine.",
+      "Refined skincare formulas shaped by precision, purity, and modern care.",
     navigationType: "internal",
     href: "/cosmetic",
     redirectPath: "/go/cosmetic",
@@ -94,7 +94,7 @@ export const businessEntries: BusinessEntry[] = [
     title: "VAVAW Beauty & Co",
     subtitle: "Sanctuary for skin and self.",
     description:
-      "A holistic destination for advanced care, combining modern techniques with timeless wellness principles.",
+      "A calm beauty and care destination where modern techniques meet timeless wellness.",
     navigationType: "external-app",
     href: process.env.NEXT_PUBLIC_BEAUTY_URL || "https://beauty.vavaw.vn",
     redirectPath: "/go/beauty",
@@ -126,9 +126,9 @@ export const businessEntries: BusinessEntry[] = [
     name: "VAVAW Franchise",
     category: "Franchise",
     title: "VAVAW Franchise",
-    subtitle: "Partnership in premium growth.",
+    subtitle: "Build with the VAVAW ecosystem.",
     description:
-      "Strategic business opportunities within the expanding VAVAW ecosystem.",
+      "A premium partnership platform for beauty, care, and long-term brand growth.",
     navigationType: "external-app",
     href: process.env.NEXT_PUBLIC_FRANCHISE_URL || "https://franchise.vavaw.vn",
     redirectPath: "/go/franchise",

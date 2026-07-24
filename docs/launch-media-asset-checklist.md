@@ -35,4 +35,11 @@ Alt text should be descriptive but not keyword-stuffed. It must describe the ima
 ### Upload Location
 - Navigate to **Admin Dashboard -> Media**.
 - Select the appropriate `site_key` (`main` or `cosmetic`).
-- Set type to `image`.
+- Set type to `image` or `preview-image`.
+
+### Phase 56D Note
+- Main hero uses 3 ecosystem slides.
+- `preview-image` is acceptable for hero slide visuals.
+- Recommended hero preview size is 1600x2000 for brand cards.
+- Use centered subject for safe desktop/mobile crop.
+- No need for separate mobile images in this phase.

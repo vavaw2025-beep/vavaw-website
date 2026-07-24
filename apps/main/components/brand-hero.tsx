@@ -7,19 +7,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { NormalizedHeroSlide } from '@/lib/load-public-cms';
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export interface BrandHeroProps {
   slides: NormalizedHeroSlide[];
-  /** Data source badge — shown in development only */
   dataSource?: 'static' | 'supabase';
 }
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 export function BrandHero({ slides, dataSource }: BrandHeroProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -27,17 +18,13 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
   const [autoplay, setAutoplay] = useState(true);
   const [imageError, setImageError] = useState<Record<string, boolean>>({});
   const router = useRouter();
-
   const isDev = process.env.NODE_ENV === 'development';
 
-  // Autoplay carousel
   useEffect(() => {
     if (!autoplay || isHovering || slides.length <= 1) return;
-
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
-    }, 5000);
-
+    }, 6000);
     return () => clearInterval(timer);
   }, [autoplay, isHovering, slides.length]);
 
@@ -55,15 +42,13 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
 
   if (slides.length === 0) {
     return (
-      <div className="h-screen w-full bg-black flex items-center justify-center text-white">
-        No slides found.
+      <div className="h-screen w-full bg-[#0a0a0a] flex items-center justify-center text-[#e5e5e5] tracking-widest text-sm uppercase">
+        No ecosystem slides found
       </div>
     );
   }
 
   const currentSlide = slides[activeIndex];
-
-  // Calculate preview slides (up to 3, excluding the active one)
   const previewCount = Math.min(3, slides.length - 1);
   const previewSlides = Array.from({ length: previewCount }, (_, index) => {
     const offset = index + 1;
@@ -75,9 +60,27 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
     setImageError((prev) => ({ ...prev, [path]: true }));
   };
 
+  const getBrandGradient = (slide: NormalizedHeroSlide, isBackground: boolean = false) => {
+    const isCosmetic = slide.title.toLowerCase().includes('cosmetic') || slide.redirectPath.includes('cosmetic');
+    const isBeauty = slide.title.toLowerCase().includes('beauty') || slide.redirectPath.includes('beauty');
+    
+    if (isCosmetic) {
+      return isBackground 
+        ? "from-[#050A5C] via-[#101A8C] to-[#D9DEE8]" 
+        : "from-[#050A5C] to-[#101A8C]";
+    }
+    if (isBeauty) {
+      return isBackground 
+        ? "from-[#3d2b1f] via-[#b78c85] to-[#fffaf5]" 
+        : "from-[#3d2b1f] to-[#b78c85]";
+    }
+    return isBackground 
+      ? "from-black via-[#332f2b] to-[#c69c6d]" 
+      : "from-black to-[#c69c6d]";
+  };
+
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#0a0a0a]">
-      {/* Dev-only CMS data source badge */}
+    <div className="relative w-full min-h-screen overflow-hidden bg-[#050505]">
       {isDev && dataSource && (
         <div className="absolute top-3 right-3 z-50">
           <span
@@ -104,7 +107,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
           className="absolute inset-0"
         >
           {!currentSlide.backgroundImage || imageError[currentSlide.backgroundImage] ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-950" />
+            <div className={`absolute inset-0 bg-gradient-to-br ${getBrandGradient(currentSlide, true)} opacity-20`} />
           ) : (
             <Image
               src={currentSlide.backgroundImage}
@@ -116,18 +119,18 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
             />
           )}
           {/* Cinematic Dark Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/30 lg:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent lg:hidden" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-black/30 lg:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent lg:hidden" />
         </motion.div>
       </AnimatePresence>
 
       {/* Content Container */}
-      <div className="relative h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 pb-24 lg:pb-0">
-        <div className="w-full flex flex-col lg:flex-row gap-8 lg:gap-16 items-stretch lg:items-center h-full pt-24 lg:pt-0">
+      <div className="relative h-full min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 pt-24 pb-32 lg:py-0">
+        <div className="w-full max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16 items-start lg:items-center h-full">
           
           {/* Left Content */}
           <motion.div
-            className="w-full lg:w-[50%] flex flex-col justify-center space-y-6 lg:space-y-8 z-10 flex-1 lg:flex-none"
+            className="w-full lg:w-[55%] flex flex-col justify-center space-y-6 lg:space-y-8 z-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
@@ -140,13 +143,13 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.6, ease: 'easeOut' }}
-                className="flex items-center gap-4 text-xs font-medium tracking-[0.2em] text-[#e5e5e5] uppercase"
+                className="flex items-center gap-4 text-[10px] md:text-xs font-medium tracking-[0.3em] text-[#a3a3a3] uppercase"
               >
-                <span>{String(activeIndex + 1).padStart(2, '0')}/{String(slides.length).padStart(2, '0')}</span>
+                <span>{String(activeIndex + 1).padStart(2, '0')} — {String(slides.length).padStart(2, '0')}</span>
               </motion.div>
             </AnimatePresence>
 
-            {/* Title — exactly one H1 per page for SEO */}
+            {/* Title */}
             <AnimatePresence mode="wait">
               <motion.h1
                 key={`title-${activeIndex}`}
@@ -154,7 +157,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.1] tracking-tight drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]"
+                className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white leading-[1.1] tracking-tight drop-shadow-2xl"
               >
                 {currentSlide.title}
               </motion.h1>
@@ -168,7 +171,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
-                className="text-xl md:text-2xl text-white/90 font-light leading-relaxed max-w-2xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
+                className="text-lg md:text-2xl text-[#f4f4f5] font-light leading-relaxed max-w-2xl drop-shadow-lg"
               >
                 {currentSlide.subtitle}
               </motion.p>
@@ -183,28 +186,28 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
-                  className="text-base md:text-lg text-[#e5e5e5] font-light leading-relaxed max-w-xl hidden md:block drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
+                  className="text-sm md:text-base text-[#a1a1aa] font-light leading-relaxed max-w-xl drop-shadow-md hidden sm:block"
                 >
                   {currentSlide.description}
                 </motion.p>
               </AnimatePresence>
             )}
 
-            {/* CTA Button — routes via redirectPath, never hardcoded external link */}
+            {/* CTA Button */}
             <motion.button
               onClick={() => router.push(currentSlide.redirectPath)}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-              aria-label={`Go to ${currentSlide.title}`}
-              className="mt-8 h-[54px] w-fit px-12 bg-white/95 backdrop-blur-sm text-black font-medium text-[13px] tracking-[0.2em] uppercase hover:bg-white transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center"
+              aria-label={currentSlide.ctaLabel}
+              className="mt-6 md:mt-10 h-[50px] md:h-[56px] w-fit px-8 md:px-12 bg-white text-black font-medium text-[11px] md:text-[13px] tracking-[0.2em] uppercase hover:bg-[#e5e5e5] transition-all duration-300 shadow-xl flex items-center justify-center"
             >
               {currentSlide.ctaLabel}
             </motion.button>
 
             {/* Navigation Controls — Desktop Only */}
             <motion.div
-              className="hidden lg:flex items-center gap-8 pt-12"
+              className="hidden lg:flex items-center gap-8 pt-16"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
@@ -213,15 +216,14 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                 whileHover={{ x: -4, color: '#ffffff' }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handlePrevious}
-                className="flex items-center gap-3 text-white/60 transition-colors"
+                className="flex items-center gap-3 text-[#a1a1aa] transition-colors"
                 aria-label="Previous slide"
               >
                 <ChevronLeft className="w-5 h-5" />
                 <span className="text-xs uppercase tracking-[0.15em] font-medium">Prev</span>
               </motion.button>
 
-              {/* Progress Indicator */}
-              <div className="flex-1 max-w-[200px] h-[1px] bg-white/20 relative">
+              <div className="flex-1 max-w-[240px] h-[1px] bg-[#3f3f46] relative overflow-hidden">
                 <motion.div
                   className="absolute top-0 left-0 h-full bg-white"
                   initial={{ width: 0 }}
@@ -234,7 +236,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                 whileHover={{ x: 4, color: '#ffffff' }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleNext}
-                className="flex items-center gap-3 text-white/60 transition-colors"
+                className="flex items-center gap-3 text-[#a1a1aa] transition-colors"
                 aria-label="Next slide"
               >
                 <span className="text-xs uppercase tracking-[0.15em] font-medium">Next</span>
@@ -245,25 +247,26 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
 
           {/* Right Preview Cards */}
           <motion.div
-            className="w-full lg:w-[50%] lg:h-full flex items-end lg:items-center justify-start lg:justify-end overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 z-10"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="w-full lg:w-[45%] flex items-end justify-start lg:justify-end overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 z-10 snap-x snap-mandatory hide-scrollbar"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
           >
-            <style jsx>{`
-              div::-webkit-scrollbar {
-                display: none;
-              }
-            `}</style>
-            
-            <div className="relative flex gap-4 lg:gap-8 items-center justify-start min-w-max px-2 lg:px-0">
+            <div className="relative flex gap-4 lg:gap-6 items-end justify-start min-w-max px-2 lg:px-0 pt-8 lg:pt-0">
               <AnimatePresence mode="wait">
                 {previewSlides.map((slide, index) => {
-                  const sizes = [
-                    { width: 180, height: 280, scale: 1, opacity: 1 },
-                    { width: 150, height: 240, scale: 0.95, opacity: 0.7 },
-                    { width: 120, height: 200, scale: 0.9, opacity: 0.4 },
+                  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+                  // Simplify sizes for mobile to ensure fit
+                  const desktopSizes = [
+                    { width: 220, height: 320, scale: 1, opacity: 1 },
+                    { width: 180, height: 260, scale: 0.95, opacity: 0.6 },
+                    { width: 140, height: 200, scale: 0.9, opacity: 0.3 },
                   ];
+                  const mobileSizes = [
+                    { width: 140, height: 200, scale: 1, opacity: 1 },
+                    { width: 120, height: 170, scale: 0.95, opacity: 0.6 },
+                    { width: 100, height: 140, scale: 0.9, opacity: 0.3 },
+                  ];
+                  const sizes = isMobile ? mobileSizes : desktopSizes;
                   const size = sizes[index] ?? sizes[2];
 
                   return (
@@ -278,7 +281,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                       exit={{ opacity: 0, x: 40, scale: 0.8 }}
                       transition={{
                         type: 'spring',
-                        stiffness: 250,
+                        stiffness: 200,
                         damping: 25,
                         delay: index * 0.1,
                       }}
@@ -287,7 +290,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                         setAutoplay(false);
                         setTimeout(() => setAutoplay(true), 8000);
                       }}
-                      className="relative flex-shrink-0 cursor-pointer lg:origin-right origin-bottom snap-start group"
+                      className="relative flex-shrink-0 cursor-pointer origin-bottom snap-start group"
                       style={{
                         width: `${size.width}px`,
                         height: `${size.height}px`,
@@ -295,26 +298,22 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                       aria-label={`Preview ${slide.title}`}
                     >
                       <motion.div
-                        className="relative w-full h-full bg-white/5 backdrop-blur-xl rounded-sm overflow-hidden border border-white/10 shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
+                        className="relative w-full h-full bg-[#18181b] rounded-sm overflow-hidden border border-[#27272a] shadow-2xl transition-all duration-500 hover:border-[#52525b] group-hover:-translate-y-2"
                       >
-                        {/* Card Image */}
                         {!slide.previewImage || imageError[slide.previewImage] ? (
-                          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900" />
+                          <div className={`absolute inset-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-80`} />
                         ) : (
                           <Image
                             src={slide.previewImage}
                             alt={slide.title}
                             fill
-                            className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                            className="object-cover opacity-70 group-hover:opacity-100 transition-all duration-700"
                             onError={() => handleImageError(slide.previewImage)}
                           />
                         )}
-                        {/* Overlay gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-
-                        {/* Card Content */}
-                        <div className="absolute bottom-0 left-0 right-0 p-5">
-                          <h3 className="text-sm font-medium text-white truncate drop-shadow-md">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5">
+                          <h3 className="text-[11px] lg:text-xs font-medium text-white tracking-[0.1em] uppercase drop-shadow-md">
                             {slide.title}
                           </h3>
                         </div>
@@ -330,7 +329,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
 
       {/* Pagination Dots — Mobile Only */}
       <motion.div
-        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex lg:hidden gap-3 z-20"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex lg:hidden gap-3 z-20"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
@@ -344,12 +343,21 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
               setTimeout(() => setAutoplay(true), 8000);
             }}
             className={`transition-all duration-300 rounded-full ${
-              index === activeIndex ? 'bg-white w-8 h-1' : 'bg-white/30 w-2 h-1'
+              index === activeIndex ? 'bg-white w-8 h-1.5' : 'bg-[#52525b] w-2 h-1.5'
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </motion.div>
+      <style jsx global>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }
