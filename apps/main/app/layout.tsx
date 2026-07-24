@@ -2,6 +2,8 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://vavaw.vn'),
   title: {
