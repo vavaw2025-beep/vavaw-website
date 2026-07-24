@@ -47,8 +47,8 @@ export function BusinessEcosystem() {
                 className="group flex flex-col h-full"
               >
                 {/* Media Placeholder / Image */}
-                <Link href={entry.redirectPath} className="block relative w-full aspect-[4/5] overflow-hidden bg-slate-50 mb-8">
-                  {hasError || !entry.media.previewImage ? (
+                <Link href={entry.redirectPath} prefetch={false} className="block relative w-full aspect-[4/5] overflow-hidden bg-slate-50 mb-8">
+                  {!entry.media.previewImage || entry.media.previewImage.trim() === '' || hasError ? (
                     <div className="absolute inset-0 bg-gradient-to-br from-[#f4f1eb] to-[#e5e5e5] flex items-center justify-center">
                       <span className="text-xs uppercase tracking-[0.2em] font-medium text-[#a3a3a3] group-hover:text-[#737373] transition-colors">
                         {entry.category} Visual
@@ -81,6 +81,7 @@ export function BusinessEcosystem() {
                   
                   <Link
                     href={entry.redirectPath}
+                    prefetch={false}
                     className="inline-flex items-center text-xs font-medium tracking-[0.15em] uppercase text-slate-900 hover:text-slate-600 transition-colors w-fit"
                   >
                     {entry.ctaLabel}

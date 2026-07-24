@@ -7,6 +7,7 @@
 - [x] Responsive layouts checked on Mobile (360px), Tablet, Desktop.
 - [x] Brand tokens applied without modifying backend logic.
 - [x] Phase 50 — VAVAW Brand System Foundation completed (SiteFooter & docs).
+- [x] Phase 56M: Clean hero image warnings and external redirect prefetch CORS completed.
 
 ### Domain Launch Preparation & Execution (Phase 49 & Phase 52)
 - [x] Visual QA and responsive QA completed.

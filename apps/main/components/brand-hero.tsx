@@ -8,9 +8,9 @@ import type { PublicHeroSlide } from '@/lib/load-public-cms';
 
 function isValidHeroImageUrl(value?: string | null): value is string {
   if (!value) return false;
+  if (value.trim() === '') return false;
   if (value.includes('PASTE_')) return false;
   if (value === '-') return false;
-  if (value === '') return false;
   // Reject local file paths — only absolute http/https URLs are valid CMS images
   if (value.startsWith('/') && !value.startsWith('//')) return false;
   try {
@@ -334,7 +334,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             onMouseLeave={() => setIsHovering(false)}
           >
             <div className="relative flex gap-4 lg:gap-6 items-end justify-start min-w-max px-2 lg:px-0 pt-8 lg:pt-0">
-              <AnimatePresence mode="wait">
+              <AnimatePresence>
                 {previewSlides.map((slide, index) => {
                   const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
                   // Simplify sizes for mobile to ensure fit

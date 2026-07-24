@@ -51,6 +51,7 @@ Before the final domain launch, you must upload the core aesthetic assets for th
 3. Use asset type `preview-image`.
 4. Return to Hero.
 5. Select or paste the uploaded Media Asset ID / URL in the "Background Media Asset / URL" or "Preview Media Asset / URL" field.
+6. Note: Empty or invalid image URLs will cause the hero to gracefully fall back to a cinematic gradient instead of showing broken images.
 
 ### How to use media in content:
 1. In the Media list, find your uploaded asset.

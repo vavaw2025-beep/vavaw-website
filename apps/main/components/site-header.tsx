@@ -12,10 +12,10 @@ export function SiteHeader() {
         <Link href="/cosmetic" className="text-white/80 hover:text-white text-xs font-medium tracking-[0.15em] uppercase transition-colors">
           Cosmetic
         </Link>
-        <Link href="/go/beauty" className="text-white/80 hover:text-white text-xs font-medium tracking-[0.15em] uppercase transition-colors">
+        <Link href="/go/beauty" prefetch={false} className="text-white/80 hover:text-white text-xs font-medium tracking-[0.15em] uppercase transition-colors">
           Beauty
         </Link>
-        <Link href="/go/franchise" className="text-white/80 hover:text-white text-xs font-medium tracking-[0.15em] uppercase transition-colors">
+        <Link href="/go/franchise" prefetch={false} className="text-white/80 hover:text-white text-xs font-medium tracking-[0.15em] uppercase transition-colors">
           Franchise
         </Link>
         <Link href="/contact" className="text-white/80 hover:text-white text-xs font-medium tracking-[0.15em] uppercase transition-colors">

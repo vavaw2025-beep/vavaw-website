@@ -28,5 +28,6 @@ If `CMS_DATA_SOURCE=static`, Admin hero changes will not appear on public homepa
 - `preview-image` type is acceptable for Main hero visuals.
 - The `NormalizedHeroSlide` type is now `PublicHeroSlide` providing explicit `backgroundImageUrl` and `previewImageUrl` fields directly to the `BrandHero` component.
 - The `BrandHero` uses raw `<img />` tags for `backgroundImageUrl` and `previewImageUrl` to guarantee immediate image resolution from Supabase storage URLs.
+- Hero images render only when the URL passes strict validation, and missing/invalid media gracefully uses a gradient fallback.
 
 > **Phase 56K Note**: `CMS_DATA_SOURCE=static` does **not** render Admin-uploaded hero images — it uses the brand-config static fallback with no images. `CMS_DATA_SOURCE=supabase` is required for the public homepage to render images uploaded via Admin Hero CMS. Vercel `vavaw-main` production must have `CMS_DATA_SOURCE=supabase`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_ANON_KEY` set in Environment Variables. Local dev uses `apps/main/.env.local` with `CMS_DATA_SOURCE=supabase`.
