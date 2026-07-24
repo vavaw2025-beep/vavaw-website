@@ -155,12 +155,9 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
       slidesQuery.eq('status', 'active');
     }
 
-    const [entriesResult, slidesResult, mediaResult] = await Promise.all([
+    const [entriesResult, slidesResult] = await Promise.all([
       entriesQuery,
       slidesQuery,
-      supabase
-        .from('media_assets')
-        .select('id, url, type, alt_text'),
     ]);
 
     // Fallback on query error
@@ -174,7 +171,6 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
 
     const entries = entriesResult.data ?? [];
     const slides = slidesResult.data ?? [];
-    const media = mediaResult.data ?? [];
 
     // Fallback if Supabase returned no data
     if (entries.length === 0) {
@@ -183,6 +179,26 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
         ...fallback,
         error: 'No active business_entries in Supabase — using static fallback.',
       };
+    }
+
+    // Collect media IDs to fetch
+    const mediaIds = new Set<string>();
+    slides.forEach((s: any) => {
+      const bg = s.background_media_id;
+      const prev = s.preview_media_id;
+      if (bg && bg !== '-' && !bg.startsWith('http') && !bg.startsWith('/')) mediaIds.add(bg);
+      if (prev && prev !== '-' && !prev.startsWith('http') && !prev.startsWith('/')) mediaIds.add(prev);
+    });
+
+    let media: any[] = [];
+    if (mediaIds.size > 0) {
+      const mediaResult = await supabase
+        .from('media_assets')
+        .select('id, url, type, alt_text')
+        .in('id', Array.from(mediaIds));
+      if (!mediaResult.error) {
+        media = mediaResult.data ?? [];
+      }
     }
 
     // Build a fast media ID → URL map
@@ -228,13 +244,26 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
           // Resolve preview image: URL → media asset ID → entry fallback → empty
           const prevUrl = resolveMedia(s.preview_media_id, linkedEntry?.previewImage);
 
+          // Resolve redirect path
+          let redirectPath = s.redirect_path;
+          if (!redirectPath || redirectPath === '-') {
+            redirectPath = linkedEntry?.redirectPath;
+          }
+          if (!redirectPath || redirectPath === '-') {
+            const t = s.title?.toLowerCase() || '';
+            if (t.includes('cosmetic')) redirectPath = '/go/cosmetic';
+            else if (t.includes('beauty')) redirectPath = '/go/beauty';
+            else if (t.includes('franchise')) redirectPath = '/go/franchise';
+            else redirectPath = '/';
+          }
+
           return {
             id: s.id,
             title: s.title,
             subtitle: s.subtitle ?? '',
             description: s.description ?? '',
             ctaLabel: s.cta_label ?? linkedEntry?.ctaLabel ?? 'Learn More',
-            redirectPath: s.redirect_path ?? linkedEntry?.redirectPath ?? '/',
+            redirectPath,
             status: s.status,
             sortOrder: s.sort_order,
             backgroundMediaId: s.background_media_id ?? undefined,

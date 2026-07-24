@@ -2,7 +2,17 @@ import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@vavaw/brand-config", "@vavaw/db", "@vavaw/ui"]
+  transpilePackages: ["@vavaw/brand-config", "@vavaw/db", "@vavaw/ui"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'zrgnoeyfnfhatqkkhskf.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
+  },
 }
 
 

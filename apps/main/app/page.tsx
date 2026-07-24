@@ -67,6 +67,13 @@ export default async function HomePage() {
     console.warn(`[CMS Diagnostics] Business Entries: ${cms.businessEntries.length}`);
     console.warn(`[CMS Diagnostics] Hero Slides: ${cms.heroSlides.length}`);
     console.warn(`[CMS Diagnostics] Media Assets: ${cms.mediaAssets.length}`);
+    cms.heroSlides.forEach((slide) => {
+      console.warn(`[Slide Diagnostics] Title: ${slide.title}`);
+      console.warn(`  hasBackgroundMediaId: ${!!slide.backgroundMediaId}`);
+      console.warn(`  hasPreviewMediaId: ${!!slide.previewMediaId}`);
+      console.warn(`  resolvedBackgroundUrl: ${!!slide.backgroundImage}`);
+      console.warn(`  resolvedPreviewUrl: ${!!slide.previewImage}`);
+    });
   }
 
   return (

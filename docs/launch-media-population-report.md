@@ -20,3 +20,9 @@ To render Admin CMS hero slides in production, configure the following in Vercel
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY=required`
 
 If `CMS_DATA_SOURCE=static`, Admin hero changes will not appear on public homepage.
+
+## Schema Documentation
+- Actual hero media columns are `background_media_id` and `preview_media_id`.
+- Public Main resolves those IDs into `media_assets.url`.
+- Public `media_assets` SELECT policy is required for anon public rendering.
+- `preview-image` type is acceptable for Main hero visuals.
