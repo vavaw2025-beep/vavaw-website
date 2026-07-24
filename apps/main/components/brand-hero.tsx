@@ -175,7 +175,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
       : "from-black to-[#c69c6d]";
   };
 
-  const showDebug = process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
+  const showDebug = process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
   const resolvedImagesCount = slides.filter(s => isValidHeroImageUrl(s.backgroundImageUrl) || isValidHeroImageUrl(s.previewImageUrl)).length;
   const hasPlaceholder = slides.some(s => (s.backgroundImageUrl?.includes('PASTE_')) || (s.previewImageUrl?.includes('PASTE_')));
 

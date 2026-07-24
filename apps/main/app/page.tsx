@@ -62,19 +62,22 @@ export default async function HomePage() {
   const isPreview = (await draftMode()).isEnabled;
   const cms = await loadPublicHomeCms(isPreview);
 
-  // Server-side CMS diagnostic — safe, never logs actual key values
-  console.info('[main cms source]', {
-    cmsSource: cms.source,
-    hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
-    hasAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
-    rawHeroRowsCount: cms.rawHeroRowsCount ?? 'n/a',
-    activeHeroRowsCount: cms.activeHeroRowsCount ?? 'n/a',
-    normalizedSlidesCount: cms.heroSlides.length,
-    fallbackUsed: cms.fallbackUsed ?? false,
-    fallbackReason: cms.fallbackReason ?? null,
-    error: cms.error ?? null,
-  });
-  if (process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true') {
+  const showCmsDebug = process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
+
+  if (showCmsDebug) {
+    // Server-side CMS diagnostic — safe, never logs actual key values
+    console.info('[main cms source]', {
+      cmsSource: cms.source,
+      hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+      hasAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+      rawHeroRowsCount: cms.rawHeroRowsCount ?? 'n/a',
+      activeHeroRowsCount: cms.activeHeroRowsCount ?? 'n/a',
+      normalizedSlidesCount: cms.heroSlides.length,
+      fallbackUsed: cms.fallbackUsed ?? false,
+      fallbackReason: cms.fallbackReason ?? null,
+      error: cms.error ?? null,
+    });
+
     console.info('[main cms slides]', {
       slideCount: cms.heroSlides.length,
       slides: cms.heroSlides.map((slide) => ({

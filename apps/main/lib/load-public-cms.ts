@@ -200,7 +200,7 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
     const rawSlides = slidesResult.data ?? [];
 
     // Dev diagnostic: if no active slides found, fetch all slides (any status) to reveal what's in DB
-    const isDiagMode = process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
+    const isDiagMode = process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
     if (isDiagMode && rawSlides.length === 0) {
       const allSlidesResult = await supabase
         .from('hero_slides')
