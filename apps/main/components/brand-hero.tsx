@@ -197,10 +197,8 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
               aria-label={`Go to ${currentSlide.title}`}
-              className="mt-4 w-fit px-10 py-4 bg-white/90 backdrop-blur-sm text-black font-medium text-sm tracking-[0.1em] uppercase rounded-none hover:bg-white transition-colors"
+              className="mt-6 h-[48px] w-fit px-12 bg-white/95 backdrop-blur-sm text-black font-medium text-[13px] tracking-[0.15em] uppercase hover:bg-white transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center"
             >
               {currentSlide.ctaLabel}
             </motion.button>
@@ -298,8 +296,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                       aria-label={`Preview ${slide.title}`}
                     >
                       <motion.div
-                        whileHover={{ scale: 1.03 }}
-                        className="relative w-full h-full bg-white/5 backdrop-blur-xl rounded-xl overflow-hidden border border-white/10 shadow-2xl"
+                        className="relative w-full h-full bg-white/5 backdrop-blur-xl rounded-sm overflow-hidden border border-white/10 shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
                       >
                         {/* Card Image */}
                         {!slide.previewImage || imageError[slide.previewImage] ? (

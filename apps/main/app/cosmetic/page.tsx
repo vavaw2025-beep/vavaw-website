@@ -49,6 +49,8 @@ export async function generateMetadata(): Promise<Metadata> {
 import { ContentBlockRenderer } from '../../components/content-block-renderer';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
 
+import { SiteFooter } from '@vavaw/ui';
+
 export default async function CosmeticPage() {
   if (!cosmeticEntry) {
     notFound();
@@ -70,6 +72,7 @@ export default async function CosmeticPage() {
           </div>
         )}
         <ContentBlockRenderer blocks={blocks} />
+        <SiteFooter variant="cosmetic" />
       </>
     );
   }
@@ -82,6 +85,7 @@ export default async function CosmeticPage() {
         </div>
       )}
       <CosmeticContent entry={cosmeticEntry} />
+      <SiteFooter variant="cosmetic" />
     </>
   );
 }

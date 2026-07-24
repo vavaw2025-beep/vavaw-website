@@ -111,7 +111,7 @@ export function LeadForm() {
       <button 
         type="submit" 
         disabled={status === 'loading'}
-        className="w-full bg-primary text-primary-foreground font-medium text-xs tracking-[0.2em] uppercase py-4 px-6 hover:bg-primary/90 disabled:opacity-50 transition-colors rounded-none mt-4"
+        className="w-full bg-primary text-primary-foreground font-medium text-[13px] tracking-[0.15em] uppercase h-[48px] px-6 hover:bg-primary/90 disabled:opacity-50 transition-colors rounded-none mt-4 flex items-center justify-center"
       >
         {status === 'loading' ? 'Sending...' : 'Send Message'}
       </button>

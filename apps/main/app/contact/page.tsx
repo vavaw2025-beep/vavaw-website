@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { LeadForm } from '../../components/lead-form';
+import { SiteFooter } from '@vavaw/ui';
 
 export const metadata = {
   title: 'Contact Us | VAVAW',
@@ -20,6 +21,9 @@ export default function ContactPage() {
         <Suspense fallback={<div className="text-center p-8">Loading form...</div>}>
           <LeadForm />
         </Suspense>
+      </div>
+      <div className="w-full mt-24">
+        <SiteFooter variant="main" />
       </div>
     </div>
   );

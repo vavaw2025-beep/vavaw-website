@@ -7,6 +7,7 @@ import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
 import { ContentBlockRenderer } from '@/components/content-block-renderer';
 import { BeautyCtaButton } from '@/components/analytics-trackers';
 import { LeadForm } from '@/components/lead-form';
+import { SiteFooter } from '@vavaw/ui';
 
 export const revalidate = 60;
 
@@ -233,13 +234,7 @@ export default async function BeautyLandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-6 md:px-12 bg-[#FDFBF7] border-t border-[#EAE4D9] flex flex-col md:flex-row justify-between items-center gap-4 text-xs tracking-wider uppercase text-[#A89F91]">
-          <div>&copy; {new Date().getFullYear()} VAVAW Beauty & Co.</div>
-          <div className="flex gap-6">
-            <Link href="#" className="hover:text-[#2C2A29] transition-colors">Instagram</Link>
-            <Link href="#" className="hover:text-[#2C2A29] transition-colors">Contact</Link>
-          </div>
-        </footer>
+        <SiteFooter variant="beauty" />
       </div>
     </>
   );

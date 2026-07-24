@@ -189,17 +189,17 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
             <CosmeticCtaTracker
               label="Back to VAVAW"
               href="/"
-              className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
+              className="h-[48px] px-8 flex items-center justify-center bg-white text-black text-[13px] tracking-[0.15em] uppercase hover:bg-white/90 transition-colors"
             />
             <CosmeticCtaTracker
               label="Contact Us"
               href="/contact?type=cosmetic_interest"
-              className="px-8 py-4 bg-transparent border border-white text-white text-sm tracking-widest uppercase hover:bg-white/10 transition-colors"
+              className="h-[48px] px-8 flex items-center justify-center bg-transparent border border-white text-white text-[13px] tracking-[0.15em] uppercase hover:bg-white/10 transition-colors"
             />
             <CosmeticCtaTracker
               label="Explore Beauty & Co"
               href="/go/beauty"
-              className="group flex items-center text-sm tracking-widest uppercase text-white/70 hover:text-white transition-colors"
+              className="group h-[48px] px-8 flex items-center justify-center text-[13px] tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors"
             >
               Explore Beauty &amp; Co
               <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />

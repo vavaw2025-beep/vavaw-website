@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { BrandHero } from '@/components/brand-hero';
+import { SiteFooter } from '@vavaw/ui';
 import { loadPublicHomeCms } from '@/lib/load-public-cms';
 import { loadPublicSeo } from '@/lib/load-public-seo';
 
@@ -61,6 +62,7 @@ export default async function HomePage() {
   return (
     <main>
       <BrandHero slides={cms.heroSlides} dataSource={cms.source} />
+      <SiteFooter variant="main" />
     </main>
   );
 }

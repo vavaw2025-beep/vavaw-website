@@ -7,6 +7,7 @@ import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
 import { FranchiseLeadForm } from '@/components/franchise-lead-form';
 import { ContentBlockRenderer } from '@/components/content-block-renderer';
 import { FranchiseCtaButton } from '@/components/analytics-trackers';
+import { SiteFooter } from '@vavaw/ui';
 
 export const revalidate = 60;
 
@@ -337,16 +338,7 @@ export default async function FranchiseLandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="py-12 px-6 md:px-12 bg-white border-t border-gray-200">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-xs tracking-widest uppercase text-gray-500 font-semibold">
-            <div>&copy; {new Date().getFullYear()} VAVAW Franchise.</div>
-            <div className="flex gap-8">
-              <Link href="#" className="hover:text-gray-900 transition-colors">Terms</Link>
-              <Link href="#" className="hover:text-gray-900 transition-colors">Privacy</Link>
-              <Link href="#" className="hover:text-gray-900 transition-colors">Contact</Link>
-            </div>
-          </div>
-        </footer>
+        <SiteFooter variant="franchise" />
       </div>
     </>
   );
