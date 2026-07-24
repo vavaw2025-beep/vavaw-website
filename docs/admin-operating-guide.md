@@ -113,10 +113,11 @@ NEXT_PUBLIC_SUPABASE_URL=https://[YOUR_PROJECT_ID].supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=[YOUR_ANON_KEY]
 ```
 
-## 6. Schema Information (Phase 56F)
+## 6. Schema Information (Phase 56F & 56G)
 
 When troubleshooting missing hero images on the public Main homepage:
 - The actual hero media columns in Supabase are `background_media_id` and `preview_media_id` (not `background_media_asset_id`).
 - The public `apps/main` server-side data loader queries these IDs against `public.media_assets` and extracts the `.url` field.
 - A public SELECT policy on `public.media_assets` is required for anonymous/public visitors to render these images.
 - The `preview-image` type is correctly supported.
+- The `load-public-cms.ts` normalizes the output into `PublicHeroSlide` and explicitly outputs `backgroundImageUrl` and `previewImageUrl` for the `BrandHero` component.

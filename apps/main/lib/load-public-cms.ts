@@ -37,21 +37,21 @@ export interface NormalizedBusinessEntry {
   previewImage: string;
 }
 
-export interface NormalizedHeroSlide {
+export interface PublicHeroSlide {
   id: string;
   title: string;
-  subtitle: string;
-  description: string;
-  ctaLabel: string;
-  redirectPath: string;
+  subtitle?: string;
+  description?: string;
+  ctaLabel?: string;
+  redirectPath?: string;
   status: string;
   sortOrder: number;
   backgroundMediaId?: string;
   previewMediaId?: string;
   /** Resolved from media_assets or fallback */
-  backgroundImage: string;
+  backgroundImageUrl?: string;
   /** Resolved from media_assets or fallback */
-  previewImage: string;
+  previewImageUrl?: string;
   businessEntryId?: string;
 }
 
@@ -64,7 +64,7 @@ export interface NormalizedMediaAsset {
 
 export interface PublicCmsData {
   businessEntries: NormalizedBusinessEntry[];
-  heroSlides: NormalizedHeroSlide[];
+  heroSlides: PublicHeroSlide[];
   mediaAssets: NormalizedMediaAsset[];
   source: 'static' | 'supabase';
   error?: string;
@@ -94,7 +94,7 @@ function loadStaticCmsData(): PublicCmsData {
   }));
 
   // Derive hero slides from business entries (static mode)
-  const heroSlides: NormalizedHeroSlide[] = entries.map((e) => ({
+  const heroSlides: PublicHeroSlide[] = entries.map((e) => ({
     id: `static-${e.id}`,
     title: e.title,
     subtitle: e.subtitle,
@@ -103,8 +103,8 @@ function loadStaticCmsData(): PublicCmsData {
     redirectPath: e.redirectPath,
     status: e.status,
     sortOrder: e.sortOrder,
-    backgroundImage: e.media.backgroundImage,
-    previewImage: e.media.previewImage,
+    backgroundImageUrl: e.media.backgroundImage,
+    previewImageUrl: e.media.previewImage,
   }));
 
   return {
@@ -228,7 +228,7 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
       businessEntries.map((e) => [e.id, e])
     );
 
-    const heroSlides: NormalizedHeroSlide[] = slides.length > 0
+    const heroSlides: PublicHeroSlide[] = slides.length > 0
       ? slides.map((s: any) => {
           const linkedEntry = s.business_entry_id ? entryMap.get(s.business_entry_id) : undefined;
 
@@ -268,8 +268,8 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
             sortOrder: s.sort_order,
             backgroundMediaId: s.background_media_id ?? undefined,
             previewMediaId: s.preview_media_id ?? undefined,
-            backgroundImage: bgUrl,
-            previewImage: prevUrl,
+            backgroundImageUrl: bgUrl,
+            previewImageUrl: prevUrl,
             businessEntryId: s.business_entry_id ?? undefined,
           };
         })
@@ -283,8 +283,8 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
           redirectPath: e.redirectPath,
           status: e.status,
           sortOrder: e.sortOrder,
-          backgroundImage: e.backgroundImage,
-          previewImage: e.previewImage,
+          backgroundImageUrl: e.backgroundImage,
+          previewImageUrl: e.previewImage,
           businessEntryId: e.id,
         }));
 

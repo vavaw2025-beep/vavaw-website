@@ -5,10 +5,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import type { NormalizedHeroSlide } from '@/lib/load-public-cms';
+import type { PublicHeroSlide } from '@/lib/load-public-cms';
 
 export interface BrandHeroProps {
-  slides: NormalizedHeroSlide[];
+  slides: PublicHeroSlide[];
   dataSource?: 'static' | 'supabase';
 }
 
@@ -60,9 +60,9 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
     setImageError((prev) => ({ ...prev, [path]: true }));
   };
 
-  const getBrandGradient = (slide: NormalizedHeroSlide, isBackground: boolean = false) => {
-    const isCosmetic = slide.title.toLowerCase().includes('cosmetic') || slide.redirectPath.includes('cosmetic');
-    const isBeauty = slide.title.toLowerCase().includes('beauty') || slide.redirectPath.includes('beauty');
+  const getBrandGradient = (slide: PublicHeroSlide, isBackground: boolean = false) => {
+    const isCosmetic = slide.title.toLowerCase().includes('cosmetic') || slide.redirectPath?.includes('cosmetic');
+    const isBeauty = slide.title.toLowerCase().includes('beauty') || slide.redirectPath?.includes('beauty');
     
     if (isCosmetic) {
       return isBackground 
@@ -106,16 +106,16 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
           transition={{ duration: 1.2, ease: 'easeInOut' }}
           className="absolute inset-0"
         >
-          {!currentSlide.backgroundImage || imageError[currentSlide.backgroundImage] ? (
+          {!currentSlide.backgroundImageUrl || imageError[currentSlide.backgroundImageUrl] ? (
             <div className={`absolute inset-0 bg-gradient-to-br ${getBrandGradient(currentSlide, true)} opacity-20`} />
           ) : (
             <Image
-              src={currentSlide.backgroundImage}
+              src={currentSlide.backgroundImageUrl}
               alt={currentSlide.title}
               fill
               priority
               className="object-cover"
-              onError={() => handleImageError(currentSlide.backgroundImage)}
+              onError={() => handleImageError(currentSlide.backgroundImageUrl as string)}
             />
           )}
           {/* Cinematic Dark Overlay */}
@@ -195,7 +195,11 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
 
             {/* CTA Button */}
             <motion.button
-              onClick={() => router.push(currentSlide.redirectPath)}
+              onClick={() => {
+                if (currentSlide.redirectPath) {
+                  router.push(currentSlide.redirectPath);
+                }
+              }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
@@ -300,18 +304,18 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                       <motion.div
                         className="relative w-full h-full bg-[#18181b] rounded-sm overflow-hidden border border-[#27272a] shadow-2xl transition-all duration-500 hover:border-[#52525b] group-hover:-translate-y-2"
                       >
-                        {!slide.previewImage || imageError[slide.previewImage] ? (
+                        {!slide.previewImageUrl || imageError[slide.previewImageUrl] ? (
                           <div className={`absolute inset-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-80`} />
                         ) : (
                           <Image
-                            src={slide.previewImage}
+                            src={slide.previewImageUrl}
                             alt={slide.title}
                             fill
                             className="object-cover opacity-70 group-hover:opacity-100 transition-all duration-700"
-                            onError={() => handleImageError(slide.previewImage)}
+                            onError={() => handleImageError(slide.previewImageUrl as string)}
                           />
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90" />
                         <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5">
                           <h3 className="text-[11px] lg:text-xs font-medium text-white tracking-[0.1em] uppercase drop-shadow-md">
                             {slide.title}

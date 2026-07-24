@@ -61,18 +61,16 @@ export default async function HomePage() {
   const isPreview = (await draftMode()).isEnabled;
   const cms = await loadPublicHomeCms(isPreview);
 
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(`[CMS Diagnostics] Source: ${cms.source}`);
-    console.warn(`[CMS Diagnostics] Error: ${cms.error ?? 'none'}`);
-    console.warn(`[CMS Diagnostics] Business Entries: ${cms.businessEntries.length}`);
-    console.warn(`[CMS Diagnostics] Hero Slides: ${cms.heroSlides.length}`);
-    console.warn(`[CMS Diagnostics] Media Assets: ${cms.mediaAssets.length}`);
-    cms.heroSlides.forEach((slide) => {
-      console.warn(`[Slide Diagnostics] Title: ${slide.title}`);
-      console.warn(`  hasBackgroundMediaId: ${!!slide.backgroundMediaId}`);
-      console.warn(`  hasPreviewMediaId: ${!!slide.previewMediaId}`);
-      console.warn(`  resolvedBackgroundUrl: ${!!slide.backgroundImage}`);
-      console.warn(`  resolvedPreviewUrl: ${!!slide.previewImage}`);
+  if (process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true') {
+    console.info("[main cms hero]", {
+      source: cms.source,
+      slideCount: cms.heroSlides.length,
+      slides: cms.heroSlides.map((slide) => ({
+        title: slide.title,
+        hasBackgroundUrl: Boolean(slide.backgroundImageUrl),
+        hasPreviewUrl: Boolean(slide.previewImageUrl),
+        keys: Object.keys(slide)
+      }))
     });
   }
 
