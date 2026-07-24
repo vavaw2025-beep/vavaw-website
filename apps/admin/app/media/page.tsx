@@ -106,7 +106,43 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
           <span>Upload requires Supabase mode. Switch to Supabase mode to enable file uploads to Storage.</span>
         </div>
       ) : (
-        canUpload && <MediaUploadForm />
+        canUpload && (
+          <div className="space-y-4">
+            <MediaUploadForm />
+            
+            <details className="bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 overflow-hidden">
+              <summary className="px-4 py-3 font-medium cursor-pointer flex items-center gap-2 hover:bg-slate-100 transition-colors select-none">
+                <ImageIcon className="w-4 h-4 text-slate-500" />
+                Recommended launch image sizes & tips
+              </summary>
+              <div className="px-4 pb-4 pt-1 space-y-4 border-t border-slate-200 mt-1">
+                <div>
+                  <h4 className="font-semibold text-slate-900 mb-2 mt-2">Recommended Sizes</h4>
+                  <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs">
+                    <li><strong>Main Hero:</strong> 2400x1600 or 2560x1440, 16:9 or 3:2, cinematic horizontal image with space for text.</li>
+                    <li><strong>Cosmetic Preview:</strong> 1600x2000 or 1500x2000, 4:5 or 3:4, portrait image for main preview/card.</li>
+                    <li><strong>Beauty Preview:</strong> 1600x2000, 4:5 or 3:4, spa/interior/wellness mood.</li>
+                    <li><strong>Franchise Preview:</strong> 1600x2000, 4:5 or 3:4, business/luxury/architecture mood.</li>
+                    <li><strong>Cosmetic Product Editorial:</strong> 1800x2400 or 1600x2000, 4:5 or 3:4, bright clean product/editorial image.</li>
+                    <li><strong>Cosmetic Texture Ritual:</strong> 1600x1200 or 1600x1600, 4:3 or 1:1, texture/formula/ritual close-up.</li>
+                    <li><strong>Cosmetic Clean Promise:</strong> 1600x1200 or 1600x1600, 4:3 or 1:1, ingredient/natural/clean beauty image.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-slate-900 mb-2">Preparation Tips</h4>
+                  <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs">
+                    <li>WEBP or JPG recommended.</li>
+                    <li>Keep images under 1.5MB when possible.</li>
+                    <li>System max image size is 5MB.</li>
+                    <li>Do not place important text inside images.</li>
+                    <li>Keep the subject near the center so cropping works on desktop and mobile.</li>
+                    <li>Avoid watermark, unclear license, and cheap stock-looking images.</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        )
       )}
 
       {queryError && (

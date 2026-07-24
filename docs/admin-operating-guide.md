@@ -18,10 +18,20 @@ The Media Library (`/media`) is a central repository for all images and videos u
 
 ### Uploading Launch Media (Phase 56)
 Before the final domain launch, you must upload the core aesthetic assets for the platform to look complete. 
+
+**Recommended Launch Image Sizes:**
+- **Main Hero**: 2400x1600 or 2560x1440 (16:9 or 3:2), cinematic horizontal image with space for text.
+- **Cosmetic Preview**: 1600x2000 or 1500x2000 (4:5 or 3:4), portrait image for main preview/card.
+- **Beauty Preview**: 1600x2000 (4:5 or 3:4), spa/interior/wellness mood.
+- **Franchise Preview**: 1600x2000 (4:5 or 3:4), business/luxury/architecture mood.
+- **Cosmetic Product Editorial**: 1800x2400 or 1600x2000 (4:5 or 3:4), bright clean product/editorial image.
+- **Cosmetic Texture Ritual**: 1600x1200 or 1600x1600 (4:3 or 1:1), texture/formula/ritual close-up.
+- **Cosmetic Clean Promise**: 1600x1200 or 1600x1600 (4:3 or 1:1), ingredient/natural/clean beauty image.
+
 1. Go to **Admin Dashboard -> Media**.
 2. Set **Site Key**: Select `main` for homepage media or `cosmetic` for cosmetic media.
 3. Set **Type**: Select `image`.
-4. **Upload File**: Choose a high-quality, compressed `.webp` or `.jpg` file. Ensure it is under the 5MB limit. Do not upload huge raw files, private customer images, or images with unclear licensing.
+4. **Upload File**: Choose a high-quality, compressed `.webp` or `.jpg` file. Ensure it is under the 1.5MB target and below the 5MB hard limit. Do not upload huge raw files, private customer images, or images with unclear licensing.
 5. **Alt Text**: Add descriptive text (e.g., "VAVAW cinematic beauty atmosphere").
 6. **Submit**: Once uploaded, you can copy the public URL to use in the CMS (Hero, SEO, or Content). Verify the public URL opens correctly.
 
