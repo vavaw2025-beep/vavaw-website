@@ -89,6 +89,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
   const [isHovering, setIsHovering] = useState(false);
   const [autoplay, setAutoplay] = useState(true);
   const [imageError, setImageError] = useState<Record<string, boolean>>({});
+  const [transitionState, setTransitionState] = useState<{ active: boolean; url: string | null; brand: string | null }>({ active: false, url: null, brand: null });
   const router = useRouter();
   const isDev = process.env.NODE_ENV === 'development';
 
@@ -264,15 +265,37 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
         </div>
       )}
 
+      {/* Route Transition Overlay */}
+      <AnimatePresence>
+        {transitionState.active && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.42, ease: [0.25, 1, 0.5, 1] }}
+            className="absolute inset-0 z-[60] pointer-events-none"
+            style={{
+              backgroundColor: transitionState.brand?.includes('cosmetic')
+                ? 'rgba(5, 10, 20, 0.92)'
+                : transitionState.brand?.includes('beauty')
+                  ? 'rgba(20, 15, 10, 0.92)'
+                  : transitionState.brand?.includes('franchise')
+                    ? 'rgba(15, 10, 5, 0.92)'
+                    : 'rgba(5, 5, 5, 0.92)'
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Background Image */}
       <AnimatePresence initial={false} mode="sync">
         <motion.div
           key={`bg-${activeIndex}`}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 1, scale: transitionState.active ? 1.025 : 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-          className="absolute inset-0 z-10"
+          className="absolute inset-0 z-10 origin-center"
           data-has-bg-url={!!activeBackgroundUrl}
         >
           {activeBackgroundUrl ? (
@@ -317,7 +340,10 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
               <motion.div
                 key={`copy-${activeIndex}`}
                 initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ 
+                  opacity: transitionState.active ? 0 : 1, 
+                  y: transitionState.active ? -10 : 0 
+                }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.38, ease: [0.25, 1, 0.5, 1] }}
                 className="flex flex-col justify-center space-y-6 lg:space-y-8"
@@ -367,13 +393,21 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             {/* CTA Button — Outside AnimatePresence to stay stable */}
             <div className="mt-6 md:mt-10">
               <button
-                onClick={() => {
-                  if (currentSlide.redirectPath) {
-                    router.push(currentSlide.redirectPath);
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentSlide.redirectPath && !transitionState.active) {
+                    setTransitionState({ active: true, url: currentSlide.redirectPath, brand: currentSlide.title.toLowerCase() });
+                    setTimeout(() => {
+                      if (currentSlide.redirectPath?.startsWith('/go/') || currentSlide.redirectPath?.startsWith('/')) {
+                        router.push(currentSlide.redirectPath);
+                      } else {
+                        window.location.href = currentSlide.redirectPath!;
+                      }
+                    }, 420);
                   }
                 }}
                 aria-label={currentSlide.ctaLabel}
-                className="h-[52px] md:h-[54px] w-fit px-9 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-transform transition-colors duration-200 hover:bg-white hover:-translate-y-[1px] shadow-[0_2px_18px_rgba(248,247,242,0.14)] flex items-center justify-center"
+                className={`h-[52px] md:h-[54px] w-fit px-9 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-all duration-300 shadow-[0_2px_18px_rgba(248,247,242,0.14)] flex items-center justify-center ${transitionState.active ? 'opacity-0 translate-y-2' : 'hover:bg-white hover:-translate-y-[1px]'}`}
               >
                 {currentSlide.ctaLabel}
               </button>
@@ -453,7 +487,10 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                     <motion.div
                       key={`preview-${activeIndex}-${slide.realIndex}`}
                       initial={{ opacity: 0, x: 12 }}
-                      animate={{ opacity: isPrimary ? 0.95 : 0.72, x: 0 }}
+                      animate={{ 
+                        opacity: transitionState.active ? 0 : (isPrimary ? 0.95 : 0.72), 
+                        x: transitionState.active ? 12 : 0 
+                      }}
                       exit={{ opacity: 0, x: -12 }}
                       transition={{
                         duration: 0.45,
@@ -475,14 +512,14 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                       aria-label={`Preview ${slide.title}`}
                     >
                       <div
-                        className="relative w-full h-full bg-[#18181b] overflow-hidden transition-all duration-200 hover:-translate-y-[2px] card-hover-effect group"
+                        className="relative w-full h-full bg-[#18181b] overflow-hidden transition-all duration-200 card-hover-effect group"
                         data-has-preview-url={!!previewUrl}
                       >
                         {previewUrl ? (
                           <img
                             src={previewUrl}
                             alt={slide.previewAlt || slide.title || "VAVAW preview"}
-                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-[0.82] transition-opacity duration-200 group-hover:opacity-100"
+                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-[0.78] transition-opacity duration-200 group-hover:opacity-[0.92]"
                             onError={() => handleImageError(previewUrl)}
                           />
                         ) : (
@@ -531,10 +568,13 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
         .card-hover-effect {
           border: 1px solid var(--card-border);
           box-shadow: 0 24px 70px rgba(0,0,0,0.45), 0 0 0 1px var(--card-border);
+          transform: translateY(0);
+          transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1);
         }
         .card-hover-effect:hover {
           border: 1px solid var(--card-border-hover);
           box-shadow: 0 28px 80px rgba(0,0,0,0.55), 0 0 28px var(--card-glow);
+          transform: translateY(-2px);
         }
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
