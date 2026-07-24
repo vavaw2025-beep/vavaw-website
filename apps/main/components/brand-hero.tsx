@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -19,6 +19,23 @@ function isValidHeroImageUrl(value?: string | null): value is string {
   } catch {
     return false;
   }
+}
+
+/** Preload a single image URL to warm the browser cache. No-ops for invalid URLs. */
+function preloadImage(url?: string | null) {
+  if (!isValidHeroImageUrl(url)) return;
+  const img = new Image();
+  img.src = url;
+}
+
+// Per-brand cinematic tint — applied above background, below text scrims.
+// Very subtle; connects slide mood without breaking black/ivory/silver identity.
+function getBrandTint(slide: { title: string; redirectPath?: string | null }): string {
+  const t = slide.title.toLowerCase();
+  const r = slide.redirectPath ?? '';
+  if (t.includes('cosmetic') || r.includes('cosmetic')) return 'rgba(5, 10, 92, 0.18)';
+  if (t.includes('beauty') || r.includes('beauty')) return 'rgba(92, 58, 48, 0.14)';
+  return 'rgba(217, 119, 6, 0.12)';
 }
 
 export interface BrandHeroProps {
@@ -44,6 +61,26 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
     }, 6000);
     return () => clearInterval(timer);
   }, [autoplay, isHovering, slides.length]);
+
+  // Preload current + adjacent slide images to reduce flicker on transition
+  const preloadedRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    const toLoad = [
+      activeIndex,
+      (activeIndex + 1) % slides.length,
+      (activeIndex - 1 + slides.length) % slides.length,
+    ];
+    toLoad.forEach((i) => {
+      const s = slides[i];
+      if (!s) return;
+      [s.backgroundImageUrl, s.previewImageUrl].forEach((url) => {
+        if (url && !preloadedRef.current.has(url)) {
+          preloadImage(url);
+          preloadedRef.current.add(url);
+        }
+      });
+    });
+  }, [activeIndex, slides]);
 
   const handlePrevious = () => {
     setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
@@ -193,17 +230,19 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             <img
               src={currentSlide.backgroundImageUrl}
               alt={currentSlide.backgroundAlt || ""}
-              className="absolute inset-0 z-10 h-full w-full object-cover scale-[1.04] brightness-[0.60] grayscale-[25%]"
-              style={{ filter: 'blur(1.5px) brightness(0.60) grayscale(25%)' }}
+              className="absolute inset-0 z-10 h-full w-full object-cover scale-[1.03]"
+              style={{ filter: 'blur(1px) brightness(0.68) grayscale(18%)' }}
               onError={() => handleImageError(currentSlide.backgroundImageUrl as string)}
             />
           )}
-          {/* Strong left text safe zone — left 45% calm, right fades to transparent */}
-          <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/85 via-black/55 to-black/10" />
+          {/* Per-brand cinematic tint — subtle mood above image, below scrims */}
+          <div className="absolute inset-0 z-15" style={{ backgroundColor: getBrandTint(currentSlide) }} />
+          {/* Left text-safe scrim — deliberate reading zone on left, atmosphere on right */}
+          <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/90 via-black/62 to-black/12" />
           {/* Vertical vignette — top subtle, bottom anchoring */}
-          <div className="absolute inset-0 z-20 bg-gradient-to-b from-black/25 via-transparent to-black/45" />
-          {/* Mobile additional base */}
-          <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505]/80 via-[#050505]/30 to-transparent lg:hidden" />
+          <div className="absolute inset-0 z-20 bg-gradient-to-b from-black/22 via-transparent to-black/52" />
+          {/* Mobile: stronger base for readability */}
+          <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505]/85 via-[#050505]/35 to-transparent lg:hidden" />
         </motion.div>
       </AnimatePresence>
 
@@ -236,11 +275,15 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             <AnimatePresence mode="wait">
               <motion.h1
                 key={`title-${activeIndex}`}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
+                exit={{ opacity: 0, y: -28 }}
                 transition={{ duration: 0.65, ease: [0.25, 1, 0.5, 1] }}
-                className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-[#F8F7F2] leading-[1.1] tracking-tight drop-shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
+                className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light leading-[1.08] tracking-tight"
+                style={{
+                  color: '#F8F7F2',
+                  textShadow: '0 10px 36px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.35)',
+                }}
               >
                 {currentSlide.title}
               </motion.h1>
@@ -250,11 +293,12 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             <AnimatePresence mode="wait">
               <motion.p
                 key={`subtitle-${activeIndex}`}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.65, delay: 0.08, ease: [0.25, 1, 0.5, 1] }}
-                className="text-lg md:text-2xl text-white/80 font-light leading-relaxed max-w-xl drop-shadow-lg"
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.6, delay: 0.08, ease: [0.25, 1, 0.5, 1] }}
+                className="text-lg md:text-2xl font-light leading-relaxed max-w-xl drop-shadow-lg"
+                style={{ color: 'rgba(255,255,255,0.86)' }}
               >
                 {currentSlide.subtitle}
               </motion.p>
@@ -265,11 +309,12 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`desc-${activeIndex}`}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.65, delay: 0.14, ease: [0.25, 1, 0.5, 1] }}
-                  className="text-sm md:text-base text-white/60 font-light leading-relaxed max-w-[520px] drop-shadow-md hidden sm:block"
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.6, delay: 0.14, ease: [0.25, 1, 0.5, 1] }}
+                  className="text-sm md:text-base font-light leading-relaxed max-w-[520px] drop-shadow-md hidden sm:block"
+                  style={{ color: 'rgba(255,255,255,0.68)' }}
                 >
                   {currentSlide.description}
                 </motion.p>
@@ -283,11 +328,12 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                   router.push(currentSlide.redirectPath);
                 }
               }}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
+              whileHover={{ backgroundColor: '#ffffff', y: -2 }}
               aria-label={currentSlide.ctaLabel}
-              className="mt-6 md:mt-10 h-[52px] md:h-[54px] w-fit px-9 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-all duration-300 shadow-[0_2px_16px_rgba(248,247,242,0.12)] flex items-center justify-center"
+              className="mt-6 md:mt-10 h-[52px] md:h-[54px] w-fit px-9 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-colors duration-300 shadow-[0_2px_18px_rgba(248,247,242,0.14)] flex items-center justify-center"
             >
               {currentSlide.ctaLabel}
             </motion.button>
@@ -344,29 +390,23 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             <div className="relative flex gap-5 lg:gap-6 items-end justify-start pt-8 lg:pt-0">
               <AnimatePresence>
                 {previewSlides.map((slide, index) => {
-                  // 2 cards only: primary (larger) and secondary (smaller)
-                  const desktopSizes = [
-                    { width: 210, height: 320, opacity: 1 },
-                    { width: 170, height: 272, opacity: 0.65 },
-                  ];
-                  const tabletSizes = [
-                    { width: 160, height: 240, opacity: 1 },
-                    { width: 130, height: 196, opacity: 0.65 },
-                  ];
-                  const isTablet = typeof window !== 'undefined' && window.innerWidth < 1280;
-                  const sizes = isTablet ? tabletSizes : desktopSizes;
-                  const size = sizes[index] ?? sizes[1];
+                  // Stable sizes — no window.innerWidth read on first render
+                  // Primary: 215×330, Secondary: 172×278
+                  const isPrimary = index === 0;
+                  const width = isPrimary ? 215 : 172;
+                  const height = isPrimary ? 330 : 278;
+                  const cardOpacity = isPrimary ? 1 : 0.62;
 
                   return (
                     <motion.div
                       key={`preview-${index}-${slide.realIndex}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: size.opacity, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: cardOpacity, y: 0 }}
+                      exit={{ opacity: 0, y: 18 }}
                       transition={{
-                        duration: 0.6,
+                        duration: 0.65,
                         ease: [0.25, 1, 0.5, 1],
-                        delay: index * 0.08,
+                        delay: index * 0.09,
                       }}
                       onClick={() => {
                         setActiveIndex(slide.realIndex);
@@ -374,7 +414,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                         setTimeout(() => setAutoplay(true), 8000);
                       }}
                       className="relative flex-shrink-0 cursor-pointer origin-bottom group"
-                      style={{ width: `${size.width}px`, height: `${size.height}px` }}
+                      style={{ width: `${width}px`, height: `${height}px` }}
                       aria-label={`Preview ${slide.title}`}
                     >
                       <div
@@ -387,14 +427,14 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                           <img
                             src={slide.previewImageUrl}
                             alt={slide.previewAlt || slide.title}
-                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-75 group-hover:opacity-95 transition-opacity duration-500"
+                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-80 group-hover:opacity-95 transition-opacity duration-500"
                             onError={() => handleImageError(slide.previewImageUrl as string)}
                           />
                         )}
-                        {/* Card overlay — light at top, anchored at bottom */}
-                        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                        {/* Card overlay — readable label at bottom, transparent at top */}
+                        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/58 via-black/18 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-4 z-30">
-                          <h3 className="text-[10px] font-medium text-white/85 tracking-[0.15em] uppercase">
+                          <h3 className="text-[10px] font-medium tracking-[0.14em] uppercase" style={{ color: 'rgba(255,255,255,0.90)' }}>
                             {slide.title}
                           </h3>
                         </div>
