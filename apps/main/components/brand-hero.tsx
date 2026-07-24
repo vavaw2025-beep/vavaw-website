@@ -8,25 +8,25 @@ import type { PublicHeroSlide } from '@/lib/load-public-cms';
 
 function isValidHeroImageUrl(value?: string | null): value is string {
   if (!value) return false;
-  if (value.trim() === '') return false;
-  if (value.includes('PASTE_')) return false;
-  if (value === '-') return false;
-  // Reject local file paths — only absolute http/https URLs are valid CMS images
-  if (value.startsWith('/') && !value.startsWith('//')) return false;
-  try {
-    const url = new URL(value);
-    return url.protocol === 'http:' || url.protocol === 'https:';
-  } catch {
-    return false;
-  }
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (trimmed === '-') return false;
+  if (trimmed.includes('PASTE_')) return false;
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
 }
 
 /** Preload a single image URL to warm the browser cache. No-ops for invalid URLs. */
-function preloadImage(url?: string | null) {
+const preloadImage = (url?: string | null, preloadedSet?: Set<string>) => {
   if (!isValidHeroImageUrl(url)) return;
-  const img = new Image();
-  img.src = url;
-}
+  const trimmedUrl = url.trim();
+  if (preloadedSet && preloadedSet.has(trimmedUrl)) return;
+
+  if (typeof window !== 'undefined') {
+    const img = new window.Image();
+    img.src = trimmedUrl;
+    if (preloadedSet) preloadedSet.add(trimmedUrl);
+  }
+};
 
 // Per-brand cinematic tint — applied above background, below text scrims.
 // Very subtle; connects slide mood without breaking black/ivory/silver identity.
@@ -112,9 +112,8 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
       const s = slides[i];
       if (!s) return;
       [s.backgroundImageUrl, s.previewImageUrl].forEach((url) => {
-        if (url && !preloadedRef.current.has(url)) {
-          preloadImage(url);
-          preloadedRef.current.add(url);
+        if (url && !preloadedRef.current.has(url.trim())) {
+          preloadImage(url, preloadedRef.current);
         }
       });
     });
@@ -141,6 +140,10 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
   }
 
   const currentSlide = slides[activeIndex];
+  const activeBackgroundUrl = isValidHeroImageUrl(currentSlide.backgroundImageUrl) && !imageError[currentSlide.backgroundImageUrl.trim()]
+    ? currentSlide.backgroundImageUrl.trim()
+    : null;
+
   // Show max 2 preview cards — keep cards secondary, not dominant
   const previewCount = Math.min(2, slides.length - 1);
   const previewSlides = Array.from({ length: previewCount }, (_, index) => {
@@ -260,17 +263,17 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
           exit={{ opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
           className="absolute inset-0 z-10"
-          data-has-bg-url={isValidHeroImageUrl(currentSlide.backgroundImageUrl)}
+          data-has-bg-url={!!activeBackgroundUrl}
         >
-          {!isValidHeroImageUrl(currentSlide.backgroundImageUrl) || imageError[currentSlide.backgroundImageUrl] ? (
-            <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(currentSlide, true)} opacity-20`} />
-          ) : (
+          {activeBackgroundUrl ? (
             <img
-              src={currentSlide.backgroundImageUrl}
-              alt={currentSlide.backgroundAlt || ""}
+              src={activeBackgroundUrl}
+              alt={currentSlide.backgroundAlt || currentSlide.title || "VAVAW background"}
               className="absolute inset-0 z-10 h-full w-full object-cover opacity-75 scale-[1.01]"
-              onError={() => handleImageError(currentSlide.backgroundImageUrl as string)}
+              onError={() => handleImageError(activeBackgroundUrl)}
             />
+          ) : (
+            <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(currentSlide, true)} opacity-20`} />
           )}
           {/* Per-brand cinematic tint — subtle mood above image, below scrims */}
           <motion.div
@@ -420,6 +423,14 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                   const cardOpacity = isPrimary ? 1 : 0.62;
                   const cardAccent = getBrandAccentTokens(slide);
 
+                  const rawPreviewUrl = isValidHeroImageUrl(slide.previewImageUrl)
+                    ? slide.previewImageUrl.trim()
+                    : isValidHeroImageUrl(slide.backgroundImageUrl)
+                      ? slide.backgroundImageUrl.trim()
+                      : null;
+                  
+                  const previewUrl = rawPreviewUrl && !imageError[rawPreviewUrl] ? rawPreviewUrl : null;
+
                   return (
                     <motion.div
                       key={`preview-${activeIndex}-${slide.realIndex}`}
@@ -447,17 +458,17 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                     >
                       <div
                         className="relative w-full h-full bg-[#18181b] overflow-hidden transition-all duration-200 hover:-translate-y-[2px] card-hover-effect"
-                        data-has-preview-url={isValidHeroImageUrl(slide.previewImageUrl)}
+                        data-has-preview-url={!!previewUrl}
                       >
-                        {!isValidHeroImageUrl(slide.previewImageUrl) || imageError[slide.previewImageUrl] ? (
-                          <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-70`} />
-                        ) : (
+                        {previewUrl ? (
                           <img
-                            src={slide.previewImageUrl}
-                            alt={slide.previewAlt || slide.title}
+                            src={previewUrl}
+                            alt={slide.previewAlt || slide.title || "VAVAW preview"}
                             className="absolute inset-0 z-10 h-full w-full object-cover opacity-90 transition-opacity duration-200"
-                            onError={() => handleImageError(slide.previewImageUrl as string)}
+                            onError={() => handleImageError(previewUrl)}
                           />
+                        ) : (
+                          <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-70`} />
                         )}
                         {/* Card overlay — readable label at bottom, transparent at top */}
                         <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/58 via-black/18 to-transparent pointer-events-none" />
