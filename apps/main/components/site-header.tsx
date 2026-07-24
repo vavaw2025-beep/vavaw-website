@@ -19,13 +19,17 @@ export function SiteHeader({ logoUrl }: SiteHeaderProps) {
             <img 
               src={logoUrl} 
               alt="VAVAW" 
-              className="object-contain drop-shadow-md h-auto w-auto max-h-[25px] max-w-[120px] md:max-w-[150px]"
+              className="h-full w-auto object-contain transition-opacity duration-300 hover:opacity-80"
+              style={{ maxHeight: '32px' }}
               onError={() => setLogoError(true)}
             />
           ) : (
-            <span className="text-white text-2xl font-semibold tracking-[0.25em] uppercase drop-shadow-md">
-              VAVAW
-            </span>
+            <img 
+              src="/brand/logo-vavaw-white.svg"
+              alt="VAVAW"
+              className="h-full w-auto object-contain transition-opacity duration-300 hover:opacity-80"
+              style={{ maxHeight: '32px' }}
+            />
           )}
         </Link>
       </div>
