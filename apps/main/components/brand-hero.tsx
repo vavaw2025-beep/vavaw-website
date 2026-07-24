@@ -121,15 +121,35 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
   }, [activeIndex, slides]);
 
   const handlePrevious = () => {
+    if (transitionState.active) return;
     setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
     setAutoplay(false);
     setTimeout(() => setAutoplay(true), 7000);
   };
 
   const handleNext = () => {
+    if (transitionState.active) return;
     setActiveIndex((prev) => (prev + 1) % slides.length);
     setAutoplay(false);
     setTimeout(() => setAutoplay(true), 7000);
+  };
+
+  const handleRouteTransition = (url: string | null | undefined, title: string) => {
+    if (!url || transitionState.active) return;
+    
+    // Respect user's motion preferences
+    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const delay = prefersReducedMotion ? 50 : 420;
+
+    setTransitionState({ active: true, url, brand: title.toLowerCase() });
+    
+    setTimeout(() => {
+      if (url.startsWith('/go/') || url.startsWith('/')) {
+        router.push(url);
+      } else {
+        window.location.href = url;
+      }
+    }, delay);
   };
 
   if (slides.length === 0) {
@@ -395,16 +415,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  if (currentSlide.redirectPath && !transitionState.active) {
-                    setTransitionState({ active: true, url: currentSlide.redirectPath, brand: currentSlide.title.toLowerCase() });
-                    setTimeout(() => {
-                      if (currentSlide.redirectPath?.startsWith('/go/') || currentSlide.redirectPath?.startsWith('/')) {
-                        router.push(currentSlide.redirectPath);
-                      } else {
-                        window.location.href = currentSlide.redirectPath!;
-                      }
-                    }, 420);
-                  }
+                  handleRouteTransition(currentSlide.redirectPath, currentSlide.title);
                 }}
                 aria-label={currentSlide.ctaLabel}
                 className={`h-[52px] md:h-[54px] w-fit px-9 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-all duration-300 shadow-[0_2px_18px_rgba(248,247,242,0.14)] flex items-center justify-center ${transitionState.active ? 'opacity-0 translate-y-2' : 'hover:bg-white hover:-translate-y-[1px]'}`}
@@ -497,11 +508,12 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                         ease: [0.25, 1, 0.5, 1]
                       }}
                       onClick={() => {
+                        if (transitionState.active) return;
                         setActiveIndex(slide.realIndex);
                         setAutoplay(false);
-                        setTimeout(() => setAutoplay(true), 7000);
+                        handleRouteTransition(slide.redirectPath, slide.title);
                       }}
-                      className="relative flex-shrink-0 cursor-pointer origin-bottom"
+                      className={`relative flex-shrink-0 cursor-pointer origin-bottom ${transitionState.active && slide.realIndex !== activeIndex ? 'pointer-events-none opacity-50' : ''}`}
                       style={{ 
                         width: `${width}px`, 
                         height: `${height}px`,
@@ -553,6 +565,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
           <button
             key={index}
             onClick={() => {
+              if (transitionState.active) return;
               setActiveIndex(index);
               setAutoplay(false);
               setTimeout(() => setAutoplay(true), 7000);
