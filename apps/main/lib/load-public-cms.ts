@@ -139,22 +139,23 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
   }
 
   try {
-    const entriesQuery = supabase
+    // Build queries — IMPORTANT: .eq() returns a new builder, must be reassigned
+    let entriesQuery = supabase
       .from('business_entries')
       .select('*')
       .order('sort_order', { ascending: true });
-    
+
     if (!isPreview) {
-      entriesQuery.eq('status', 'active');
+      entriesQuery = entriesQuery.eq('status', 'active');
     }
 
-    const slidesQuery = supabase
+    let slidesQuery = supabase
       .from('hero_slides')
       .select('*')
       .order('sort_order', { ascending: true });
 
     if (!isPreview) {
-      slidesQuery.eq('status', 'active');
+      slidesQuery = slidesQuery.eq('status', 'active');
     }
 
     const [entriesResult, slidesResult] = await Promise.all([
@@ -162,34 +163,69 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
       slidesQuery,
     ]);
 
-    // Fallback on query error
+    // Fallback only on hard query error
     if (entriesResult.error) {
       const fallback = loadStaticCmsData();
       return {
         ...fallback,
-        error: `Supabase error: ${entriesResult.error.message}`,
+        error: `Supabase error (entries): ${entriesResult.error.message}`,
+      };
+    }
+    if (slidesResult.error) {
+      const fallback = loadStaticCmsData();
+      return {
+        ...fallback,
+        error: `Supabase error (slides): ${slidesResult.error.message}`,
       };
     }
 
     const entries = entriesResult.data ?? [];
-    const slides = slidesResult.data ?? [];
+    const rawSlides = slidesResult.data ?? [];
 
-    // Fallback if Supabase returned no data
-    if (entries.length === 0) {
+    // Dev diagnostic: if no active slides found, fetch all slides (any status) to reveal what's in DB
+    const isDiagMode = process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
+    if (isDiagMode && rawSlides.length === 0) {
+      const allSlidesResult = await supabase
+        .from('hero_slides')
+        .select('id, title, status, sort_order')
+        .order('sort_order', { ascending: true });
+      console.warn('[main cms hero_slides STATUS AUDIT]', {
+        message: 'hero_slides query returned 0 active rows. Showing all rows regardless of status:',
+        allSlides: allSlidesResult.data?.map((r: any) => ({ title: r.title, status: r.status })) ?? [],
+        hint: 'Set status = "active" in Admin → Hero for slides to appear on the public homepage.',
+      });
+    }
+
+    // Diagnostics: raw DB counts
+    if (isDiagMode) {
+      console.info('[main cms raw hero rows]', {
+        rawHeroCount: rawSlides.length,
+        rawHeroTitles: rawSlides.map((r: any) => `${r.title} (${r.status})`),
+        rawEntriesCount: entries.length,
+      });
+    }
+
+    // Only fall back to static if BOTH entries and slides are empty
+    if (entries.length === 0 && rawSlides.length === 0) {
       const fallback = loadStaticCmsData();
       return {
         ...fallback,
-        error: 'No active business_entries in Supabase — using static fallback.',
+        error: 'No active data in Supabase — using static fallback.',
       };
     }
 
-    // Collect media IDs to fetch
+    // ---------------------------------------------------------------------------
+    // Resolve media assets — collect all UUIDs, batch-fetch URLs
+    // ---------------------------------------------------------------------------
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
     const mediaIds = new Set<string>();
-    slides.forEach((s: any) => {
+    rawSlides.forEach((s: any) => {
       const bg = s.background_media_id;
       const prev = s.preview_media_id;
-      if (bg && bg !== '-' && !bg.startsWith('http') && !bg.startsWith('/')) mediaIds.add(bg);
-      if (prev && prev !== '-' && !prev.startsWith('http') && !prev.startsWith('/')) mediaIds.add(prev);
+      // Only add UUID-shaped IDs — not direct URLs or empty values
+      if (bg && uuidPattern.test(bg)) mediaIds.add(bg);
+      if (prev && uuidPattern.test(prev)) mediaIds.add(prev);
     });
 
     let media: any[] = [];
@@ -198,65 +234,87 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
         .from('media_assets')
         .select('id, url, type, alt_text')
         .in('id', Array.from(mediaIds));
+
+      if (isDiagMode) {
+        console.info('[main cms media fetch]', {
+          requestedIds: mediaIds.size,
+          resolvedCount: mediaResult.data?.length ?? 0,
+          error: mediaResult.error?.message ?? null,
+        });
+      }
+
       if (!mediaResult.error) {
         media = mediaResult.data ?? [];
       }
     }
 
-    // Build a fast media ID → URL map
-    const mediaMap = new Map<string, string>(media.map((m: any) => [m.id, m.url]));
+    // Build a fast media ID → full asset map
+    const mediaMap = new Map<string, { url: string; altText?: string }>(
+      media.map((m: any) => [m.id, { url: m.url, altText: m.alt_text ?? undefined }])
+    );
 
-    const businessEntries: NormalizedBusinessEntry[] = entries.map((e: any) => {
-      const mediaRecord = e.media ?? {};
-      return {
-        id: e.id,
-        slug: e.slug,
-        name: e.name,
-        category: e.category ?? '',
-        title: e.title,
-        subtitle: e.subtitle ?? '',
-        description: e.description ?? '',
-        redirectPath: e.redirect_path ?? `/go/${e.slug}`,
-        status: e.status,
-        sortOrder: e.sort_order,
-        ctaLabel: e.cta_label ?? 'Learn More',
-        backgroundImage: mediaRecord.backgroundImage ?? '',
-        previewImage: mediaRecord.previewImage ?? '',
-      };
-    });
+    // ---------------------------------------------------------------------------
+    // Normalize business entries
+    // ---------------------------------------------------------------------------
+    const businessEntries: NormalizedBusinessEntry[] = entries.map((e: any) => ({
+      id: e.id,
+      slug: e.slug,
+      name: e.name,
+      category: e.category ?? '',
+      title: e.title,
+      subtitle: e.subtitle ?? '',
+      description: e.description ?? '',
+      redirectPath: e.redirect_path ?? `/go/${e.slug}`,
+      status: e.status,
+      sortOrder: e.sort_order,
+      ctaLabel: e.cta_label ?? 'Learn More',
+      backgroundImage: '',  // not used in supabase mode — images come from media_assets
+      previewImage: '',
+    }));
 
-    // Build a business entry map for hero slide linking
     const entryMap = new Map<string, NormalizedBusinessEntry>(
       businessEntries.map((e) => [e.id, e])
     );
 
-    const heroSlides: PublicHeroSlide[] = slides.length > 0
-      ? slides.map((s: any) => {
+    // ---------------------------------------------------------------------------
+    // Resolve hero slides from DB rows
+    // ---------------------------------------------------------------------------
+    const heroSlides: PublicHeroSlide[] = rawSlides.length > 0
+      ? rawSlides.map((s: any) => {
           const linkedEntry = s.business_entry_id ? entryMap.get(s.business_entry_id) : undefined;
 
-          const resolveMedia = (val?: string, fallback?: string) => {
-            if (!val) return fallback ?? '';
-            if (val.startsWith('http') || val.startsWith('/')) return val; // Directly pasted URL
-            return mediaMap.get(val) ?? fallback ?? '';
+          // Resolve media URL: UUID → mediaMap → undefined (never fall back to static strings)
+          const resolveMediaUrl = (id?: string | null): string | undefined => {
+            if (!id) return undefined;
+            if (uuidPattern.test(id)) return mediaMap.get(id)?.url ?? undefined;
+            // If it's already a full http/https URL, use it directly
+            if (id.startsWith('https://') || id.startsWith('http://')) return id;
+            // Anything else (local path, "-", etc.) → reject
+            return undefined;
           };
 
-          // Resolve background image: URL → media asset ID → entry fallback → empty
-          const bgUrl = resolveMedia(s.background_media_id, linkedEntry?.backgroundImage);
-
-          // Resolve preview image: URL → media asset ID → entry fallback → empty
-          const prevUrl = resolveMedia(s.preview_media_id, linkedEntry?.previewImage);
+          const backgroundImageUrl = resolveMediaUrl(s.background_media_id) ?? undefined;
+          const previewImageUrl = resolveMediaUrl(s.preview_media_id) ?? undefined;
 
           // Resolve redirect path
           let redirectPath = s.redirect_path;
+          if (!redirectPath || redirectPath === '-') redirectPath = linkedEntry?.redirectPath;
           if (!redirectPath || redirectPath === '-') {
-            redirectPath = linkedEntry?.redirectPath;
-          }
-          if (!redirectPath || redirectPath === '-') {
-            const t = s.title?.toLowerCase() || '';
+            const t = (s.title ?? '').toLowerCase();
             if (t.includes('cosmetic')) redirectPath = '/go/cosmetic';
             else if (t.includes('beauty')) redirectPath = '/go/beauty';
             else if (t.includes('franchise')) redirectPath = '/go/franchise';
             else redirectPath = '/';
+          }
+
+          if (isDiagMode) {
+            console.info('[main cms slide normalized]', {
+              title: s.title,
+              bgId: s.background_media_id,
+              prevId: s.preview_media_id,
+              bgResolved: Boolean(backgroundImageUrl),
+              prevResolved: Boolean(previewImageUrl),
+            });
           }
 
           return {
@@ -270,12 +328,14 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
             sortOrder: s.sort_order,
             backgroundMediaId: s.background_media_id ?? undefined,
             previewMediaId: s.preview_media_id ?? undefined,
-            backgroundImageUrl: bgUrl,
-            previewImageUrl: prevUrl,
+            backgroundImageUrl,
+            previewImageUrl,
+            backgroundAlt: undefined,
+            previewAlt: undefined,
             businessEntryId: s.business_entry_id ?? undefined,
           };
         })
-      : // No hero_slides in DB yet — derive from business entries
+      : // No hero_slides in DB yet — derive from business entries (text only, no images)
         businessEntries.map((e) => ({
           id: `derived-${e.id}`,
           title: e.title,
@@ -285,10 +345,21 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
           redirectPath: e.redirectPath,
           status: e.status,
           sortOrder: e.sortOrder,
-          backgroundImageUrl: e.backgroundImage,
-          previewImageUrl: e.previewImage,
+          backgroundImageUrl: undefined,
+          previewImageUrl: undefined,
           businessEntryId: e.id,
         }));
+
+    if (isDiagMode) {
+      console.info('[main cms normalized slides]', {
+        normalizedCount: heroSlides.length,
+        normalizedTitles: heroSlides.map(s => ({
+          title: s.title,
+          bgResolved: Boolean(s.backgroundImageUrl),
+          prevResolved: Boolean(s.previewImageUrl),
+        })),
+      });
+    }
 
     const mediaAssets: NormalizedMediaAsset[] = media.map((m: any) => ({
       id: m.id,

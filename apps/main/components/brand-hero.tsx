@@ -11,10 +11,11 @@ function isValidHeroImageUrl(value?: string | null): value is string {
   if (value.includes('PASTE_')) return false;
   if (value === '-') return false;
   if (value === '') return false;
+  // Reject local file paths — only absolute http/https URLs are valid CMS images
+  if (value.startsWith('/') && !value.startsWith('//')) return false;
   try {
-    const url = new URL(value, 'https://placeholder.invalid');
-    // Accept absolute http/https URLs or relative paths starting with /
-    return url.protocol === 'http:' || url.protocol === 'https:' || value.startsWith('/');
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
   } catch {
     return false;
   }
