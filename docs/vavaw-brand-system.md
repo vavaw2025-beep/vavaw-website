@@ -52,9 +52,9 @@ Each application in the VAVAW ecosystem shares the same core layout components (
 - **Usage**: Dark backgrounds with high-contrast, slightly muted text (Silver/Gray) that brightens on hover.
 
 ### Cosmetic Page (`/cosmetic`)
-- **Vibe**: Clean Korean cosmetic, pure, minimalist.
-- **Palette**: Ivory (`#fdfcfb`), Soft Beige, Taupe (`#8b837b`), Dark Charcoal (`#332f2b`).
-- **Usage**: Very light backgrounds with soft text colors.
+- **Vibe**: Clean Korean cosmetic, clinical, pure.
+- **Palette**: VAVAW Blue (`#050A5C`), White (`#FFFFFF`), Cool Grey (`#EEF1F6`), Silver (`#D9DEE8`).
+- **Usage**: Bright white/off-white backgrounds with crisp blue accents and cool grey sections.
 
 ### Beauty App (`beauty.vavaw.vn`)
 - **Vibe**: Warm, inviting, luxurious spa/care.

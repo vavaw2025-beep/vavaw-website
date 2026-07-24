@@ -65,11 +65,11 @@ export const businessEntries: BusinessEntry[] = [
     sortOrder: 1,
     ctaLabel: "Explore Cosmetic",
     theme: {
-      primary: "#e11d48",
-      secondary: "#9f1239",
-      background: "#0f0507",
-      text: "#ffffff",
-      accent: "#fb7185",
+      primary: "#050A5C",
+      secondary: "#101A8C",
+      background: "#FFFFFF",
+      text: "#1F2933",
+      accent: "#EEF1F6",
     },
     media: {
       backgroundImage: "/PASTE_ACTUAL_PUBLIC_URL",

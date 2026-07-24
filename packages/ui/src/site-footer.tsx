@@ -39,11 +39,11 @@ export function SiteFooter({ variant = 'main', className = '', links = {} }: Sit
       textStyle = 'text-[#c0c0c0]';
       break;
     case 'cosmetic':
-      containerStyle = 'bg-[#fdfcfb] text-[#5c544d]'; // ivory
-      logoStyle = 'text-[#332f2b] tracking-[0.25em]';
-      linkStyle = 'text-[#8b837b] hover:text-[#332f2b]'; // taupe to dark beige
-      dividerStyle = 'border-[#5c544d]/10';
-      textStyle = 'text-[#8b837b]';
+      containerStyle = 'bg-[#F8F9FC] text-[#1F2933]'; // off-white
+      logoStyle = 'text-[#050A5C] tracking-[0.25em]'; // blue
+      linkStyle = 'text-[#6B7280] hover:text-[#050A5C]'; // cool grey to blue
+      dividerStyle = 'border-[#E1E6EF]';
+      textStyle = 'text-[#6B7280]';
       break;
     case 'beauty':
       containerStyle = 'bg-[#fffaf5] text-[#4a3f35]'; // warm ivory

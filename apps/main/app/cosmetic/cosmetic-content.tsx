@@ -29,15 +29,15 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfbf9] text-[#1a1a1a] font-sans selection:bg-[#e0d6cd] selection:text-black overflow-hidden">
+    <div className="min-h-screen bg-white text-[#1F2933] font-sans selection:bg-[#D9DEE8] selection:text-[#050A5C] overflow-hidden">
       
       {/* 1. Hero Section */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-16 px-6">
         {/* Background Image / Fallback */}
         <div className="absolute inset-0 z-0">
           {imageErrors[entry.media.backgroundImage] ? (
-            <div className="w-full h-full bg-gradient-to-b from-[#faf9f7] to-[#f4f1eb] flex items-center justify-center">
-              <span className="text-xs uppercase tracking-[0.3em] font-medium text-[#a3a3a3]">Cosmetic Hero Visual</span>
+            <div className="w-full h-full bg-gradient-to-b from-[#F8F9FC] to-[#EEF1F6] flex items-center justify-center">
+              <span className="text-xs uppercase tracking-[0.3em] font-medium text-[#6B7280]">Cosmetic Hero Visual</span>
             </div>
           ) : (
             <div className="relative w-full h-full opacity-40">
@@ -49,7 +49,7 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
                 className="object-cover"
                 onError={() => handleImageError(entry.media.backgroundImage)}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-[#fcfbf9]/50 via-transparent to-[#fcfbf9]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-transparent to-white" />
             </div>
           )}
         </div>
@@ -61,40 +61,40 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
           variants={stagger}
         >
           <motion.div variants={fadeUp} className="mb-6">
-            <Link href="/" className="inline-flex items-center text-xs tracking-[0.2em] uppercase text-[#737373] hover:text-[#1a1a1a] transition-colors duration-300">
+            <Link href="/" className="inline-flex items-center text-xs tracking-[0.2em] uppercase text-[#6B7280] hover:text-[#050A5C] transition-colors duration-300">
               <ArrowLeft className="w-3 h-3 mr-2" />
               Back to VAVAW Ecosystem
             </Link>
           </motion.div>
           
-          <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-light tracking-tight text-[#1a1a1a] mb-6">
+          <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-light tracking-tight text-[#050A5C] mb-6">
             {entry.title || 'VAVAW Cosmetic'}
           </motion.h1>
           
-          <motion.p variants={fadeUp} className="text-xl md:text-2xl text-[#404040] font-light mb-8 max-w-2xl mx-auto leading-relaxed">
-            {entry.subtitle}
+          <motion.p variants={fadeUp} className="text-xl md:text-2xl text-[#1F2933] font-light mb-8 max-w-2xl mx-auto leading-relaxed">
+            Refined skincare formula for customized, luminous revitalization.
           </motion.p>
           
-          <motion.div variants={fadeUp} className="w-16 h-[1px] bg-[#d4d4d4] mx-auto mb-8" />
+          <motion.div variants={fadeUp} className="w-16 h-[1px] bg-[#050A5C] mx-auto mb-8" />
           
-          <motion.p variants={fadeUp} className="text-base text-[#737373] max-w-xl mx-auto leading-loose">
-            {entry.description}
+          <motion.p variants={fadeUp} className="text-base text-[#6B7280] max-w-xl mx-auto leading-loose">
+            A precise, clinical Korean cosmetic ritual designed for clean and precise care.
           </motion.p>
         </motion.div>
       </section>
 
       {/* 2. Brand Story Section */}
-      <section className="py-32 px-6 bg-[#fcfbf9]">
+      <section className="py-32 px-6 bg-white border-t border-[#E1E6EF]">
         <div className="max-w-3xl mx-auto text-center">
           <motion.h2 
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
-            className="text-3xl md:text-4xl font-serif text-[#1a1a1a] mb-8 tracking-wide"
+            className="text-3xl md:text-4xl font-serif text-[#050A5C] mb-8 tracking-wide"
           >
-            A New Ritual of Beauty
+            Clinical Korean Cosmetic
           </motion.h2>
           <motion.p 
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
-            className="text-[#737373] leading-loose text-lg font-light"
+            className="text-[#6B7280] leading-loose text-lg font-light"
           >
             VAVAW Cosmetic is born from the desire to elevate everyday routines into moments of luxurious self-care. 
             We believe in clean beauty that never compromises on efficacy or elegance. Every formula is meticulously 
@@ -105,7 +105,7 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
       </section>
 
       {/* 3. Product Highlights */}
-      <section className="py-32 px-6 bg-[#f4f1eb]">
+      <section className="py-32 px-6 bg-[#EEF1F6]">
         <div className="max-w-6xl mx-auto">
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
@@ -118,13 +118,13 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
             ].map((item, i) => (
               <motion.div 
                 key={i} variants={fadeUp}
-                className="bg-[#fcfbf9] p-12 lg:p-16 text-center border border-[#e5e5e5] hover:border-[#d4d4d4] transition-colors duration-500 group"
+                className="bg-white p-12 lg:p-16 text-center shadow-sm border border-[#E1E6EF] hover:border-[#D9DEE8] hover:shadow-md transition-all duration-500 group"
               >
-                <div className="w-16 h-16 rounded-full bg-[#f4f1eb] mx-auto mb-8 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
-                  <span className="text-xs text-[#a3a3a3] font-serif italic">{`0${i+1}`}</span>
+                <div className="w-16 h-16 rounded-full bg-[#F8F9FC] mx-auto mb-8 flex items-center justify-center group-hover:scale-105 border border-[#E1E6EF] transition-transform duration-700">
+                  <span className="text-xs text-[#050A5C] font-serif italic">{`0${i+1}`}</span>
                 </div>
-                <h3 className="text-xl font-serif mb-4 text-[#1a1a1a] tracking-wide">{item.title}</h3>
-                <p className="text-sm text-[#737373] leading-relaxed font-light">{item.desc}</p>
+                <h3 className="text-xl font-serif mb-4 text-[#1F2933] tracking-wide">{item.title}</h3>
+                <p className="text-sm text-[#6B7280] leading-relaxed font-light">{item.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -132,15 +132,15 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
       </section>
 
       {/* 4. Quality Promise Section */}
-      <section className="py-32 px-6 bg-[#fcfbf9]">
-        <div className="max-w-6xl mx-auto border-t border-[#e5e5e5] py-24">
+      <section className="py-32 px-6 bg-[#F8F9FC]">
+        <div className="max-w-6xl mx-auto border-t border-[#E1E6EF] py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <motion.h2 
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                className="text-3xl font-serif mb-12 tracking-wide text-[#1a1a1a]"
+                className="text-3xl font-serif mb-12 tracking-wide text-[#050A5C]"
               >
-                The Clean Beauty Promise
+                The Clean Formula Promise
               </motion.h2>
               <div className="space-y-12 pr-0 md:pr-12">
                 {[
@@ -154,8 +154,8 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
                     initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
                     className="flex items-start"
                   >
-                    <span className="text-[#a3a3a3] text-sm font-serif italic mr-6 mt-1">0{i+1}</span>
-                    <p className="text-lg font-light text-[#525252] leading-relaxed">{promise}</p>
+                    <span className="text-[#050A5C] text-sm font-serif italic mr-6 mt-1">0{i+1}</span>
+                    <p className="text-lg font-light text-[#1F2933] leading-relaxed">{promise}</p>
                   </motion.div>
                 ))}
               </div>
@@ -166,7 +166,7 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative aspect-[4/5] w-full bg-[#f4f1eb] overflow-hidden"
+              className="relative aspect-[4/5] w-full bg-white border border-[#E1E6EF] overflow-hidden"
             >
               {entry.media.cosmeticCleanPromise && !imageErrors[entry.media.cosmeticCleanPromise] ? (
                 <Image
@@ -178,7 +178,7 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#a3a3a3]">Promise Visual</span>
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#6B7280]">Promise Visual</span>
                 </div>
               )}
             </motion.div>
@@ -187,7 +187,10 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
       </section>
 
       {/* 5. Editorial Gallery */}
-      <section className="py-24 px-6 bg-[#fcfbf9] max-w-7xl mx-auto">
+      <section className="py-24 px-6 bg-white max-w-7xl mx-auto border-t border-[#E1E6EF]">
+        <div className="text-center mb-16">
+          <span className="text-xs tracking-[0.2em] uppercase text-[#050A5C] font-medium">Visual Harmony</span>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             { label: "Texture & Formula", image: entry.media.cosmeticTextureRitual },
@@ -201,7 +204,7 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: i * 0.15, ease: "easeOut" }}
-              className="aspect-[3/4] overflow-hidden relative bg-[#f4f1eb] border border-[#e5e5e5] group"
+              className="aspect-[3/4] overflow-hidden relative bg-[#F8F9FC] border border-[#E1E6EF] group"
             >
               {item.image && !imageErrors[item.image] ? (
                 <Image
@@ -213,7 +216,7 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
-                  <span className="text-[10px] tracking-[0.2em] text-[#a3a3a3] uppercase font-medium group-hover:text-[#737373] transition-colors duration-500">
+                  <span className="text-[10px] tracking-[0.2em] text-[#6B7280] uppercase font-medium group-hover:text-[#050A5C] transition-colors duration-500">
                     {item.label}
                   </span>
                 </div>
@@ -224,33 +227,25 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
       </section>
 
       {/* 6. CTA Section */}
-      <section className="py-32 px-6 bg-[#1a1a1a] text-[#fcfbf9] text-center mt-12">
+      <section className="py-32 px-6 bg-[#EEF1F6] border-t border-[#E1E6EF] text-center">
         <motion.div 
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
           className="max-w-2xl mx-auto"
         >
-          <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-serif mb-12 tracking-wide">
+          <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-serif text-[#050A5C] mb-12 tracking-wide">
             Experience the full ecosystem
           </motion.h2>
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <CosmeticCtaTracker
-              label="Contact Us"
+              label="START AN INQUIRY"
               href="/contact?type=cosmetic_interest"
-              className="h-[54px] px-10 flex items-center justify-center bg-[#fcfbf9] text-[#1a1a1a] text-[13px] tracking-[0.2em] uppercase hover:bg-white transition-colors"
+              className="h-[54px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[13px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors shadow-sm"
             />
             <CosmeticCtaTracker
-              label="Back to VAVAW"
+              label="BACK TO ECOSYSTEM"
               href="/"
-              className="h-[54px] px-10 flex items-center justify-center bg-transparent border border-[#525252] text-[#fcfbf9] text-[13px] tracking-[0.2em] uppercase hover:border-[#a3a3a3] hover:text-white transition-colors"
+              className="h-[54px] px-10 flex items-center justify-center bg-white border border-[#050A5C] text-[#050A5C] text-[13px] tracking-[0.2em] uppercase hover:bg-[#F8F9FC] transition-colors shadow-sm"
             />
-            <CosmeticCtaTracker
-              label="Explore Beauty & Co"
-              href="/go/beauty"
-              className="group h-[54px] px-6 flex items-center justify-center text-[11px] tracking-[0.2em] uppercase text-[#a3a3a3] hover:text-[#fcfbf9] transition-colors"
-            >
-              Explore Beauty &amp; Co
-              <ChevronRight className="w-4 h-4 ml-2 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-            </CosmeticCtaTracker>
           </motion.div>
         </motion.div>
       </section>

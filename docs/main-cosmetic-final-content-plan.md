@@ -22,18 +22,18 @@ This document outlines the final production-ready content structure, brand direc
 ## 2. Cosmetic Page (`vavaw.vn/cosmetic`)
 
 ### Structure & Content
-- **Hero**: Serene, clean beauty atmosphere. Background uses ivory gradients if images fail.
-- **Brand Story**: "A New Ritual of Beauty" - Explains the philosophy behind the cosmetic line without making medical claims.
+- **Hero**: Serene, clinical beauty atmosphere. Background uses white/cool grey if images fail.
+- **Brand Story**: "Clinical Korean Cosmetic" - Explains the philosophy behind the cosmetic line without making medical claims.
 - **Product Highlights**: Three core pillars (Skincare Essentials, Modern Daily Ritual, Signature Cosmetic Line). 
-- **Clean Beauty Promise**: A numbered list of commitments to quality and sustainability.
+- **Clean Formula Promise**: A numbered list of commitments to quality and sustainability.
 - **Editorial Gallery**: A 4-column grid for premium product shots and texture photography.
 - **Inquiry CTA**: Clean section directing to the `/contact` form (pre-filled with `cosmetic_interest`).
-- **Footer**: Uses the `cosmetic` variant (soft beige/taupe tones).
+- **Footer**: Uses the `cosmetic` variant (blue/white/cool grey tones).
 
 ### Media Slots Needed
-- **Cosmetic Hero Visual**: Bright, soft ivory aesthetic.
+- **Cosmetic Hero Visual**: Clinical, cool blue/white aesthetic.
 - **Editorial Gallery Grid**: 4 distinct, high-quality product/texture shots.
-- *Current State*: Handled via soft ivory/taupe gradient placeholders with subtle tracking text (e.g. "Signature Ritual"). 
+- *Current State*: Handled via white/cool grey placeholders with subtle tracking text (e.g. "Signature Ritual"). 
 
 ## 3. SEO & Accessibility Notes
 - Both pages use dynamic `generateMetadata` fetching from Supabase (`seo_settings`) with a fallback to `@vavaw/brand-config`.
