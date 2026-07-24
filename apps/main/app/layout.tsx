@@ -52,6 +52,7 @@ export const viewport: Viewport = {
 import { draftMode } from 'next/headers'
 import { PreviewBanner } from '@/components/preview-banner'
 import { SiteHeader } from '@/components/site-header'
+import { loadPublicBrandAssets } from '@/lib/load-public-brand-assets'
 
 export default async function RootLayout({
   children,
@@ -59,6 +60,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const isPreview = (await draftMode()).isEnabled;
+  const brandAssets = await loadPublicBrandAssets('main');
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -79,7 +81,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <SiteHeader />
+        <SiteHeader logoUrl={brandAssets.logoMainWhite} />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

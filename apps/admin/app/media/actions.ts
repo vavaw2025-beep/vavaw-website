@@ -37,6 +37,7 @@ export async function uploadMediaAction(formData: FormData) {
   const siteKey = (formData.get('site_key') as string) || 'main';
   const requestedType = (formData.get('type') as any) || 'image';
   const altText = (formData.get('alt_text') as string) || undefined;
+  const brandSlot = (formData.get('brand_slot') as string) || undefined;
 
   if (!file || file.size === 0) {
     console.warn("[media] upload failed", { stage: 'missing_file', reason: 'No file provided', siteKey, assetType: requestedType });
@@ -110,6 +111,12 @@ export async function uploadMediaAction(formData: FormData) {
 
     const publicUrl = publicUrlData.publicUrl;
 
+    const metadata: any = { bucket: 'vavaw-media', path: storagePath };
+    if (brandSlot) {
+      metadata.purpose = 'brand-logo';
+      metadata.slot = brandSlot;
+    }
+
     const { error: dbError } = await createMediaAsset(supabase, {
       site_key: siteKey,
       type: requestedType,
@@ -118,7 +125,7 @@ export async function uploadMediaAction(formData: FormData) {
       storage_provider: 'supabase',
       mime_type: file.type,
       size_bytes: file.size,
-      metadata: { bucket: 'vavaw-media', path: storagePath },
+      metadata,
     });
 
     if (dbError) {

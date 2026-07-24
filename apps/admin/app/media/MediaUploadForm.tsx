@@ -10,6 +10,7 @@ export function MediaUploadForm() {
   const [siteKey, setSiteKey] = useState('main');
   const [type, setType] = useState('image');
   const [altText, setAltText] = useState('');
+  const [brandSlot, setBrandSlot] = useState('');
 
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +44,9 @@ export function MediaUploadForm() {
     formData.append('site_key', siteKey);
     formData.append('type', type);
     formData.append('alt_text', altText);
+    if (brandSlot) {
+      formData.append('brand_slot', brandSlot);
+    }
 
     try {
       const result = await uploadMediaAction(formData);
@@ -86,7 +90,7 @@ export function MediaUploadForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Site Key *</label>
             <select
@@ -127,6 +131,22 @@ export function MediaUploadForm() {
               className="w-full text-sm border border-slate-300 rounded-md p-2"
             />
           </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Brand Asset Slot</label>
+            <select
+              value={brandSlot}
+              onChange={(e) => setBrandSlot(e.target.value)}
+              className="w-full text-sm border border-slate-300 rounded-md p-2 bg-white"
+            >
+              <option value="">None</option>
+              <option value="logo-main-white">Main Logo White</option>
+              <option value="logo-main-dark">Main Logo Dark</option>
+              <option value="logo-main-blue">Main Logo Blue</option>
+              <option value="logo-cosmetic-blue">Cosmetic Logo Blue</option>
+              <option value="logo-admin-dark">Admin Logo Dark</option>
+            </select>
+          </div>
         </div>
 
         <div>
@@ -141,6 +161,11 @@ export function MediaUploadForm() {
           <p className="mt-1 text-xs text-slate-500">
             Images: JPG, PNG, WEBP, AVIF (Max 5MB) &bull; Videos: MP4, WEBM, MOV (Max 50MB)
           </p>
+          {brandSlot && (
+            <div className="mt-2 text-[11px] text-slate-600 bg-slate-50 border border-slate-200 p-2 rounded-md">
+              <strong>Brand Logo Recommended specs:</strong> PNG transparent, 1200x300px, under 1MB. Do not upload JPG or screenshots for logos. Use white logo for dark backgrounds, dark/blue logo for light backgrounds.
+            </div>
+          )}
         </div>
 
         <div>
