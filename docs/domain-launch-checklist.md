@@ -57,7 +57,7 @@ Once DNS is propagated and SSL is active, perform the following checks on the li
 - [ ] **Main (`vavaw.vn`)**: Check Hero video/images load, click through to `/cosmetic`, submit a test lead.
 - [ ] **Beauty (`beauty.vavaw.vn`)**: Verify elegant UI loads properly, submit a booking request.
 - [ ] **Franchise (`franchise.vavaw.vn`)**: Verify professional UI loads properly, submit a franchise application.
-- [ ] **Admin (`admin.vavaw.vn`)**: Log in with owner credentials via Supabase Auth, verify lead forms successfully created entries, check that the audit log recorded the actions.
+- [ ] **Admin (`admin.vavaw.vn`)**: Log in with owner credentials via Supabase Auth, verify lead forms successfully created entries, check that the audit log recorded the actions. (See `docs/admin-operating-guide.md` for full operating procedures).
 
 ## 7. Rollback Steps
 

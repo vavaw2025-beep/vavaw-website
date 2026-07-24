@@ -18,6 +18,10 @@
 - [x] Admin Feature Map documentation page added.
 - [x] `docs/admin-feature-map.md` created.
 
+### Admin QA & Documentation (Phase 51)
+- [x] Admin operating workflows (media, leads, audit logs) verified.
+- [x] `docs/admin-operating-guide.md` created.
+
 ### Security & Authentication
 - [ ] Production Admin is configured with `ADMIN_AUTH_MODE=supabase` and `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.
 - [ ] `ADMIN_AUTH_MODE=mock` is completely disabled in production environment variables.
