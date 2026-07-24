@@ -66,7 +66,8 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
   }
 
   const currentSlide = slides[activeIndex];
-  const previewCount = Math.min(3, slides.length - 1);
+  // Show max 2 preview cards — keep cards secondary, not dominant
+  const previewCount = Math.min(2, slides.length - 1);
   const previewSlides = Array.from({ length: previewCount }, (_, index) => {
     const offset = index + 1;
     const realIndex = (activeIndex + offset) % slides.length;
@@ -182,7 +183,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: 'easeInOut' }}
+          transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
           className="absolute inset-0"
           data-has-bg-url={isValidHeroImageUrl(currentSlide.backgroundImageUrl)}
         >
@@ -192,14 +193,17 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             <img
               src={currentSlide.backgroundImageUrl}
               alt={currentSlide.backgroundAlt || ""}
-              className="absolute inset-0 z-10 h-full w-full object-cover"
+              className="absolute inset-0 z-10 h-full w-full object-cover scale-[1.04] brightness-[0.60] grayscale-[25%]"
+              style={{ filter: 'blur(1.5px) brightness(0.60) grayscale(25%)' }}
               onError={() => handleImageError(currentSlide.backgroundImageUrl as string)}
             />
           )}
-          {/* Cinematic Dark Overlay */}
-          <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-          <div className="absolute inset-0 z-20 bg-black/25" />
-          <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent lg:hidden" />
+          {/* Strong left text safe zone — left 45% calm, right fades to transparent */}
+          <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/85 via-black/55 to-black/10" />
+          {/* Vertical vignette — top subtle, bottom anchoring */}
+          <div className="absolute inset-0 z-20 bg-gradient-to-b from-black/25 via-transparent to-black/45" />
+          {/* Mobile additional base */}
+          <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505]/80 via-[#050505]/30 to-transparent lg:hidden" />
         </motion.div>
       </AnimatePresence>
 
@@ -235,7 +239,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
+                transition={{ duration: 0.65, ease: [0.25, 1, 0.5, 1] }}
                 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-[#F8F7F2] leading-[1.1] tracking-tight drop-shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
               >
                 {currentSlide.title}
@@ -249,8 +253,8 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
-                className="text-lg md:text-2xl text-white/90 font-light leading-relaxed max-w-2xl drop-shadow-lg"
+                transition={{ duration: 0.65, delay: 0.08, ease: [0.25, 1, 0.5, 1] }}
+                className="text-lg md:text-2xl text-white/80 font-light leading-relaxed max-w-xl drop-shadow-lg"
               >
                 {currentSlide.subtitle}
               </motion.p>
@@ -264,8 +268,8 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
-                  className="text-sm md:text-base text-white/65 font-light leading-relaxed max-w-xl drop-shadow-md hidden sm:block"
+                  transition={{ duration: 0.65, delay: 0.14, ease: [0.25, 1, 0.5, 1] }}
+                  className="text-sm md:text-base text-white/60 font-light leading-relaxed max-w-[520px] drop-shadow-md hidden sm:block"
                 >
                   {currentSlide.description}
                 </motion.p>
@@ -281,9 +285,9 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
               }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+              transition={{ duration: 0.65, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
               aria-label={currentSlide.ctaLabel}
-              className="mt-6 md:mt-10 h-[50px] md:h-[56px] w-fit px-8 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[13px] tracking-[0.2em] uppercase hover:bg-white hover:scale-[1.02] transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.15)] flex items-center justify-center border border-transparent hover:border-white/50"
+              className="mt-6 md:mt-10 h-[52px] md:h-[54px] w-fit px-9 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-all duration-300 shadow-[0_2px_16px_rgba(248,247,242,0.12)] flex items-center justify-center"
             >
               {currentSlide.ctaLabel}
             </motion.button>
@@ -328,79 +332,73 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             </motion.div>
           </motion.div>
 
-          {/* Right Preview Cards */}
+          {/* Right Preview Cards — desktop only, max 2, secondary */}
           <motion.div
-            className="w-full lg:w-[45%] flex items-end justify-start lg:justify-end overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 z-10 snap-x snap-mandatory hide-scrollbar"
+            className="hidden sm:flex lg:w-[45%] items-end justify-start lg:justify-end pb-4 lg:pb-0 z-10"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
           >
-            <div className="relative flex gap-4 lg:gap-6 items-end justify-start min-w-max px-2 lg:px-0 pt-8 lg:pt-0">
+            <div className="relative flex gap-5 lg:gap-6 items-end justify-start pt-8 lg:pt-0">
               <AnimatePresence>
                 {previewSlides.map((slide, index) => {
-                  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
-                  // Simplify sizes for mobile to ensure fit
+                  // 2 cards only: primary (larger) and secondary (smaller)
                   const desktopSizes = [
-                    { width: 220, height: 320, scale: 1, opacity: 1 },
-                    { width: 180, height: 260, scale: 0.95, opacity: 0.6 },
-                    { width: 140, height: 200, scale: 0.9, opacity: 0.3 },
+                    { width: 210, height: 320, opacity: 1 },
+                    { width: 170, height: 272, opacity: 0.65 },
                   ];
-                  const mobileSizes = [
-                    { width: 140, height: 200, scale: 1, opacity: 1 },
-                    { width: 120, height: 170, scale: 0.95, opacity: 0.6 },
-                    { width: 100, height: 140, scale: 0.9, opacity: 0.3 },
+                  const tabletSizes = [
+                    { width: 160, height: 240, opacity: 1 },
+                    { width: 130, height: 196, opacity: 0.65 },
                   ];
-                  const sizes = isMobile ? mobileSizes : desktopSizes;
-                  const size = sizes[index] ?? sizes[2];
+                  const isTablet = typeof window !== 'undefined' && window.innerWidth < 1280;
+                  const sizes = isTablet ? tabletSizes : desktopSizes;
+                  const size = sizes[index] ?? sizes[1];
 
                   return (
                     <motion.div
                       key={`preview-${index}-${slide.realIndex}`}
-                      initial={{ opacity: 0, x: 40, scale: 0.8 }}
-                      animate={{
-                        opacity: size.opacity,
-                        scale: size.scale,
-                        x: 0,
-                      }}
-                      exit={{ opacity: 0, x: 40, scale: 0.8 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: size.opacity, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
                       transition={{
-                        type: 'spring',
-                        stiffness: 200,
-                        damping: 25,
-                        delay: index * 0.1,
+                        duration: 0.6,
+                        ease: [0.25, 1, 0.5, 1],
+                        delay: index * 0.08,
                       }}
                       onClick={() => {
                         setActiveIndex(slide.realIndex);
                         setAutoplay(false);
                         setTimeout(() => setAutoplay(true), 8000);
                       }}
-                      className="relative flex-shrink-0 cursor-pointer origin-bottom snap-start group"
-                      style={{
-                        width: `${size.width}px`,
-                        height: `${size.height}px`,
-                      }}
+                      className="relative flex-shrink-0 cursor-pointer origin-bottom group"
+                      style={{ width: `${size.width}px`, height: `${size.height}px` }}
                       aria-label={`Preview ${slide.title}`}
                     >
-                      <motion.div
-                        className="relative w-full h-full bg-[#18181b] rounded-sm overflow-hidden border border-white/10 shadow-2xl transition-all duration-500 hover:border-white/30 group-hover:-translate-y-2"
+                      <div
+                        className="relative w-full h-full bg-[#18181b] overflow-hidden border border-white/20 shadow-2xl shadow-black/40 transition-all duration-500 hover:border-white/35 group-hover:-translate-y-2"
                         data-has-preview-url={isValidHeroImageUrl(slide.previewImageUrl)}
                       >
                         {!isValidHeroImageUrl(slide.previewImageUrl) || imageError[slide.previewImageUrl] ? (
-                          <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-80`} />
+                          <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-70`} />
                         ) : (
                           <img
                             src={slide.previewImageUrl}
                             alt={slide.previewAlt || slide.title}
-                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-700"
+                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-75 group-hover:opacity-95 transition-opacity duration-500"
                             onError={() => handleImageError(slide.previewImageUrl as string)}
                           />
                         )}
-                        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5 z-30">
-                          <h3 className="text-[11px] lg:text-xs font-medium text-white tracking-[0.1em] uppercase drop-shadow-md">
+                        {/* Card overlay — light at top, anchored at bottom */}
+                        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 p-4 z-30">
+                          <h3 className="text-[10px] font-medium text-white/85 tracking-[0.15em] uppercase">
                             {slide.title}
                           </h3>
                         </div>
-                      </motion.div>
+                      </div>
                     </motion.div>
                   );
                 })}
