@@ -16,7 +16,16 @@ When making changes, always ensure you select the correct `site_key` to apply up
 
 The Media Library (`/media`) is a central repository for all images and videos used across the ecosystem.
 
-### How to upload media:
+### Uploading Launch Media (Phase 56)
+Before the final domain launch, you must upload the core aesthetic assets for the platform to look complete. 
+1. Go to **Admin Dashboard -> Media**.
+2. Set **Site Key**: Select `main` for homepage media or `cosmetic` for cosmetic media.
+3. Set **Type**: Select `image`.
+4. **Upload File**: Choose a high-quality, compressed `.webp` or `.jpg` file. Ensure it is under the 5MB limit. Do not upload huge raw files, private customer images, or images with unclear licensing.
+5. **Alt Text**: Add descriptive text (e.g., "VAVAW cinematic beauty atmosphere").
+6. **Submit**: Once uploaded, you can copy the public URL to use in the CMS (Hero, SEO, or Content). Verify the public URL opens correctly.
+
+### Routine Media Upload:
 1. Navigate to **Media** in the sidebar.
 2. Click **Upload New Asset**.
 3. Select the target `site_key` (e.g., `main` or `beauty`).

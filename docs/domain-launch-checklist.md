@@ -98,10 +98,10 @@ Verify Supabase Authentication settings manually and configure the required URLs
 
 Once DNS is propagated and SSL is active, perform the following checks on the live domains:
 
-- [ ] **Main (`vavaw.vn`)**: Check Hero video/images load, click through to `/cosmetic`, submit a test lead.
+- [ ] **Main (`vavaw.vn`)**: Check Hero video/images load, verify preview cards load correctly, click through to `/cosmetic`, submit a test lead.
 - [ ] **Beauty (`beauty.vavaw.vn`)**: Verify elegant UI loads properly, submit a booking request.
 - [ ] **Franchise (`franchise.vavaw.vn`)**: Verify professional UI loads properly, submit a franchise application.
-- [ ] **Admin (`admin.vavaw.vn`)**: Log in with owner credentials via Supabase Auth, verify lead forms successfully created entries, check that the audit log recorded the actions. (See `docs/admin-operating-guide.md` for full operating procedures).
+- [ ] **Admin (`admin.vavaw.vn`)**: Log in with owner credentials via Supabase Auth, verify lead forms successfully created entries, check that the audit log recorded the actions. Also verify all launch media assets have been uploaded according to `docs/launch-media-asset-checklist.md`.
 
 ## 8. Rollback Steps
 
