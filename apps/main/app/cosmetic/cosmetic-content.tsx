@@ -133,29 +133,55 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
 
       {/* 4. Quality Promise Section */}
       <section className="py-32 px-6 bg-[#fcfbf9]">
-        <div className="max-w-5xl mx-auto border-t border-b border-[#e5e5e5] py-24">
-          <motion.h2 
-            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-            className="text-3xl font-serif text-center mb-16 tracking-wide text-[#1a1a1a]"
-          >
-            The Clean Beauty Promise
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-16 gap-x-16 px-4 md:px-12">
-            {[
-              "Carefully curated clean formulas prioritizing long-term skin health.",
-              "A truly premium beauty experience without compromise.",
-              "Sustainable, elegant packaging designed to minimize impact.",
-              "Developed under the rigorous standards of the VAVAW ecosystem."
-            ].map((promise, i) => (
-              <motion.div 
-                key={i}
+        <div className="max-w-6xl mx-auto border-t border-[#e5e5e5] py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <motion.h2 
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                className="flex items-start"
+                className="text-3xl font-serif mb-12 tracking-wide text-[#1a1a1a]"
               >
-                <span className="text-[#a3a3a3] text-sm font-serif italic mr-6 mt-1">0{i+1}</span>
-                <p className="text-lg font-light text-[#525252] leading-relaxed">{promise}</p>
-              </motion.div>
-            ))}
+                The Clean Beauty Promise
+              </motion.h2>
+              <div className="space-y-12 pr-0 md:pr-12">
+                {[
+                  "Carefully curated clean formulas prioritizing long-term skin health.",
+                  "A truly premium beauty experience without compromise.",
+                  "Sustainable, elegant packaging designed to minimize impact.",
+                  "Developed under the rigorous standards of the VAVAW ecosystem."
+                ].map((promise, i) => (
+                  <motion.div 
+                    key={i}
+                    initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                    className="flex items-start"
+                  >
+                    <span className="text-[#a3a3a3] text-sm font-serif italic mr-6 mt-1">0{i+1}</span>
+                    <p className="text-lg font-light text-[#525252] leading-relaxed">{promise}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative aspect-[4/5] w-full bg-[#f4f1eb] overflow-hidden"
+            >
+              {entry.media.cosmeticCleanPromise && !imageErrors[entry.media.cosmeticCleanPromise] ? (
+                <Image
+                  src={entry.media.cosmeticCleanPromise}
+                  alt="Clean Beauty Promise"
+                  fill
+                  className="object-cover"
+                  onError={() => handleImageError(entry.media.cosmeticCleanPromise!)}
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#a3a3a3]">Promise Visual</span>
+                </div>
+              )}
+            </motion.div>
           </div>
         </div>
       </section>
@@ -164,11 +190,11 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
       <section className="py-24 px-6 bg-[#fcfbf9] max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            "Texture & Formula",
-            "Signature Ritual",
-            "Premium Packaging",
-            "Editorial Look"
-          ].map((label, i) => (
+            { label: "Texture & Formula", image: entry.media.cosmeticTextureRitual },
+            { label: "Signature Ritual", image: undefined }, // Placeholder or another image
+            { label: "Premium Packaging", image: entry.media.previewImage },
+            { label: "Editorial Look", image: entry.media.cosmeticProductEditorial }
+          ].map((item, i) => (
             <motion.div 
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -177,11 +203,21 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
               transition={{ duration: 0.8, delay: i * 0.15, ease: "easeOut" }}
               className="aspect-[3/4] overflow-hidden relative bg-[#f4f1eb] border border-[#e5e5e5] group"
             >
-              <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
-                <span className="text-[10px] tracking-[0.2em] text-[#a3a3a3] uppercase font-medium group-hover:text-[#737373] transition-colors duration-500">
-                  {label}
-                </span>
-              </div>
+              {item.image && !imageErrors[item.image] ? (
+                <Image
+                  src={item.image}
+                  alt={item.label}
+                  fill
+                  className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                  onError={() => handleImageError(item.image!)}
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+                  <span className="text-[10px] tracking-[0.2em] text-[#a3a3a3] uppercase font-medium group-hover:text-[#737373] transition-colors duration-500">
+                    {item.label}
+                  </span>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

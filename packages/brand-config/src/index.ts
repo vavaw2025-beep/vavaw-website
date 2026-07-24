@@ -15,6 +15,9 @@ export type BusinessMedia = {
   previewImage: string;
   ogImage: string;
   introVideo?: string;
+  cosmeticProductEditorial?: string;
+  cosmeticTextureRitual?: string;
+  cosmeticCleanPromise?: string;
 };
 
 export type BusinessSeo = {
@@ -69,9 +72,12 @@ export const businessEntries: BusinessEntry[] = [
       accent: "#fb7185",
     },
     media: {
-      backgroundImage: "/media/hero/cosmetic-hero.jpg",
-      previewImage: "/media/preview/cosmetic-preview.jpg",
-      ogImage: "/media/og/cosmetic-og.jpg",
+      backgroundImage: "/PASTE_ACTUAL_PUBLIC_URL",
+      previewImage: "/PASTE_ACTUAL_PUBLIC_URL",
+      ogImage: "/PASTE_ACTUAL_PUBLIC_URL",
+      cosmeticProductEditorial: "/PASTE_ACTUAL_PUBLIC_URL",
+      cosmeticTextureRitual: "/PASTE_ACTUAL_PUBLIC_URL",
+      cosmeticCleanPromise: "/PASTE_ACTUAL_PUBLIC_URL",
     },
     seo: {
       title: "VAVAW Cosmetic - Premium Beauty Line",
@@ -103,9 +109,9 @@ export const businessEntries: BusinessEntry[] = [
       accent: "#38bdf8",
     },
     media: {
-      backgroundImage: "/media/hero/beauty-hero.jpg",
-      previewImage: "/media/preview/beauty-preview.jpg",
-      ogImage: "/media/og/beauty-og.jpg",
+      backgroundImage: "/PASTE_ACTUAL_PUBLIC_URL",
+      previewImage: "/PASTE_ACTUAL_PUBLIC_URL",
+      ogImage: "/PASTE_ACTUAL_PUBLIC_URL",
     },
     seo: {
       title: "VAVAW Beauty & Co",
@@ -137,9 +143,9 @@ export const businessEntries: BusinessEntry[] = [
       accent: "#fbbf24",
     },
     media: {
-      backgroundImage: "/media/hero/franchise-hero.jpg",
-      previewImage: "/media/preview/franchise-preview.jpg",
-      ogImage: "/media/og/franchise-og.jpg",
+      backgroundImage: "/PASTE_ACTUAL_PUBLIC_URL",
+      previewImage: "/PASTE_ACTUAL_PUBLIC_URL",
+      ogImage: "/PASTE_ACTUAL_PUBLIC_URL",
     },
     seo: {
       title: "VAVAW Franchise",
