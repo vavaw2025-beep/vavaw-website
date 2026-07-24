@@ -511,7 +511,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                         if (transitionState.active) return;
                         setActiveIndex(slide.realIndex);
                         setAutoplay(false);
-                        handleRouteTransition(slide.redirectPath, slide.title);
+                        setTimeout(() => setAutoplay(true), 7000);
                       }}
                       className={`relative flex-shrink-0 cursor-pointer origin-bottom ${transitionState.active && slide.realIndex !== activeIndex ? 'pointer-events-none opacity-50' : ''}`}
                       style={{ 
