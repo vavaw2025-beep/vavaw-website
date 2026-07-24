@@ -179,6 +179,16 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
   const resolvedImagesCount = slides.filter(s => isValidHeroImageUrl(s.backgroundImageUrl) || isValidHeroImageUrl(s.previewImageUrl)).length;
   const hasPlaceholder = slides.some(s => (s.backgroundImageUrl?.includes('PASTE_')) || (s.previewImageUrl?.includes('PASTE_')));
 
+  if (showDebug) {
+    console.log("[brand hero render urls]", {
+      activeTitle: currentSlide.title,
+      activeBackgroundValid: Boolean(activeBackgroundUrl),
+      activeBackgroundRawType: typeof currentSlide.backgroundImageUrl,
+      previewCount: previewSlides.length,
+      previewValidCount: previewSlides.filter(s => isValidHeroImageUrl(s.previewImageUrl) || isValidHeroImageUrl(s.backgroundImageUrl)).length,
+    });
+  }
+
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-[#050505]">
       {showDebug && (

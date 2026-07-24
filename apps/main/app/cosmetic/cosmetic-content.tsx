@@ -8,6 +8,15 @@ import { ChevronRight, ArrowLeft } from 'lucide-react';
 import type { BusinessEntry } from '@vavaw/brand-config';
 import { CosmeticCtaTracker } from './cosmetic-tracker';
 
+function isValidHeroImageUrl(value?: string | null): value is string {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (trimmed === '-') return false;
+  if (trimmed.includes('PASTE_')) return false;
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+}
+
 interface CosmeticContentProps {
   entry: BusinessEntry;
 }
@@ -35,14 +44,14 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-16 px-6">
         {/* Background Image / Fallback */}
         <div className="absolute inset-0 z-0">
-          {imageErrors[entry.media.backgroundImage] ? (
+          {imageErrors[entry.media.backgroundImage] || !isValidHeroImageUrl(entry.media.backgroundImage) ? (
             <div className="w-full h-full bg-gradient-to-b from-[#F8F9FC] to-[#EEF1F6] flex items-center justify-center">
               <span className="text-xs uppercase tracking-[0.3em] font-medium text-[#6B7280]">Cosmetic Hero Visual</span>
             </div>
           ) : (
             <div className="relative w-full h-full opacity-40">
               <Image 
-                src={entry.media.backgroundImage}
+                src={entry.media.backgroundImage.trim()}
                 alt="Cosmetic Background"
                 fill
                 priority
@@ -168,9 +177,9 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
               transition={{ duration: 0.8 }}
               className="relative aspect-[4/5] w-full bg-white border border-[#E1E6EF] overflow-hidden"
             >
-              {entry.media.cosmeticCleanPromise && !imageErrors[entry.media.cosmeticCleanPromise] ? (
+              {isValidHeroImageUrl(entry.media.cosmeticCleanPromise) && !imageErrors[entry.media.cosmeticCleanPromise] ? (
                 <Image
-                  src={entry.media.cosmeticCleanPromise}
+                  src={entry.media.cosmeticCleanPromise.trim()}
                   alt="Clean Beauty Promise"
                   fill
                   className="object-cover"
@@ -206,9 +215,9 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
               transition={{ duration: 0.8, delay: i * 0.15, ease: "easeOut" }}
               className="aspect-[3/4] overflow-hidden relative bg-[#F8F9FC] border border-[#E1E6EF] group"
             >
-              {item.image && !imageErrors[item.image] ? (
+              {isValidHeroImageUrl(item.image) && !imageErrors[item.image] ? (
                 <Image
-                  src={item.image}
+                  src={item.image.trim()}
                   alt={item.label}
                   fill
                   className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"

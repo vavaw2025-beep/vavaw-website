@@ -7,6 +7,15 @@ import { ArrowRight } from 'lucide-react';
 import { getSortedBusinessEntries } from '@vavaw/brand-config';
 import { useState } from 'react';
 
+function isValidHeroImageUrl(value?: string | null): value is string {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (trimmed === '-') return false;
+  if (trimmed.includes('PASTE_')) return false;
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+}
+
 export function BusinessEcosystem() {
   const entries = getSortedBusinessEntries();
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
@@ -48,7 +57,7 @@ export function BusinessEcosystem() {
               >
                 {/* Media Placeholder / Image */}
                 <Link href={entry.redirectPath} prefetch={false} className="block relative w-full aspect-[4/5] overflow-hidden bg-slate-50 mb-8">
-                  {!entry.media.previewImage || entry.media.previewImage.trim() === '' || hasError ? (
+                  {!isValidHeroImageUrl(entry.media.previewImage) || hasError ? (
                     <div className="absolute inset-0 bg-gradient-to-br from-[#f4f1eb] to-[#e5e5e5] flex items-center justify-center">
                       <span className="text-xs uppercase tracking-[0.2em] font-medium text-[#a3a3a3] group-hover:text-[#737373] transition-colors">
                         {entry.category} Visual
@@ -56,7 +65,7 @@ export function BusinessEcosystem() {
                     </div>
                   ) : (
                     <Image
-                      src={entry.media.previewImage}
+                      src={entry.media.previewImage.trim()}
                       alt={entry.name}
                       fill
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
