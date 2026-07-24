@@ -265,13 +265,13 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
       )}
 
       {/* Background Image */}
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={false} mode="sync">
         <motion.div
           key={`bg-${activeIndex}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
+          transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
           className="absolute inset-0 z-10"
           data-has-bg-url={!!activeBackgroundUrl}
         >
@@ -296,11 +296,14 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             style={{ background: getBrandAccentTokens(currentSlide).background }}
           />
           {/* Left text-safe scrim — deliberate reading zone on left, atmosphere on right */}
-          <div className="absolute inset-0 z-30 bg-gradient-to-r from-black/90 via-black/50 to-transparent md:from-black/88 md:via-black/58" />
+          <div 
+            className="absolute inset-0 z-30 pointer-events-none" 
+            style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.62) 32%, rgba(0,0,0,0.22) 62%, rgba(0,0,0,0.08) 100%)' }}
+          />
           {/* Vertical vignette — top subtle, bottom anchoring */}
-          <div className="absolute inset-0 z-30 bg-gradient-to-t from-black/60 via-transparent to-black/30 md:from-black/55 md:to-black/20" />
+          <div className="absolute inset-0 z-30 bg-gradient-to-t from-black/60 via-transparent to-black/30 md:from-black/55 md:to-black/20 pointer-events-none" />
           {/* Mobile: stronger base for readability since text flows downwards */}
-          <div className="absolute inset-0 z-30 bg-gradient-to-b from-black/60 via-black/20 to-[#050505]/95 md:hidden" />
+          <div className="absolute inset-0 z-30 bg-gradient-to-b from-black/60 via-black/20 to-[#050505]/95 md:hidden pointer-events-none" />
         </motion.div>
       </AnimatePresence>
 
@@ -422,8 +425,13 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
           >
-            <div className="relative flex gap-5 lg:gap-6 items-end justify-start pt-8 lg:pt-0">
-              <AnimatePresence initial={false}>
+            {/* Faint radial atmosphere behind cards */}
+            <div 
+              className="absolute inset-0 z-0 pointer-events-none transition-colors duration-700" 
+              style={{ background: getBrandAccentTokens(currentSlide).background }} 
+            />
+            <div className="relative flex gap-5 lg:gap-6 items-end justify-start pt-8 lg:pt-0 z-10">
+              <AnimatePresence initial={false} mode="sync">
                 {previewSlides.map((slide, index) => {
                   // Stable sizes — no window.innerWidth read on first render
                   // Primary: 215×330, Secondary: 172×278
@@ -467,14 +475,14 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                       aria-label={`Preview ${slide.title}`}
                     >
                       <div
-                        className="relative w-full h-full bg-[#18181b] overflow-hidden transition-all duration-200 hover:-translate-y-[2px] card-hover-effect"
+                        className="relative w-full h-full bg-[#18181b] overflow-hidden transition-all duration-200 hover:-translate-y-[2px] card-hover-effect group"
                         data-has-preview-url={!!previewUrl}
                       >
                         {previewUrl ? (
                           <img
                             src={previewUrl}
                             alt={slide.previewAlt || slide.title || "VAVAW preview"}
-                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-90 transition-opacity duration-200"
+                            className="absolute inset-0 z-10 h-full w-full object-cover opacity-[0.82] transition-opacity duration-200 group-hover:opacity-100"
                             onError={() => handleImageError(previewUrl)}
                           />
                         ) : (
