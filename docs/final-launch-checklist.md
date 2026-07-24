@@ -36,6 +36,8 @@
 - [x] Phase 56F: Fix Public Main Hero Media Rendering With Actual Production Schema completed.
 - [x] Phase 56G: Trace and Fix BrandHero Image Prop Rendering completed.
 - [x] Phase 56H: Fix Missing Supabase Image Requests in BrandHero completed.
+- [x] Phase 56J: Remove runtime placeholder image source (`PASTE_ACTUAL_PUBLIC_URL`) from `packages/brand-config/src/index.ts` completed.
+- [x] Phase 56K: Verify CMS source environment for Main hero images completed. (`CMS_DATA_SOURCE=supabase` confirmed required; debug badge updated to show static vs supabase status.)
 
 ### Security & Authentication
 - [ ] Production Admin is configured with `ADMIN_AUTH_MODE=supabase` and `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.

@@ -113,7 +113,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://[YOUR_PROJECT_ID].supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=[YOUR_ANON_KEY]
 ```
 
-## 6. Schema Information (Phase 56F, 56G, & 56H)
+## 6. Schema Information (Phase 56F, 56G, 56H, & 56K)
 
 When troubleshooting missing hero images on the public Main homepage:
 - The actual hero media columns in Supabase are `background_media_id` and `preview_media_id` (not `background_media_asset_id`).
@@ -122,3 +122,5 @@ When troubleshooting missing hero images on the public Main homepage:
 - The `preview-image` type is correctly supported.
 - The `load-public-cms.ts` normalizes the output into `PublicHeroSlide` and explicitly outputs `backgroundImageUrl` and `previewImageUrl` for the `BrandHero` component.
 - The `BrandHero` component uses standard HTML `<img />` tags for `backgroundImageUrl` and `previewImageUrl` instead of `next/image` to ensure that public Supabase Storage image URLs are requested reliably without Next.js middleware interference.
+
+> **Phase 56K — CMS Data Source Requirement**: `CMS_DATA_SOURCE=supabase` is required for public homepage hero images to render. If `CMS_DATA_SOURCE=static`, only the brand-config static fallback is used and **no Admin-uploaded images will appear**. Vercel `vavaw-main` production must have `CMS_DATA_SOURCE=supabase`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_ANON_KEY` configured in Environment Variables. Local development uses `apps/main/.env.local` with `CMS_DATA_SOURCE=supabase`. Phase 56K also improved the debug badge to clearly display `static` vs `supabase` status.

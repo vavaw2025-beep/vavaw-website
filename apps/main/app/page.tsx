@@ -62,15 +62,20 @@ export default async function HomePage() {
   const isPreview = (await draftMode()).isEnabled;
   const cms = await loadPublicHomeCms(isPreview);
 
+  // Server-side CMS diagnostic — safe, never logs actual key values
+  console.info("[main cms source]", {
+    source: cms.source,
+    hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+    hasAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+    error: cms.error ?? null,
+  });
   if (process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true') {
-    console.info("[main cms hero]", {
-      source: cms.source,
+    console.info("[main cms slides]", {
       slideCount: cms.heroSlides.length,
       slides: cms.heroSlides.map((slide) => ({
         title: slide.title,
-        hasBackgroundUrl: Boolean(slide.backgroundImageUrl),
-        hasPreviewUrl: Boolean(slide.previewImageUrl),
-        keys: Object.keys(slide)
+        bgValid: slide.backgroundImageUrl ? !slide.backgroundImageUrl.includes('PASTE_') && slide.backgroundImageUrl !== '' : false,
+        previewValid: slide.previewImageUrl ? !slide.previewImageUrl.includes('PASTE_') && slide.previewImageUrl !== '' : false,
       }))
     });
   }

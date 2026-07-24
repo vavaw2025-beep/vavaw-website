@@ -2,10 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { PublicHeroSlide } from '@/lib/load-public-cms';
+
+function isValidHeroImageUrl(value?: string | null): value is string {
+  if (!value) return false;
+  if (value.includes('PASTE_')) return false;
+  if (value === '-') return false;
+  if (value === '') return false;
+  try {
+    const url = new URL(value, 'https://placeholder.invalid');
+    // Accept absolute http/https URLs or relative paths starting with /
+    return url.protocol === 'http:' || url.protocol === 'https:' || value.startsWith('/');
+  } catch {
+    return false;
+  }
+}
 
 export interface BrandHeroProps {
   slides: PublicHeroSlide[];
@@ -80,41 +93,58 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
   };
 
   const showDebug = process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
-  const resolvedImagesCount = slides.filter(s => s.backgroundImageUrl || s.previewImageUrl).length;
+  const resolvedImagesCount = slides.filter(s => isValidHeroImageUrl(s.backgroundImageUrl) || isValidHeroImageUrl(s.previewImageUrl)).length;
+  const hasPlaceholder = slides.some(s => (s.backgroundImageUrl?.includes('PASTE_')) || (s.previewImageUrl?.includes('PASTE_')));
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-[#050505]">
-      {showDebug && dataSource && (
+      {showDebug && (
         <div className="absolute top-3 right-3 z-50 bg-black/80 backdrop-blur-md p-4 rounded-md text-[10px] font-mono border border-gray-700 text-gray-300 shadow-2xl max-w-xs w-full">
           <div className="flex items-center justify-between mb-2">
             <span className="font-bold text-white uppercase tracking-wider">CMS Debug</span>
             <span className={`px-2 py-0.5 rounded-full font-bold ${
-              dataSource === 'supabase' ? 'bg-emerald-900 text-emerald-300' : 'bg-blue-900 text-blue-300'
+              dataSource === 'supabase' ? 'bg-emerald-900 text-emerald-300' : 'bg-yellow-900 text-yellow-300'
             }`}>
-              {dataSource}
+              {dataSource ?? 'unknown'}
             </span>
           </div>
-          <div className="mb-2 space-y-1">
-            <div className="flex justify-between">
-              <span>Total Slides:</span>
-              <span className="text-white font-medium">{slides.length}</span>
+          {dataSource === 'static' ? (
+            <div className="text-yellow-400 text-[9px] leading-relaxed border border-yellow-800 bg-yellow-900/30 rounded p-2">
+              ⚠ Static mode active — Admin-uploaded images will NOT render.<br />
+              Set <code className="text-yellow-300">CMS_DATA_SOURCE=supabase</code> to enable CMS media.
             </div>
-            <div className="flex justify-between">
-              <span>Images Resolved:</span>
-              <span className="text-white font-medium">{resolvedImagesCount}/{slides.length}</span>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 pt-2 mt-2 space-y-2">
-            {slides.map((s, i) => (
-              <div key={i} className="flex flex-col gap-0.5 pb-2 border-b border-gray-800 last:border-0 last:pb-0">
-                <span className="text-white font-medium truncate">{s.title}</span>
-                <div className="flex justify-between text-gray-400">
-                  <span>bg: <span className={s.backgroundImageUrl ? "text-emerald-400" : "text-red-400"}>{s.backgroundImageUrl ? 'yes' : 'no'}</span></span>
-                  <span>prev: <span className={s.previewImageUrl ? "text-emerald-400" : "text-red-400"}>{s.previewImageUrl ? 'yes' : 'no'}</span></span>
+          ) : (
+            <>
+              <div className="mb-2 space-y-1">
+                <div className="flex justify-between">
+                  <span>Total Slides:</span>
+                  <span className="text-white font-medium">{slides.length}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span>Images Resolved:</span>
+                  <span className={`font-medium ${
+                    resolvedImagesCount === slides.length ? 'text-emerald-400' : 'text-orange-400'
+                  }`}>{resolvedImagesCount}/{slides.length}</span>
+                </div>
+                {hasPlaceholder && (
+                  <div className="text-yellow-400 text-[9px] border border-yellow-800 bg-yellow-900/30 rounded p-1">
+                    ⚠ Placeholder URL detected in data
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
+              <div className="border-t border-gray-700 pt-2 mt-2 space-y-2">
+                {slides.map((s, i) => (
+                  <div key={i} className="flex flex-col gap-0.5 pb-2 border-b border-gray-800 last:border-0 last:pb-0">
+                    <span className="text-white font-medium truncate">{s.title}</span>
+                    <div className="flex justify-between text-gray-400">
+                      <span>bg: <span className={isValidHeroImageUrl(s.backgroundImageUrl) ? "text-emerald-400" : "text-red-400"}>{isValidHeroImageUrl(s.backgroundImageUrl) ? 'yes' : 'no'}</span></span>
+                      <span>prev: <span className={isValidHeroImageUrl(s.previewImageUrl) ? "text-emerald-400" : "text-red-400"}>{isValidHeroImageUrl(s.previewImageUrl) ? 'yes' : 'no'}</span></span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -127,9 +157,9 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
           className="absolute inset-0"
-          data-has-bg-url={Boolean(currentSlide.backgroundImageUrl)}
+          data-has-bg-url={isValidHeroImageUrl(currentSlide.backgroundImageUrl)}
         >
-          {!currentSlide.backgroundImageUrl || imageError[currentSlide.backgroundImageUrl] ? (
+          {!isValidHeroImageUrl(currentSlide.backgroundImageUrl) || imageError[currentSlide.backgroundImageUrl] ? (
             <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(currentSlide, true)} opacity-20`} />
           ) : (
             <img
@@ -324,9 +354,9 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                     >
                       <motion.div
                         className="relative w-full h-full bg-[#18181b] rounded-sm overflow-hidden border border-[#27272a] shadow-2xl transition-all duration-500 hover:border-[#52525b] group-hover:-translate-y-2"
-                        data-has-preview-url={Boolean(slide.previewImageUrl)}
+                        data-has-preview-url={isValidHeroImageUrl(slide.previewImageUrl)}
                       >
-                        {!slide.previewImageUrl || imageError[slide.previewImageUrl] ? (
+                        {!isValidHeroImageUrl(slide.previewImageUrl) || imageError[slide.previewImageUrl] ? (
                           <div className={`absolute inset-0 z-0 bg-gradient-to-br ${getBrandGradient(slide)} opacity-80`} />
                         ) : (
                           <img
