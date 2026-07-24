@@ -3,6 +3,9 @@
 ## Overview
 This document outlines the steps required to transition the VAVAW ecosystem from Vercel preview URLs to custom production domains.
 
+## Pre-flight Checks
+- [x] Phase 56N: Verified CMS dynamic hero on vavaw-main.vercel.app before DNS switch.
+
 ## 1. Vercel Project Mapping & Custom Domains
 
 Map the following Vercel projects to their respective production domains:

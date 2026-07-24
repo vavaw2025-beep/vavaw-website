@@ -31,3 +31,5 @@ If `CMS_DATA_SOURCE=static`, Admin hero changes will not appear on public homepa
 - Hero images render only when the URL passes strict validation, and missing/invalid media gracefully uses a gradient fallback.
 
 > **Phase 56K Note**: `CMS_DATA_SOURCE=static` does **not** render Admin-uploaded hero images — it uses the brand-config static fallback with no images. `CMS_DATA_SOURCE=supabase` is required for the public homepage to render images uploaded via Admin Hero CMS. Vercel `vavaw-main` production must have `CMS_DATA_SOURCE=supabase`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_ANON_KEY` set in Environment Variables. Local dev uses `apps/main/.env.local` with `CMS_DATA_SOURCE=supabase`.
+>
+> **Phase 56N Note**: Verified Vercel preview environments correctly resolve Supabase media and fallback safely.
