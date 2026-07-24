@@ -1,3 +1,4 @@
+// build: phase-56H-v2
 import type { Metadata } from 'next';
 import { BrandHero } from '@/components/brand-hero';
 import { SiteFooter } from '@vavaw/ui';
