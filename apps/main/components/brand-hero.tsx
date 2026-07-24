@@ -154,8 +154,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.1] tracking-tight"
-                style={{ textShadow: '0 4px 24px rgba(0,0,0,0.3)' }}
+                className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.1] tracking-tight drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]"
               >
                 {currentSlide.title}
               </motion.h1>
@@ -169,7 +168,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
-                className="text-xl md:text-2xl text-white/90 font-light leading-relaxed max-w-2xl"
+                className="text-xl md:text-2xl text-white/90 font-light leading-relaxed max-w-2xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
               >
                 {currentSlide.subtitle}
               </motion.p>
@@ -184,7 +183,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
-                  className="text-base md:text-lg text-[#a3a3a3] font-light leading-relaxed max-w-xl hidden md:block"
+                  className="text-base md:text-lg text-[#e5e5e5] font-light leading-relaxed max-w-xl hidden md:block drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
                 >
                   {currentSlide.description}
                 </motion.p>
@@ -198,7 +197,7 @@ export function BrandHero({ slides, dataSource }: BrandHeroProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
               aria-label={`Go to ${currentSlide.title}`}
-              className="mt-6 h-[48px] w-fit px-12 bg-white/95 backdrop-blur-sm text-black font-medium text-[13px] tracking-[0.15em] uppercase hover:bg-white transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center"
+              className="mt-8 h-[54px] w-fit px-12 bg-white/95 backdrop-blur-sm text-black font-medium text-[13px] tracking-[0.2em] uppercase hover:bg-white transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center"
             >
               {currentSlide.ctaLabel}
             </motion.button>

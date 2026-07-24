@@ -24,6 +24,11 @@
 - [x] Admin operating workflows (media, leads, audit logs) verified.
 - [x] `docs/admin-operating-guide.md` created.
 
+### Main & Cosmetic Final Content (Phase 54)
+- [x] Main homepage layout and copy polished.
+- [x] Cosmetic content finalized and optimized.
+- [x] `docs/main-cosmetic-final-content-plan.md` created.
+
 ### Security & Authentication
 - [ ] Production Admin is configured with `ADMIN_AUTH_MODE=supabase` and `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.
 - [ ] `ADMIN_AUTH_MODE=mock` is completely disabled in production environment variables.

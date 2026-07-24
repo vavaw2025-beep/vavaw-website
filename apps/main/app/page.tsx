@@ -55,6 +55,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+import { BusinessEcosystem } from '@/components/business-ecosystem';
+
 export default async function HomePage() {
   const isPreview = (await draftMode()).isEnabled;
   const cms = await loadPublicHomeCms(isPreview);
@@ -62,6 +64,7 @@ export default async function HomePage() {
   return (
     <main>
       <BrandHero slides={cms.heroSlides} dataSource={cms.source} />
+      <BusinessEcosystem />
       <SiteFooter variant="main" />
     </main>
   );
