@@ -318,9 +318,9 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
         <motion.div
           key={`bg-${activeIndex}`}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1, scale: transitionState.active ? 1.025 : 1 }}
+          animate={{ opacity: 1, scale: transitionState.active ? 1.01 : 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+          transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
           className="absolute inset-0 z-10 origin-center"
           data-has-bg-url={!!activeBackgroundUrl}
         >
@@ -365,12 +365,12 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             <AnimatePresence initial={false} mode="sync">
               <motion.div
                 key={`copy-${activeIndex}`}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 6 }}
                 animate={{ 
                   opacity: transitionState.active ? 0 : 1, 
-                  y: transitionState.active ? -10 : 0 
+                  y: transitionState.active ? -6 : 0 
                 }}
-                exit={{ opacity: 0, y: -8 }}
+                exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.38, ease: [0.25, 1, 0.5, 1] }}
                 className="flex flex-col justify-center space-y-6 lg:space-y-8"
               >
@@ -510,8 +510,9 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                       }}
                       exit={{ opacity: 0, x: -12 }}
                       transition={{
-                        duration: 0.45,
-                        ease: [0.25, 1, 0.5, 1]
+                        type: 'tween',
+                        duration: 0.35,
+                        ease: 'easeOut'
                       }}
                       onClick={() => {
                         if (transitionState.active) return;
@@ -586,13 +587,11 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
       <style jsx global>{`
         .card-hover-effect {
           border: 1px solid var(--card-border);
-          box-shadow: 0 24px 70px rgba(0,0,0,0.45), 0 0 0 1px var(--card-border);
           transform: translateY(0);
           transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1);
         }
         .card-hover-effect:hover {
           border: 1px solid var(--card-border-hover);
-          box-shadow: 0 28px 80px rgba(0,0,0,0.55), 0 0 28px var(--card-glow);
           transform: translateY(-2px);
         }
         .hide-scrollbar::-webkit-scrollbar {
