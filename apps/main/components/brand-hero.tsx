@@ -103,7 +103,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-[#050505]">
       {showDebug && (
-        <div className="absolute top-3 right-3 z-50 bg-black/80 backdrop-blur-md p-4 rounded-md text-[10px] font-mono border border-gray-700 text-gray-300 shadow-2xl max-w-xs w-full">
+        <div className="absolute top-20 md:top-3 right-3 z-50 bg-black/80 backdrop-blur-md p-4 rounded-md text-[10px] font-mono border border-gray-700 text-gray-300 shadow-2xl max-w-[280px] md:max-w-xs w-full opacity-50 hover:opacity-100 transition-opacity">
           <div className="flex items-center justify-between mb-2">
             <span className="font-bold text-white uppercase tracking-wider">CMS Debug</span>
             <span className={`px-2 py-0.5 rounded-full font-bold ${
@@ -197,7 +197,8 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
             />
           )}
           {/* Cinematic Dark Overlay */}
-          <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/90 via-black/50 to-black/30 lg:to-transparent opacity-65" />
+          <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+          <div className="absolute inset-0 z-20 bg-black/25" />
           <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent lg:hidden" />
         </motion.div>
       </AnimatePresence>
@@ -235,7 +236,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white leading-[1.1] tracking-tight drop-shadow-2xl"
+                className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-[#F8F7F2] leading-[1.1] tracking-tight drop-shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
               >
                 {currentSlide.title}
               </motion.h1>
@@ -249,7 +250,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
-                className="text-lg md:text-2xl text-[#f4f4f5] font-light leading-relaxed max-w-2xl drop-shadow-lg"
+                className="text-lg md:text-2xl text-white/90 font-light leading-relaxed max-w-2xl drop-shadow-lg"
               >
                 {currentSlide.subtitle}
               </motion.p>
@@ -264,7 +265,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
-                  className="text-sm md:text-base text-[#a1a1aa] font-light leading-relaxed max-w-xl drop-shadow-md hidden sm:block"
+                  className="text-sm md:text-base text-white/65 font-light leading-relaxed max-w-xl drop-shadow-md hidden sm:block"
                 >
                   {currentSlide.description}
                 </motion.p>
@@ -282,7 +283,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
               aria-label={currentSlide.ctaLabel}
-              className="mt-6 md:mt-10 h-[50px] md:h-[56px] w-fit px-8 md:px-12 bg-white text-black font-medium text-[11px] md:text-[13px] tracking-[0.2em] uppercase hover:bg-[#e5e5e5] transition-all duration-300 shadow-xl flex items-center justify-center"
+              className="mt-6 md:mt-10 h-[50px] md:h-[56px] w-fit px-8 md:px-12 bg-[#F8F7F2] text-black font-medium text-[11px] md:text-[13px] tracking-[0.2em] uppercase hover:bg-white hover:scale-[1.02] transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.15)] flex items-center justify-center border border-transparent hover:border-white/50"
             >
               {currentSlide.ctaLabel}
             </motion.button>
@@ -380,7 +381,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                       aria-label={`Preview ${slide.title}`}
                     >
                       <motion.div
-                        className="relative w-full h-full bg-[#18181b] rounded-sm overflow-hidden border border-[#27272a] shadow-2xl transition-all duration-500 hover:border-[#52525b] group-hover:-translate-y-2"
+                        className="relative w-full h-full bg-[#18181b] rounded-sm overflow-hidden border border-white/10 shadow-2xl transition-all duration-500 hover:border-white/30 group-hover:-translate-y-2"
                         data-has-preview-url={isValidHeroImageUrl(slide.previewImageUrl)}
                       >
                         {!isValidHeroImageUrl(slide.previewImageUrl) || imageError[slide.previewImageUrl] ? (
@@ -393,7 +394,7 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
                             onError={() => handleImageError(slide.previewImageUrl as string)}
                           />
                         )}
-                        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/70 via-black/25 to-transparent opacity-90" />
+                        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5 z-30">
                           <h3 className="text-[11px] lg:text-xs font-medium text-white tracking-[0.1em] uppercase drop-shadow-md">
                             {slide.title}
