@@ -45,12 +45,56 @@ Vercel automatically provisions Let's Encrypt SSL certificates for custom domain
 
 ## 5. Environment Variables Update
 
-After domain launch, update environment variables across the platform:
+After domain launch, update environment variables across the platform in Vercel:
 
-- [ ] Update CORS or allowed origins in Supabase Authentication Settings (Site URL and Redirect URLs) to include the new custom domains.
-- [ ] Verify `NEXT_PUBLIC_SITE_URL` (if used) is updated in Vercel for all projects.
+### For `vavaw-main`:
+- [ ] `NEXT_PUBLIC_SITE_URL=https://vavaw.vn`
+- [ ] `NEXT_PUBLIC_BEAUTY_URL=https://beauty.vavaw.vn`
+- [ ] `NEXT_PUBLIC_FRANCHISE_URL=https://franchise.vavaw.vn`
+- [ ] `NEXT_PUBLIC_ADMIN_URL=https://admin.vavaw.vn`
+- [ ] `NEXT_PUBLIC_SUPABASE_URL`
+- [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [ ] `CMS_DATA_SOURCE`
+- [ ] `REVALIDATION_SECRET` (if used)
 
-## 6. Post-Domain Smoke Tests
+### For `vavaw-beauty`:
+- [ ] `NEXT_PUBLIC_SITE_URL=https://beauty.vavaw.vn`
+- [ ] `NEXT_PUBLIC_SUPABASE_URL`
+- [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [ ] `CMS_DATA_SOURCE`
+- [ ] `REVALIDATION_SECRET` (if used)
+
+### For `vavaw-franchise`:
+- [ ] `NEXT_PUBLIC_SITE_URL=https://franchise.vavaw.vn`
+- [ ] `NEXT_PUBLIC_SUPABASE_URL`
+- [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [ ] `CMS_DATA_SOURCE`
+- [ ] `REVALIDATION_SECRET` (if used)
+
+### For `vavaw-admin`:
+- [ ] `NEXT_PUBLIC_ADMIN_URL=https://admin.vavaw.vn`
+- [ ] `ADMIN_AUTH_MODE=supabase`
+- [ ] `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`
+- [ ] `NEXT_PUBLIC_SUPABASE_URL`
+- [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [ ] `REVALIDATION_SECRET` (if used)
+- [ ] `MAIN_REVALIDATE_URL=https://vavaw.vn/api/revalidate`
+- [ ] `BEAUTY_REVALIDATE_URL=https://beauty.vavaw.vn/api/revalidate`
+- [ ] `FRANCHISE_REVALIDATE_URL=https://franchise.vavaw.vn/api/revalidate`
+
+**Important rules:**
+- Do not expose `SUPABASE_SERVICE_ROLE_KEY` to public apps.
+- Do not print `env` values in logs.
+
+## 6. Supabase Auth Domain Configuration
+
+Verify Supabase Authentication settings manually and configure the required URLs:
+
+- [ ] **Site URL:** `https://admin.vavaw.vn`
+- [ ] **Redirect URLs:** Add `https://admin.vavaw.vn/**`. (Keep `https://vavaw-admin.vercel.app/**` only if keeping preview login enabled).
+- [ ] Do not remove working preview URLs until the production domain is fully verified.
+
+## 7. Post-Domain Smoke Tests
 
 Once DNS is propagated and SSL is active, perform the following checks on the live domains:
 
@@ -59,7 +103,7 @@ Once DNS is propagated and SSL is active, perform the following checks on the li
 - [ ] **Franchise (`franchise.vavaw.vn`)**: Verify professional UI loads properly, submit a franchise application.
 - [ ] **Admin (`admin.vavaw.vn`)**: Log in with owner credentials via Supabase Auth, verify lead forms successfully created entries, check that the audit log recorded the actions. (See `docs/admin-operating-guide.md` for full operating procedures).
 
-## 7. Rollback Steps
+## 8. Rollback Steps
 
 In the event of a critical failure during domain launch:
 

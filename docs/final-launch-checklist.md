@@ -8,11 +8,13 @@
 - [x] Brand tokens applied without modifying backend logic.
 - [x] Phase 50 — VAVAW Brand System Foundation completed (SiteFooter & docs).
 
-### Domain Launch Preparation (Phase 49)
+### Domain Launch Preparation & Execution (Phase 49 & Phase 52)
 - [x] Visual QA and responsive QA completed.
 - [x] Simple favicons added.
 - [x] Production core flow smoke test passed.
-- [x] `docs/domain-launch-checklist.md` created.
+- [x] `docs/domain-launch-checklist.md` created and updated with environment variables.
+- [x] `docs/post-domain-smoke-test.md` created.
+- [x] Supabase Auth callback configuration verified in docs.
 
 ### Admin Feature Map (Phase 50A)
 - [x] Admin Feature Map documentation page added.
