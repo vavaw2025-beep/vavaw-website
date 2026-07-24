@@ -40,6 +40,10 @@
 - [x] Phase 56H: Fix Missing Supabase Image Requests in BrandHero completed.
 - [x] Phase 56J: Remove runtime placeholder image source (`PASTE_ACTUAL_PUBLIC_URL`) from `packages/brand-config/src/index.ts` completed.
 - [x] Phase 56K: Verify CMS source environment for Main hero images completed. (`CMS_DATA_SOURCE=supabase` confirmed required; debug badge updated to show static vs supabase status.)
+- [x] Phase 56O: Main Hero Visual Contrast Polish — reduced overlay darkness, refined typography, CTA improvements.
+- [x] Phase 56P: Simplify Main Hero Composition — blur/desaturate background, gradient text-safe zone, max 2 preview cards, hide cards on mobile, calm animations.
+- [x] Phase 56Q: Final Main Hero Production Cleanup — `NEXT_PUBLIC_SHOW_CMS_DEBUG` confirmed temporary; documented as dev-only; must be `false` or absent before production launch. Vercel Analytics 404 (`/_vercel/insights/script.js`) is non-blocking: only loads in production when Vercel Analytics is enabled on project settings.
+
 
 ### Security & Authentication
 - [ ] Production Admin is configured with `ADMIN_AUTH_MODE=supabase` and `NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase`.
