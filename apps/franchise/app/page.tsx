@@ -8,6 +8,16 @@ import { FranchiseLeadForm } from '@/components/franchise-lead-form';
 import { ContentBlockRenderer } from '@/components/content-block-renderer';
 import { FranchiseCtaButton } from '@/components/analytics-trackers';
 import { SiteFooter } from '@vavaw/ui';
+import { loadPublicHeroMedia } from '@/lib/load-public-hero-media';
+
+function isValidHeroImageUrl(value?: string | null): value is string {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (trimmed === '-') return false;
+  if (trimmed.includes('PASTE_')) return false;
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+}
 
 export const revalidate = 60;
 
@@ -58,6 +68,8 @@ export default async function FranchiseLandingPage() {
     isPreview
   });
 
+  const heroMedia = await loadPublicHeroMedia('Franchise');
+
   if (blocks.length > 0) {
     return (
       <>
@@ -82,7 +94,7 @@ export default async function FranchiseLandingPage() {
       <div className="min-h-screen bg-[#FAFAFA] text-[#111111] font-sans selection:bg-[#D97706] selection:text-[#FFFFFF]">
         {/* Navigation */}
         <nav className="absolute top-0 w-full z-50 p-6 md:px-12 flex justify-between items-center bg-transparent text-white">
-          <Link href="/" className="text-sm font-semibold tracking-[0.1em] uppercase hover:opacity-80 transition-opacity">
+          <Link href={process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'} className="text-sm font-semibold tracking-[0.1em] uppercase hover:opacity-80 transition-opacity">
             VAVAW Ecosystem
           </Link>
           <Link 
@@ -95,10 +107,17 @@ export default async function FranchiseLandingPage() {
 
         {/* 1. Hero Section */}
         <section className="relative h-[90vh] min-h-[700px] flex items-center bg-[#111111] text-white">
-          <div 
-            className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 mix-blend-overlay"
-            style={{ backgroundImage: `url(${franchiseEntry.media.backgroundImage})` }}
-          />
+          {isValidHeroImageUrl(heroMedia?.backgroundImageUrl) ? (
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 mix-blend-overlay"
+              style={{ backgroundImage: `url(${heroMedia.backgroundImageUrl})` }}
+            />
+          ) : isValidHeroImageUrl(franchiseEntry.media.backgroundImage) ? (
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 mix-blend-overlay"
+              style={{ backgroundImage: `url(${franchiseEntry.media.backgroundImage})` }}
+            />
+          ) : null}
           <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-transparent to-transparent z-10" />
           
           <div className="relative z-20 px-6 md:px-12 w-full max-w-7xl mx-auto flex flex-col md:flex-row items-end pb-24 md:pb-32 gap-12 justify-between">

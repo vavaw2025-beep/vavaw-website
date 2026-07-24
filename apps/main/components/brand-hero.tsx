@@ -143,11 +143,17 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
 
     setTransitionState({ active: true, url, brand: title.toLowerCase() });
     
+    // Add ?from=main query param if not already present
+    let targetUrl = url;
+    if ((targetUrl.startsWith('/go/') || targetUrl.startsWith('/cosmetic')) && !targetUrl.includes('?')) {
+      targetUrl = targetUrl.includes('?') ? `${targetUrl}&from=main` : `${targetUrl}?from=main`;
+    }
+
     setTimeout(() => {
-      if (url.startsWith('/go/') || url.startsWith('/')) {
-        router.push(url);
+      if (targetUrl.startsWith('/go/') || targetUrl.startsWith('/')) {
+        router.push(targetUrl);
       } else {
-        window.location.href = url;
+        window.location.href = targetUrl;
       }
     }, delay);
   };

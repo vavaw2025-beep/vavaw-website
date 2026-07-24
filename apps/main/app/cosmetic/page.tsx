@@ -3,6 +3,7 @@ import { getBusinessBySlug } from '@vavaw/brand-config';
 import { CosmeticContent } from './cosmetic-content';
 import { notFound } from 'next/navigation';
 import { loadPublicSeo } from '@/lib/load-public-seo';
+import { loadPublicHeroMedia, PublicHeroMedia } from '@/lib/load-public-hero-media';
 
 const cosmeticEntry = getBusinessBySlug('cosmetic');
 
@@ -63,6 +64,8 @@ export default async function CosmeticPage() {
     isPreview
   });
 
+  const heroMedia = await loadPublicHeroMedia('Cosmetic');
+
   if (blocks.length > 0) {
     return (
       <>
@@ -84,7 +87,7 @@ export default async function CosmeticPage() {
           Content: static (fallback)
         </div>
       )}
-      <CosmeticContent entry={cosmeticEntry} />
+      <CosmeticContent entry={cosmeticEntry} heroMedia={heroMedia} />
       <SiteFooter variant="cosmetic" />
     </>
   );

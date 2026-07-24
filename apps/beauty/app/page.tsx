@@ -8,6 +8,16 @@ import { ContentBlockRenderer } from '@/components/content-block-renderer';
 import { BeautyCtaButton } from '@/components/analytics-trackers';
 import { LeadForm } from '@/components/lead-form';
 import { SiteFooter } from '@vavaw/ui';
+import { loadPublicHeroMedia } from '@/lib/load-public-hero-media';
+
+function isValidHeroImageUrl(value?: string | null): value is string {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (trimmed === '-') return false;
+  if (trimmed.includes('PASTE_')) return false;
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+}
 
 export const revalidate = 60;
 
@@ -58,6 +68,8 @@ export default async function BeautyLandingPage() {
     isPreview
   });
 
+  const heroMedia = await loadPublicHeroMedia('Beauty');
+
   if (blocks.length > 0) {
     return (
       <>
@@ -82,7 +94,7 @@ export default async function BeautyLandingPage() {
       <div className="min-h-screen bg-[#FDFBF7] text-[#2C2A29] font-sans selection:bg-[#EAE4D9] selection:text-[#2C2A29]">
         {/* Navigation */}
         <nav className="absolute top-0 w-full z-50 p-6 md:px-12 flex justify-between items-center bg-transparent">
-          <Link href="/" className="text-sm font-medium tracking-[0.2em] uppercase hover:opacity-70 transition-opacity">
+          <Link href={process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'} className="text-sm font-medium tracking-[0.2em] uppercase hover:opacity-70 transition-opacity">
             VAVAW Ecosystem
           </Link>
           <Link 
@@ -95,10 +107,17 @@ export default async function BeautyLandingPage() {
 
         {/* 1. Hero Section */}
         <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[#EAE4D9]">
-          <div 
-            className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-multiply"
-            style={{ backgroundImage: `url(${beautyEntry.media.backgroundImage})` }}
-          />
+          {isValidHeroImageUrl(heroMedia?.backgroundImageUrl) ? (
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-multiply"
+              style={{ backgroundImage: `url(${heroMedia.backgroundImageUrl})` }}
+            />
+          ) : isValidHeroImageUrl(beautyEntry.media.backgroundImage) ? (
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-multiply"
+              style={{ backgroundImage: `url(${beautyEntry.media.backgroundImage})` }}
+            />
+          ) : null}
           
           <div className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center">
             <span className="text-xs md:text-sm uppercase tracking-[0.3em] mb-6 block text-[#5C5855]">

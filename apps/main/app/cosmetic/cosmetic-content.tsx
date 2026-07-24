@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
 import type { BusinessEntry } from '@vavaw/brand-config';
 import { CosmeticCtaTracker } from './cosmetic-tracker';
+import type { PublicHeroMedia } from '@/lib/load-public-hero-media';
 
 function isValidHeroImageUrl(value?: string | null): value is string {
   if (!value) return false;
@@ -19,9 +20,10 @@ function isValidHeroImageUrl(value?: string | null): value is string {
 
 interface CosmeticContentProps {
   entry: BusinessEntry;
+  heroMedia?: PublicHeroMedia | null;
 }
 
-export function CosmeticContent({ entry }: CosmeticContentProps) {
+export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   const handleImageError = (path: string) => {
@@ -44,21 +46,21 @@ export function CosmeticContent({ entry }: CosmeticContentProps) {
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-16 px-6">
         {/* Background Image / Fallback */}
         <div className="absolute inset-0 z-0">
-          {imageErrors[entry.media.backgroundImage] || !isValidHeroImageUrl(entry.media.backgroundImage) ? (
+          {imageErrors[heroMedia?.backgroundImageUrl || entry.media.backgroundImage] || !isValidHeroImageUrl(heroMedia?.backgroundImageUrl || entry.media.backgroundImage) ? (
             <div className="w-full h-full bg-gradient-to-b from-[#F8F9FC] to-[#EEF1F6] flex items-center justify-center">
               <span className="text-xs uppercase tracking-[0.3em] font-medium text-[#6B7280]">Cosmetic Hero Visual</span>
             </div>
           ) : (
             <div className="relative w-full h-full opacity-40">
               <Image 
-                src={entry.media.backgroundImage.trim()}
+                src={(heroMedia?.backgroundImageUrl || entry.media.backgroundImage).trim()}
                 alt="Cosmetic Background"
                 fill
                 priority
                 className="object-cover"
-                onError={() => handleImageError(entry.media.backgroundImage)}
+                onError={() => handleImageError(heroMedia?.backgroundImageUrl || entry.media.backgroundImage)}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-transparent to-white" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-[#E1E6EF]/20 to-white" />
             </div>
           )}
         </div>
