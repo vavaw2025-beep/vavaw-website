@@ -64,7 +64,7 @@ export function SiteHeader({ logoUrl }: SiteHeaderProps) {
 
       {/* Mobile Menu Toggle */}
       <button 
-        className="md:hidden pointer-events-auto text-[#F8F7F2] p-2 -mr-2"
+        className="md:hidden pointer-events-auto text-[#F8F7F2] p-3 -mr-3 flex items-center justify-center"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-label="Toggle menu"
       >

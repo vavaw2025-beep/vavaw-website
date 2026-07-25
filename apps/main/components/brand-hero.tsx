@@ -577,11 +577,13 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
               setAutoplay(false);
               setTimeout(() => setAutoplay(true), 7000);
             }}
-            className={`transition-all duration-300 rounded-full ${
-              index === activeIndex ? 'bg-white w-8 h-1.5' : 'bg-[#52525b] w-2 h-1.5'
-            }`}
+            className="py-4 px-2 flex items-center justify-center cursor-pointer"
             aria-label={`Go to slide ${index + 1}`}
-          />
+          >
+            <div className={`transition-all duration-300 rounded-full ${
+              index === activeIndex ? 'bg-white w-8 h-1.5' : 'bg-[#52525b] w-2 h-1.5'
+            }`} />
+          </button>
         ))}
       </motion.div>
       <style jsx global>{`

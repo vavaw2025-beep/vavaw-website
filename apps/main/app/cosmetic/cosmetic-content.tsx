@@ -250,12 +250,12 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
             <CosmeticCtaTracker
               label="START AN INQUIRY"
               href="/contact?type=cosmetic_interest"
-              className="h-[54px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[13px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors shadow-sm"
+              className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[13px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors shadow-sm"
             />
             <CosmeticCtaTracker
               label="BACK TO ECOSYSTEM"
               href="/"
-              className="h-[54px] px-10 flex items-center justify-center bg-white border border-[#050A5C] text-[#050A5C] text-[13px] tracking-[0.2em] uppercase hover:bg-[#F8F9FC] transition-colors shadow-sm"
+              className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center bg-white border border-[#050A5C] text-[#050A5C] text-[13px] tracking-[0.2em] uppercase hover:bg-[#F8F9FC] transition-colors shadow-sm"
             />
           </motion.div>
         </motion.div>

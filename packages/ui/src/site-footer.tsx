@@ -71,17 +71,17 @@ export function SiteFooter({ variant = 'main', className = '', links = {} }: Sit
           A premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.
         </p>
 
-        <nav className="flex flex-wrap justify-center gap-6 md:gap-10 mb-12">
-          <a href={defaultLinks.cosmetic} className={`text-xs md:text-sm font-medium tracking-widest uppercase transition-colors ${linkStyle}`}>
+        <nav className="flex flex-wrap justify-center gap-4 md:gap-8 mb-12">
+          <a href={defaultLinks.cosmetic} className={`p-2 text-xs md:text-sm font-medium tracking-widest uppercase transition-colors ${linkStyle}`}>
             Cosmetic
           </a>
-          <a href={defaultLinks.beauty} className={`text-xs md:text-sm font-medium tracking-widest uppercase transition-colors ${linkStyle}`}>
+          <a href={defaultLinks.beauty} className={`p-2 text-xs md:text-sm font-medium tracking-widest uppercase transition-colors ${linkStyle}`}>
             Beauty
           </a>
-          <a href={defaultLinks.franchise} className={`text-xs md:text-sm font-medium tracking-widest uppercase transition-colors ${linkStyle}`}>
+          <a href={defaultLinks.franchise} className={`p-2 text-xs md:text-sm font-medium tracking-widest uppercase transition-colors ${linkStyle}`}>
             Franchise
           </a>
-          <a href={defaultLinks.contact} className={`text-xs md:text-sm font-medium tracking-widest uppercase transition-colors ${linkStyle}`}>
+          <a href={defaultLinks.contact} className={`p-2 text-xs md:text-sm font-medium tracking-widest uppercase transition-colors ${linkStyle}`}>
             Contact
           </a>
         </nav>
