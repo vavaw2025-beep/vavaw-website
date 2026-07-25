@@ -19,7 +19,14 @@ This checklist defines the required media assets for the VAVAW Main homepage and
 | **`cosmetic-texture-ritual`** | Texture/formula/ritual close-up. | 1600x1200 or 1600x1600 (4:3 or 1:1) | WEBP/JPG | 1.5MB |
 | **`cosmetic-clean-promise`** | Ingredient/natural/clean beauty image. | 1600x1200 or 1600x1600 (4:3 or 1:1) | WEBP/JPG | 1.5MB |
 
-## 3. Upload Guidelines & Image Preparation Tips
+## 3. Brand Logo Assets (Site Key: `main`)
+
+| Slot | Purpose | Recommended Size | Format | Max Size |
+| :--- | :--- | :--- | :--- | :--- |
+| **`logo-main-white`** | White logo for dark ecosystem header. | 1200x300 (Transparent) | PNG | 1MB |
+| **`logo-main-dark`** | Dark logo for light ecosystem backgrounds. | 1200x300 (Transparent) | PNG | 1MB |
+
+## 4. Upload Guidelines & Image Preparation Tips
 
 ### Practical Image Preparation Tips
 - **Format**: WEBP or JPG recommended.

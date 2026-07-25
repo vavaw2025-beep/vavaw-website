@@ -265,11 +265,14 @@ When troubleshooting missing hero images on the public Main homepage:
 For the VAVAW brand identity, we use an image-based wordmark logo rather than plain text where possible to ensure consistent typography and layout. 
 
 **Logo Guidelines:**
-- Fallback text equivalent: `VAVAW` (Inter/Arial, font-weight 600, uppercase, letter-spacing: 0.32em)
-- Supported formats: **Transparent PNG**
-- Recommended PNG export size: **1200x300** pixels with a transparent background.
+- Slot: Main Logo White
+- Recommended file: PNG transparent
+- Recommended size: 1200x300px
+- Visual display size: approx 150x25px
+- Keep safe padding around logo
+- Use white/ivory logo for Main dark header
+- Fallback text equivalent: `VAVAW` (Inter/Arial, font-weight 600, uppercase, letter-spacing: 0.28em)
 - Keep file size under 1MB.
-- Use white logo for dark header, dark/blue logo for light backgrounds.
 - Do not upload JPG or screenshots for logos.
 
 **Admin Usage:**
