@@ -4,6 +4,7 @@ import { CosmeticContent } from './cosmetic-content';
 import { notFound } from 'next/navigation';
 import { loadPublicSeo } from '@/lib/load-public-seo';
 import { loadPublicHeroMedia, PublicHeroMedia } from '@/lib/load-public-hero-media';
+import { Suspense } from 'react';
 
 const cosmeticEntry = getBusinessBySlug('cosmetic');
 
@@ -87,7 +88,9 @@ export default async function CosmeticPage() {
           Content: static (fallback)
         </div>
       )}
-      <CosmeticContent entry={cosmeticEntry} heroMedia={heroMedia} />
+      <Suspense fallback={<div className="min-h-[82vh] bg-[#F7F9FC]" />}>
+        <CosmeticContent entry={cosmeticEntry} heroMedia={heroMedia} />
+      </Suspense>
       <SiteFooter variant="cosmetic" />
     </>
   );

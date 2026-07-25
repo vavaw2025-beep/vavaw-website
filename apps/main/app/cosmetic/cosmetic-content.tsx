@@ -5,6 +5,7 @@ import { motion, Variants } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import type { BusinessEntry } from '@vavaw/brand-config';
 import { CosmeticCtaTracker } from './cosmetic-tracker';
 import type { PublicHeroMedia } from '@/lib/load-public-hero-media';
@@ -30,20 +31,23 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
     setImageErrors(prev => ({ ...prev, [path]: true }));
   };
 
+  const searchParams = useSearchParams();
+  const fromMain = searchParams.get('from') === 'main';
+
   const fadeUp: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+    hidden: { opacity: 0, y: fromMain ? 8 : 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: fromMain ? 0.45 : 0.8, ease: "easeOut" } }
   };
 
   const stagger: Variants = {
-    visible: { transition: { staggerChildren: 0.2 } }
+    visible: { transition: { staggerChildren: fromMain ? 0.1 : 0.2 } }
   };
 
   return (
     <div className="min-h-screen bg-white text-[#1F2933] font-sans selection:bg-[#D9DEE8] selection:text-[#050A5C] overflow-hidden">
       
       {/* 1. Hero Section */}
-      <section className="relative min-h-[82vh] max-h-[760px] flex flex-col items-center justify-center pt-28 pb-20 px-6 overflow-hidden">
+      <section className="relative min-h-[78vh] md:min-h-[82vh] max-h-[760px] flex flex-col justify-center pt-28 pb-20 px-6 overflow-hidden">
         {/* Background Image / Fallback */}
         <div className="absolute inset-0 z-0 bg-[#F7F9FC]">
           {heroMedia?.backgroundImageUrl && isValidHeroImageUrl(heroMedia.backgroundImageUrl) && !imageErrors[heroMedia.backgroundImageUrl] ? (
@@ -51,13 +55,13 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
               <img 
                 src={heroMedia.backgroundImageUrl.trim()}
                 alt="VAVAW Cosmetic"
-                className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_right] opacity-30 md:opacity-50"
+                className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_right] opacity-40 md:opacity-65"
                 onError={() => handleImageError(heroMedia.backgroundImageUrl!)}
               />
               {/* Overlays */}
-              <div className="absolute inset-0 bg-[#E8EDF5]/40" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.08)_100%)]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#F7F9FC] via-transparent to-transparent opacity-90" />
+              <div className="absolute inset-0 bg-[#E8EDF5]/35" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.10)_100%)]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#F7F9FC] via-transparent to-transparent opacity-80" />
             </div>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-[#E1E6EF] via-[#F8F9FC] to-[#D9DEE8] opacity-80" />
@@ -65,13 +69,13 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
         </div>
 
         <motion.div 
-          className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center"
+          className="relative z-10 max-w-3xl md:ml-12 lg:ml-24 flex flex-col items-center md:items-start text-center md:text-left"
           initial="hidden"
           animate="visible"
           variants={stagger}
         >
-          <motion.div variants={fadeUp} className="mb-8">
-            <span className="text-[10px] tracking-[0.3em] uppercase text-[#050A5C] font-semibold">
+          <motion.div variants={fadeUp} className="mb-6 md:mb-8">
+            <span className="text-[10px] tracking-[0.3em] uppercase text-[#050A5C] font-semibold bg-white/40 px-3 py-1 rounded-full backdrop-blur-sm">
               Clinical Korean Cosmetic
             </span>
           </motion.div>
@@ -80,17 +84,17 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
             VAVAW Cosmetic
           </motion.h1>
           
-          <motion.p variants={fadeUp} className="text-xl md:text-2xl text-[#1F2933] font-light mb-8 max-w-2xl mx-auto leading-relaxed">
+          <motion.p variants={fadeUp} className="text-xl md:text-2xl text-[#1F2933] font-light mb-8 max-w-xl leading-relaxed">
             Clinical Korean cosmetic rituals, refined with precision.
           </motion.p>
           
-          <motion.div variants={fadeUp} className="w-12 h-[1px] bg-[#050A5C]/40 mx-auto mb-8" />
+          <motion.div variants={fadeUp} className="w-12 h-[1px] bg-[#050A5C]/40 mb-8" />
           
-          <motion.p variants={fadeUp} className="text-sm md:text-base text-[#6B7280] max-w-md mx-auto leading-relaxed mb-12">
+          <motion.p variants={fadeUp} className="text-sm md:text-base text-[#6B7280] max-w-md leading-relaxed mb-10 md:mb-12">
             A cool blue and silver skincare experience designed for luminous, balanced, modern skin.
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full px-4 sm:px-0">
+          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-4 w-full px-4 sm:px-0">
             <CosmeticCtaTracker
               label="START AN INQUIRY"
               href="/contact?type=cosmetic_interest"

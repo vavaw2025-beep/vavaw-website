@@ -139,18 +139,20 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
     
     // Respect user's motion preferences
     const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const delay = prefersReducedMotion ? 50 : 420;
+    const isCosmetic = title.toLowerCase().includes('cosmetic') || url.includes('cosmetic');
+    const delay = prefersReducedMotion ? 50 : (isCosmetic ? 260 : 420);
 
     setTransitionState({ active: true, url, brand: title.toLowerCase() });
     
-    // Add ?from=main query param if not already present
     let targetUrl = url;
-    if ((targetUrl.startsWith('/go/') || targetUrl.startsWith('/cosmetic')) && !targetUrl.includes('?')) {
-      targetUrl = targetUrl.includes('?') ? `${targetUrl}&from=main` : `${targetUrl}?from=main`;
+    if (isCosmetic) {
+      targetUrl = '/cosmetic?from=main';
+    } else if (targetUrl.startsWith('/go/') && !targetUrl.includes('?')) {
+      targetUrl = `${targetUrl}?from=main`;
     }
 
     setTimeout(() => {
-      if (targetUrl.startsWith('/go/') || targetUrl.startsWith('/')) {
+      if (isCosmetic || (targetUrl.startsWith('/') && !targetUrl.startsWith('/go/'))) {
         router.push(targetUrl);
       } else {
         window.location.href = targetUrl;
