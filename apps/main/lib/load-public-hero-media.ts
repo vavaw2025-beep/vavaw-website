@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { loadPublicHomeCms } from './load-public-cms';
 
 export interface PublicHeroMedia {
   title: string;
@@ -7,66 +7,29 @@ export interface PublicHeroMedia {
   backgroundImageUrl: string | null;
   previewImageUrl: string | null;
   accent: string | null;
-  source: 'supabase';
+  source: 'static' | 'supabase';
 }
 
-export async function loadPublicHeroMedia(brandKeyword: string): Promise<PublicHeroMedia | null> {
-  const dataSource = process.env.CMS_DATA_SOURCE || 'static';
-  if (dataSource !== 'supabase') return null;
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseKey) return null;
-
+export async function loadPublicHeroMedia(brandKeyword: string, isPreview: boolean = false): Promise<PublicHeroMedia | null> {
   try {
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const cmsData = await loadPublicHomeCms(isPreview);
+    
+    // Find the slide that matches the brand keyword
+    const slide = cmsData.heroSlides.find(s => 
+      (s.title || '').toLowerCase().includes(brandKeyword.toLowerCase()) ||
+      (s.redirectPath || '').toLowerCase().includes(brandKeyword.toLowerCase())
+    );
 
-    // Get active slide matching the brand keyword
-    const { data: slides, error: slideError } = await supabase
-      .from('hero_slides')
-      .select('*')
-      .eq('status', 'active')
-      .ilike('title', `%${brandKeyword}%`)
-      .limit(1);
-
-    if (slideError || !slides || slides.length === 0) return null;
-
-    const slide = slides[0];
-
-    let backgroundImageUrl = null;
-    let previewImageUrl = null;
-
-    if (slide.background_media_id) {
-      const { data: bgMedia } = await supabase
-        .from('media_assets')
-        .select('url')
-        .eq('id', slide.background_media_id)
-        .single();
-      if (bgMedia && bgMedia.url) {
-        backgroundImageUrl = bgMedia.url;
-      }
-    }
-
-    if (slide.preview_media_id) {
-      const { data: prevMedia } = await supabase
-        .from('media_assets')
-        .select('url')
-        .eq('id', slide.preview_media_id)
-        .single();
-      if (prevMedia && prevMedia.url) {
-        previewImageUrl = prevMedia.url;
-      }
-    }
+    if (!slide) return null;
 
     return {
       title: slide.title,
       subtitle: slide.subtitle || '',
       description: slide.description || '',
-      backgroundImageUrl,
-      previewImageUrl,
-      accent: slide.accent || null,
-      source: 'supabase'
+      backgroundImageUrl: slide.backgroundImageUrl || null,
+      previewImageUrl: slide.previewImageUrl || null,
+      accent: null, // loadPublicHomeCms does not return accent currently
+      source: cmsData.source
     };
   } catch (error) {
     console.error(`[load-public-hero-media] Error fetching for ${brandKeyword}:`, error);

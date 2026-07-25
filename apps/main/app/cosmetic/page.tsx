@@ -65,7 +65,7 @@ export default async function CosmeticPage() {
     isPreview
   });
 
-  const heroMedia = await loadPublicHeroMedia('Cosmetic');
+  const heroMedia = await loadPublicHeroMedia('Cosmetic', isPreview);
 
   if (blocks.length > 0) {
     return (
