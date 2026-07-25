@@ -84,11 +84,11 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
                 src={heroMedia.backgroundImageUrl.trim()}
                 alt=""
                 aria-hidden="true"
-                className="absolute inset-0 z-0 w-full h-full object-cover object-center md:object-[center_right] opacity-[0.62]"
+                className="absolute inset-0 z-0 w-full h-full object-cover object-center md:object-[center_right] opacity-[0.42] md:opacity-[0.68]"
                 onError={() => handleImageError(heroMedia.backgroundImageUrl!)}
               />
               {/* Overlays */}
-              <div className="absolute inset-0 z-[1] bg-white/20 md:bg-white/30" />
+              <div className="absolute inset-0 z-[1] bg-white/10 md:bg-white/15" />
               <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.10)_100%)]" />
               <div className="absolute inset-x-0 bottom-0 h-1/3 z-[1] bg-gradient-to-t from-[#F7F9FC] via-[#F7F9FC]/50 to-transparent opacity-90" />
             </>
