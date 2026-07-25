@@ -1,4 +1,4 @@
-import { Analytics } from '@vercel/analytics/next'
+
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
@@ -88,7 +88,6 @@ export default async function RootLayout({
           logoDarkUrl={brandAssets.logoMainDark || brandAssets.logoMainBlue || brandAssets.logoCosmeticBlue} 
         />
         {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   )
