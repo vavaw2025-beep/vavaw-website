@@ -45,21 +45,22 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
       {/* 1. Hero Section */}
       <section className="relative min-h-[82vh] max-h-[760px] flex flex-col items-center justify-center pt-28 pb-20 px-6 overflow-hidden">
         {/* Background Image / Fallback */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 bg-[#F7F9FC]">
           {heroMedia?.backgroundImageUrl && isValidHeroImageUrl(heroMedia.backgroundImageUrl) && !imageErrors[heroMedia.backgroundImageUrl] ? (
             <div className="relative w-full h-full">
-              <Image 
+              <img 
                 src={heroMedia.backgroundImageUrl.trim()}
                 alt="VAVAW Cosmetic"
-                fill
-                priority
-                className="object-cover opacity-60"
+                className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_right] opacity-30 md:opacity-50"
                 onError={() => handleImageError(heroMedia.backgroundImageUrl!)}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-[#E1E6EF]/40 to-white/90" />
+              {/* Overlays */}
+              <div className="absolute inset-0 bg-[#E8EDF5]/40" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.08)_100%)]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#F7F9FC] via-transparent to-transparent opacity-90" />
             </div>
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#E1E6EF] via-[#F8F9FC] to-[#D9DEE8]" />
+            <div className="w-full h-full bg-gradient-to-br from-[#E1E6EF] via-[#F8F9FC] to-[#D9DEE8] opacity-80" />
           )}
         </div>
 
