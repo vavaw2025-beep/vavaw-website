@@ -8,26 +8,36 @@ import { Menu, X } from 'lucide-react';
 
 interface SiteHeaderProps {
   logoUrl?: string;
+  logoDarkUrl?: string;
 }
 
-export function SiteHeader({ logoUrl }: SiteHeaderProps) {
+export function SiteHeader({ logoUrl, logoDarkUrl }: SiteHeaderProps) {
   const [logoError, setLogoError] = useState(false);
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const isLightMode = pathname === '/cosmetic';
+  
+  // Decide which logo to show based on mode
+  const activeLogo = isLightMode && logoDarkUrl ? logoDarkUrl : logoUrl;
+  const textColor = isLightMode ? 'text-[#050A5C]' : 'text-[#F8F7F2]';
+  const textColorHover = isLightMode ? 'hover:text-[#050A5C]/70' : 'hover:opacity-100';
+  const activeColor = isLightMode ? 'text-[#050A5C]' : 'text-white';
+  const inactiveColor = isLightMode ? 'text-[#050A5C]/60' : 'text-[#F8F7F2] opacity-70';
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 md:py-8 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none">
+    <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 md:py-8 ${isLightMode ? 'bg-gradient-to-b from-white/80 via-white/40 to-transparent' : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent'} pointer-events-none transition-colors duration-300`}>
       <div className="flex items-center pointer-events-auto h-8">
         <Link href="/" className="flex items-center" aria-label="VAVAW Ecosystem Home" onClick={() => setMobileMenuOpen(false)}>
-          {!logoError && isValidImageUrl(logoUrl) ? (
+          {!logoError && isValidImageUrl(activeLogo) ? (
             <img 
-              src={logoUrl} 
+              src={activeLogo} 
               alt="VAVAW" 
               className="w-auto object-contain transition-opacity duration-300 hover:opacity-80 h-[22px] md:h-[26px] max-w-[150px]"
               onError={() => setLogoError(true)}
             />
           ) : (
-            <span className="text-[#F8F7F2] font-semibold uppercase tracking-[0.28em] text-lg md:text-xl transition-opacity duration-300 hover:opacity-80">
+            <span className={`${isLightMode ? 'text-[#050A5C]' : 'text-[#F8F7F2]'} font-semibold uppercase tracking-[0.28em] text-lg md:text-xl transition-opacity duration-300 hover:opacity-80`}>
               VAVAW
             </span>
           )}
@@ -36,27 +46,27 @@ export function SiteHeader({ logoUrl }: SiteHeaderProps) {
       <nav className="hidden md:flex items-center gap-10 pointer-events-auto drop-shadow-sm">
         <Link 
           href="/cosmetic" 
-          className={`text-xs font-medium tracking-[0.15em] uppercase transition-colors ${pathname === '/cosmetic' ? 'text-white opacity-100' : 'text-[#F8F7F2] opacity-70 hover:opacity-100'}`}
+          className={`text-xs font-medium tracking-[0.15em] uppercase transition-colors ${pathname === '/cosmetic' ? activeColor : inactiveColor} ${textColorHover}`}
         >
           Cosmetic
         </Link>
         <Link 
           href="/go/beauty" 
           prefetch={false} 
-          className="text-[#F8F7F2] opacity-70 hover:opacity-100 text-xs font-medium tracking-[0.15em] uppercase transition-colors"
+          className={`${inactiveColor} ${textColorHover} text-xs font-medium tracking-[0.15em] uppercase transition-colors`}
         >
           Beauty
         </Link>
         <Link 
           href="/go/franchise" 
           prefetch={false} 
-          className="text-[#F8F7F2] opacity-70 hover:opacity-100 text-xs font-medium tracking-[0.15em] uppercase transition-colors"
+          className={`${inactiveColor} ${textColorHover} text-xs font-medium tracking-[0.15em] uppercase transition-colors`}
         >
           Franchise
         </Link>
         <Link 
           href="/contact" 
-          className={`text-xs font-medium tracking-[0.15em] uppercase transition-colors ${pathname === '/contact' ? 'text-white opacity-100' : 'text-[#F8F7F2] opacity-70 hover:opacity-100'}`}
+          className={`text-xs font-medium tracking-[0.15em] uppercase transition-colors ${pathname === '/contact' ? activeColor : inactiveColor} ${textColorHover}`}
         >
           Contact
         </Link>
@@ -64,7 +74,7 @@ export function SiteHeader({ logoUrl }: SiteHeaderProps) {
 
       {/* Mobile Menu Toggle */}
       <button 
-        className="md:hidden pointer-events-auto text-[#F8F7F2] p-3 -mr-3 flex items-center justify-center"
+        className={`md:hidden pointer-events-auto ${textColor} p-3 -mr-3 flex items-center justify-center transition-colors`}
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-label="Toggle menu"
       >

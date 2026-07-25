@@ -83,7 +83,10 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <SiteHeader logoUrl={brandAssets.logoMainWhite} />
+        <SiteHeader 
+          logoUrl={brandAssets.logoMainWhite} 
+          logoDarkUrl={brandAssets.logoMainDark || brandAssets.logoMainBlue || brandAssets.logoCosmeticBlue} 
+        />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

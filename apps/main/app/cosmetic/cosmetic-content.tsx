@@ -43,54 +43,64 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
     <div className="min-h-screen bg-white text-[#1F2933] font-sans selection:bg-[#D9DEE8] selection:text-[#050A5C] overflow-hidden">
       
       {/* 1. Hero Section */}
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-16 px-6">
+      <section className="relative min-h-[82vh] max-h-[760px] flex flex-col items-center justify-center pt-28 pb-20 px-6 overflow-hidden">
         {/* Background Image / Fallback */}
         <div className="absolute inset-0 z-0">
-          {imageErrors[heroMedia?.backgroundImageUrl || entry.media.backgroundImage] || !isValidHeroImageUrl(heroMedia?.backgroundImageUrl || entry.media.backgroundImage) ? (
-            <div className="w-full h-full bg-gradient-to-b from-[#F8F9FC] to-[#EEF1F6] flex items-center justify-center">
-              <span className="text-xs uppercase tracking-[0.3em] font-medium text-[#6B7280]">Cosmetic Hero Visual</span>
-            </div>
-          ) : (
-            <div className="relative w-full h-full opacity-40">
+          {heroMedia?.backgroundImageUrl && isValidHeroImageUrl(heroMedia.backgroundImageUrl) && !imageErrors[heroMedia.backgroundImageUrl] ? (
+            <div className="relative w-full h-full">
               <Image 
-                src={(heroMedia?.backgroundImageUrl || entry.media.backgroundImage).trim()}
-                alt="Cosmetic Background"
+                src={heroMedia.backgroundImageUrl.trim()}
+                alt="VAVAW Cosmetic"
                 fill
                 priority
-                className="object-cover"
-                onError={() => handleImageError(heroMedia?.backgroundImageUrl || entry.media.backgroundImage)}
+                className="object-cover opacity-60"
+                onError={() => handleImageError(heroMedia.backgroundImageUrl!)}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-[#E1E6EF]/20 to-white" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-[#E1E6EF]/40 to-white/90" />
             </div>
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-[#E1E6EF] via-[#F8F9FC] to-[#D9DEE8]" />
           )}
         </div>
 
         <motion.div 
-          className="relative z-10 text-center max-w-4xl mx-auto"
+          className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center"
           initial="hidden"
           animate="visible"
           variants={stagger}
         >
-          <motion.div variants={fadeUp} className="mb-6">
-            <Link href="/" className="inline-flex items-center text-xs tracking-[0.2em] uppercase text-[#6B7280] hover:text-[#050A5C] transition-colors duration-300">
-              <ArrowLeft className="w-3 h-3 mr-2" />
-              Back to VAVAW Ecosystem
-            </Link>
+          <motion.div variants={fadeUp} className="mb-8">
+            <span className="text-[10px] tracking-[0.3em] uppercase text-[#050A5C] font-semibold">
+              Clinical Korean Cosmetic
+            </span>
           </motion.div>
           
-          <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-light tracking-tight text-[#050A5C] mb-6">
-            {entry.title || 'VAVAW Cosmetic'}
+          <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-[#050A5C] mb-6 drop-shadow-sm">
+            VAVAW Cosmetic
           </motion.h1>
           
           <motion.p variants={fadeUp} className="text-xl md:text-2xl text-[#1F2933] font-light mb-8 max-w-2xl mx-auto leading-relaxed">
-            Refined skincare formula for customized, luminous revitalization.
+            Clinical Korean cosmetic rituals, refined with precision.
           </motion.p>
           
-          <motion.div variants={fadeUp} className="w-16 h-[1px] bg-[#050A5C] mx-auto mb-8" />
+          <motion.div variants={fadeUp} className="w-12 h-[1px] bg-[#050A5C]/40 mx-auto mb-8" />
           
-          <motion.p variants={fadeUp} className="text-base text-[#6B7280] max-w-xl mx-auto leading-loose">
-            A precise, clinical Korean cosmetic ritual designed for clean and precise care.
+          <motion.p variants={fadeUp} className="text-sm md:text-base text-[#6B7280] max-w-md mx-auto leading-relaxed mb-12">
+            A cool blue and silver skincare experience designed for luminous, balanced, modern skin.
           </motion.p>
+
+          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full px-4 sm:px-0">
+            <CosmeticCtaTracker
+              label="START AN INQUIRY"
+              href="/contact?type=cosmetic_interest"
+              className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[12px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors shadow-md"
+            />
+            <CosmeticCtaTracker
+              label="BACK TO ECOSYSTEM"
+              href="/"
+              className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center bg-white/80 backdrop-blur border border-[#050A5C]/20 text-[#050A5C] text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors shadow-sm"
+            />
+          </motion.div>
         </motion.div>
       </section>
 
@@ -177,7 +187,7 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative aspect-[4/5] w-full bg-white border border-[#E1E6EF] overflow-hidden"
+              className="relative aspect-[4/5] w-full bg-[#E1E6EF] border border-[#D9DEE8] overflow-hidden"
             >
               {isValidHeroImageUrl(entry.media.cosmeticCleanPromise) && !imageErrors[entry.media.cosmeticCleanPromise] ? (
                 <Image
@@ -187,11 +197,7 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
                   className="object-cover"
                   onError={() => handleImageError(entry.media.cosmeticCleanPromise!)}
                 />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#6B7280]">Promise Visual</span>
-                </div>
-              )}
+              ) : null}
             </motion.div>
           </div>
         </div>
@@ -225,13 +231,7 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
                   className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                   onError={() => handleImageError(item.image!)}
                 />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
-                  <span className="text-[10px] tracking-[0.2em] text-[#6B7280] uppercase font-medium group-hover:text-[#050A5C] transition-colors duration-500">
-                    {item.label}
-                  </span>
-                </div>
-              )}
+              ) : null}
             </motion.div>
           ))}
         </div>
