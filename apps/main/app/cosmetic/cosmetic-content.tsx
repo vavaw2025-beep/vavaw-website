@@ -43,28 +43,57 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
     visible: { transition: { staggerChildren: fromMain ? 0.1 : 0.2 } }
   };
 
+  const showDebug = process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
+  const hasValidHeroImage = heroMedia?.backgroundImageUrl && isValidHeroImageUrl(heroMedia.backgroundImageUrl);
+
   return (
     <div className="min-h-screen bg-white text-[#1F2933] font-sans selection:bg-[#D9DEE8] selection:text-[#050A5C] overflow-hidden">
       
       {/* 1. Hero Section */}
       <section className="relative min-h-[78vh] md:min-h-[82vh] max-h-[760px] flex flex-col justify-center pt-28 pb-20 px-6 overflow-hidden">
+        {showDebug && (
+          <div className="absolute top-24 right-6 z-[60] bg-black/80 backdrop-blur-md p-4 rounded-md text-[10px] font-mono border border-gray-700 text-gray-300 shadow-2xl max-w-xs w-full opacity-50 hover:opacity-100 transition-opacity">
+            <div className="font-bold text-white uppercase mb-2">Cosmetic CMS Debug</div>
+            <div className="space-y-1">
+              <div className="flex justify-between">
+                <span>cosmeticHeroUrl:</span>
+                <span className={heroMedia?.backgroundImageUrl ? "text-emerald-400" : "text-red-400"}>
+                  {heroMedia?.backgroundImageUrl ? 'yes' : 'no'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>imageRendered:</span>
+                <span className={hasValidHeroImage && !imageErrors[heroMedia!.backgroundImageUrl!] ? "text-emerald-400" : "text-red-400"}>
+                  {hasValidHeroImage && !imageErrors[heroMedia!.backgroundImageUrl!] ? 'yes' : 'no'}
+                </span>
+              </div>
+              {heroMedia?.backgroundImageUrl && (
+                <div className="text-[9px] text-gray-500 break-all mt-1 border-t border-gray-700 pt-1">
+                  url: {heroMedia.backgroundImageUrl.substring(0, 80)}...
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Background Image / Fallback */}
         <div className="absolute inset-0 z-0 bg-[#F7F9FC]">
           {heroMedia?.backgroundImageUrl && isValidHeroImageUrl(heroMedia.backgroundImageUrl) && !imageErrors[heroMedia.backgroundImageUrl] ? (
-            <div className="relative w-full h-full">
+            <>
               <img 
                 src={heroMedia.backgroundImageUrl.trim()}
-                alt="VAVAW Cosmetic"
-                className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_right] opacity-40 md:opacity-65"
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 z-0 w-full h-full object-cover object-center md:object-[center_right] opacity-[0.62]"
                 onError={() => handleImageError(heroMedia.backgroundImageUrl!)}
               />
               {/* Overlays */}
-              <div className="absolute inset-0 bg-[#E8EDF5]/35" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.10)_100%)]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#F7F9FC] via-transparent to-transparent opacity-80" />
-            </div>
+              <div className="absolute inset-0 z-[1] bg-white/20 md:bg-white/30" />
+              <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.10)_100%)]" />
+              <div className="absolute inset-x-0 bottom-0 h-1/3 z-[1] bg-gradient-to-t from-[#F7F9FC] via-[#F7F9FC]/50 to-transparent opacity-90" />
+            </>
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#E1E6EF] via-[#F8F9FC] to-[#D9DEE8] opacity-80" />
+            <div className="absolute inset-0 z-0 w-full h-full bg-gradient-to-br from-[#E1E6EF] via-[#F8F9FC] to-[#D9DEE8] opacity-80" />
           )}
         </div>
 

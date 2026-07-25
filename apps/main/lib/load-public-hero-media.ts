@@ -26,7 +26,7 @@ export async function loadPublicHeroMedia(brandKeyword: string): Promise<PublicH
     const { data: slides, error: slideError } = await supabase
       .from('hero_slides')
       .select('*')
-      .eq('is_active', true)
+      .eq('status', 'active')
       .ilike('title', `%${brandKeyword}%`)
       .limit(1);
 
