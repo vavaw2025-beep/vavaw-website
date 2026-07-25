@@ -39,3 +39,6 @@ Execute these checks immediately following the DNS switch to the custom producti
 - [ ] Navigate to **Audit Logs**, verify your login, media upload, and any other operations are recorded.
 - [ ] Navigate to **Users**, verify the team list loads.
 - [ ] Check page source or `https://admin.vavaw.vn/robots.txt` to confirm it explicitly disallows crawling (`Disallow: /`) and has `noindex, nofollow` metadata.
+
+## Phase 60 Update
+- [x] Vercel production env and debug cleanup ready.
