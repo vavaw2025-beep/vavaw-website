@@ -23,10 +23,11 @@
 | **Brand & UI** | ✅ PASSED | Premium Korean luxury aesthetic applied. Clean typography, generous spacing, mobile-first responsive. Phase 54, Phase 56, Phase 56B Launch Media attached and verified. Phase 56C Clinical Blue direction applied to Cosmetic. Phase 56D Main Hero Experience Polished. Phase 56E Hero Image Connections added. Phase 56F schema and host rules fixed. Phase 56G normalized hero image props for rendering. Phase 56H forced raw img tags for reliable Supabase URL resolution. Phase 56J removed all `PASTE_ACTUAL_PUBLIC_URL` placeholder strings from `packages/brand-config/src/index.ts`. Phase 56K verified `CMS_DATA_SOURCE=supabase` is required for image rendering; improved debug badge to show static vs supabase status. Phase 56M cleaned up prefetch CORS. Phase 56N verified Vercel preview. Phase 60F: Cosmetic lower page redesigned. Phase 60G: Cosmetic media loader (14 slots). Phase 60H: Vercel smoke test passed. Phase 62D: Cosmetic CMS end-to-end verified. Phase 63: Redesigned Admin Cosmetic Page UX Studio with friendly Vietnamese editors, library picker, and metadata slot removal. |
 | **Domain Prep**| ✅ PASSED | Custom domain mapping verified, DNS/SSL checklists created, Phase 52 checks completed. Phase 61 DNS Switchover initiated. |
 | **Admin Docs** | ✅ PASSED | Phase 50A — Admin Feature Map added. Phase 51 — Admin Operating Guide created. |
-| **Admin QA**   | ✅ PASSED | Phase 51 — Admin operating workflows verified. |
+| **Admin QA**   | ✅ PASSED | Phase 51 — Admin operating workflows verified. Phase 63B: Cosmetic Admin Studio production QA verified. |
 
 - Hero transition route ready
 - Hero media continuity implemented
 - Phase 59: Main and Cosmetic Mobile QA completed.
 - Phase 60: Vercel production env and debug cleanup ready.
 - Phase 63: Cosmetic Page Admin UX Studio completed.
+- Phase 63B: Cosmetic Admin Studio Production QA verified.
