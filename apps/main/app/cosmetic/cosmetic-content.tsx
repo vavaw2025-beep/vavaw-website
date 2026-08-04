@@ -33,7 +33,7 @@ function getBlockContent(blocks: any[] | undefined, type: string, fallback: any 
     return fallback;
   }
   
-  const block = blocks.find(b => b.block_type === type);
+  const block = blocks.find(b => b.blockType === type || b.content?.sectionKey === type);
   if (!block || !block.content) {
     // Missing block in CMS mode: it's deactivated or deleted. Do not resurrect.
     return null;

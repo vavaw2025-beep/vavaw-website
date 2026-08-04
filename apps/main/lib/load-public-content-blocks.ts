@@ -13,6 +13,9 @@ export async function loadPublicContentBlocks({
   blocks: NormalizedContentBlock[];
   source: "static" | "supabase";
   error?: string;
+  rawCount?: number;
+  activeCount?: number;
+  fallbackReason?: string;
 }> {
   const dataSource = process.env.CMS_DATA_SOURCE || 'static';
 
@@ -20,6 +23,7 @@ export async function loadPublicContentBlocks({
     return {
       blocks: [],
       source: 'static',
+      fallbackReason: 'CMS_DATA_SOURCE is not supabase'
     };
   }
 
@@ -37,6 +41,7 @@ export async function loadPublicContentBlocks({
         blocks: [],
         source: 'static',
         error: 'Supabase credentials missing',
+        fallbackReason: 'Supabase credentials missing'
       };
     }
     supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -46,14 +51,11 @@ export async function loadPublicContentBlocks({
     let query = supabase
       .from('content_blocks')
       .select('*')
-      .in('site_key', [siteKey, 'main']) // Support siteKey or 'main' as requested (though usually just matching what we pass)
+      .in('site_key', [siteKey, 'main']) // Support siteKey or 'main' as requested
       .eq('page_path', pagePath)
       .order('sort_order', { ascending: true });
 
-    if (!isPreview) {
-      query = query.eq('is_active', true);
-    }
-
+    // Fetch all (active + inactive) to compute metrics
     const { data, error } = await query;
 
     if (error) {
@@ -62,22 +64,40 @@ export async function loadPublicContentBlocks({
         blocks: [],
         source: 'static',
         error: error.message,
+        fallbackReason: error.message,
       };
     }
 
     if (!data || data.length === 0) {
+      console.log(`[loadPublicContentBlocks] No blocks found for ${siteKey}${pagePath}`);
       return {
         blocks: [],
         source: 'static',
+        fallbackReason: 'No blocks returned from CMS'
       };
     }
 
-    // Since we queried with .in('site_key', [siteKey, 'main']), we should prioritize exact matches or just return all
-    // Let's filter to match exactly siteKey, or if siteKey is cosmetic, it might use 'main' or 'cosmetic'. 
-    // The instructions say: site_key = "main" or "cosmetic"
+    // Filter to exact match site key
     const validBlocks = data.filter(b => b.site_key === siteKey || b.site_key === 'main' || b.site_key === 'cosmetic');
+    
+    const rawCount = validBlocks.length;
+    const activeBlocks = validBlocks.filter(b => b.is_active);
+    const activeCount = activeBlocks.length;
 
-    const normalizedBlocks: NormalizedContentBlock[] = validBlocks.map(block => ({
+    // Filter out inactive blocks unless in preview mode
+    const blocksToReturn = isPreview ? validBlocks : activeBlocks;
+    
+    if (blocksToReturn.length === 0 && !isPreview) {
+       return {
+         blocks: [],
+         source: 'static',
+         rawCount,
+         activeCount,
+         fallbackReason: 'All returned blocks were inactive'
+       };
+    }
+
+    const normalizedBlocks: NormalizedContentBlock[] = blocksToReturn.map(block => ({
       id: block.id,
       siteKey: block.site_key,
       pagePath: block.page_path,
@@ -87,12 +107,13 @@ export async function loadPublicContentBlocks({
       isActive: block.is_active,
     }));
 
-    // Re-sort in case the filter mixed up the order across site_keys
     normalizedBlocks.sort((a, b) => a.sortOrder - b.sortOrder);
 
     return {
       blocks: normalizedBlocks,
       source: 'supabase',
+      rawCount,
+      activeCount
     };
 
   } catch (err: any) {
@@ -101,6 +122,7 @@ export async function loadPublicContentBlocks({
       blocks: [],
       source: 'static',
       error: err.message,
+      fallbackReason: err.message,
     };
   }
 }
