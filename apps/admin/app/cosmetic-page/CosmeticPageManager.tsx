@@ -93,6 +93,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     }
 
     const result = await updateContentBlockAction(editingBlock.id, {
+      site_key: editingBlock.site_key,
+      page_path: editingBlock.page_path,
       content: newContent,
       is_active: editIsActive,
     });

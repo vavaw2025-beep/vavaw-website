@@ -26,11 +26,20 @@ interface CosmeticContentProps {
 }
 
 function getBlockContent(blocks: any[] | undefined, type: string, fallback: any = {}): any {
-  if (!blocks || !Array.isArray(blocks)) return fallback;
-  const block = blocks.find(b => b.block_type === type);
-  if (!block || !block.content) return fallback;
+  const hasCmsBlocks = blocks && Array.isArray(blocks) && blocks.length > 0;
   
-  // Merge fallback so we always have the shape we expect, even if JSON is partial
+  if (!hasCmsBlocks) {
+    // Total fallback mode: return the full fallback
+    return fallback;
+  }
+  
+  const block = blocks.find(b => b.block_type === type);
+  if (!block || !block.content) {
+    // Missing block in CMS mode: it's deactivated or deleted. Do not resurrect.
+    return null;
+  }
+  
+  // Merge fallback so we always have the expected structure
   return { ...fallback, ...block.content };
 }
 
@@ -373,6 +382,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 2 — BRAND PHILOSOPHY / RAW SKINCARE SYSTEM
       ─────────────────────────────────────────────────────────────────────── */}
+      {brandPhilosophy && (
       <section className={`${SECTION_WHITE} border-t ${SILVER_BORDER} py-28 md:py-36 px-6`}>
         <div className="max-w-6xl mx-auto">
           {/* Heading block */}
@@ -423,10 +433,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 3 — SIGNATURE COLLECTION OVERVIEW
       ─────────────────────────────────────────────────────────────────────── */}
+      {signatureCollection && (
       <section className={`${SECTION_COOL} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           {/* Section heading */}
@@ -512,10 +524,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </div>
         </div>
       </section>
+      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 4 — HERO PRODUCT FEATURE
       ─────────────────────────────────────────────────────────────────────── */}
+      {heroProduct && (
       <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
@@ -594,10 +608,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </div>
         </div>
       </section>
+      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 5 — PRODUCT EDITORIAL CARDS
       ─────────────────────────────────────────────────────────────────────── */}
+      {productCards && (
       <section className={`${SECTION_COOL} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -659,10 +675,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 6 — DAILY CLINICAL RITUAL
       ─────────────────────────────────────────────────────────────────────── */}
+      {dailyRitual && (
       <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
@@ -723,10 +741,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </div>
         </div>
       </section>
+      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 7 — CLINICAL INGREDIENTS
       ─────────────────────────────────────────────────────────────────────── */}
+      {ingredientsBlock && (
       <section className={`${SECTION_COOL} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -767,10 +787,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 8 — PREMIUM PROGRAM / SPA CLINIC
       ─────────────────────────────────────────────────────────────────────── */}
+      {premiumProgram && (
       <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -831,10 +853,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </div>
         </div>
       </section>
+      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 9 — EDITORIAL GALLERY (no broken images, no placeholder text)
       ─────────────────────────────────────────────────────────────────────── */}
+      {editorialGallery && (
       <section className={`${SECTION_COOL} py-24 md:py-32 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -900,10 +924,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </div>
         </div>
       </section>
+      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 10 — FINAL CTA
       ─────────────────────────────────────────────────────────────────────── */}
+      {finalCta && (
       <section className={`${SECTION_NAVY} py-28 md:py-36 px-6 text-center`}>
         <motion.div
           className="max-w-2xl mx-auto"
@@ -944,6 +970,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           </motion.div>
         </motion.div>
       </section>
+      )}
     </div>
   );
 }
