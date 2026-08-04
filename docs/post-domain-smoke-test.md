@@ -42,3 +42,49 @@ Execute these checks immediately following the DNS switch to the custom producti
 
 ## Phase 60 Update
 - [x] Vercel production env and debug cleanup ready.
+
+## Phase 60H — Vercel Smoke Test (2026-08-04, automated)
+
+### Main Homepage (`vavaw-main.vercel.app`)
+- [x] HTTP 200 — page loads
+- [x] 3 CMS hero slides — all active with valid Supabase image URLs
+- [x] `dataSource: "supabase"`, `fallbackUsed: false`
+- [x] No `PASTE_ACTUAL_PUBLIC_URL` in HTML
+- [x] No empty `src=""` in HTML
+- [x] CMS debug badge not visible
+- [x] Sentry active — `sentry-environment=vercel-production`
+- [x] Nav links correct (Cosmetic, Beauty, Franchise, Contact)
+- [ ] Manual: hero auto-rotate verified in browser
+- [ ] Manual: CTA redirect to `/cosmetic?from=main`
+- [ ] Manual: mobile 360/390px layout
+
+### Cosmetic Page (`/cosmetic`)
+- [x] HTTP 200 — page loads
+- [x] Title: `VAVAW Cosmetic - Premium Beauty Line | VAVAW`
+- [x] Canonical: `https://vavaw.vn/cosmetic`
+- [x] `robots: index, follow`
+- [x] Hero CMS source: `supabase`
+- [x] Hero `backgroundImageUrl` valid Supabase URL
+- [x] `cosmeticMedia: {}` — empty, expected, gradient fallbacks active (no broken images)
+- [x] No placeholder text visible
+- [x] Dark logo variant correct
+- [x] Footer cosmetic variant correct
+- [x] CTA buttons present
+- [ ] Manual: hero image visible in browser
+- [ ] Manual: lower section scroll animations
+- [ ] Manual: mobile 390px no horizontal scroll
+
+### Redirects
+- [x] `/go/cosmetic` → `/cosmetic?from=main` (code verified)
+- [x] `/go/beauty` → external redirect (code verified, no CORS prefetch)
+- [x] `/go/franchise` → external redirect (code verified)
+
+### Blocking issues
+- None found. No code changes required.
+
+### Media upload TODO (before Phase 61 DNS)
+- [ ] Upload `cosmetic-product-luminous-set` → Section 4 image (HIGH)
+- [ ] Upload `cosmetic-premium-program` → Section 8 image (MEDIUM)
+- [ ] Upload gallery slots if product photography available (LOW)
+
+See full automated report: `docs/vercel-smoke-test-phase-60h.md`

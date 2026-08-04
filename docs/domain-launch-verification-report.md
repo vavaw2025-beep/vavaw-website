@@ -42,3 +42,30 @@ This report tracks the live validation of the VAVAW custom domains after the DNS
 - [ ] Vercel domains are mapped and SSL certificates issued.
 - [ ] Environment variables (e.g. `NEXT_PUBLIC_SITE_URL`) are active in production.
 - [ ] Supabase Auth URL Configuration updated with `https://admin.vavaw.vn/**`.
+
+---
+
+## Phase 60H Automated Smoke Test (vavaw-main.vercel.app — 2026-08-04)
+
+| Domain / Page | Expected Result | Actual Result | Status |
+| :--- | :--- | :--- | :--- |
+| `vavaw-main.vercel.app` | HTTP 200, title correct, JSON-LD | ✅ All confirmed via HTML analysis | ✅ PASS |
+| `vavaw-main.vercel.app` hero slides | 3 active slides, Supabase images | ✅ 3 slides, all bgValid/previewValid | ✅ PASS |
+| `vavaw-main.vercel.app/cosmetic` | HTTP 200, hero image URL valid | ✅ `source: supabase`, valid image URL | ✅ PASS |
+| `/cosmetic` lower section media | Graceful fallbacks for empty slots | ✅ `cosmeticMedia: {}`, no broken images | ✅ PASS |
+| `/cosmetic` SEO metadata | Title, canonical, robots | ✅ All correct | ✅ PASS |
+| Console safety | No PASTE_, no empty src, no debug badge | ✅ All clear | ✅ PASS |
+| Sentry monitoring | `vercel-production` environment | ✅ Active | ✅ PASS |
+| `/go/cosmetic` | Redirect to `/cosmetic?from=main` | ✅ Code verified | ✅ PASS |
+| `/go/beauty` | Redirect, no CORS prefetch | ✅ Code verified | ✅ PASS |
+| `/go/franchise` | Redirect, no CORS prefetch | ✅ Code verified | ✅ PASS |
+
+**Blocking issues found:** None
+
+**Manual QA remaining:**
+- [ ] Browser: hero auto-rotation, CTA transitions
+- [ ] Browser: `/cosmetic` mobile 390px layout
+- [ ] Admin: login, media upload, leads, audit
+- [ ] Contact form submit → lead in Admin
+
+See detailed report: `docs/vercel-smoke-test-phase-60h.md`
