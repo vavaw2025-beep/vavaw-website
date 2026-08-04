@@ -1,6 +1,8 @@
-# Domain Launch Verification Report (Phase 55)
+# Domain Launch Verification Report (Phase 55 → Phase 61)
 
-This report tracks the live validation of the VAVAW custom domains after the DNS switchover and Vercel assignment. 
+This report tracks the live validation of the VAVAW custom domains after the DNS switchover and Vercel assignment.
+
+> **Phase 61 Note**: DNS switchover guide is at `docs/phase-61-dns-switchover-guide.md`. Complete Steps 0–5 in that guide before filling in this report.
 
 > **Important**: This must be executed manually by the administrator in a live browser (preferably using Incognito mode) once the DNS has fully propagated.
 

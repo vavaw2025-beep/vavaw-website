@@ -1,6 +1,6 @@
-# VAVAW Post-Domain Smoke Test Checklist
+# VAVAW Post-Domain Smoke Test Checklist (Phase 61)
 
-Execute these checks immediately following the DNS switch to the custom production domains. You can use the template at `docs/domain-launch-verification-report.md` to track your progress (Phase 55).
+Execute these checks immediately following the DNS switch to the custom production domains (Phase 61). You can use the template at `docs/domain-launch-verification-report.md` to track your progress.
 
 ## 1. Public Main Portal (`vavaw.vn`)
 - [ ] Verify `https://vavaw.vn` loads the homepage securely (HTTPS lock icon).
