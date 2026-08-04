@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import type { BusinessEntry } from '@vavaw/brand-config';
 import { CosmeticCtaTracker } from './cosmetic-tracker';
 import type { PublicHeroMedia } from '@/lib/load-public-hero-media';
+import type { CosmeticPageMedia } from '@/lib/load-public-cosmetic-media';
 
 function isValidHeroImageUrl(value?: string | null): value is string {
   if (!value) return false;
@@ -20,6 +21,51 @@ function isValidHeroImageUrl(value?: string | null): value is string {
 interface CosmeticContentProps {
   entry: BusinessEntry;
   heroMedia?: PublicHeroMedia | null;
+  cosmeticMedia?: CosmeticPageMedia;
+}
+
+// ─── Reusable editorial image block ───────────────────────────────────────────
+interface EditorialImageProps {
+  src?: string;
+  alt: string;
+  className?: string;
+  /** Gradient fallback classes if no image */
+  fallbackGradient?: string;
+  /** Optional decorative inner frame */
+  frame?: boolean;
+}
+
+function EditorialImage({
+  src,
+  alt,
+  className = '',
+  fallbackGradient = 'from-[#E8EDF6] to-[#D9DEE8]',
+  frame = true,
+}: EditorialImageProps) {
+  const [error, setError] = useState(false);
+  const hasImage = src && isValidHeroImageUrl(src) && !error;
+
+  return (
+    <div className={`relative overflow-hidden bg-gradient-to-br ${fallbackGradient} ${className}`}>
+      {hasImage ? (
+        <img
+          src={src!.trim()}
+          alt={alt}
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          onError={() => setError(true)}
+        />
+      ) : frame ? (
+        // Elegant framed gradient — no text placeholder
+        <>
+          <div className="absolute inset-5 border border-[#C5CEDF]/40 pointer-events-none" />
+          <div className="absolute top-5 left-5 w-8 h-px bg-[#050A5C]/15" />
+          <div className="absolute top-5 left-5 w-px h-8 bg-[#050A5C]/15" />
+          <div className="absolute bottom-5 right-5 w-8 h-px bg-[#050A5C]/15" />
+          <div className="absolute bottom-5 right-5 w-px h-8 bg-[#050A5C]/15" />
+        </>
+      ) : null}
+    </div>
+  );
 }
 
 // ─── Animation variants ────────────────────────────────────────────────────────
@@ -64,7 +110,7 @@ function Divider() {
 
 // ─── Main component ────────────────────────────────────────────────────────────
 
-export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
+export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: CosmeticContentProps) {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   const handleImageError = (path: string) => {
@@ -350,28 +396,21 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
       <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-            {/* Left: editorial image placeholder */}
+            {/* Left: Luminous Set image / framed gradient */}
             <motion.div
-              className={`relative aspect-[3/4] w-full bg-gradient-to-b from-[#E8EDF6] to-[#D9DEE8] border ${SILVER_BORDER} overflow-hidden`}
+              className={`relative aspect-[3/4] w-full border ${SILVER_BORDER} overflow-hidden`}
               initial={{ opacity: 0, scale: 0.97 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.85 }}
             >
-              {/* Decorative inner frame */}
-              <div className="absolute inset-4 border border-[#C5CEDF]/60 pointer-events-none" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="w-16 h-px bg-[#050A5C]/20 mb-8" />
-                <span className="text-[10px] tracking-[0.3em] uppercase text-[#050A5C]/40 font-medium">
-                  Luminous Sheer Set
-                </span>
-                <div className="w-16 h-px bg-[#050A5C]/20 mt-8" />
-              </div>
-              {/* Corner accents */}
-              <div className="absolute top-4 left-4 w-6 h-px bg-[#050A5C]/25" />
-              <div className="absolute top-4 left-4 w-px h-6 bg-[#050A5C]/25" />
-              <div className="absolute bottom-4 right-4 w-6 h-px bg-[#050A5C]/25" />
-              <div className="absolute bottom-4 right-4 w-px h-6 bg-[#050A5C]/25" />
+              <EditorialImage
+                src={cosmeticMedia.luminousSet}
+                alt="VAVAW Luminous Revitalization Sheer Set"
+                className="absolute inset-0 w-full h-full"
+                fallbackGradient="from-[#E8EDF6] to-[#D9DEE8]"
+                frame
+              />
             </motion.div>
 
             {/* Right: product detail */}
@@ -584,29 +623,21 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
               </div>
             </div>
 
-            {/* Right: Editorial visual panel */}
+            {/* Right: Ritual panel image / framed gradient */}
             <motion.div
-              className={`relative hidden lg:block aspect-square bg-gradient-to-br from-[#EBF0F8] via-[#F4F7FB] to-[#D9DEE8] border ${SILVER_BORDER} overflow-hidden`}
+              className={`relative hidden lg:block aspect-square border ${SILVER_BORDER} overflow-hidden`}
               initial={{ opacity: 0, scale: 0.96 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9 }}
             >
-              {/* Decorative elements */}
-              <div className="absolute inset-6 border border-[#C5CEDF]/40 pointer-events-none" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 p-12">
-                <div className="w-20 h-px bg-[#050A5C]/15" />
-                <div className="text-center space-y-2">
-                  <p className="text-[9px] tracking-[0.35em] uppercase text-[#050A5C]/30 font-semibold">Daily Ritual</p>
-                  <p className="text-[9px] tracking-[0.35em] uppercase text-[#050A5C]/20">5 Steps</p>
-                </div>
-                <div className="w-20 h-px bg-[#050A5C]/15" />
-              </div>
-              {/* Corner marks */}
-              <div className="absolute top-6 left-6 w-8 h-px bg-[#050A5C]/20" />
-              <div className="absolute top-6 left-6 w-px h-8 bg-[#050A5C]/20" />
-              <div className="absolute bottom-6 right-6 w-8 h-px bg-[#050A5C]/20" />
-              <div className="absolute bottom-6 right-6 w-px h-8 bg-[#050A5C]/20" />
+              <EditorialImage
+                src={cosmeticMedia.ritualPanel}
+                alt="VAVAW clinical skincare ritual"
+                className="absolute inset-0 w-full h-full"
+                fallbackGradient="from-[#EBF0F8] via-[#F4F7FB] to-[#D9DEE8]"
+                frame
+              />
             </motion.div>
           </div>
         </div>
@@ -671,22 +702,21 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
       <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left: Editorial visual */}
+            {/* Left: Premium program image / framed gradient */}
             <motion.div
-              className={`relative aspect-[4/3] bg-gradient-to-br from-[#E8EDF6] to-[#D9DEE8] border ${SILVER_BORDER} overflow-hidden order-2 lg:order-1`}
+              className={`relative aspect-[4/3] border ${SILVER_BORDER} overflow-hidden order-2 lg:order-1`}
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.85 }}
             >
-              <div className="absolute inset-5 border border-[#C5CEDF]/40" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center space-y-3">
-                  <div className="w-12 h-px bg-[#050A5C]/20 mx-auto" />
-                  <p className="text-[9px] tracking-[0.3em] uppercase text-[#050A5C]/30 font-semibold">Spa · Clinic · Home</p>
-                  <div className="w-12 h-px bg-[#050A5C]/20 mx-auto" />
-                </div>
-              </div>
+              <EditorialImage
+                src={cosmeticMedia.premiumProgram}
+                alt="VAVAW premium skincare program — spa and clinic"
+                className="absolute inset-0 w-full h-full"
+                fallbackGradient="from-[#E8EDF6] to-[#D9DEE8]"
+                frame
+              />
             </motion.div>
 
             {/* Right: Content */}
@@ -752,37 +782,51 @@ export function CosmeticContent({ entry, heroMedia }: CosmeticContentProps) {
             </motion.h2>
           </motion.div>
 
-          {/* Masonry-style: 2 tall + 4 shorter */}
+          {/* Gallery: tall featured + 5 supporting — real images or gradients */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
-            {/* Tall featured left */}
+            {/* Tall featured — galleryProductSet */}
             <motion.div
-              className={`col-span-2 md:col-span-1 md:row-span-2 aspect-square md:aspect-auto md:min-h-[480px] bg-gradient-to-b from-[#E1E8F4] to-[#C8D4E8] border ${SILVER_BORDER} overflow-hidden relative group`}
+              className={`col-span-2 md:col-span-1 md:row-span-2 aspect-square md:aspect-auto md:min-h-[480px] border ${SILVER_BORDER} overflow-hidden relative group`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.75 }}
               whileHover={{ scale: 1.02 }}
             >
-              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(5,10,92,0.04)_0%,transparent_60%)]" />
+              <EditorialImage
+                src={cosmeticMedia.galleryProductSet}
+                alt="VAVAW Cosmetic product set"
+                className="absolute inset-0 w-full h-full"
+                fallbackGradient="from-[#E1E8F4] to-[#C8D4E8]"
+                frame={false}
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(5,10,92,0.04)_0%,transparent_60%)] pointer-events-none" />
             </motion.div>
 
-            {[
-              'from-[#D9E4F2] to-[#E8EDF6]',
-              'from-[#EBF0F8] to-[#D4DCE8]',
-              'from-[#E1E8F4] to-[#DDE4F0]',
-              'from-[#D9DEE8] to-[#EBF0F8]',
-              'from-[#E8EDF6] to-[#D9E4F2]',
-            ].map((gradient, i) => (
+            {([
+              { key: 'galleryTexture',   alt: 'VAVAW cosmetic texture and formula', gradient: 'from-[#D9E4F2] to-[#E8EDF6]' },
+              { key: 'galleryClinic',    alt: 'VAVAW clinical skincare treatment',   gradient: 'from-[#EBF0F8] to-[#D4DCE8]' },
+              { key: 'galleryPackaging', alt: 'VAVAW product packaging editorial',   gradient: 'from-[#E1E8F4] to-[#DDE4F0]' },
+              { key: 'gallerySkin',      alt: 'VAVAW luminous skin result',          gradient: 'from-[#D9DEE8] to-[#EBF0F8]' },
+              { key: 'gallerySerum',     alt: 'VAVAW renew ampoule serum',           gradient: 'from-[#E8EDF6] to-[#D9E4F2]' },
+            ] as { key: keyof CosmeticPageMedia; alt: string; gradient: string }[]).map((item, i) => (
               <motion.div
                 key={i}
-                className={`aspect-square bg-gradient-to-br ${gradient} border ${SILVER_BORDER} overflow-hidden relative group`}
+                className={`aspect-square border ${SILVER_BORDER} overflow-hidden relative group`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: (i + 1) * 0.07 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(5,10,92,0.03)_0%,transparent_60%)]" />
+                <EditorialImage
+                  src={cosmeticMedia[item.key]}
+                  alt={item.alt}
+                  className="absolute inset-0 w-full h-full"
+                  fallbackGradient={item.gradient}
+                  frame={false}
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(5,10,92,0.03)_0%,transparent_60%)] pointer-events-none" />
               </motion.div>
             ))}
           </div>
