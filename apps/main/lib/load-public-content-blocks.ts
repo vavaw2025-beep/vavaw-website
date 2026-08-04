@@ -51,11 +51,14 @@ export async function loadPublicContentBlocks({
     let query = supabase
       .from('content_blocks')
       .select('*')
-      .in('site_key', [siteKey, 'main']) // Support siteKey or 'main' as requested
+      .eq('site_key', 'main')
       .eq('page_path', pagePath)
       .order('sort_order', { ascending: true });
 
-    // Fetch all (active + inactive) to compute metrics
+    if (!isPreview) {
+      query = query.eq('is_active', true);
+    }
+
     const { data, error } = await query;
 
     if (error) {
@@ -77,15 +80,14 @@ export async function loadPublicContentBlocks({
       };
     }
 
-    // Filter to exact match site key
-    const validBlocks = data.filter(b => b.site_key === siteKey || b.site_key === 'main' || b.site_key === 'cosmetic');
+    const activeBlocks = data.filter(b => b.is_active);
     
-    const rawCount = validBlocks.length;
-    const activeBlocks = validBlocks.filter(b => b.is_active);
+    // In this updated query, data should already be filtered by is_active if not in preview mode.
+    // We compute lengths for debug badge.
+    const rawCount = data.length;
     const activeCount = activeBlocks.length;
 
-    // Filter out inactive blocks unless in preview mode
-    const blocksToReturn = isPreview ? validBlocks : activeBlocks;
+    const blocksToReturn = isPreview ? data : activeBlocks;
     
     if (blocksToReturn.length === 0 && !isPreview) {
        return {
@@ -97,17 +99,23 @@ export async function loadPublicContentBlocks({
        };
     }
 
-    const normalizedBlocks: NormalizedContentBlock[] = blocksToReturn.map(block => ({
-      id: block.id,
-      siteKey: block.site_key,
-      pagePath: block.page_path,
-      blockType: block.block_type,
-      content: block.content as Record<string, unknown>,
-      sortOrder: block.sort_order,
-      isActive: block.is_active,
-    }));
-
-    normalizedBlocks.sort((a, b) => a.sortOrder - b.sortOrder);
+    const normalizedBlocks: NormalizedContentBlock[] = blocksToReturn.map(block => {
+      // Safely resolve the section key according to actual DB schema
+      const rawSectionKey = block.block_type ?? (block as any).blockType ?? block.content?.sectionKey ?? '';
+      
+      return {
+        id: block.id,
+        siteKey: block.site_key,
+        pagePath: block.page_path,
+        blockType: block.block_type, // The DB column block_type
+        content: {
+          ...(block.content as Record<string, unknown>),
+          sectionKey: rawSectionKey // Inject it safely so mapping doesn't break
+        },
+        sortOrder: block.sort_order,
+        isActive: block.is_active,
+      };
+    });
 
     return {
       blocks: normalizedBlocks,

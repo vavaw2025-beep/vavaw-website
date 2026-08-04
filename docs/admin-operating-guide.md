@@ -281,24 +281,21 @@ For the VAVAW brand identity, we use an image-based wordmark logo rather than pl
 3. Select the appropriate **Brand Asset Slot** (e.g., "Main Logo White").
 4. Upload. The system will automatically use the newest uploaded image for that slot across the public sites. You do not need to delete the old logos; the newest one always takes precedence.
 
-## 8. Cosmetic Page Management
+## 8. Cosmetic Page Management (Admin UX Studio)
 
 The `/cosmetic` page consists of two distinct areas:
-1. **The Cosmetic Hero/Banner**: Managed via the Brand Config (or statically defined). It cannot be managed via the dynamic CMS at this time to ensure brand integrity and performance.
-2. **The Lower Editorial Sections**: Managed dynamically via the Admin Dashboard.
+1. **The Cosmetic Hero/Banner**: Managed via the Brand Config (or statically defined). It cannot be managed via the dynamic CMS to ensure brand integrity.
+2. **The Lower Editorial Sections**: Managed dynamically via the Admin Dashboard's redesigned **Cosmetic Page** (Admin UX Studio).
 
-### Editing Cosmetic Content
-1. Navigate to **Cosmetic Page** in the Admin sidebar.
-2. The dashboard displays all content blocks assigned to `/cosmetic`.
-3. Click **Edit** on any block to modify its title, eyebrow text, description, CTA, or JSON payload (for complex items like product lists or active ingredients).
-4. Saving a block will automatically update the public cosmetic page.
+The Admin UX Studio is designed into several Vietnamese tabs for easy non-technical content management:
+- **Tổng quan**: View quick statistics (total, active, inactive sections) and missing media counts.
+- **Nội dung trang**: Manage the 9 core page sections (Triết lý thương hiệu, Bộ sản phẩm phục hồi, Quy trình chăm sóc, vv.). Toggles permit quick hide/show, and the edit forms allow updating title, description, and CTA fields. An Advanced JSON field is available collapsed for developers.
+- **Sản phẩm**: A specialized, non-technical form to edit the 6 cosmetic products (names, types, descriptions, benefit tags, ingredients list, and media slots).
+- **Thành phần**: A friendly repeater editor to add, remove, or change order of active ingredients.
+- **Quy trình**: A friendly repeater editor to manage steps of the daily skincare routine.
+- **Hình ảnh**: The Media Slot Manager. Displays slots, recommended sizes (e.g. 1600x2000 for product feature, 1200x1500 for product cards), and allows:
+  - **Tải ảnh**: Prefills slot/purpose and redirects to upload.
+  - **Chọn từ thư viện**: Opens a library picker dialog showing the newest 50 images to pick and assign directly.
+  - **Gỡ khỏi slot**: Safely unassigns the image without deleting the file from storage (marks it as archived).
 
-### Uploading Cosmetic Media
-The lower sections of the cosmetic page rely on highly specific media slots (e.g., `cosmetic-product-luminous-set`, `cosmetic-gallery-skin`).
-1. Navigate to **Cosmetic Page** in the Admin sidebar.
-2. Look at the **Media Slots** panel on the right.
-3. If a slot is missing an image, click **Upload**. This will take you to the Media Upload form with the correct parameters pre-filled.
-4. Upload your asset (typically a portrait image 1600x2000 or square texture 1600x1600).
-5. The public site will instantly update to show the uploaded image instead of the fallback gradient placeholder.
-
-*(Status: Phase 62D — Cosmetic CMS end-to-end verified)*
+*(Status: Phase 63 — Cosmetic Page Admin UX Studio verified and production-ready)*

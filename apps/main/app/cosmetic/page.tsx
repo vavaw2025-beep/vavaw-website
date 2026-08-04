@@ -75,16 +75,17 @@ export default async function CosmeticPage() {
         <div className="fixed bottom-4 right-4 bg-black/90 backdrop-blur-sm text-white text-xs p-3 rounded-lg z-50 shadow-lg border border-white/10 max-w-sm pointer-events-none">
           <div className="font-semibold mb-2 border-b border-white/20 pb-1">Cosmetic CMS Debug</div>
           <div className="space-y-1">
-            <div><span className="opacity-50">Source:</span> {source}</div>
+            <div><span className="opacity-50">CMS Source env:</span> {process.env.CMS_DATA_SOURCE || 'missing'}</div>
+            <div><span className="opacity-50">Content Source:</span> {source}</div>
             <div><span className="opacity-50">Fallback Used:</span> {blocks.length === 0 ? 'true' : 'false'}</div>
-            <div><span className="opacity-50">Total Blocks:</span> {rawCount ?? 0}</div>
-            <div><span className="opacity-50">Active Blocks:</span> {activeCount ?? 0}</div>
+            <div><span className="opacity-50">Raw/Active Blocks:</span> {rawCount ?? 0} / {activeCount ?? 0}</div>
+            <div><span className="opacity-50">Mapped Sections:</span> {blocks.length}</div>
             {fallbackReason && (
               <div className="text-red-400"><span className="opacity-50 text-white">Reason:</span> {fallbackReason}</div>
             )}
             {blocks.length > 0 && (
               <>
-                <div className="mt-2 pt-2 border-t border-white/20"><span className="opacity-50">First Block Key:</span> {String(blocks[0].content?.sectionKey || blocks[0].blockType || 'unknown')}</div>
+                <div className="mt-2 pt-2 border-t border-white/20"><span className="opacity-50">First Block Type:</span> {String(blocks[0].blockType || 'unknown')}</div>
                 <div className="truncate"><span className="opacity-50">First Block Title:</span> {String(blocks[0].content?.title || 'none')}</div>
               </>
             )}

@@ -1,22 +1,46 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Upload, XCircle, CheckCircle2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { uploadMediaAction } from './actions';
 import { Suspense } from 'react';
 
+const HUMAN_SLOTS: Record<string, string> = {
+  'cosmetic-product-luminous-set': 'Ảnh bộ sản phẩm Luminous Set',
+  'cosmetic-product-regenaglow-cream': 'Kem dưỡng Regenaglow Nourish Cream',
+  'cosmetic-product-calmiance-gel': 'Gel phục hồi Calmiance Gel',
+  'cosmetic-product-renew-ampoule': 'Tinh chất Renew Ampoule',
+  'cosmetic-product-p30-moisturizer': 'Kem dưỡng ẩm P30 Moisturizer',
+  'cosmetic-product-p30-toner': 'Toner cân bằng P30 Toner',
+  'cosmetic-premium-program': 'Premium Program',
+  'cosmetic-gallery-ritual-panel': 'Ảnh banner quy trình Ritual Panel',
+  'cosmetic-gallery-product-set': 'Thư viện - Bộ sản phẩm overview',
+  'cosmetic-gallery-texture': 'Thư viện - Kết cấu sản phẩm',
+  'cosmetic-gallery-clinic': 'Thư viện - Phòng khám / Trị liệu',
+  'cosmetic-gallery-skin': 'Thư viện - Làn da cận cảnh',
+  'cosmetic-gallery-serum': 'Thư viện - Tinh chất serum cận cảnh',
+  'cosmetic-gallery-packaging': 'Thư viện - Bao bì sản phẩm',
+};
+
 function UploadFormInner() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
+
+  const purposeParam = searchParams.get('purpose');
+  const slotParam = searchParams.get('slot');
 
   const [siteKey, setSiteKey] = useState('main');
   const [type, setType] = useState('image');
   const [altText, setAltText] = useState('');
   const [brandSlot, setBrandSlot] = useState('');
-  
-  const purposeParam = searchParams.get('purpose');
-  const slotParam = searchParams.get('slot');
+
+  useEffect(() => {
+    if (purposeParam === 'cosmetic-page-media') {
+      setSiteKey('main');
+      setType('image');
+    }
+  }, [purposeParam]);
 
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -97,7 +121,16 @@ function UploadFormInner() {
         </div>
       )}
 
-      {purposeParam && slotParam && (
+      {purposeParam === 'cosmetic-page-media' && slotParam && (
+        <div className="p-3 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs rounded-md">
+          <strong>Vị trí tải lên:</strong> {HUMAN_SLOTS[slotParam] || slotParam} ({slotParam})
+          <p className="mt-1 text-[11px] text-slate-500">
+            Ảnh này sẽ được dùng cho trang /cosmetic tại vị trí: {HUMAN_SLOTS[slotParam] || slotParam}.
+          </p>
+        </div>
+      )}
+
+      {purposeParam && purposeParam !== 'cosmetic-page-media' && slotParam && (
         <div className="p-3 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs rounded-md">
           <strong>Uploading for:</strong> {slotParam} (Purpose: {purposeParam})
         </div>
@@ -105,7 +138,7 @@ function UploadFormInner() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
+          <div className={purposeParam === 'cosmetic-page-media' ? 'hidden' : ''}>
             <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Site Key *</label>
             <select
               value={siteKey}
@@ -120,7 +153,7 @@ function UploadFormInner() {
             </select>
           </div>
 
-          <div>
+          <div className={purposeParam === 'cosmetic-page-media' ? 'hidden' : ''}>
             <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Asset Type *</label>
             <select
               value={type}

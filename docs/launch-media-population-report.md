@@ -67,6 +67,5 @@ If `CMS_DATA_SOURCE=static`, Admin hero changes will not appear on public homepa
 > **Phase 60F Note**: `/cosmetic` lower page editorial layout fully redesigned. 9 new sections added based on VAVAW brochure product content: Brand Philosophy / RAW Skincare System, Signature Collection Overview, Hero Product Feature (Luminous Revitalization Sheer Set), Product Editorial Cards (5 products), Daily Clinical Ritual (5-step), Clinical Ingredients (8 actives), Premium Program, Editorial Gallery, Final CTA. No CMS changes. No broken images. No placeholder text exposed to visitors. Gallery section uses clean CSS gradient panels as placeholders until real product photography is uploaded via Admin.
 
 > **Phase 62D Note**: Cosmetic CMS end-to-end verified. Admin /cosmetic-page successfully reads and updates `content_blocks` (9 blocks) and maps media uploads to the 14 named `cosmetic-page-media` slots via `media_assets` metadata.
-
-M e d i a   c o n t i n u i t y   m a p p e d   f o r   d e s t i n a t i o n   p a g e s  
- D e s t i n a t i o n   h e r o e s   m a p   t o   m a i n   h e r o   b a c k g r o u n d   i m a g e s
+>
+> **Phase 63 Note**: Cosmetic Page Admin UX Studio completed. Built a tabbed Vietnamese administrative dashboard with specialized product/ingredient/ritual editors. Enhanced Media Slots Manager to assign existing images via a library picker, upload new assets, or remove assignments by archiving metadata without deleting files. Updated public media loader to check and ignore archived slot files.

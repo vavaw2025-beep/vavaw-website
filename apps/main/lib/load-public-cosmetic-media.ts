@@ -100,8 +100,9 @@ export async function loadPublicCosmeticMedia(
   try {
     const { data: assets, error } = await supabase
       .from('media_assets')
-      .select('url, metadata, created_at')
+      .select('url, metadata, created_at, updated_at')
       .eq('type', 'image')
+      .order('updated_at', { ascending: false, nullsFirst: false })
       .order('created_at', { ascending: false })
       .limit(200);
 
@@ -113,7 +114,9 @@ export async function loadPublicCosmeticMedia(
     for (const asset of assets) {
       const purpose = asset.metadata?.purpose;
       const slot: string | undefined = asset.metadata?.slot;
+      const archivedFromSlot = asset.metadata?.archivedFromSlot;
 
+      if (archivedFromSlot) continue;
       if (purpose !== 'cosmetic-page-media' || !slot) continue;
 
       const key = SLOT_MAP[slot];
