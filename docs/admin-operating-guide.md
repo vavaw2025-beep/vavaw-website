@@ -280,3 +280,23 @@ For the VAVAW brand identity, we use an image-based wordmark logo rather than pl
 2. Select the file.
 3. Select the appropriate **Brand Asset Slot** (e.g., "Main Logo White").
 4. Upload. The system will automatically use the newest uploaded image for that slot across the public sites. You do not need to delete the old logos; the newest one always takes precedence.
+
+## 8. Cosmetic Page Management
+
+The `/cosmetic` page consists of two distinct areas:
+1. **The Cosmetic Hero/Banner**: Managed via the Brand Config (or statically defined). It cannot be managed via the dynamic CMS at this time to ensure brand integrity and performance.
+2. **The Lower Editorial Sections**: Managed dynamically via the Admin Dashboard.
+
+### Editing Cosmetic Content
+1. Navigate to **Cosmetic Page** in the Admin sidebar.
+2. The dashboard displays all content blocks assigned to `/cosmetic`.
+3. Click **Edit** on any block to modify its title, eyebrow text, description, CTA, or JSON payload (for complex items like product lists or active ingredients).
+4. Saving a block will automatically update the public cosmetic page.
+
+### Uploading Cosmetic Media
+The lower sections of the cosmetic page rely on highly specific media slots (e.g., `cosmetic-product-luminous-set`, `cosmetic-gallery-skin`).
+1. Navigate to **Cosmetic Page** in the Admin sidebar.
+2. Look at the **Media Slots** panel on the right.
+3. If a slot is missing an image, click **Upload**. This will take you to the Media Upload form with the correct parameters pre-filled.
+4. Upload your asset (typically a portrait image 1600x2000 or square texture 1600x1600).
+5. The public site will instantly update to show the uploaded image instead of the fallback gradient placeholder.

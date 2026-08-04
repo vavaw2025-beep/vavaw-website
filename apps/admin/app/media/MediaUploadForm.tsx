@@ -2,15 +2,21 @@
 
 import { useState, useRef } from 'react';
 import { Upload, XCircle, CheckCircle2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { uploadMediaAction } from './actions';
+import { Suspense } from 'react';
 
-export function MediaUploadForm() {
+function UploadFormInner() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
 
   const [siteKey, setSiteKey] = useState('main');
   const [type, setType] = useState('image');
   const [altText, setAltText] = useState('');
   const [brandSlot, setBrandSlot] = useState('');
+  
+  const purposeParam = searchParams.get('purpose');
+  const slotParam = searchParams.get('slot');
 
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +53,8 @@ export function MediaUploadForm() {
     if (brandSlot) {
       formData.append('brand_slot', brandSlot);
     }
+    if (purposeParam) formData.append('purpose', purposeParam);
+    if (slotParam) formData.append('slot', slotParam);
 
     try {
       const result = await uploadMediaAction(formData);
@@ -86,6 +94,12 @@ export function MediaUploadForm() {
         <div className="p-3 bg-green-50 border border-green-200 text-green-700 text-xs rounded-md flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-green-600" />
           <span>{success}</span>
+        </div>
+      )}
+
+      {purposeParam && slotParam && (
+        <div className="p-3 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs rounded-md">
+          <strong>Uploading for:</strong> {slotParam} (Purpose: {purposeParam})
         </div>
       )}
 
@@ -180,5 +194,13 @@ export function MediaUploadForm() {
         </div>
       </form>
     </div>
+  );
+}
+
+export function MediaUploadForm() {
+  return (
+    <Suspense fallback={<div>Loading upload form...</div>}>
+      <UploadFormInner />
+    </Suspense>
   );
 }

@@ -49,9 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-import { ContentBlockRenderer } from '../../components/content-block-renderer';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
-
 import { SiteFooter } from '@vavaw/ui';
 
 export default async function CosmeticPage() {
@@ -60,8 +58,10 @@ export default async function CosmeticPage() {
   }
 
   const isPreview = (await draftMode()).isEnabled;
+  
+  // Load content blocks for cosmetic page (lower sections)
   const { blocks, source } = await loadPublicContentBlocks({
-    siteKey: 'cosmetic',
+    siteKey: 'main',
     pagePath: '/cosmetic',
     isPreview
   });
@@ -69,29 +69,20 @@ export default async function CosmeticPage() {
   const heroMedia = await loadPublicHeroMedia('Cosmetic', isPreview);
   const cosmeticMedia = await loadPublicCosmeticMedia(isPreview);
 
-  if (blocks.length > 0) {
-    return (
-      <>
-        {process.env.NODE_ENV === 'development' && (
-          <div className="fixed bottom-4 right-4 bg-black text-white text-xs px-2 py-1 rounded z-50 shadow">
-            Content: {source} {isPreview ? '(Preview)' : ''}
-          </div>
-        )}
-        <ContentBlockRenderer blocks={blocks} />
-        <SiteFooter variant="cosmetic" />
-      </>
-    );
-  }
-
   return (
     <>
       {process.env.NODE_ENV === 'development' && (
         <div className="fixed bottom-4 right-4 bg-black text-white text-xs px-2 py-1 rounded z-50 shadow">
-          Content: static (fallback)
+          Content: {blocks.length > 0 ? source : 'static (fallback)'}
         </div>
       )}
       <Suspense fallback={<div className="min-h-[82vh] bg-[#F7F9FC]" />}>
-        <CosmeticContent entry={cosmeticEntry} heroMedia={heroMedia} cosmeticMedia={cosmeticMedia} />
+        <CosmeticContent 
+          entry={cosmeticEntry} 
+          heroMedia={heroMedia} 
+          cosmeticMedia={cosmeticMedia} 
+          blocks={blocks}
+        />
       </Suspense>
       <SiteFooter variant="cosmetic" />
     </>

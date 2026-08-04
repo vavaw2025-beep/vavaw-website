@@ -22,6 +22,16 @@ interface CosmeticContentProps {
   entry: BusinessEntry;
   heroMedia?: PublicHeroMedia | null;
   cosmeticMedia?: CosmeticPageMedia;
+  blocks?: any[];
+}
+
+function getBlockContent(blocks: any[] | undefined, type: string, fallback: any = {}): any {
+  if (!blocks || !Array.isArray(blocks)) return fallback;
+  const block = blocks.find(b => b.block_type === type);
+  if (!block || !block.content) return fallback;
+  
+  // Merge fallback so we always have the shape we expect, even if JSON is partial
+  return { ...fallback, ...block.content };
 }
 
 // ─── Reusable editorial image block ───────────────────────────────────────────
@@ -110,7 +120,7 @@ function Divider() {
 
 // ─── Main component ────────────────────────────────────────────────────────────
 
-export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: CosmeticContentProps) {
+export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks = [] }: CosmeticContentProps) {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   const handleImageError = (path: string) => {
@@ -127,6 +137,141 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
   const heroStagger: Variants = {
     visible: { transition: { staggerChildren: fromMain ? 0.1 : 0.2 } },
   };
+
+  const brandPhilosophy = getBlockContent(blocks, 'cosmetic-brand-philosophy', {
+    title: 'Scientific beauty, refined into a pure Korean skincare ritual.',
+    eyebrow: 'The Premium RAW Skincare System',
+    description: 'VAVAW is a clinical Korean cosmetic system designed to restore the skin from its origin — pure, balanced, and resilient.',
+    items: [
+      { num: '01', title: 'Scientific Beauty', desc: 'Clinical skincare system shaped by professional care standards — developed for visible, lasting results.' },
+      { num: '02', title: 'Premium Program', desc: 'Personalized skincare experience for modern skin concerns — designed for spa, clinic, and home ritual.' },
+      { num: '03', title: 'Functional Cosmetics', desc: 'Korean-developed formulas designed for visible skin recovery, balancing efficacy with elegance.' }
+    ]
+  });
+
+  const signatureCollection = getBlockContent(blocks, 'cosmetic-signature-collection', {
+    title: 'Signature Recovery Collection',
+    eyebrow: 'Signature Recovery Collection',
+    description: 'A complete Korean clinical skincare ritual for recovery, hydration, radiance, and skin barrier support.',
+    featuredProduct: {
+      name: 'Luminous Revitalization Sheer Set',
+      description: 'A complete recovery set designed to support the skin barrier and restore a luminous, balanced appearance.',
+      ingredients: ['Exosome', 'Collagen', 'Peptide Complex']
+    },
+    ctaLabel: 'Explore the Ritual',
+    ctaHref: '/contact?type=cosmetic_interest',
+    items: [
+      { name: 'Regenaglow Nourish Sheer Cream', type: 'Kem dưỡng ẩm', key: 'Collagen · Peptide' },
+      { name: 'Calmiance Superior Sheer Gel', type: 'Gel phục hồi', key: 'Cica 7 Complex · Aloe' },
+      { name: 'Gentle Activation Renew Ampoule', type: 'Tinh chất tái sinh', key: 'Exosome · Bakuchiol' },
+      { name: 'P30 Boost Facial Moisturizer', type: 'Kem dưỡng ẩm', key: 'Hyaluronic Acid · Peptide' },
+      { name: 'P30 Boost Facial Hydrating Toner', type: 'Toner cân bằng', key: 'Aloe · Oriental Botanical' }
+    ]
+  });
+
+  const heroProduct = getBlockContent(blocks, 'cosmetic-hero-product', {
+    title: 'Luminous Revitalization\nSheer Set',
+    eyebrow: 'Featured Product',
+    description: 'A complete recovery set designed to support the skin barrier and restore a luminous, balanced appearance through a synergistic blend of clinical actives.',
+    ingredients: ['Exosome', 'Collagen', 'Peptide Complex'],
+    benefits: ['Skin barrier recovery', 'Moisture protection', 'Luminous radiance glow'],
+    ctaLabel: 'Start an Inquiry',
+    ctaHref: '/contact?type=cosmetic_interest'
+  });
+
+  const productCards = getBlockContent(blocks, 'cosmetic-product-cards', {
+    title: 'Clinical Formulas',
+    eyebrow: 'The Collection',
+    items: [
+      {
+        name: 'Regenaglow Nourish Sheer Cream',
+        type: 'Kem dưỡng phục hồi',
+        ingredients: 'Collagen · Peptide Complex · Niacinamide',
+        benefits: ['Deep nourishment', 'Skin renewal', 'Anti-ageing support'],
+        desc: 'A rich yet lightweight cream that deeply nourishes while encouraging cellular renewal for visibly rejuvenated skin.',
+      },
+      {
+        name: 'Calmiance Superior Sheer Gel',
+        type: 'Gel phục hồi & làm dịu',
+        ingredients: 'Cica 7 Complex · Aloe Extract · Centella',
+        benefits: ['Calms sensitivity', 'Barrier repair', 'Hydration lock'],
+        desc: 'A soothing gel formulated with a seven-extract Cica complex to calm reactive skin and restore the protective barrier.',
+      },
+      {
+        name: 'Gentle Activation Renew Ampoule',
+        type: 'Tinh chất tái sinh chuyên sâu',
+        ingredients: 'Exosome · Bakuchiol · Peptide',
+        benefits: ['Cell renewal', 'Gentle exfoliation', 'Luminosity boost'],
+        desc: 'A next-generation ampoule harnessing Exosome technology and plant-derived Bakuchiol for visible skin renewal without irritation.',
+      },
+      {
+        name: 'P30 Boost Facial Moisturizer',
+        type: 'Kem dưỡng ẩm tăng cường',
+        ingredients: 'Hyaluronic Acid · Peptide · Ceramide',
+        benefits: ['Moisture surge', "Plumping effect", 'Skin softness'],
+        desc: 'A high-performance moisturizer delivering an immediate and sustained surge of hydration for plumper, smoother skin.',
+      },
+      {
+        name: 'P30 Boost Facial Hydrating Toner',
+        type: 'Toner cân bằng & hydrate',
+        ingredients: 'Aloe · Oriental Botanical Complex · HA',
+        benefits: ['pH balancing', 'Prep skin layer', 'Instant refresh'],
+        desc: 'A lightweight preparatory toner that balances, hydrates, and primes the skin to maximize subsequent skincare absorption.',
+      },
+    ]
+  });
+
+  const dailyRitual = getBlockContent(blocks, 'cosmetic-daily-ritual', {
+    title: 'Daily Clinical Ritual',
+    eyebrow: 'Daily Clinical Ritual',
+    items: [
+      { step: '01', name: 'Cleanse', detail: 'Begin with a gentle clinical cleanser to remove impurities without disrupting the skin microbiome.' },
+      { step: '02', name: 'Hydrating Toner', detail: 'P30 Boost Facial Hydrating Toner — balance pH and prime for maximum absorption.' },
+      { step: '03', name: 'Renew Ampoule', detail: 'Gentle Activation Renew Ampoule — activate cellular renewal and luminosity.' },
+      { step: '04', name: 'Moisturizer / Cream', detail: 'P30 Boost Facial Moisturizer or Regenaglow Nourish Sheer Cream — seal in moisture.' },
+      { step: '05', name: 'Sheer Gel / Recovery Care', detail: 'Calmiance Superior Sheer Gel — calm, protect, and fortify the skin barrier.' },
+    ]
+  });
+
+  const ingredientsBlock = getBlockContent(blocks, 'cosmetic-ingredients', {
+    title: 'Clinical Ingredients',
+    eyebrow: 'Active Ingredients',
+    items: [
+      { name: 'Exosome', role: 'Cellular regeneration & recovery' },
+      { name: 'Collagen', role: 'Skin firmness & elasticity support' },
+      { name: 'Peptide Complex', role: 'Anti-ageing signal communication' },
+      { name: 'Bakuchiol', role: 'Gentle plant-derived retinol alternative' },
+      { name: 'Cica 7 Complex', role: 'Barrier repair & soothing complex' },
+      { name: 'Hyaluronic Acid', role: 'Multi-depth moisture binding' },
+      { name: 'Aloe Extract', role: 'Calming & instant hydration' },
+      { name: 'Oriental Botanicals', role: 'Traditional Korean herbal balance' },
+    ]
+  });
+
+  const premiumProgram = getBlockContent(blocks, 'cosmetic-premium-program', {
+    title: 'Premium Program',
+    eyebrow: 'Premium Program',
+    description: 'A personalized skincare experience designed for spa, clinic, and professional treatment environments — where expertise meets Korean clinical precision.',
+    items: [
+      { icon: '◆', text: 'Skin recovery ritual tailored to individual skin concerns' },
+      { icon: '◆', text: 'Professional treatment compatibility for spa and clinic use' },
+      { icon: '◆', text: 'Personalized care guidance from certified skincare specialists' },
+    ],
+    ctaLabel: 'Start a Consultation',
+    ctaHref: '/contact?type=cosmetic_interest'
+  });
+
+  const editorialGallery = getBlockContent(blocks, 'cosmetic-editorial-gallery', {
+    title: 'The Ritual Aesthetic',
+    eyebrow: 'Visual Harmony'
+  });
+
+  const finalCta = getBlockContent(blocks, 'cosmetic-final-cta', {
+    title: 'Premium RAW Skincare System',
+    eyebrow: 'VAVAW Cosmetic',
+    ctaLabel: 'Start an Inquiry',
+    ctaHref: '/contact?type=cosmetic_interest'
+  });
 
   const showDebug = process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
   const hasValidHeroImage = heroMedia?.backgroundImageUrl && isValidHeroImageUrl(heroMedia.backgroundImageUrl);
@@ -239,17 +384,17 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
             variants={stagger}
           >
             <motion.div variants={fadeUp}>
-              <SectionLabel>The Premium RAW Skincare System</SectionLabel>
+              <SectionLabel>{brandPhilosophy.eyebrow}</SectionLabel>
             </motion.div>
             <motion.h2
               variants={fadeUp}
               className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-[#050A5C] mb-6 leading-tight"
             >
-              Scientific beauty, refined into a pure Korean skincare ritual.
+              {brandPhilosophy.title}
             </motion.h2>
             <Divider />
-            <motion.p variants={fadeUp} className="text-[#6B7280] text-base md:text-lg font-light leading-relaxed">
-              VAVAW is a clinical Korean cosmetic system designed to restore the skin from its origin — pure, balanced, and resilient.
+            <motion.p variants={fadeUp} className="text-[#6B7280] text-base md:text-lg font-light leading-relaxed whitespace-pre-wrap">
+              {brandPhilosophy.description}
             </motion.p>
           </motion.div>
 
@@ -261,23 +406,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
             viewport={{ once: true, margin: '-60px' }}
             variants={stagger}
           >
-            {[
-              {
-                num: '01',
-                title: 'Scientific Beauty',
-                desc: 'Clinical skincare system shaped by professional care standards — developed for visible, lasting results.',
-              },
-              {
-                num: '02',
-                title: 'Premium Program',
-                desc: 'Personalized skincare experience for modern skin concerns — designed for spa, clinic, and home ritual.',
-              },
-              {
-                num: '03',
-                title: 'Functional Cosmetics',
-                desc: 'Korean-developed formulas designed for visible skin recovery, balancing efficacy with elegance.',
-              },
-            ].map((card) => (
+            {(brandPhilosophy.items || []).map((card: any) => (
               <motion.div
                 key={card.num}
                 variants={fadeUp}
@@ -309,16 +438,16 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
             variants={stagger}
           >
             <motion.div variants={fadeUp}>
-              <SectionLabel>Signature Recovery Collection</SectionLabel>
+              <SectionLabel>{signatureCollection.eyebrow}</SectionLabel>
             </motion.div>
             <motion.h2
               variants={fadeUp}
               className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight max-w-xl leading-snug"
             >
-              Signature Recovery Collection
+              {signatureCollection.title}
             </motion.h2>
             <motion.p variants={fadeUp} className="text-[#6B7280] font-light mt-4 max-w-lg text-base leading-relaxed">
-              A complete Korean clinical skincare ritual for recovery, hydration, radiance, and skin barrier support.
+              {signatureCollection.description}
             </motion.p>
           </motion.div>
 
@@ -337,14 +466,14 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
                   Featured Set
                 </span>
                 <h3 className="text-2xl md:text-3xl font-light text-[#050A5C] leading-snug mb-4">
-                  Luminous Revitalization Sheer Set
+                  {signatureCollection.featuredProduct?.name}
                 </h3>
                 <div className="w-8 h-px bg-[#050A5C]/25 my-5" />
                 <p className="text-sm text-[#6B7280] font-light leading-relaxed mb-6">
-                  A complete recovery set designed to support the skin barrier and restore a luminous, balanced appearance.
+                  {signatureCollection.featuredProduct?.description}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {['Exosome', 'Collagen', 'Peptide Complex'].map((ing) => (
+                  {(signatureCollection.featuredProduct?.ingredients || []).map((ing: string) => (
                     <span key={ing} className={`text-[10px] tracking-[0.15em] uppercase border ${SILVER_BORDER} px-3 py-1 text-[#050A5C] font-medium`}>
                       {ing}
                     </span>
@@ -352,21 +481,15 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
                 </div>
               </div>
               <CosmeticCtaTracker
-                label="Explore the Ritual"
-                href="/contact?type=cosmetic_interest"
+                label={signatureCollection.ctaLabel || "Explore the Ritual"}
+                href={signatureCollection.ctaHref || "/contact"}
                 className="mt-8 w-fit h-[46px] px-8 flex items-center justify-center border border-[#050A5C] text-[#050A5C] text-[11px] tracking-[0.2em] uppercase hover:bg-[#050A5C] hover:text-white transition-colors duration-300"
               />
             </motion.div>
 
             {/* Supporting products grid */}
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {[
-                { name: 'Regenaglow Nourish Sheer Cream', type: 'Kem dưỡng ẩm', key: 'Collagen · Peptide' },
-                { name: 'Calmiance Superior Sheer Gel', type: 'Gel phục hồi', key: 'Cica 7 Complex · Aloe' },
-                { name: 'Gentle Activation Renew Ampoule', type: 'Tinh chất tái sinh', key: 'Exosome · Bakuchiol' },
-                { name: 'P30 Boost Facial Moisturizer', type: 'Kem dưỡng ẩm', key: 'Hyaluronic Acid · Peptide' },
-                { name: 'P30 Boost Facial Hydrating Toner', type: 'Toner cân bằng', key: 'Aloe · Oriental Botanical' },
-              ].map((product, i) => (
+              {(signatureCollection.items || []).map((product: any, i: number) => (
                 <motion.div
                   key={i}
                   className={`border ${SILVER_BORDER} bg-white p-7 hover:border-[#050A5C]/30 hover:shadow-sm transition-all duration-400 group`}
@@ -422,24 +545,24 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
               variants={stagger}
             >
               <motion.div variants={fadeUp}>
-                <SectionLabel>Featured Product</SectionLabel>
+                <SectionLabel>{heroProduct.eyebrow}</SectionLabel>
               </motion.div>
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight leading-snug mb-4"
+                className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight leading-snug mb-4 whitespace-pre-line"
               >
-                Luminous Revitalization<br />Sheer Set
+                {heroProduct.title}
               </motion.h2>
               <Divider />
               <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-base leading-relaxed mb-8">
-                A complete recovery set designed to support the skin barrier and restore a luminous, balanced appearance through a synergistic blend of clinical actives.
+                {heroProduct.description}
               </motion.p>
 
               {/* Key ingredients */}
               <motion.div variants={fadeUp} className="mb-8">
                 <p className="text-[10px] tracking-[0.22em] uppercase text-[#050A5C]/50 font-semibold mb-4">Key Ingredients</p>
                 <div className="flex flex-wrap gap-2">
-                  {['Exosome', 'Collagen', 'Peptide Complex'].map((ing) => (
+                  {(heroProduct.ingredients || []).map((ing: string) => (
                     <span key={ing} className={`border ${SILVER_BORDER} px-4 py-2 text-[11px] tracking-[0.14em] uppercase text-[#050A5C] font-medium bg-[#F4F7FB]`}>
                       {ing}
                     </span>
@@ -451,7 +574,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
               <motion.div variants={fadeUp} className="mb-10">
                 <p className="text-[10px] tracking-[0.22em] uppercase text-[#050A5C]/50 font-semibold mb-4">Benefits</p>
                 <div className="space-y-3">
-                  {['Skin barrier recovery', 'Moisture protection', 'Luminous radiance glow'].map((b, i) => (
+                  {(heroProduct.benefits || []).map((b: string, i: number) => (
                     <div key={i} className="flex items-center gap-3">
                       <div className="w-1 h-1 rounded-full bg-[#050A5C]/50 flex-shrink-0" />
                       <span className="text-sm text-[#1F2933] font-light">{b}</span>
@@ -462,8 +585,8 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
 
               <motion.div variants={fadeUp}>
                 <CosmeticCtaTracker
-                  label="Start an Inquiry"
-                  href="/contact?type=cosmetic_interest"
+                  label={heroProduct.ctaLabel || "Start an Inquiry"}
+                  href={heroProduct.ctaHref || "/contact"}
                   className="w-full sm:w-auto h-[52px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[11px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors shadow-sm"
                 />
               </motion.div>
@@ -484,9 +607,9 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
             viewport={{ once: true, margin: '-60px' }}
             variants={stagger}
           >
-            <motion.div variants={fadeUp}><SectionLabel>The Collection</SectionLabel></motion.div>
+            <motion.div variants={fadeUp}><SectionLabel>{productCards.eyebrow}</SectionLabel></motion.div>
             <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight">
-              Clinical Formulas
+              {productCards.title}
             </motion.h2>
           </motion.div>
 
@@ -497,43 +620,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
             viewport={{ once: true, margin: '-40px' }}
             variants={staggerSlow}
           >
-            {[
-              {
-                name: 'Regenaglow Nourish Sheer Cream',
-                type: 'Kem dưỡng phục hồi',
-                ingredients: 'Collagen · Peptide Complex · Niacinamide',
-                benefits: ['Deep nourishment', 'Skin renewal', 'Anti-ageing support'],
-                desc: 'A rich yet lightweight cream that deeply nourishes while encouraging cellular renewal for visibly rejuvenated skin.',
-              },
-              {
-                name: 'Calmiance Superior Sheer Gel',
-                type: 'Gel phục hồi & làm dịu',
-                ingredients: 'Cica 7 Complex · Aloe Extract · Centella',
-                benefits: ['Calms sensitivity', 'Barrier repair', 'Hydration lock'],
-                desc: 'A soothing gel formulated with a seven-extract Cica complex to calm reactive skin and restore the protective barrier.',
-              },
-              {
-                name: 'Gentle Activation Renew Ampoule',
-                type: 'Tinh chất tái sinh chuyên sâu',
-                ingredients: 'Exosome · Bakuchiol · Peptide',
-                benefits: ['Cell renewal', 'Gentle exfoliation', 'Luminosity boost'],
-                desc: 'A next-generation ampoule harnessing Exosome technology and plant-derived Bakuchiol for visible skin renewal without irritation.',
-              },
-              {
-                name: 'P30 Boost Facial Moisturizer',
-                type: 'Kem dưỡng ẩm tăng cường',
-                ingredients: 'Hyaluronic Acid · Peptide · Ceramide',
-                benefits: ['Moisture surge', 'Plumping effect', 'Skin softness'],
-                desc: 'A high-performance moisturizer delivering an immediate and sustained surge of hydration for plumper, smoother skin.',
-              },
-              {
-                name: 'P30 Boost Facial Hydrating Toner',
-                type: 'Toner cân bằng & hydrate',
-                ingredients: 'Aloe · Oriental Botanical Complex · HA',
-                benefits: ['pH balancing', 'Prep skin layer', 'Instant refresh'],
-                desc: 'A lightweight preparatory toner that balances, hydrates, and primes the skin to maximize subsequent skincare absorption.',
-              },
-            ].map((product, i) => (
+            {(productCards.items || []).map((product: any, i: number) => (
               <motion.article
                 key={i}
                 variants={fadeUp}
@@ -558,7 +645,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
 
                 {/* Benefit tags */}
                 <div className="flex flex-wrap gap-2 mb-5">
-                  {product.benefits.map((b) => (
+                  {(product.benefits || []).map((b: string) => (
                     <span key={b} className={`text-[9px] tracking-[0.12em] uppercase border ${SILVER_BORDER} px-2.5 py-1 text-[#050A5C] font-medium bg-[#F4F7FB]`}>
                       {b}
                     </span>
@@ -587,20 +674,14 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
                 viewport={{ once: true, margin: '-60px' }}
                 variants={stagger}
               >
-                <motion.div variants={fadeUp}><SectionLabel>Daily Clinical Ritual</SectionLabel></motion.div>
+                <motion.div variants={fadeUp}><SectionLabel>{dailyRitual.eyebrow}</SectionLabel></motion.div>
                 <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight mb-12">
-                  Daily Clinical Ritual
+                  {dailyRitual.title}
                 </motion.h2>
               </motion.div>
 
               <div className="space-y-0">
-                {[
-                  { step: '01', name: 'Cleanse', detail: 'Begin with a gentle clinical cleanser to remove impurities without disrupting the skin microbiome.' },
-                  { step: '02', name: 'Hydrating Toner', detail: 'P30 Boost Facial Hydrating Toner — balance pH and prime for maximum absorption.' },
-                  { step: '03', name: 'Renew Ampoule', detail: 'Gentle Activation Renew Ampoule — activate cellular renewal and luminosity.' },
-                  { step: '04', name: 'Moisturizer / Cream', detail: 'P30 Boost Facial Moisturizer or Regenaglow Nourish Sheer Cream — seal in moisture.' },
-                  { step: '05', name: 'Sheer Gel / Recovery Care', detail: 'Calmiance Superior Sheer Gel — calm, protect, and fortify the skin barrier.' },
-                ].map((item, i) => (
+                {(dailyRitual.items || []).map((item: any, i: number) => (
                   <motion.div
                     key={i}
                     className={`flex gap-6 py-7 border-b ${SILVER_BORDER} group`}
@@ -655,9 +736,9 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
             viewport={{ once: true, margin: '-60px' }}
             variants={stagger}
           >
-            <motion.div variants={fadeUp}><SectionLabel>Active Ingredients</SectionLabel></motion.div>
+            <motion.div variants={fadeUp}><SectionLabel>{ingredientsBlock.eyebrow}</SectionLabel></motion.div>
             <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight">
-              Clinical Ingredients
+              {ingredientsBlock.title}
             </motion.h2>
           </motion.div>
 
@@ -668,16 +749,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
             viewport={{ once: true, margin: '-40px' }}
             variants={staggerSlow}
           >
-            {[
-              { name: 'Exosome', role: 'Cellular regeneration & recovery' },
-              { name: 'Collagen', role: 'Skin firmness & elasticity support' },
-              { name: 'Peptide Complex', role: 'Anti-ageing signal communication' },
-              { name: 'Bakuchiol', role: 'Gentle plant-derived retinol alternative' },
-              { name: 'Cica 7 Complex', role: 'Barrier repair & soothing complex' },
-              { name: 'Hyaluronic Acid', role: 'Multi-depth moisture binding' },
-              { name: 'Aloe Extract', role: 'Calming & instant hydration' },
-              { name: 'Oriental Botanicals', role: 'Traditional Korean herbal balance' },
-            ].map((ing) => (
+            {(ingredientsBlock.items || []).map((ing: any) => (
               <motion.div
                 key={ing.name}
                 variants={fadeUp}
@@ -727,24 +799,20 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
               viewport={{ once: true, margin: '-60px' }}
               variants={stagger}
             >
-              <motion.div variants={fadeUp}><SectionLabel>Premium Program</SectionLabel></motion.div>
+              <motion.div variants={fadeUp}><SectionLabel>{premiumProgram.eyebrow}</SectionLabel></motion.div>
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight leading-snug mb-4"
+                className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight leading-snug mb-4 whitespace-pre-wrap"
               >
-                Premium Program
+                {premiumProgram.title}
               </motion.h2>
               <Divider />
-              <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-base leading-relaxed mb-10">
-                A personalized skincare experience designed for spa, clinic, and professional treatment environments — where expertise meets Korean clinical precision.
+              <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-base leading-relaxed mb-10 whitespace-pre-wrap">
+                {premiumProgram.description}
               </motion.p>
 
               <motion.div variants={fadeUp} className="space-y-5 mb-10">
-                {[
-                  { icon: '◆', text: 'Skin recovery ritual tailored to individual skin concerns' },
-                  { icon: '◆', text: 'Professional treatment compatibility for spa and clinic use' },
-                  { icon: '◆', text: 'Personalized care guidance from certified skincare specialists' },
-                ].map((item, i) => (
+                {(premiumProgram.items || []).map((item: any, i: number) => (
                   <div key={i} className="flex items-start gap-4">
                     <span className="text-[8px] text-[#050A5C]/30 mt-1.5 flex-shrink-0">{item.icon}</span>
                     <p className="text-sm text-[#1F2933] font-light leading-relaxed">{item.text}</p>
@@ -754,8 +822,8 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
 
               <motion.div variants={fadeUp}>
                 <CosmeticCtaTracker
-                  label="Start a Consultation"
-                  href="/contact?type=cosmetic_interest"
+                  label={premiumProgram.ctaLabel || "Start a Consultation"}
+                  href={premiumProgram.ctaHref || "/contact?type=cosmetic_interest"}
                   className="w-full sm:w-auto h-[52px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[11px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors"
                 />
               </motion.div>
@@ -776,9 +844,9 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
             viewport={{ once: true }}
             variants={stagger}
           >
-            <motion.div variants={fadeUp}><SectionLabel>Visual Harmony</SectionLabel></motion.div>
+            <motion.div variants={fadeUp}><SectionLabel>{editorialGallery.eyebrow}</SectionLabel></motion.div>
             <motion.h2 variants={fadeUp} className="text-2xl md:text-3xl font-light text-[#050A5C] tracking-tight">
-              The Ritual Aesthetic
+              {editorialGallery.title}
             </motion.h2>
           </motion.div>
 
@@ -846,26 +914,26 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {} }: Cosmet
         >
           <motion.div variants={fadeUp}>
             <SectionLabel>
-              <span className="text-white/40">The Premium RAW Skincare System</span>
+              <span className="text-white/40">{finalCta.eyebrow}</span>
             </SectionLabel>
           </motion.div>
           <motion.h2
             variants={fadeUp}
-            className="text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-tight leading-tight mb-6"
+            className="text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-tight leading-tight mb-6 whitespace-pre-wrap"
           >
-            Experience the Premium RAW Skincare System
+            {finalCta.title}
           </motion.h2>
           <Divider />
-          <motion.p variants={fadeUp} className="text-white/60 font-light text-base leading-relaxed mb-12">
-            Discover a clinical Korean skincare ritual designed for luminous, balanced, resilient skin.
+          <motion.p variants={fadeUp} className="text-white/60 font-light text-base leading-relaxed mb-12 whitespace-pre-wrap">
+            {finalCta.description || 'Discover a clinical Korean skincare ritual designed for luminous, balanced, resilient skin.'}
           </motion.p>
           <motion.div
             variants={fadeUp}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <CosmeticCtaTracker
-              label="START AN INQUIRY"
-              href="/contact?type=cosmetic_interest"
+              label={finalCta.ctaLabel || "START AN INQUIRY"}
+              href={finalCta.ctaHref || "/contact?type=cosmetic_interest"}
               className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center bg-white text-[#050A5C] text-[12px] tracking-[0.2em] uppercase hover:bg-[#F4F7FB] transition-colors shadow-sm"
             />
             <CosmeticCtaTracker

@@ -38,6 +38,8 @@ export async function uploadMediaAction(formData: FormData) {
   const requestedType = (formData.get('type') as any) || 'image';
   const altText = (formData.get('alt_text') as string) || undefined;
   const brandSlot = (formData.get('brand_slot') as string) || undefined;
+  const purpose = (formData.get('purpose') as string) || undefined;
+  const slot = (formData.get('slot') as string) || undefined;
 
   if (!file || file.size === 0) {
     console.warn("[media] upload failed", { stage: 'missing_file', reason: 'No file provided', siteKey, assetType: requestedType });
@@ -112,7 +114,10 @@ export async function uploadMediaAction(formData: FormData) {
     const publicUrl = publicUrlData.publicUrl;
 
     const metadata: any = { bucket: 'vavaw-media', path: storagePath };
-    if (brandSlot) {
+    if (purpose && slot) {
+      metadata.purpose = purpose;
+      metadata.slot = slot;
+    } else if (brandSlot) {
       metadata.purpose = 'brand-logo';
       metadata.slot = brandSlot;
     }
