@@ -67,14 +67,15 @@ export async function createContentBlockAction(input: CreateContentBlockInput) {
     revalidatePath('/content');
     revalidateContent(input.site_key, input.page_path, 'content_created');
 
-    trackEvent('content_block_created', {
+    const createEventName = input.page_path === '/cosmetic' ? 'cosmetic_content_created' : 'content_block_created';
+    trackEvent(createEventName as any, {
       app: 'admin',
       entityType: 'content_block',
       entityId: data?.id,
       metadata: { role: profile.role },
     });
     await writeAuditLog({
-      action: 'content_block_created',
+      action: input.page_path === '/cosmetic' ? 'cosmetic_content_created' : 'content_block_created',
       entityType: 'content_block',
       entityId: data?.id,
       status: 'success',
@@ -115,14 +116,17 @@ export async function updateContentBlockAction(id: string, input: UpdateContentB
       revalidateContent(input.site_key, input.page_path, 'content_updated');
     }
 
-    trackEvent('content_block_updated', {
+    const eventPrefix = input.page_path === '/cosmetic' ? 'cosmetic_content_' : 'content_block_';
+    const actionName = (input.is_active !== undefined) ? `${eventPrefix}status_changed` : `${eventPrefix}updated`;
+
+    trackEvent(actionName as any, {
       app: 'admin',
       entityType: 'content_block',
       entityId: id,
       metadata: { role: profile.role },
     });
     await writeAuditLog({
-      action: 'content_block_updated',
+      action: actionName,
       entityType: 'content_block',
       entityId: id,
       status: 'success',
