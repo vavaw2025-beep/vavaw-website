@@ -25,6 +25,7 @@ const HUMAN_SLOTS: Record<string, { name: string; size: string }> = {
 };
 
 function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw-main.vercel.app';
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
 
@@ -148,7 +149,7 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
             Quay lại Cosmetic Page
           </Link>
           <a 
-            href="/cosmetic"
+            href={`${siteUrl}/cosmetic`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-sm rounded-lg transition inline-flex items-center justify-center gap-1.5"

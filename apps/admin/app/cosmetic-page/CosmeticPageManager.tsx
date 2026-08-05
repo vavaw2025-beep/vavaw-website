@@ -62,6 +62,7 @@ const BLOCK_NAMES: Record<string, string> = {
 };
 
 export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: CosmeticPageManagerProps) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw-main.vercel.app';
   const router = useRouter();
   const [blocks, setBlocks] = useState<ContentBlockRecord[]>(initialBlocks);
   const [activeTab, setActiveTab] = useState<'overview' | 'sections' | 'products' | 'ingredients' | 'ritual' | 'images' | 'preview'>('overview');
@@ -69,6 +70,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   // Modals & pickers
   const [editingBlock, setEditingBlock] = useState<ContentBlockRecord | null>(null);
   const [pickerOpenSlot, setPickerOpenSlot] = useState<string | null>(null);
+  const [pickerError, setPickerError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [globalSuccess, setGlobalSuccess] = useState<string | null>(null);
@@ -383,6 +385,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     if (!pickerOpenSlot) return;
 
     setIsSaving(true);
+    setPickerError(null);
     const res = await assignMediaAssetToSlot(mediaId, pickerOpenSlot);
     setIsSaving(false);
 
@@ -391,7 +394,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setPickerOpenSlot(null);
       router.refresh();
     } else {
-      alert(res.error || 'Có lỗi xảy ra.');
+      setPickerError(res.error || 'Có lỗi xảy ra.');
     }
   };
 
@@ -410,14 +413,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           <p className="text-sm text-slate-500 mt-1">Quản lý giao diện, nội dung và hình ảnh của trang mỹ phẩm /cosmetic.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link 
-            href="/cosmetic" 
+          <a 
+            href={`${siteUrl}/cosmetic`}
             target="_blank"
+            rel="noopener noreferrer"
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow transition flex items-center gap-1.5"
           >
             <span>Xem trang Public</span>
             <ExternalLink className="h-3.5 w-3.5" />
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -529,14 +533,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm space-y-4">
             <h3 className="font-semibold text-slate-950 text-base">Liên kết trang</h3>
             <div className="flex items-center gap-3">
-              <Link
-                href="/cosmetic"
+              <a
+                href={`${siteUrl}/cosmetic`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="px-4 py-2 border border-slate-200 text-slate-700 font-medium text-xs rounded-lg hover:bg-slate-50 inline-flex items-center gap-1.5 transition"
               >
                 <span>Xem trang public /cosmetic</span>
                 <ExternalLink className="h-3 w-3" />
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -1108,14 +1113,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               <span className="font-semibold">Số ảnh đã tải lên:</span> {REQUIRED_SLOTS.length - missingMediaCount} / {REQUIRED_SLOTS.length}
             </div>
             <div className="pt-4">
-              <Link 
-                href="/cosmetic" 
+              <a 
+                href={`${siteUrl}/cosmetic`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg inline-flex items-center gap-1.5 transition"
               >
                 <span>Mở trang xem trước thực tế (Public Page)</span>
                 <ExternalLink className="h-3.5 w-3.5" />
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -1266,7 +1272,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                 <p className="text-[10px] text-slate-400 font-mono mt-0.5">{pickerOpenSlot}</p>
               </div>
               <button 
-                onClick={() => setPickerOpenSlot(null)}
+                type="button"
+                onClick={() => { setPickerOpenSlot(null); setPickerError(null); }}
                 className="text-slate-400 hover:text-slate-600 transition p-1"
               >
                 ✕
@@ -1274,7 +1281,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             </div>
 
             {/* Modal Body */}
-            <div className="p-5 flex-1 overflow-y-auto bg-slate-50">
+            <div className="p-5 flex-1 overflow-y-auto bg-slate-50 space-y-4">
+              {pickerError && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md">
+                  {pickerError}
+                </div>
+              )}
               {libraryImages.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300 text-slate-500 text-xs">
                   Không tìm thấy ảnh nào trong thư viện Media Assets.
@@ -1292,10 +1304,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           {asset.alt_text || 'Không có Alt'}
                         </p>
                         <button
+                          type="button"
                           onClick={() => handleAssignMediaAsset(asset.id)}
-                          className="w-full mt-2 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-lg transition"
+                          disabled={isSaving}
+                          className="w-full mt-2 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-lg transition disabled:opacity-50"
                         >
-                          Chọn ảnh
+                          {isSaving ? 'Đang chọn...' : 'Chọn ảnh'}
                         </button>
                       </div>
                     </div>
@@ -1307,7 +1321,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             {/* Modal Footer */}
             <div className="p-4 border-t border-slate-100 flex justify-end bg-white rounded-b-2xl">
               <button 
-                onClick={() => setPickerOpenSlot(null)}
+                type="button"
+                onClick={() => { setPickerOpenSlot(null); setPickerError(null); }}
                 className="px-4 py-2 text-xs font-semibold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-lg hover:bg-slate-50"
               >
                 Đóng
