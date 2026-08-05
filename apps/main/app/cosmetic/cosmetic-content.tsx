@@ -553,10 +553,10 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       )}
 
       {/* ───────────────────────────────────────────────────────────────────────
-          SECTION 3 — SIGNATURE RECOVERY COLLECTION (EDITORIAL)
+          SECTION 3 — SIGNATURE RECOVERY SYSTEM (PREMIUM EDITORIAL)
       ─────────────────────────────────────────────────────────────────────── */}
       {signatureCollection && (() => {
-        // Resolve featured — support both content.featured and legacy content.featuredProduct
+        // ── Data resolution ────────────────────────────────────────────────
         const feat = signatureCollection.featured || signatureCollection.featuredProduct || {};
         const featName = feat.name || 'Luminous Revitalization Sheer Set';
         const featType = feat.type || 'FEATURED SET';
@@ -566,159 +566,375 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
         const featCta = safeCosmeticHref(feat.ctaHref || signatureCollection.ctaHref);
         const featCtaLabel = feat.ctaLabel || signatureCollection.ctaLabel || 'Explore the Ritual';
 
+        const sectionEyebrow = signatureCollection.eyebrow || 'SIGNATURE RECOVERY SYSTEM';
+        const sectionTitle = signatureCollection.title || 'The complete skin\nrecovery ritual.';
+        const sectionDesc = signatureCollection.description || 'A complete Korean clinical skincare ritual designed to cleanse, prepare, treat, seal, and protect the skin.';
+
+        const clinicalInsight = 'Skin recovery is not a single step, but a systematic process. Each formula works in harmony with the skin\'s natural cycle — strengthening the barrier, restoring balance, and supporting long-term resilience.';
+
+        const rawItems: any[] = signatureCollection.items || [];
+
+        // Infer ritual role from product name if item.role or item.step missing
+        function inferRole(item: any): string {
+          if (item.role) return item.role;
+          const n = (item.name || '').toLowerCase();
+          if (n.includes('toner')) return 'PREPARE';
+          if (n.includes('ampoule')) return 'TREAT';
+          if (n.includes('gel')) return 'RECOVER';
+          if (n.includes('moisturizer')) return 'SEAL';
+          if (n.includes('cream')) return 'NOURISH';
+          if (n.includes('lumiglow') || n.includes('sunscreen')) return 'PROTECT';
+          if (n.includes('cleanser')) return 'CLEANSE';
+          return 'CARE';
+        }
+
+        function inferUsage(item: any): string | null {
+          if (item.usage) return item.usage;
+          const n = (item.name || '').toLowerCase();
+          if (n.includes('toner')) return 'AM · PM';
+          if (n.includes('ampoule')) return 'PM';
+          if (n.includes('moisturizer') || n.includes('cream') || n.includes('gel')) return 'AM · PM';
+          if (n.includes('lumiglow') || n.includes('sunscreen')) return 'AM';
+          return null;
+        }
+
+        const stationItems = rawItems.map((item, i) => ({
+          ...item,
+          _step: item.step || String(i + 1).padStart(2, '0'),
+          _role: inferRole(item),
+          _usage: inferUsage(item),
+          _isCore: !!(item.highlight) || (item.name || '').toLowerCase().includes('ampoule'),
+          _img: getProductImage(item.name || '', item.mediaSlot, cosmeticMedia),
+          _desc: item.description || item.desc || '',
+        }));
+
+        // System trust badges (static — premium branding row)
+        const trustBadges = [
+          { icon: FlaskConical, title: 'Clinically Developed', text: 'Formulas engineered for visible skin recovery and resilience.' },
+          { icon: ShieldCheck, title: 'Skin Barrier Expert', text: 'Every product supports and strengthens the skin\'s natural defence.' },
+          { icon: Atom, title: 'High Performance Actives', text: 'Exosome, peptide, and botanical clinicals at effective concentrations.' },
+          { icon: Droplet, title: 'Balanced Formulation', text: 'Layerable and compatible — designed to work as a complete system.' },
+        ];
+
         return (
-          <section className={`${SECTION_COOL} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
-            <div className="max-w-6xl mx-auto">
-              {/* Section heading */}
+          <section
+            aria-label="Signature Recovery Ritual System"
+            className="relative py-24 md:py-36 px-6 overflow-hidden border-t border-[#D9DEE8]"
+            style={{ background: 'linear-gradient(160deg, #FFFFFF 0%, #F2F5FA 55%, #ECF0F8 100%)' }}
+          >
+            {/* Radial icy-blue glow top-right */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute top-0 right-0 w-[600px] h-[500px] opacity-[0.07]"
+              style={{ background: 'radial-gradient(ellipse at top right, #A8C0E8 0%, transparent 70%)' }}
+            />
+
+            <div className="max-w-7xl mx-auto relative">
+
+              {/* ── EDITORIAL HEADER ── */}
               <motion.div
-                className="mb-14 md:mb-20"
+                className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-20 md:mb-28"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: '-80px' }}
                 variants={stagger}
               >
-                <motion.div variants={fadeUp}>
-                  <SectionLabel>{signatureCollection.eyebrow || 'SIGNATURE RECOVERY COLLECTION'}</SectionLabel>
-                </motion.div>
-                <motion.h2
-                  variants={fadeUp}
-                  className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight max-w-2xl leading-snug"
-                >
-                  {signatureCollection.title || 'A Complete Recovery System for Modern Skin'}
-                </motion.h2>
-                {signatureCollection.description && (
-                  <motion.p variants={fadeUp} className="text-[#6B7280] font-light mt-4 max-w-xl text-base leading-relaxed">
-                    {signatureCollection.description}
+                {/* Left — large serif headline */}
+                <div className="lg:col-span-7">
+                  <motion.span
+                    variants={fadeUp}
+                    className="inline-block text-[10px] tracking-[0.38em] uppercase font-semibold text-[#050A5C]/60 mb-6"
+                  >
+                    {sectionEyebrow}
+                  </motion.span>
+
+                  <motion.h2
+                    variants={fadeUp}
+                    className="font-serif font-light leading-[0.92] text-[#050A5C] mb-8"
+                    style={{
+                      fontSize: 'clamp(3rem, 8vw, 6rem)',
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    {sectionTitle.split('\n').map((line: string, i: number) => (
+                      <span key={i} className="block">{line}</span>
+                    ))}
+                  </motion.h2>
+
+                  <motion.div variants={fadeUp} className="w-12 h-px bg-[#050A5C]/25 mb-6" />
+
+                  <motion.p
+                    variants={fadeUp}
+                    className="text-[#5A6374] font-light text-base md:text-lg leading-relaxed max-w-lg"
+                  >
+                    {sectionDesc}
                   </motion.p>
-                )}
-              </motion.div>
 
-              {/* ── Two-column editorial grid ── */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+                  {/* Featured set CTA */}
+                  <motion.div variants={fadeUp} className="mt-10">
+                    <CosmeticCtaTracker
+                      label={featCtaLabel}
+                      href={featCta}
+                      className="inline-flex h-[46px] px-9 items-center justify-center border border-[#050A5C] text-[#050A5C] text-[11px] tracking-[0.22em] uppercase hover:bg-[#050A5C] hover:text-white transition-colors duration-300"
+                    />
+                  </motion.div>
+                </div>
 
-                {/* Left — Featured Set showcase card */}
+                {/* Right — Clinical Insight panel */}
                 <motion.div
-                  className={`lg:col-span-5 border ${SILVER_BORDER} bg-white flex flex-col overflow-hidden
-                    transition-all duration-500 ease-out
-                    hover:-translate-y-[3px] hover:shadow-lg
-                    motion-reduce:hover:transform-none`}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
                   variants={fadeUp}
+                  className="lg:col-span-5 flex items-start"
                 >
-                  {/* Packshot frame */}
-                  <div className="relative aspect-[3/4] w-full bg-[#F7F9FC] border-b border-[#D9DEE8] overflow-hidden flex items-center justify-center p-6">
-                    {featImg ? (
-                      <img
-                        src={featImg}
-                        alt={featName}
-                        className="w-full h-full object-contain"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.parentElement as HTMLElement).classList.add('bg-gradient-to-br', 'from-[#EEF2F8]', 'to-[#DDE3EE]'); }}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]">
-                        <div className="absolute inset-5 border border-[#C5CEDF]/40 pointer-events-none" />
+                  <div className="w-px self-stretch bg-[#C5CEDF]/60 mr-8 hidden lg:block shrink-0" aria-hidden="true" />
+                  <div className="pt-2 lg:pt-12">
+                    <span className="block text-[9px] tracking-[0.35em] uppercase text-[#050A5C]/40 font-semibold mb-4">
+                      Clinical Insight
+                    </span>
+                    <p className="text-[#3D4A5C] text-sm leading-[1.9] font-light">
+                      {clinicalInsight}
+                    </p>
+
+                    {/* Featured set image */}
+                    {(featImg || true) && (
+                      <div className="mt-8 relative aspect-[3/4] max-w-[200px] bg-[#F3F6FC] border border-[#D9DEE8] overflow-hidden flex items-center justify-center p-4">
+                        {featImg ? (
+                          <img
+                            src={featImg}
+                            alt={featName}
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).style.display = 'none';
+                              (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
+                            }}
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]">
+                            <div className="absolute inset-4 border border-[#C5CEDF]/30" />
+                          </div>
+                        )}
+                        {/* Featured label */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-[#050A5C]/90 px-3 py-2">
+                          <span className="text-[8px] tracking-[0.3em] uppercase text-white/80 block">{featType}</span>
+                          <span className="text-[10px] text-white font-light leading-tight block mt-0.5">{featName}</span>
+                        </div>
                       </div>
                     )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-8 lg:p-10 flex flex-col flex-1">
-                    <span className="block text-[10px] tracking-[0.28em] uppercase font-semibold text-[#050A5C]/50 mb-4">
-                      {featType}
-                    </span>
-                    <h3 className="text-xl md:text-2xl font-light text-[#050A5C] leading-snug mb-4">
-                      {featName}
-                    </h3>
-                    <div className="w-8 h-px bg-[#050A5C]/20 mb-5" />
-                    {featDesc && (
-                      <p className="text-sm text-[#6B7280] font-light leading-relaxed mb-6 flex-1">
-                        {featDesc}
-                      </p>
-                    )}
                     {featIngredients.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-8">
+                      <div className="flex flex-wrap gap-1.5 mt-4">
                         {featIngredients.map((ing: string) => (
-                          <span key={ing} className={`text-[10px] tracking-[0.15em] uppercase border ${SILVER_BORDER} px-3 py-1 text-[#050A5C] font-medium`}>
+                          <span key={ing} className="text-[9px] tracking-[0.15em] uppercase border border-[#D9DEE8] px-2.5 py-1 text-[#050A5C]/70 font-medium">
                             {ing}
                           </span>
                         ))}
                       </div>
                     )}
-                    <CosmeticCtaTracker
-                      label={featCtaLabel}
-                      href={featCta}
-                      className="mt-auto w-fit h-[44px] px-8 flex items-center justify-center border border-[#050A5C] text-[#050A5C] text-[11px] tracking-[0.2em] uppercase hover:bg-[#050A5C] hover:text-white transition-colors duration-300"
-                    />
                   </div>
                 </motion.div>
+              </motion.div>
 
-                {/* Right — Supporting product grid (2 cols on sm+) */}
-                <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {(signatureCollection.items || []).map((product: any, i: number) => {
-                    const productImg = getProductImage(
-                      product.name || '',
-                      product.mediaSlot,
-                      cosmeticMedia
-                    );
-                    const productDesc = product.description || product.desc || '';
-                    return (
+              {/* ── PRODUCT RITUAL SYSTEM MAP ── */}
+              {stationItems.length > 0 && (
+                <>
+                  {/* Section divider with title */}
+                  <motion.div
+                    className="flex items-center gap-4 mb-12 md:mb-16"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7 }}
+                  >
+                    <div className="h-px flex-1 bg-[#D9DEE8]" />
+                    <span className="text-[9px] tracking-[0.35em] uppercase text-[#050A5C]/40 font-semibold whitespace-nowrap px-2">
+                      Recovery Ritual · {stationItems.length} Steps
+                    </span>
+                    <div className="h-px flex-1 bg-[#D9DEE8]" />
+                  </motion.div>
+
+                  {/* Desktop: horizontal ritual stations */}
+                  <div className="hidden md:grid gap-0" style={{ gridTemplateColumns: `repeat(${Math.min(stationItems.length, 6)}, 1fr)` }}>
+                    {stationItems.slice(0, 6).map((station, i) => (
                       <motion.div
                         key={i}
-                        className={`border ${SILVER_BORDER} bg-white flex flex-col overflow-hidden group
+                        className={`group relative flex flex-col border-r last:border-r-0 border-[#D9DEE8]
                           transition-all duration-500 ease-out
-                          hover:-translate-y-[3px] hover:shadow-md hover:border-[#050A5C]/25
+                          ${station._isCore ? 'bg-[#F0F4FB]' : 'bg-white/60 hover:bg-white/90'}
                           motion-reduce:hover:transform-none`}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, margin: '-40px' }}
-                        variants={fadeUp}
-                        transition={{ delay: i * 0.06 }}
+                        style={{ backdropFilter: 'blur(4px)' }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-30px' }}
+                        transition={{ duration: 0.6, delay: i * 0.08, ease: 'easeOut' }}
+                        whileHover={{ y: -2 }}
                       >
-                        {/* Packshot thumbnail */}
-                        <div className="relative aspect-[4/3] w-full bg-[#F7F9FC] overflow-hidden flex items-center justify-center p-4 border-b border-[#D9DEE8]">
-                          {productImg ? (
-                            <img
-                              src={productImg}
-                              alt={product.name || ''}
-                              className="w-full h-full object-contain"
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.parentElement as HTMLElement).classList.add('bg-gradient-to-br', 'from-[#EEF2F8]', 'to-[#DDE3EE]'); }}
-                            />
-                          ) : (
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                        {/* Core treatment highlight accent */}
+                        {station._isCore && (
+                          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#050A5C]/40" />
+                        )}
+
+                        <div className="p-5 xl:p-6 flex flex-col flex-1">
+                          {/* Step number */}
+                          <div className="flex items-end justify-between mb-4">
+                            <span
+                              className="font-serif font-light text-[#050A5C]/10 leading-none select-none"
+                              style={{ fontSize: 'clamp(3.5rem, 6vw, 5.5rem)', lineHeight: 1 }}
+                              aria-hidden="true"
+                            >
+                              {station._step}
+                            </span>
+                            {station._usage && (
+                              <span className="text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-medium mb-1">
+                                {station._usage}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Role label */}
+                          <div className="flex items-center gap-2 mb-4">
+                            <div className={`w-3 h-px ${station._isCore ? 'bg-[#050A5C]/60' : 'bg-[#050A5C]/25'}`} />
+                            <span className={`text-[9px] tracking-[0.32em] uppercase font-semibold ${station._isCore ? 'text-[#050A5C]/70' : 'text-[#050A5C]/40'}`}>
+                              {station._role}
+                            </span>
+                            {station._isCore && (
+                              <span className="text-[7px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1.5 py-0.5 ml-1">
+                                CORE
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Product packshot */}
+                          <div
+                            className={`relative mb-4 mx-auto w-full bg-[#F7F9FC] flex items-center justify-center overflow-hidden
+                              ${station._isCore ? 'border border-[#050A5C]/15 ring-1 ring-[#050A5C]/8' : 'border border-[#E8EDF6]'}`}
+                            style={{ aspectRatio: '3/4', maxHeight: '180px' }}
+                          >
+                            {station._img ? (
+                              <img
+                                src={station._img}
+                                alt={station.name || ''}
+                                className="w-full h-full object-contain p-3"
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                  (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
+                                }}
+                              />
+                            ) : (
+                              <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]">
+                                <div className="absolute inset-3 border border-[#C5CEDF]/25" />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Product name */}
+                          <h3 className="text-[11px] font-medium text-[#1F2933] leading-snug mb-2 group-hover:text-[#050A5C] transition-colors duration-300 line-clamp-2">
+                            {station.name}
+                          </h3>
+
+                          {/* Key ingredient */}
+                          {station.key && (
+                            <p className="text-[9px] text-[#9CA3AF] tracking-[0.12em] uppercase mb-2">{station.key}</p>
+                          )}
+
+                          {/* Description */}
+                          {station._desc && (
+                            <p className="text-[10px] text-[#6B7280] font-light leading-relaxed line-clamp-3 mt-auto pt-2">
+                              {station._desc}
+                            </p>
                           )}
                         </div>
 
-                        {/* Card content */}
-                        <div className="p-5 lg:p-6 flex flex-col flex-1">
-                          {product.type && (
-                            <span className="block text-[9px] tracking-[0.22em] uppercase text-[#050A5C]/40 font-medium mb-2">
-                              {product.type}
-                            </span>
-                          )}
-                          <h4 className="text-sm font-medium text-[#1F2933] leading-snug mb-2 group-hover:text-[#050A5C] transition-colors duration-300">
-                            {product.name}
-                          </h4>
-                          {product.key && (
-                            <div className="w-5 h-px bg-[#050A5C]/15 mb-3" />
-                          )}
-                          {product.key && (
-                            <p className="text-[10px] text-[#9CA3AF] tracking-wide mb-3">{product.key}</p>
-                          )}
-                          {productDesc && (
-                            <p className="text-xs text-[#6B7280] font-light leading-relaxed">{productDesc}</p>
+                        {/* Bottom connector line — ritual sequence */}
+                        {i < stationItems.length - 1 && (
+                          <div aria-hidden="true" className="absolute -right-px top-1/4 h-px w-3 bg-[#C5CEDF]/60 hidden" />
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Mobile: vertical ritual cards */}
+                  <div className="md:hidden space-y-4">
+                    {stationItems.map((station, i) => (
+                      <motion.div
+                        key={i}
+                        className={`relative flex gap-5 border border-[#D9DEE8] p-5
+                          ${station._isCore ? 'bg-[#F0F4FB]' : 'bg-white/80'}`}
+                        initial={{ opacity: 0, x: -16 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, margin: '-20px' }}
+                        transition={{ duration: 0.5, delay: i * 0.06 }}
+                      >
+                        {station._isCore && (
+                          <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-[#050A5C]/40" />
+                        )}
+
+                        {/* Image */}
+                        <div className="w-20 h-24 bg-[#F7F9FC] border border-[#E8EDF6] flex items-center justify-center shrink-0 overflow-hidden">
+                          {station._img ? (
+                            <img
+                              src={station._img}
+                              alt={station.name || ''}
+                              className="w-full h-full object-contain p-2"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
                           )}
                         </div>
+
+                        <div className="flex flex-col flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-serif font-light text-[#050A5C]/15 text-2xl leading-none">{station._step}</span>
+                            <span className="text-[8px] tracking-[0.28em] uppercase text-[#050A5C]/45 font-semibold">{station._role}</span>
+                            {station._isCore && (
+                              <span className="text-[6px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1 py-0.5">CORE</span>
+                            )}
+                          </div>
+                          <h3 className="text-sm font-medium text-[#1F2933] leading-snug mb-1">{station.name}</h3>
+                          {station.key && <p className="text-[9px] text-[#9CA3AF] tracking-wide uppercase mb-1">{station.key}</p>}
+                          {station._usage && <p className="text-[9px] text-[#050A5C]/35 tracking-[0.15em] uppercase">{station._usage}</p>}
+                        </div>
                       </motion.div>
-                    );
-                  })}
-                </div>
-              </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* ── SYSTEM TRUST BADGES ── */}
+              <motion.div
+                className="grid grid-cols-2 md:grid-cols-4 gap-0 mt-16 md:mt-24 border-t border-[#D9DEE8]"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: '-40px' }}
+                variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+              >
+                {trustBadges.map((badge, i) => {
+                  const Icon = badge.icon;
+                  return (
+                    <motion.div
+                      key={i}
+                      variants={fadeUp}
+                      className="border-r last:border-r-0 border-b md:border-b-0 border-[#D9DEE8] p-6 xl:p-8 flex flex-col gap-3"
+                    >
+                      <div className="w-7 h-7 flex items-center justify-center">
+                        <Icon className="w-[18px] h-[18px] text-[#050A5C]/50" strokeWidth={1.5} />
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-semibold text-[#1F2933] tracking-wide mb-1">{badge.title}</p>
+                        <p className="text-[10px] text-[#6B7280] font-light leading-relaxed">{badge.text}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+
             </div>
           </section>
         );
       })()}
+
+
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 4 — HERO PRODUCT FEATURE

@@ -1524,7 +1524,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   return (
                     <div className="col-span-2 space-y-6 border-t border-slate-100 pt-4 mt-2">
                       <p className="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 leading-relaxed">
-                        💡 <strong>Hướng dẫn:</strong> Section này dùng để giới thiệu tổng quan bộ sản phẩm phục hồi và vai trò từng sản phẩm trong routine.
+                        💡 <strong>Hướng dẫn:</strong> Section này hiển thị như một bản đồ ritual phục hồi da ngoài trang /cosmetic. Mỗi sản phẩm là một bước trong hệ chăm sóc da — từ Prepare, Treat, Recover, Seal đến Protect.
                       </p>
 
                       {/* Featured Set */}
