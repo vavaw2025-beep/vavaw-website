@@ -108,6 +108,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [philosophyItems, setPhilosophyItems] = useState<any[]>([]);
   const [jsonError, setJsonError] = useState<string | null>(null);
 
+  // Signature collection featured set editor state
+  const [featuredName, setFeaturedName] = useState('');
+  const [featuredType, setFeaturedType] = useState('');
+  const [featuredDesc, setFeaturedDesc] = useState('');
+  const [featuredIngredients, setFeaturedIngredients] = useState('');
+  const [featuredMediaSlot, setFeaturedMediaSlot] = useState('');
+  const [featuredCtaLabel, setFeaturedCtaLabel] = useState('');
+  const [featuredCtaHref, setFeaturedCtaHref] = useState('');
+  const [sigItems, setSigItems] = useState<any[]>([]);
+
   // Sync prop changes
   useEffect(() => {
     setBlocks(initialBlocks);
@@ -164,6 +174,21 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     setEditIsActive(block.is_active);
     setEditItemsJson(content.items ? JSON.stringify(content.items, null, 2) : '');
     setPhilosophyItems(content.items || []);
+
+    // Signature collection featured set
+    if (block.block_type === 'cosmetic-signature-collection') {
+      const feat = content.featured || content.featuredProduct || {};
+      setFeaturedName(feat.name || '');
+      setFeaturedType(feat.type || '');
+      setFeaturedDesc(feat.description || '');
+      setFeaturedIngredients(
+        Array.isArray(feat.ingredients) ? feat.ingredients.join(', ') : (feat.ingredients || '')
+      );
+      setFeaturedMediaSlot(feat.mediaSlot || 'cosmetic-product-luminous-set');
+      setFeaturedCtaLabel(feat.ctaLabel || content.ctaLabel || 'Explore the Ritual');
+      setFeaturedCtaHref(feat.ctaHref || content.ctaHref || '/contact?type=cosmetic_interest');
+      setSigItems(content.items || []);
+    }
   };
 
   const handleSaveSectionEdits = async () => {
@@ -195,6 +220,36 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         updatedContent.items = parsedItems;
       } else {
         updatedContent.items = philosophyItems;
+      }
+    } else if (editingBlock.block_type === 'cosmetic-signature-collection') {
+      // Build featured object from visual editor fields
+      const ingArray = featuredIngredients
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      // Validate CTA href: only allow internal paths
+      const safeFeaturedHref =
+        featuredCtaHref && featuredCtaHref.startsWith('/')
+          ? featuredCtaHref
+          : '/contact?type=cosmetic_interest';
+
+      updatedContent.featured = {
+        ...(editingBlock.content?.featured || {}),
+        name: featuredName,
+        type: featuredType,
+        description: featuredDesc,
+        ingredients: ingArray,
+        mediaSlot: featuredMediaSlot || 'cosmetic-product-luminous-set',
+        ctaLabel: featuredCtaLabel || 'Explore the Ritual',
+        ctaHref: safeFeaturedHref,
+      };
+
+      // Items: prefer Advanced JSON if explicitly edited, otherwise use repeater
+      if (parsedItems !== undefined) {
+        updatedContent.items = parsedItems;
+      } else {
+        updatedContent.items = sigItems;
       }
     } else {
       if (parsedItems !== undefined) {
@@ -1454,6 +1509,171 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                     </div>
                   </div>
                 )}
+
+                {/* ── Signature Recovery Collection custom editor ── */}
+                {editingBlock.block_type === 'cosmetic-signature-collection' && (() => {
+                  const SIG_MEDIA_SLOTS = [
+                    'cosmetic-product-luminous-set',
+                    'cosmetic-product-regenaglow-cream',
+                    'cosmetic-product-calmiance-gel',
+                    'cosmetic-product-renew-ampoule',
+                    'cosmetic-product-p30-moisturizer',
+                    'cosmetic-product-p30-toner',
+                    'cosmetic-product-lumiglow-sunscreen',
+                  ];
+                  return (
+                    <div className="col-span-2 space-y-6 border-t border-slate-100 pt-4 mt-2">
+                      <p className="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 leading-relaxed">
+                        💡 <strong>Hướng dẫn:</strong> Section này dùng để giới thiệu tổng quan bộ sản phẩm phục hồi và vai trò từng sản phẩm trong routine.
+                      </p>
+
+                      {/* Featured Set */}
+                      <div className="space-y-3">
+                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
+                          Bộ sản phẩm nổi bật (Featured Set)
+                        </h4>
+                        {featuredMediaSlot && (
+                          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <div className="w-16 h-16 rounded-lg border border-slate-200 bg-[#F7F9FC] flex items-center justify-center overflow-hidden shrink-0">
+                              <span className="text-[9px] text-slate-400 text-center leading-tight px-1">{featuredMediaSlot.replace('cosmetic-product-', '')}</span>
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-bold text-slate-600 uppercase">Media Slot đang chọn</p>
+                              <p className="text-[11px] text-slate-500 font-mono">{featuredMediaSlot}</p>
+                              <p className="text-[9px] text-emerald-600 mt-0.5">✓ Slot khả dụng — ảnh được nạp từ DB qua slot này</p>
+                            </div>
+                          </div>
+                        )}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="md:col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tên bộ sản phẩm nổi bật</label>
+                            <input type="text" value={featuredName} onChange={e => setFeaturedName(e.target.value)}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                              placeholder="Ví dụ: Luminous Revitalization Sheer Set" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Loại / nhãn nhỏ</label>
+                            <input type="text" value={featuredType} onChange={e => setFeaturedType(e.target.value)}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                              placeholder="Ví dụ: FEATURED SET" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Media Slot ảnh</label>
+                            <select value={featuredMediaSlot} onChange={e => setFeaturedMediaSlot(e.target.value)}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]">
+                              <option value="">-- chọn slot --</option>
+                              {SIG_MEDIA_SLOTS.map(s => <option key={s} value={s}>{s.replace('cosmetic-product-', '')}</option>)}
+                            </select>
+                          </div>
+                          <div className="md:col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả ngắn</label>
+                            <textarea value={featuredDesc} onChange={e => setFeaturedDesc(e.target.value)} rows={2}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                              placeholder="Mô tả bộ sản phẩm..." />
+                          </div>
+                          <div className="md:col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thành phần nổi bật (ngăn cách bằng dấu phẩy)</label>
+                            <input type="text" value={featuredIngredients} onChange={e => setFeaturedIngredients(e.target.value)}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                              placeholder="Ví dụ: Exosome, Collagen, Peptide Complex" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nút CTA</label>
+                            <input type="text" value={featuredCtaLabel} onChange={e => setFeaturedCtaLabel(e.target.value)}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                              placeholder="Explore the Ritual" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đường dẫn nút (phải bắt đầu bằng /)</label>
+                            <input type="text" value={featuredCtaHref} onChange={e => setFeaturedCtaHref(e.target.value)}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                              placeholder="/contact?type=cosmetic_interest" />
+                            {featuredCtaHref && !featuredCtaHref.startsWith('/') && (
+                              <p className="text-[10px] text-amber-600 mt-1">⚠ Đường dẫn không hợp lệ — phải bắt đầu bằng /. Sẽ dùng đường dẫn mặc định khi lưu.</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Supporting products repeater */}
+                      <div className="space-y-3 border-t border-slate-100 pt-4">
+                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-slate-400 inline-block" />
+                          Danh sách sản phẩm phụ trợ
+                        </h4>
+                        <div className="space-y-3">
+                          {sigItems.map((item: any, idx: number) => (
+                            <div key={idx} className="p-4 border border-slate-200 rounded-xl bg-slate-50/50 space-y-3">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <span className="text-xs font-bold text-slate-400 font-mono">Sản phẩm #{idx + 1}</span>
+                                <div className="flex items-center gap-1">
+                                  <button type="button" disabled={idx === 0}
+                                    onClick={() => { const l = [...sigItems]; [l[idx], l[idx - 1]] = [l[idx - 1], l[idx]]; setSigItems(l); }}
+                                    className="p-1 text-slate-500 hover:text-blue-600 disabled:opacity-30" title="Di chuyển lên">
+                                    <ArrowUp className="h-3.5 w-3.5" />
+                                  </button>
+                                  <button type="button" disabled={idx === sigItems.length - 1}
+                                    onClick={() => { const l = [...sigItems]; [l[idx], l[idx + 1]] = [l[idx + 1], l[idx]]; setSigItems(l); }}
+                                    className="p-1 text-slate-500 hover:text-blue-600 disabled:opacity-30" title="Di chuyển xuống">
+                                    <ArrowDown className="h-3.5 w-3.5" />
+                                  </button>
+                                  <button type="button"
+                                    onClick={() => setSigItems(sigItems.filter((_: any, i: number) => i !== idx))}
+                                    className="p-1 text-slate-500 hover:text-red-600" title="Xóa sản phẩm">
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                </div>
+                              </div>
+                              {item.mediaSlot && (
+                                <div className="flex items-center gap-2 bg-white rounded-lg border border-slate-200 px-3 py-1.5">
+                                  <span className="text-[9px] font-mono text-slate-500">{item.mediaSlot.replace('cosmetic-product-', '')}</span>
+                                  <span className="text-[9px] text-emerald-600">✓ slot</span>
+                                </div>
+                              )}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <div className="md:col-span-2">
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tên sản phẩm</label>
+                                  <input type="text" value={item.name || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], name: e.target.value }; setSigItems(l); }}
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Vai trò / loại sản phẩm</label>
+                                  <input type="text" value={item.type || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], type: e.target.value }; setSigItems(l); }}
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thành phần nổi bật</label>
+                                  <input type="text" value={item.key || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], key: e.target.value }; setSigItems(l); }}
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div className="md:col-span-2">
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả ngắn</label>
+                                  <textarea value={item.description || item.desc || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], description: e.target.value }; setSigItems(l); }}
+                                    rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div className="md:col-span-2">
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Media Slot</label>
+                                  <select value={item.mediaSlot || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], mediaSlot: e.target.value }; setSigItems(l); }}
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]">
+                                    <option value="">-- để trống = tự khớp theo tên --</option>
+                                    {SIG_MEDIA_SLOTS.map(s => <option key={s} value={s}>{s.replace('cosmetic-product-', '')}</option>)}
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          <button type="button"
+                            onClick={() => setSigItems([...sigItems, { name: '', type: '', key: '', description: '', mediaSlot: '' }])}
+                            className="text-xs text-blue-600 font-bold flex items-center gap-1 hover:underline mt-1 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-lg">
+                            <Plus className="h-3 w-3" />
+                            <span>Thêm sản phẩm mới</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div className="col-span-2 flex items-center py-2">
                   <label className="flex items-center gap-2 cursor-pointer select-none">

@@ -124,6 +124,58 @@ function EditorialImage({
   );
 }
 
+// ─── Product image resolution ──────────────────────────────────────────────────
+// Map each slot string to the CosmeticPageMedia camelCase key.
+// This mirrors the SLOT_MAP in load-public-cosmetic-media.ts.
+const MEDIA_SLOT_TO_KEY: Record<string, keyof CosmeticPageMedia> = {
+  'cosmetic-product-luminous-set':       'luminousSet',
+  'cosmetic-product-regenaglow-cream':   'regenaglow',
+  'cosmetic-product-calmiance-gel':      'calmiance',
+  'cosmetic-product-renew-ampoule':      'renewAmpoule',
+  'cosmetic-product-p30-moisturizer':    'p30Moisturizer',
+  'cosmetic-product-p30-toner':          'p30Toner',
+  'cosmetic-product-lumiglow-sunscreen': 'lumiglowSunscreen',
+};
+
+function getProductImage(
+  productName: string,
+  mediaSlot: string | undefined,
+  cosmeticMedia: CosmeticPageMedia
+): string | undefined {
+  // Step 1: resolve by explicit slot → camelCase key
+  if (mediaSlot) {
+    const key = MEDIA_SLOT_TO_KEY[mediaSlot];
+    if (key && cosmeticMedia[key] && isValidHeroImageUrl(cosmeticMedia[key])) {
+      return cosmeticMedia[key];
+    }
+  }
+  // Step 2: fallback by product name to camelCase key
+  const name = (productName || '').toLowerCase();
+  const nameSlot =
+    name.includes('regenaglow') ? 'regenaglow' :
+    name.includes('calmiance')  ? 'calmiance' :
+    name.includes('renew')      ? 'renewAmpoule' :
+    (name.includes('p30') && name.includes('moisturizer')) ? 'p30Moisturizer' :
+    (name.includes('p30') && name.includes('toner'))       ? 'p30Toner' :
+    (name.includes('lumiglow') || name.includes('sunscreen')) ? 'lumiglowSunscreen' :
+    name.includes('luminous') ? 'luminousSet' :
+    null;
+  if (nameSlot) {
+    const url = cosmeticMedia[nameSlot as keyof CosmeticPageMedia];
+    if (url && isValidHeroImageUrl(url)) return url;
+  }
+  return undefined;
+}
+
+// CTA href safety: only allow internal paths (/) — block js: data: external
+function safeCosmeticHref(href: string | undefined): string {
+  const fallback = '/contact?type=cosmetic_interest';
+  if (!href) return fallback;
+  const h = href.trim();
+  if (!h.startsWith('/')) return fallback;
+  return h;
+}
+
 // ─── Animation variants ────────────────────────────────────────────────────────
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -196,24 +248,27 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
   });
 
   const signatureCollection = getBlockContent(blocks, 'cosmetic-signature-collection', {
-    title: 'Signature Recovery Collection',
-    eyebrow: 'Signature Recovery Collection',
-    description: 'A complete Korean clinical skincare ritual for recovery, hydration, radiance, and skin barrier support.',
-    featuredProduct: {
+    eyebrow: 'SIGNATURE RECOVERY COLLECTION',
+    title: 'A Complete Recovery System for Modern Skin',
+    description: 'A curated Korean clinical skincare ritual designed to hydrate, calm, renew, protect, and restore visible skin balance.',
+    featured: {
       name: 'Luminous Revitalization Sheer Set',
+      type: 'FEATURED SET',
       description: 'A complete recovery set designed to support the skin barrier and restore a luminous, balanced appearance.',
-      ingredients: ['Exosome', 'Collagen', 'Peptide Complex']
+      ingredients: ['Exosome', 'Collagen', 'Peptide Complex'],
+      mediaSlot: 'cosmetic-product-luminous-set',
+      ctaLabel: 'Explore the Ritual',
+      ctaHref: '/contact?type=cosmetic_interest',
     },
-    ctaLabel: 'Explore the Ritual',
-    ctaHref: '/contact?type=cosmetic_interest',
     items: [
-      { name: 'Regenaglow Nourish Sheer Cream', type: 'Kem dưỡng ẩm', key: 'Collagen · Peptide' },
-      { name: 'Calmiance Superior Sheer Gel', type: 'Gel phục hồi', key: 'Cica 7 Complex · Aloe' },
-      { name: 'Gentle Activation Renew Ampoule', type: 'Tinh chất tái sinh', key: 'Exosome · Bakuchiol' },
-      { name: 'P30 Boost Facial Moisturizer', type: 'Kem dưỡng ẩm', key: 'Hyaluronic Acid · Peptide' },
-      { name: 'P30 Boost Facial Hydrating Toner', type: 'Toner cân bằng', key: 'Aloe · Oriental Botanical' }
+      { name: 'Regenaglow Nourish Sheer Cream', type: 'KEM DƯỠNG PHỤC HỒI', key: 'Collagen · Peptide', description: 'Kem dưỡng siêu phục hồi, khóa ẩm sâu và tái tạo cấu trúc hàng rào bảo vệ da.', mediaSlot: 'cosmetic-product-regenaglow-cream' },
+      { name: 'Calmiance Superior Sheer Gel', type: 'GEL PHỤC HỒI & LÀM DỊU', key: 'Cica 7 Complex · Aloe', description: 'Gel phục hồi chuyên sâu, làm dịu vùng da nhạy cảm và củng cố hàng rào bảo vệ da.', mediaSlot: 'cosmetic-product-calmiance-gel' },
+      { name: 'Gentle Activation Renew Ampoule', type: 'TINH CHẤT TÁI SINH', key: 'Exosome · Bakuchiol', description: 'Tinh chất tái sinh chuyên sâu, kích hoạt quá trình làm mới tế bào da nhẹ nhàng.', mediaSlot: 'cosmetic-product-renew-ampoule' },
+      { name: 'P30 Boost Facial Moisturizer', type: 'KEM DƯỠNG ẨM', key: 'Hyaluronic Acid · Peptide', description: 'Kem dưỡng ẩm hiệu suất cao, cấp nước tức thì và duy trì độ ẩm suốt cả ngày.', mediaSlot: 'cosmetic-product-p30-moisturizer' },
+      { name: 'P30 Boost Facial Hydrating Toner', type: 'TONER CÂN BẰNG', key: 'Aloe · Oriental Botanical', description: 'Toner cân bằng da nhẹ nhàng, chuẩn bị da tối ưu cho các bước chăm sóc tiếp theo.', mediaSlot: 'cosmetic-product-p30-toner' },
     ]
   });
+
 
   const heroProduct = getBlockContent(blocks, 'cosmetic-hero-product', {
     title: 'Luminous Revitalization\nSheer Set',
@@ -498,95 +553,172 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       )}
 
       {/* ───────────────────────────────────────────────────────────────────────
-          SECTION 3 — SIGNATURE COLLECTION OVERVIEW
+          SECTION 3 — SIGNATURE RECOVERY COLLECTION (EDITORIAL)
       ─────────────────────────────────────────────────────────────────────── */}
-      {signatureCollection && (
-      <section className={`${SECTION_COOL} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
-        <div className="max-w-6xl mx-auto">
-          {/* Section heading */}
-          <motion.div
-            className="mb-16 md:mb-20"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-80px' }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeUp}>
-              <SectionLabel>{signatureCollection.eyebrow}</SectionLabel>
-            </motion.div>
-            <motion.h2
-              variants={fadeUp}
-              className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight max-w-xl leading-snug"
-            >
-              {signatureCollection.title}
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#6B7280] font-light mt-4 max-w-lg text-base leading-relaxed">
-              {signatureCollection.description}
-            </motion.p>
-          </motion.div>
+      {signatureCollection && (() => {
+        // Resolve featured — support both content.featured and legacy content.featuredProduct
+        const feat = signatureCollection.featured || signatureCollection.featuredProduct || {};
+        const featName = feat.name || 'Luminous Revitalization Sheer Set';
+        const featType = feat.type || 'FEATURED SET';
+        const featDesc = feat.description || '';
+        const featIngredients: string[] = Array.isArray(feat.ingredients) ? feat.ingredients : [];
+        const featImg = getProductImage(featName, feat.mediaSlot, cosmeticMedia);
+        const featCta = safeCosmeticHref(feat.ctaHref || signatureCollection.ctaHref);
+        const featCtaLabel = feat.ctaLabel || signatureCollection.ctaLabel || 'Explore the Ritual';
 
-          {/* Featured + Grid layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Featured card — Luminous Revitalization Sheer Set */}
-            <motion.div
-              className={`lg:col-span-5 border ${SILVER_BORDER} bg-white p-10 lg:p-12 flex flex-col justify-between min-h-[360px] hover:shadow-md transition-all duration-500`}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeUp}
-            >
-              <div>
-                <span className="block text-[10px] tracking-[0.25em] uppercase font-semibold text-[#050A5C]/50 mb-6">
-                  Featured Set
-                </span>
-                <h3 className="text-2xl md:text-3xl font-light text-[#050A5C] leading-snug mb-4">
-                  {signatureCollection.featuredProduct?.name}
-                </h3>
-                <div className="w-8 h-px bg-[#050A5C]/25 my-5" />
-                <p className="text-sm text-[#6B7280] font-light leading-relaxed mb-6">
-                  {signatureCollection.featuredProduct?.description}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {(signatureCollection.featuredProduct?.ingredients || []).map((ing: string) => (
-                    <span key={ing} className={`text-[10px] tracking-[0.15em] uppercase border ${SILVER_BORDER} px-3 py-1 text-[#050A5C] font-medium`}>
-                      {ing}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <CosmeticCtaTracker
-                label={signatureCollection.ctaLabel || "Explore the Ritual"}
-                href={signatureCollection.ctaHref || "/contact"}
-                className="mt-8 w-fit h-[46px] px-8 flex items-center justify-center border border-[#050A5C] text-[#050A5C] text-[11px] tracking-[0.2em] uppercase hover:bg-[#050A5C] hover:text-white transition-colors duration-300"
-              />
-            </motion.div>
+        return (
+          <section className={`${SECTION_COOL} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
+            <div className="max-w-6xl mx-auto">
+              {/* Section heading */}
+              <motion.div
+                className="mb-14 md:mb-20"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: '-80px' }}
+                variants={stagger}
+              >
+                <motion.div variants={fadeUp}>
+                  <SectionLabel>{signatureCollection.eyebrow || 'SIGNATURE RECOVERY COLLECTION'}</SectionLabel>
+                </motion.div>
+                <motion.h2
+                  variants={fadeUp}
+                  className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight max-w-2xl leading-snug"
+                >
+                  {signatureCollection.title || 'A Complete Recovery System for Modern Skin'}
+                </motion.h2>
+                {signatureCollection.description && (
+                  <motion.p variants={fadeUp} className="text-[#6B7280] font-light mt-4 max-w-xl text-base leading-relaxed">
+                    {signatureCollection.description}
+                  </motion.p>
+                )}
+              </motion.div>
 
-            {/* Supporting products grid */}
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {(signatureCollection.items || []).map((product: any, i: number) => (
+              {/* ── Two-column editorial grid ── */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+
+                {/* Left — Featured Set showcase card */}
                 <motion.div
-                  key={i}
-                  className={`border ${SILVER_BORDER} bg-white p-7 hover:border-[#050A5C]/30 hover:shadow-sm transition-all duration-400 group`}
+                  className={`lg:col-span-5 border ${SILVER_BORDER} bg-white flex flex-col overflow-hidden
+                    transition-all duration-500 ease-out
+                    hover:-translate-y-[3px] hover:shadow-lg
+                    motion-reduce:hover:transform-none`}
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: '-40px' }}
+                  viewport={{ once: true }}
                   variants={fadeUp}
-                  transition={{ delay: i * 0.06 }}
                 >
-                  <span className="block text-[9px] tracking-[0.22em] uppercase text-[#050A5C]/40 font-medium mb-3">
-                    {product.type}
-                  </span>
-                  <h4 className="text-sm font-medium text-[#1F2933] leading-snug mb-3 group-hover:text-[#050A5C] transition-colors">
-                    {product.name}
-                  </h4>
-                  <p className="text-[10px] text-[#9CA3AF] tracking-wide">{product.key}</p>
+                  {/* Packshot frame */}
+                  <div className="relative aspect-[3/4] w-full bg-[#F7F9FC] border-b border-[#D9DEE8] overflow-hidden flex items-center justify-center p-6">
+                    {featImg ? (
+                      <img
+                        src={featImg}
+                        alt={featName}
+                        className="w-full h-full object-contain"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.parentElement as HTMLElement).classList.add('bg-gradient-to-br', 'from-[#EEF2F8]', 'to-[#DDE3EE]'); }}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]">
+                        <div className="absolute inset-5 border border-[#C5CEDF]/40 pointer-events-none" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-8 lg:p-10 flex flex-col flex-1">
+                    <span className="block text-[10px] tracking-[0.28em] uppercase font-semibold text-[#050A5C]/50 mb-4">
+                      {featType}
+                    </span>
+                    <h3 className="text-xl md:text-2xl font-light text-[#050A5C] leading-snug mb-4">
+                      {featName}
+                    </h3>
+                    <div className="w-8 h-px bg-[#050A5C]/20 mb-5" />
+                    {featDesc && (
+                      <p className="text-sm text-[#6B7280] font-light leading-relaxed mb-6 flex-1">
+                        {featDesc}
+                      </p>
+                    )}
+                    {featIngredients.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-8">
+                        {featIngredients.map((ing: string) => (
+                          <span key={ing} className={`text-[10px] tracking-[0.15em] uppercase border ${SILVER_BORDER} px-3 py-1 text-[#050A5C] font-medium`}>
+                            {ing}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <CosmeticCtaTracker
+                      label={featCtaLabel}
+                      href={featCta}
+                      className="mt-auto w-fit h-[44px] px-8 flex items-center justify-center border border-[#050A5C] text-[#050A5C] text-[11px] tracking-[0.2em] uppercase hover:bg-[#050A5C] hover:text-white transition-colors duration-300"
+                    />
+                  </div>
                 </motion.div>
-              ))}
+
+                {/* Right — Supporting product grid (2 cols on sm+) */}
+                <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {(signatureCollection.items || []).map((product: any, i: number) => {
+                    const productImg = getProductImage(
+                      product.name || '',
+                      product.mediaSlot,
+                      cosmeticMedia
+                    );
+                    const productDesc = product.description || product.desc || '';
+                    return (
+                      <motion.div
+                        key={i}
+                        className={`border ${SILVER_BORDER} bg-white flex flex-col overflow-hidden group
+                          transition-all duration-500 ease-out
+                          hover:-translate-y-[3px] hover:shadow-md hover:border-[#050A5C]/25
+                          motion-reduce:hover:transform-none`}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: '-40px' }}
+                        variants={fadeUp}
+                        transition={{ delay: i * 0.06 }}
+                      >
+                        {/* Packshot thumbnail */}
+                        <div className="relative aspect-[4/3] w-full bg-[#F7F9FC] overflow-hidden flex items-center justify-center p-4 border-b border-[#D9DEE8]">
+                          {productImg ? (
+                            <img
+                              src={productImg}
+                              alt={product.name || ''}
+                              className="w-full h-full object-contain"
+                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.parentElement as HTMLElement).classList.add('bg-gradient-to-br', 'from-[#EEF2F8]', 'to-[#DDE3EE]'); }}
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                          )}
+                        </div>
+
+                        {/* Card content */}
+                        <div className="p-5 lg:p-6 flex flex-col flex-1">
+                          {product.type && (
+                            <span className="block text-[9px] tracking-[0.22em] uppercase text-[#050A5C]/40 font-medium mb-2">
+                              {product.type}
+                            </span>
+                          )}
+                          <h4 className="text-sm font-medium text-[#1F2933] leading-snug mb-2 group-hover:text-[#050A5C] transition-colors duration-300">
+                            {product.name}
+                          </h4>
+                          {product.key && (
+                            <div className="w-5 h-px bg-[#050A5C]/15 mb-3" />
+                          )}
+                          {product.key && (
+                            <p className="text-[10px] text-[#9CA3AF] tracking-wide mb-3">{product.key}</p>
+                          )}
+                          {productDesc && (
+                            <p className="text-xs text-[#6B7280] font-light leading-relaxed">{productDesc}</p>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-      )}
+          </section>
+        );
+      })()}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 4 — HERO PRODUCT FEATURE
