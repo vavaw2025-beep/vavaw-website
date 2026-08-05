@@ -71,3 +71,5 @@ If `CMS_DATA_SOURCE=static`, Admin hero changes will not appear on public homepa
 > **Phase 63 Note**: Cosmetic Page Admin UX Studio completed. Built a tabbed Vietnamese administrative dashboard with specialized product/ingredient/ritual editors. Enhanced Media Slots Manager to assign existing images via a library picker, upload new assets, or remove assignments by archiving metadata without deleting files. Updated public media loader to check and ignore archived slot files.
 >
 > **Phase 63B Note**: Cosmetic Admin Studio Production QA completed. Verified all tabs, editors (products, ingredients repeater, ritual steps repeater), and Media Slot Manager slot unassignment/reassignment. Confirmed safe gradient fallback on unassignment and correct rendering on reassignment.
+>
+> **Phase 63C Note**: Cosmetic Media Upload and Replace UX Polish completed. Designed slot-contextual upload page mode, displaying slot display name, recommended size, current thumbnail (with replace warnings), local preview panel showing selected filename, size, and mime-type, alongside high-visibility success options (return redirects or open live page).

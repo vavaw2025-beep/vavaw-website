@@ -30,6 +30,7 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
     storageProvider: string;
     mimeType?: string;
     sizeBytes?: number;
+    metadata?: any;
   }> = [];
 
   let queryError: string | null = null;
@@ -51,6 +52,7 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
           storageProvider: item.storage_provider,
           mimeType: item.mime_type,
           sizeBytes: item.size_bytes,
+          metadata: item.metadata,
         }));
       }
     } catch (err: any) {
@@ -108,7 +110,7 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
       ) : (
         canUpload && (
           <div className="space-y-4">
-            <MediaUploadForm />
+            <MediaUploadForm mediaAssets={assets} />
             
             <details className="bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 overflow-hidden">
               <summary className="px-4 py-3 font-medium cursor-pointer flex items-center gap-2 hover:bg-slate-100 transition-colors select-none">

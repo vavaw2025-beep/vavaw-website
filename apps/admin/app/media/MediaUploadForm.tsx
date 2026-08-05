@@ -1,50 +1,76 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { Upload, XCircle, CheckCircle2 } from 'lucide-react';
+import { Upload, XCircle, CheckCircle2, AlertCircle, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { uploadMediaAction } from './actions';
 import { Suspense } from 'react';
+import Link from 'next/link';
 
-const HUMAN_SLOTS: Record<string, string> = {
-  'cosmetic-product-luminous-set': 'Ảnh bộ sản phẩm Luminous Set',
-  'cosmetic-product-regenaglow-cream': 'Kem dưỡng Regenaglow Nourish Cream',
-  'cosmetic-product-calmiance-gel': 'Gel phục hồi Calmiance Gel',
-  'cosmetic-product-renew-ampoule': 'Tinh chất Renew Ampoule',
-  'cosmetic-product-p30-moisturizer': 'Kem dưỡng ẩm P30 Moisturizer',
-  'cosmetic-product-p30-toner': 'Toner cân bằng P30 Toner',
-  'cosmetic-premium-program': 'Premium Program',
-  'cosmetic-gallery-ritual-panel': 'Ảnh banner quy trình Ritual Panel',
-  'cosmetic-gallery-product-set': 'Thư viện - Bộ sản phẩm overview',
-  'cosmetic-gallery-texture': 'Thư viện - Kết cấu sản phẩm',
-  'cosmetic-gallery-clinic': 'Thư viện - Phòng khám / Trị liệu',
-  'cosmetic-gallery-skin': 'Thư viện - Làn da cận cảnh',
-  'cosmetic-gallery-serum': 'Thư viện - Tinh chất serum cận cảnh',
-  'cosmetic-gallery-packaging': 'Thư viện - Bao bì sản phẩm',
+const HUMAN_SLOTS: Record<string, { name: string; size: string }> = {
+  'cosmetic-product-luminous-set': { name: 'Ảnh bộ sản phẩm Luminous Set', size: '1600x2000 hoặc 1800x2200, dưới 1MB' },
+  'cosmetic-product-regenaglow-cream': { name: 'Kem dưỡng Regenaglow Nourish Cream', size: '1200x1500, dưới 1MB' },
+  'cosmetic-product-calmiance-gel': { name: 'Gel phục hồi Calmiance Gel', size: '1200x1500, dưới 1MB' },
+  'cosmetic-product-renew-ampoule': { name: 'Tinh chất Renew Ampoule', size: '1200x1500, dưới 1MB' },
+  'cosmetic-product-p30-moisturizer': { name: 'Kem dưỡng ẩm P30 Moisturizer', size: '1200x1500, dưới 1MB' },
+  'cosmetic-product-p30-toner': { name: 'Toner cân bằng P30 Toner', size: '1200x1500, dưới 1MB' },
+  'cosmetic-premium-program': { name: 'Premium Program', size: '1800x1200, dưới 1.5MB' },
+  'cosmetic-gallery-ritual-panel': { name: 'Ảnh banner quy trình Ritual Panel', size: '1800x1200, dưới 1.5MB' },
+  'cosmetic-gallery-product-set': { name: 'Thư viện - Bộ sản phẩm overview', size: '1600x2000, dưới 1.5MB' },
+  'cosmetic-gallery-texture': { name: 'Thư viện - Kết cấu sản phẩm', size: '1600x1600, dưới 1.5MB' },
+  'cosmetic-gallery-clinic': { name: 'Thư viện - Phòng khám / Trị liệu', size: '1800x1200, dưới 1.5MB' },
+  'cosmetic-gallery-skin': { name: 'Thư viện - Làn da cận cảnh', size: '1600x2000, dưới 1.5MB' },
+  'cosmetic-gallery-serum': { name: 'Thư viện - Tinh chất serum cận cảnh', size: '1600x2000, dưới 1.5MB' },
+  'cosmetic-gallery-packaging': { name: 'Thư viện - Bao bì sản phẩm', size: '1600x2000, dưới 1.5MB' },
 };
 
-function UploadFormInner() {
+function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
 
   const purposeParam = searchParams.get('purpose');
   const slotParam = searchParams.get('slot');
+  const returnTo = searchParams.get('returnTo') || '/cosmetic-page';
+
+  const isCosmeticSlotMode = purposeParam === 'cosmetic-page-media' && slotParam;
 
   const [siteKey, setSiteKey] = useState('main');
   const [type, setType] = useState('image');
   const [altText, setAltText] = useState('');
   const [brandSlot, setBrandSlot] = useState('');
 
+  // Local file preview states
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   useEffect(() => {
-    if (purposeParam === 'cosmetic-page-media') {
+    if (isCosmeticSlotMode) {
       setSiteKey('main');
       setType('image');
     }
-  }, [purposeParam]);
+  }, [isCosmeticSlotMode]);
 
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Find existing asset for this slot (if any)
+  const currentSlotAsset = isCosmeticSlotMode && slotParam
+    ? mediaAssets.find(m => m.metadata?.slot === slotParam && !m.metadata?.archivedFromSlot)
+    : null;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      setError(null);
+    } else {
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,7 +79,7 @@ function UploadFormInner() {
 
     const files = fileInputRef.current?.files;
     if (!files || files.length === 0) {
-      setError('Please select an image file to upload.');
+      setError('Vui lòng chọn một file ảnh để tải lên.');
       return;
     }
 
@@ -63,7 +89,7 @@ function UploadFormInner() {
     const maxMb = isVideo ? 50 : 5;
 
     if (file.size > maxSize) {
-      setError(`File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds maximum ${maxMb}MB limit.`);
+      setError(`Dung lượng file (${(file.size / (1024 * 1024)).toFixed(2)}MB) vượt quá dung lượng cho phép tối đa ${maxMb}MB.`);
       return;
     }
 
@@ -73,8 +99,8 @@ function UploadFormInner() {
     formData.append('file', file);
     formData.append('site_key', siteKey);
     formData.append('type', type);
-    formData.append('alt_text', altText);
-    if (brandSlot) {
+    formData.append('alt_text', altText || (isCosmeticSlotMode ? `VAVAW Cosmetic ${HUMAN_SLOTS[slotParam!]?.name || slotParam}` : ''));
+    if (brandSlot && !isCosmeticSlotMode) {
       formData.append('brand_slot', brandSlot);
     }
     if (purposeParam) formData.append('purpose', purposeParam);
@@ -88,23 +114,68 @@ function UploadFormInner() {
       } else {
         setSuccess('Media asset uploaded and registered successfully!');
         setAltText('');
+        setSelectedFile(null);
+        setPreviewUrl(null);
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
         }
       }
     } catch (err: any) {
-      // If Next.js rejects the request (e.g. 413 Payload Too Large) it throws an Error here
-      setError(err.message || 'An unexpected error occurred during upload.');
+      setError(err.message || 'Có lỗi xảy ra trong quá trình tải lên.');
     } finally {
       setIsUploading(false);
     }
   };
 
+  // Upload success screen in Cosmetic Slot Mode
+  if (success && isCosmeticSlotMode) {
+    const slotDetails = HUMAN_SLOTS[slotParam!];
+    const displayName = slotDetails?.name || slotParam;
+    return (
+      <div className="bg-white p-8 shadow rounded-2xl border border-slate-200 space-y-6 text-center max-w-lg mx-auto animate-fade-in">
+        <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto">
+          <CheckCircle2 className="h-10 w-10 text-emerald-600" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-lg font-bold text-slate-900">Đã cập nhật ảnh thành công!</h3>
+          <p className="text-sm text-slate-600">Đã cập nhật ảnh cho slot: <strong>{displayName}</strong></p>
+        </div>
+        <div className="flex flex-col gap-2 pt-2">
+          <Link 
+            href={returnTo}
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-lg shadow transition"
+          >
+            Quay lại Cosmetic Page
+          </Link>
+          <a 
+            href="/cosmetic"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-sm rounded-lg transition inline-flex items-center justify-center gap-1.5"
+          >
+            <span>Xem trang public</span>
+            <ExternalLink className="h-4 w-4" />
+          </a>
+          <button
+            onClick={() => {
+              setSuccess(null);
+            }}
+            className="w-full py-2.5 text-slate-500 hover:text-slate-700 text-xs font-semibold"
+          >
+            Tải lên ảnh khác cho vị trí này
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const activeSlotInfo = isCosmeticSlotMode ? HUMAN_SLOTS[slotParam!] : null;
+
   return (
     <div className="bg-white p-6 shadow rounded-lg border border-slate-200 space-y-4">
       <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
         <Upload className="h-5 w-5 text-blue-600" />
-        <span>Upload New Asset</span>
+        <span>{isCosmeticSlotMode ? 'Tải lên hình ảnh vị trí Cosmetic' : 'Upload New Asset'}</span>
       </h2>
 
       {error && (
@@ -114,31 +185,43 @@ function UploadFormInner() {
         </div>
       )}
 
-      {success && (
+      {success && !isCosmeticSlotMode && (
         <div className="p-3 bg-green-50 border border-green-200 text-green-700 text-xs rounded-md flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-green-600" />
           <span>{success}</span>
         </div>
       )}
 
-      {purposeParam === 'cosmetic-page-media' && slotParam && (
-        <div className="p-3 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs rounded-md">
-          <strong>Vị trí tải lên:</strong> {HUMAN_SLOTS[slotParam] || slotParam} ({slotParam})
-          <p className="mt-1 text-[11px] text-slate-500">
-            Ảnh này sẽ được dùng cho trang /cosmetic tại vị trí: {HUMAN_SLOTS[slotParam] || slotParam}.
-          </p>
+      {/* Cosmetic Slot Context Mode Info Box */}
+      {isCosmeticSlotMode && activeSlotInfo && (
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 space-y-2">
+          <div className="flex gap-2 items-center">
+            <ImageIcon className="h-5 w-5 text-blue-600" />
+            <span className="font-bold text-sm">Bạn đang tải ảnh cho: {activeSlotInfo.name}</span>
+          </div>
+          <div className="text-xs text-slate-600 pl-7 space-y-1">
+            <p><strong>Technical Slot:</strong> <code className="bg-blue-100/50 px-1 py-0.5 rounded font-mono text-[10px] text-blue-700">{slotParam}</code></p>
+            <p><strong>Khuyên dùng:</strong> {activeSlotInfo.size}</p>
+          </div>
         </div>
       )}
 
-      {purposeParam && purposeParam !== 'cosmetic-page-media' && slotParam && (
-        <div className="p-3 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs rounded-md">
-          <strong>Uploading for:</strong> {slotParam} (Purpose: {purposeParam})
+      {/* Current Image Details */}
+      {isCosmeticSlotMode && currentSlotAsset && (
+        <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-4">
+          <div className="w-16 h-16 rounded bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
+            <img src={currentSlotAsset.url} alt="Ảnh hiện tại" className="w-full h-full object-cover" />
+          </div>
+          <div>
+            <span className="text-[10px] font-bold text-slate-500 uppercase block">Ảnh hiện tại</span>
+            <p className="text-xs text-slate-600 mt-1">Ảnh mới sẽ thay thế slot này, nhưng file cũ sẽ không bị xóa.</p>
+          </div>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div className={purposeParam === 'cosmetic-page-media' ? 'hidden' : ''}>
+          <div className={isCosmeticSlotMode ? 'hidden' : ''}>
             <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Site Key *</label>
             <select
               value={siteKey}
@@ -153,7 +236,7 @@ function UploadFormInner() {
             </select>
           </div>
 
-          <div className={purposeParam === 'cosmetic-page-media' ? 'hidden' : ''}>
+          <div className={isCosmeticSlotMode ? 'hidden' : ''}>
             <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Asset Type *</label>
             <select
               value={type}
@@ -179,7 +262,7 @@ function UploadFormInner() {
             />
           </div>
 
-          <div>
+          <div className={isCosmeticSlotMode ? 'hidden' : ''}>
             <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Brand Asset Slot</label>
             <select
               value={brandSlot}
@@ -196,44 +279,72 @@ function UploadFormInner() {
           </div>
         </div>
 
+        {/* Selected File local preview card */}
+        {previewUrl && selectedFile && (
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+            <span className="text-[10px] font-bold text-slate-500 uppercase block">Xem trước ảnh sắp tải lên</span>
+            <div className="flex gap-4 items-center">
+              <div className="w-20 h-20 rounded bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
+                <img src={previewUrl} alt="Local preview" className="w-full h-full object-cover" />
+              </div>
+              <div className="text-xs text-slate-600 space-y-1">
+                <p><strong>Tên file:</strong> {selectedFile.name}</p>
+                <p><strong>Dung lượng:</strong> {(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                <p><strong>Định dạng:</strong> {selectedFile.type}</p>
+                {selectedFile.size > 5 * 1024 * 1024 && (
+                  <p className="text-red-600 font-bold flex items-center gap-1">
+                    <AlertCircle className="h-4 w-4" />
+                    Cảnh báo: File vượt quá kích thước 5MB khuyên dùng!
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Select File *</label>
+          <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Chọn file ảnh *</label>
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,video/quicktime"
+            accept="image/jpeg,image/png,image/webp,image/avif"
             required
+            onChange={handleFileChange}
             className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
           <p className="mt-1 text-xs text-slate-500">
-            Images: JPG, PNG, WEBP, AVIF (Max 5MB) &bull; Videos: MP4, WEBM, MOV (Max 50MB)
+            Hỗ trợ định dạng: JPG, PNG, WEBP, AVIF (Tối đa 5MB)
           </p>
-          {brandSlot && (
-            <div className="mt-2 text-[11px] text-slate-600 bg-slate-50 border border-slate-200 p-2 rounded-md">
-              <strong>Brand Logo Recommended specs:</strong> PNG transparent, 1200x300px, under 1MB. Do not upload JPG or screenshots for logos. Use white logo for dark backgrounds, dark/blue logo for light backgrounds.
-            </div>
-          )}
         </div>
 
-        <div>
+        <div className="flex gap-3">
           <button
             type="submit"
             disabled={isUploading}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md shadow transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
           >
             <Upload className="h-4 w-4" />
-            <span>{isUploading ? 'Uploading to Supabase...' : 'Upload File'}</span>
+            <span>{isUploading ? 'Đang tải lên Supabase...' : 'Upload File'}</span>
           </button>
+          
+          {isCosmeticSlotMode && (
+            <Link
+              href={returnTo}
+              className="px-4 py-2 border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium rounded-md shadow-sm transition-colors"
+            >
+              Hủy bỏ
+            </Link>
+          )}
         </div>
       </form>
     </div>
   );
 }
 
-export function MediaUploadForm() {
+export function MediaUploadForm({ mediaAssets = [] }: { mediaAssets?: any[] }) {
   return (
     <Suspense fallback={<div>Loading upload form...</div>}>
-      <UploadFormInner />
+      <UploadFormInner mediaAssets={mediaAssets} />
     </Suspense>
   );
 }

@@ -365,7 +365,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
   // ─── MEDIA SLOT MANAGER LOGIC ──────────────────────────────────────────
   const handleRemoveMediaSlot = async (slot: string) => {
-    if (!confirm(`Bạn có chắc chắn muốn gỡ ảnh khỏi vị trí "${slot}"? Thao tác này chỉ gỡ gán, không xóa file gốc.`)) return;
+    if (!confirm("Bạn chỉ đang gỡ ảnh khỏi vị trí này. File vẫn còn trong Media Library.")) return;
 
     setIsSaving(true);
     const res = await removeCosmeticMediaSlot(slot);
@@ -992,7 +992,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             {REQUIRED_SLOTS.map(slot => {
               const asset = mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot);
               return (
-                <div key={slot.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-4 hover:border-slate-300 transition-all">
+                <div key={slot.id} className={`p-4 rounded-xl border transition-all flex gap-4 ${
+                  asset 
+                    ? 'bg-white border-slate-200 shadow-sm hover:border-slate-300' 
+                    : 'bg-slate-50/50 border-dashed border-slate-300'
+                }`}>
                   {/* Thumbnail */}
                   <div className="w-24 h-24 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center relative group">
                     {asset ? (
@@ -1001,13 +1005,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         <a 
                           href={asset.url} 
                           target="_blank" 
-                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold"
+                          rel="noopener noreferrer"
+                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
                         >
                           Xem ảnh
                         </a>
                       </>
                     ) : (
-                      <div className="text-xs text-slate-400 font-bold text-center p-2">Chưa tải lên</div>
+                      <div className="text-[10px] text-slate-400 font-bold text-center p-2">Chưa có ảnh</div>
                     )}
                   </div>
 
@@ -1019,18 +1024,27 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         <span className={`text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
                           asset ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
                         }`}>
-                          {asset ? 'Đã tải lên' : 'Thiếu ảnh'}
+                          {asset ? 'Đã tải lên' : 'Chưa tải'}
                         </span>
                       </div>
                       <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{slot.id}</p>
-                      <p className="text-[10px] text-slate-500 mt-1">Kích thước khuyên dùng: {slot.size}</p>
+                      <p className="text-[10px] text-slate-500 mt-1">Khuyên dùng: {slot.size}</p>
+                      {asset?.created_at && (
+                        <p className="text-[9px] text-slate-400 mt-0.5">
+                          Ngày tải lên: {new Date(asset.created_at).toLocaleDateString('vi-VN')}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 mt-2 pt-2 border-t border-slate-100">
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2 pt-2 border-t border-slate-100">
                       {/* Upload / Change Image link */}
                       <Link 
-                        href={`/media?purpose=cosmetic-page-media&slot=${slot.id}`}
-                        className="px-2 py-1 bg-blue-50 text-blue-700 font-bold text-[10px] rounded hover:bg-blue-100 transition inline-flex items-center gap-1"
+                        href={`/media?purpose=cosmetic-page-media&slot=${slot.id}&returnTo=/cosmetic-page`}
+                        className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
+                          asset 
+                            ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' 
+                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
+                        }`}
                       >
                         <Upload className="h-3 w-3" />
                         <span>{asset ? 'Đổi ảnh' : 'Tải ảnh'}</span>
@@ -1039,11 +1053,27 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                       {/* Select from library */}
                       <button
                         onClick={() => setPickerOpenSlot(slot.id)}
-                        className="px-2 py-1 bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[10px] rounded hover:bg-slate-100 transition inline-flex items-center gap-1"
+                        className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
+                          asset 
+                            ? 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100' 
+                            : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm'
+                        }`}
                       >
                         <FolderOpen className="h-3 w-3" />
                         <span>Chọn từ thư viện</span>
                       </button>
+
+                      {/* View image URL */}
+                      {asset && (
+                        <a
+                          href={asset.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-1 bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[10px] rounded hover:bg-slate-100 transition inline-flex items-center gap-1"
+                        >
+                          Xem ảnh
+                        </a>
+                      )}
 
                       {/* Remove slot association */}
                       {asset && (
