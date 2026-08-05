@@ -62,6 +62,25 @@ const BLOCK_NAMES: Record<string, string> = {
   'cosmetic-final-cta': 'CTA cuối trang'
 };
 
+const ALLOWED_ICONS = [
+  { id: 'flask-conical', label: 'Khoa học (flask-conical)' },
+  { id: 'microscope', label: 'Công nghệ (microscope)' },
+  { id: 'sparkles', label: 'Cao cấp (sparkles)' },
+  { id: 'gem', label: 'Sang trọng (gem)' },
+  { id: 'shield-check', label: 'Chứng nhận (shield-check)' },
+  { id: 'badge-check', label: 'Đảm bảo (badge-check)' },
+  { id: 'leaf', label: 'Tinh khiết (leaf)' },
+  { id: 'heart-handshake', label: 'Đồng hành (heart-handshake)' },
+  { id: 'users', label: 'Cộng đồng (users)' },
+  { id: 'bar-chart-3', label: 'Tăng trưởng (bar-chart-3)' },
+  { id: 'globe', label: 'Toàn cầu (globe)' },
+  { id: 'lightbulb', label: 'Ý tưởng (lightbulb)' },
+  { id: 'droplet', label: 'Cấp ẩm (droplet)' },
+  { id: 'scan-heart', label: 'Phục hồi da (scan-heart)' },
+  { id: 'atom', label: 'Hoạt chất chuyên sâu (atom)' },
+  { id: 'wand-sparkles', label: 'Hiệu quả tức thì (wand-sparkles)' },
+];
+
 export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: CosmeticPageManagerProps) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw-main.vercel.app';
   const router = useRouter();
@@ -79,12 +98,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   // Section editor local state
   const [editTitle, setEditTitle] = useState('');
   const [editEyebrow, setEditEyebrow] = useState('');
+  const [editSubtitle, setEditSubtitle] = useState('');
   const [editDesc, setEditDesc] = useState('');
   const [editCtaLabel, setEditCtaLabel] = useState('');
   const [editCtaHref, setEditCtaHref] = useState('');
   const [editSortOrder, setEditSortOrder] = useState(1);
   const [editIsActive, setEditIsActive] = useState(true);
   const [editItemsJson, setEditItemsJson] = useState('');
+  const [philosophyItems, setPhilosophyItems] = useState<any[]>([]);
   const [jsonError, setJsonError] = useState<string | null>(null);
 
   // Sync prop changes
@@ -135,12 +156,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     const content = block.content || {};
     setEditTitle(content.title || '');
     setEditEyebrow(content.eyebrow || '');
+    setEditSubtitle(content.subtitle || '');
     setEditDesc(content.description || '');
     setEditCtaLabel(content.ctaLabel || '');
     setEditCtaHref(content.ctaHref || '');
     setEditSortOrder(block.sort_order || 1);
     setEditIsActive(block.is_active);
     setEditItemsJson(content.items ? JSON.stringify(content.items, null, 2) : '');
+    setPhilosophyItems(content.items || []);
   };
 
   const handleSaveSectionEdits = async () => {
@@ -165,8 +188,18 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       ctaLabel: editCtaLabel,
       ctaHref: editCtaHref,
     };
-    if (parsedItems !== undefined) {
-      updatedContent.items = parsedItems;
+
+    if (editingBlock.block_type === 'cosmetic-brand-philosophy') {
+      updatedContent.subtitle = editSubtitle;
+      if (parsedItems !== undefined) {
+        updatedContent.items = parsedItems;
+      } else {
+        updatedContent.items = philosophyItems;
+      }
+    } else {
+      if (parsedItems !== undefined) {
+        updatedContent.items = parsedItems;
+      }
     }
 
     const success = await handleSaveBlock(editingBlock.id, editingBlock.site_key, editingBlock.page_path, updatedContent, editIsActive, editSortOrder);
@@ -1234,24 +1267,194 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                     className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nút (CTA Label)</label>
-                  <input 
-                    type="text" 
-                    value={editCtaLabel} 
-                    onChange={e => setEditCtaLabel(e.target.value)}
-                    className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Đường dẫn nút (CTA Link)</label>
-                  <input 
-                    type="text" 
-                    value={editCtaHref} 
-                    onChange={e => setEditCtaHref(e.target.value)}
-                    className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                  />
-                </div>
+
+                {editingBlock.block_type === 'cosmetic-brand-philosophy' && (
+                  <div className="col-span-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Dòng mô tả phụ (Subtitle)</label>
+                    <input 
+                      type="text" 
+                      value={editSubtitle} 
+                      onChange={e => setEditSubtitle(e.target.value)}
+                      className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                    />
+                  </div>
+                )}
+
+                {editingBlock.block_type !== 'cosmetic-brand-philosophy' && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nút (CTA Label)</label>
+                      <input 
+                        type="text" 
+                        value={editCtaLabel} 
+                        onChange={e => setEditCtaLabel(e.target.value)}
+                        className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Đường dẫn nút (CTA Link)</label>
+                      <input 
+                        type="text" 
+                        value={editCtaHref} 
+                        onChange={e => setEditCtaHref(e.target.value)}
+                        className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                      />
+                    </div>
+                  </>
+                )}
+
+                {editingBlock.block_type === 'cosmetic-brand-philosophy' && (
+                  <div className="col-span-2 space-y-4 border-t border-slate-100 pt-4 mt-2">
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Danh sách thẻ triết lý (Philosophy Cards)</h4>
+                    <div className="space-y-4">
+                      {philosophyItems.map((item, idx) => {
+                        const itemNum = item.number || item.num || `0${idx + 1}`;
+                        const itemIcon = item.icon || 'sparkles';
+                        const itemTitle = item.title || '';
+                        const itemDesc = item.description || item.desc || '';
+                        return (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-xl bg-slate-50/50 space-y-3 relative group/card">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                              <span className="text-xs font-bold text-slate-400 font-mono">Thẻ #{idx + 1}</span>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (idx === 0) return;
+                                    const newList = [...philosophyItems];
+                                    const temp = newList[idx];
+                                    newList[idx] = newList[idx - 1];
+                                    newList[idx - 1] = temp;
+                                    setPhilosophyItems(newList);
+                                  }}
+                                  disabled={idx === 0}
+                                  className="p-1 text-slate-500 hover:text-blue-600 disabled:opacity-30"
+                                  title="Di chuyển lên"
+                                >
+                                  <ArrowUp className="h-3.5 w-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (idx === philosophyItems.length - 1) return;
+                                    const newList = [...philosophyItems];
+                                    const temp = newList[idx];
+                                    newList[idx] = newList[idx + 1];
+                                    newList[idx + 1] = temp;
+                                    setPhilosophyItems(newList);
+                                  }}
+                                  disabled={idx === philosophyItems.length - 1}
+                                  className="p-1 text-slate-500 hover:text-blue-600 disabled:opacity-30"
+                                  title="Di chuyển xuống"
+                                >
+                                  <ArrowDown className="h-3.5 w-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newList = philosophyItems.filter((_, i) => i !== idx);
+                                    setPhilosophyItems(newList);
+                                  }}
+                                  className="p-1 text-slate-500 hover:text-red-600"
+                                  title="Xóa thẻ"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Số thứ tự (Number)</label>
+                                <input
+                                  type="text"
+                                  value={itemNum}
+                                  onChange={e => {
+                                    const newList = [...philosophyItems];
+                                    newList[idx] = { ...newList[idx], number: e.target.value };
+                                    setPhilosophyItems(newList);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: 01, 02..."
+                                />
+                              </div>
+                              
+                              <div className="md:col-span-2">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biểu tượng (Icon Whitelist)</label>
+                                <select
+                                  value={itemIcon}
+                                  onChange={e => {
+                                    const newList = [...philosophyItems];
+                                    newList[idx] = { ...newList[idx], icon: e.target.value };
+                                    setPhilosophyItems(newList);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]"
+                                >
+                                  {ALLOWED_ICONS.map(ic => (
+                                    <option key={ic.id} value={ic.id}>{ic.label}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              
+                              <div className="md:col-span-3">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề thẻ *</label>
+                                <input
+                                  type="text"
+                                  value={itemTitle}
+                                  onChange={e => {
+                                    const newList = [...philosophyItems];
+                                    newList[idx] = { ...newList[idx], title: e.target.value };
+                                    setPhilosophyItems(newList);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Tiêu đề..."
+                                  required
+                                />
+                              </div>
+                              
+                              <div className="md:col-span-3">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nội dung mô tả *</label>
+                                <textarea
+                                  value={itemDesc}
+                                  onChange={e => {
+                                    const newList = [...philosophyItems];
+                                    newList[idx] = { ...newList[idx], description: e.target.value };
+                                    setPhilosophyItems(newList);
+                                  }}
+                                  rows={2}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Mô tả..."
+                                  required
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const nextIdx = philosophyItems.length + 1;
+                          const nextNum = nextIdx < 10 ? `0${nextIdx}` : `${nextIdx}`;
+                          setPhilosophyItems([
+                            ...philosophyItems,
+                            {
+                              number: nextNum,
+                              icon: 'sparkles',
+                              title: '',
+                              description: ''
+                            }
+                          ]);
+                        }}
+                        className="text-xs text-blue-600 font-bold flex items-center gap-1 hover:underline mt-1 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-lg"
+                      >
+                        <Plus className="h-3 w-3" />
+                        <span>Thêm thẻ triết lý mới</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="col-span-2 flex items-center py-2">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input

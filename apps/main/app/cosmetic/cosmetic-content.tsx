@@ -8,6 +8,43 @@ import type { BusinessEntry } from '@vavaw/brand-config';
 import { CosmeticCtaTracker } from './cosmetic-tracker';
 import type { PublicHeroMedia } from '@/lib/load-public-hero-media';
 import type { CosmeticPageMedia } from '@/lib/load-public-cosmetic-media';
+import { 
+  FlaskConical, 
+  Microscope, 
+  Sparkles, 
+  Gem, 
+  ShieldCheck, 
+  BadgeCheck, 
+  Leaf, 
+  HeartHandshake, 
+  Users, 
+  BarChart3, 
+  Globe, 
+  Lightbulb, 
+  Droplet, 
+  ScanHeart, 
+  Atom, 
+  WandSparkles 
+} from 'lucide-react';
+
+const ICON_MAP: Record<string, React.ComponentType<any>> = {
+  'flask-conical': FlaskConical,
+  'microscope': Microscope,
+  'sparkles': Sparkles,
+  'gem': Gem,
+  'shield-check': ShieldCheck,
+  'badge-check': BadgeCheck,
+  'leaf': Leaf,
+  'heart-handshake': HeartHandshake,
+  'users': Users,
+  'bar-chart-3': BarChart3,
+  'globe': Globe,
+  'lightbulb': Lightbulb,
+  'droplet': Droplet,
+  'scan-heart': ScanHeart,
+  'atom': Atom,
+  'wand-sparkles': WandSparkles
+};
 
 function isValidHeroImageUrl(value?: string | null): value is string {
   if (!value) return false;
@@ -398,38 +435,63 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
             </motion.div>
             <motion.h2
               variants={fadeUp}
-              className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-[#050A5C] mb-6 leading-tight"
+              className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-[#050A5C] mb-4 leading-tight"
             >
               {brandPhilosophy.title}
             </motion.h2>
+            {brandPhilosophy.subtitle && (
+              <motion.p
+                variants={fadeUp}
+                className="text-slate-400 text-sm md:text-base font-normal tracking-wide mb-6 max-w-xl mx-auto"
+              >
+                {brandPhilosophy.subtitle}
+              </motion.p>
+            )}
             <Divider />
             <motion.p variants={fadeUp} className="text-[#6B7280] text-base md:text-lg font-light leading-relaxed whitespace-pre-wrap">
               {brandPhilosophy.description}
             </motion.p>
           </motion.div>
 
-          {/* Three philosophy cards */}
+          {/* Philosophy cards grid */}
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
+            className={`grid grid-cols-1 gap-6 lg:gap-8 ${
+              (brandPhilosophy.items || []).length === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3'
+            }`}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-60px' }}
             variants={stagger}
           >
-            {(brandPhilosophy.items || []).map((card: any) => (
-              <motion.div
-                key={card.num}
-                variants={fadeUp}
-                className={`group border ${SILVER_BORDER} bg-white p-10 lg:p-12 hover:border-[#050A5C]/30 hover:shadow-lg transition-all duration-500`}
-              >
-                <span className="block text-[11px] font-semibold tracking-[0.25em] text-[#050A5C]/40 mb-6 font-mono">
-                  {card.num}
-                </span>
-                <h3 className="text-xl font-light text-[#050A5C] mb-4 tracking-wide">{card.title}</h3>
-                <div className="w-8 h-px bg-[#050A5C]/25 mb-5" />
-                <p className="text-sm text-[#6B7280] font-light leading-relaxed">{card.desc}</p>
-              </motion.div>
-            ))}
+            {(brandPhilosophy.items || []).map((card: any, idx: number) => {
+              const cardNum = card.number || card.num || `0${idx + 1}`;
+              const cardTitle = card.title || '';
+              const cardDesc = card.description || card.desc || '';
+              const cardIcon = card.icon || 'sparkles';
+              const IconComponent = ICON_MAP[cardIcon] || Sparkles;
+
+              return (
+                <motion.div
+                  key={idx}
+                  variants={fadeUp}
+                  className="group border border-[#D9DEE8] bg-white p-10 lg:p-12 transition-all duration-500 shadow-sm hover:shadow-lg hover:border-[#050A5C]/30 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="w-12 h-12 bg-[#F4F7FB] text-[#050A5C] rounded-xl flex items-center justify-center transition-colors duration-300 group-hover:bg-[#050A5C] group-hover:text-white">
+                        <IconComponent className="h-6 w-6 stroke-[1.2]" />
+                      </div>
+                      <span className="text-[11px] font-semibold tracking-[0.25em] text-[#050A5C]/30 font-mono">
+                        {cardNum}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-light text-[#050A5C] mb-4 tracking-wide group-hover:text-[#101A8C] transition-colors duration-300">{cardTitle}</h3>
+                    <div className="w-8 h-px bg-[#050A5C]/25 mb-5" />
+                    <p className="text-sm text-[#6B7280] font-light leading-relaxed">{cardDesc}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>

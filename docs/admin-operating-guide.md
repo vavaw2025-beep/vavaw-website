@@ -289,7 +289,9 @@ The `/cosmetic` page consists of two distinct areas:
 
 The Admin UX Studio is designed into several Vietnamese tabs for easy non-technical content management:
 - **Tổng quan**: View quick statistics (total, active, inactive sections) and missing media counts.
-- **Nội dung trang**: Manage the 9 core page sections (Triết lý thương hiệu, Bộ sản phẩm phục hồi, Quy trình chăm sóc, vv.). Toggles permit quick hide/show, and the edit forms allow updating title, description, and CTA fields. An Advanced JSON field is available collapsed for developers.
+- **Nội dung trang**: Manage the 9 core page sections (Triết lý thương hiệu, Bộ sản phẩm phục hồi, Quy trình chăm sóc, vv.). Toggles permit quick hide/show, and the edit forms allow updating title, description, and CTA fields.
+  - **Triết lý thương hiệu**: A visual repeater editor is available to customize the Business Philosophy Eyebrow, Title, Subtitle, Description, and philosophy items cards without editing raw JSON. You can add new cards, reorder them (Move Up/Move Down), change their card numbers, and select from a whitelist of 16 clinical/premium Lucide icons.
+  - An Advanced JSON field is available collapsed for developers.
 - **Sản phẩm**: A specialized, non-technical form to edit the 6 cosmetic products (names, types, descriptions, benefit tags, ingredients list, and media slots).
 - **Thành phần**: A friendly repeater editor to add, remove, or change order of active ingredients.
 - **Quy trình**: A friendly repeater editor to manage steps of the daily skincare routine.
@@ -298,4 +300,4 @@ The Admin UX Studio is designed into several Vietnamese tabs for easy non-techni
   - **Chọn từ thư viện**: Opens a library picker dialog showing the newest 50 images to pick and assign directly.
   - **Gỡ khỏi slot**: Safely unassigns the image without deleting the file from storage (marks it as archived).
 
-*(Status: Phase 63 — Cosmetic Page Admin UX Studio verified and production-ready)*
+*(Status: Phase 64 — Dynamic Brand Philosophy Section verified and production-ready)*
