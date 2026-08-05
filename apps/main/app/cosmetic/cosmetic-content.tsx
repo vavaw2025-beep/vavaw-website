@@ -647,6 +647,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                   'cosmetic-product-renew-ampoule':    'renewAmpoule',
                   'cosmetic-product-p30-moisturizer':  'p30Moisturizer',
                   'cosmetic-product-p30-toner':        'p30Toner',
+                  'cosmetic-product-lumiglow-sunscreen': 'lumiglowSunscreen',
                 };
                 const key = slotKeyMap[product.mediaSlot] || product.mediaSlot as keyof CosmeticPageMedia;
                 imageUrl = cosmeticMedia[key];
@@ -660,6 +661,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                 else if (name.includes('Renew Ampoule')) imageUrl = cosmeticMedia.renewAmpoule;
                 else if (name.includes('Moisturizer')) imageUrl = cosmeticMedia.p30Moisturizer;
                 else if (name.includes('Toner')) imageUrl = cosmeticMedia.p30Toner;
+                else if (name.includes('Sunscreen')) imageUrl = cosmeticMedia.lumiglowSunscreen;
               }
 
               const hasImage = imageUrl && isValidHeroImageUrl(imageUrl);
@@ -695,11 +697,18 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                     </span>
 
                     {/* Product name */}
-                    <h3 className="text-lg font-light text-[#050A5C] leading-snug mb-4 group-hover:text-[#101A8C] transition-colors">
+                    <h3 className="text-lg font-light text-[#050A5C] leading-snug mb-2 group-hover:text-[#101A8C] transition-colors">
                       {product.name}
                     </h3>
 
-                    <div className="w-6 h-px bg-[#050A5C]/20 mb-5" />
+                    {/* Price and Volume if present */}
+                    {(product.price || product.volume) && (
+                      <p className="text-[10px] text-slate-400 font-semibold tracking-wider mb-2">
+                        {product.price}{product.volume ? ` | ${product.volume}` : ''}
+                      </p>
+                    )}
+
+                    <div className="w-6 h-px bg-[#050A5C]/20 mb-4" />
 
                     {/* Ingredients */}
                     <p className="text-[10px] text-[#9CA3AF] tracking-wide mb-5">{product.ingredients}</p>

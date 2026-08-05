@@ -39,6 +39,7 @@ const REQUIRED_SLOTS = [
   { id: 'cosmetic-product-renew-ampoule', name: 'Tinh chất Renew Ampoule', size: '1200x1500' },
   { id: 'cosmetic-product-p30-moisturizer', name: 'Kem dưỡng ẩm P30 Moisturizer', size: '1200x1500' },
   { id: 'cosmetic-product-p30-toner', name: 'Toner cân bằng P30 Toner', size: '1200x1500' },
+  { id: 'cosmetic-product-lumiglow-sunscreen', name: 'Ảnh kem chống nắng Lumiglow Rosy Sheer Sunscreen', size: '1200x1500' },
   { id: 'cosmetic-premium-program', name: 'Premium Program / Spa Clinic', size: '1800x1200' },
   { id: 'cosmetic-gallery-ritual-panel', name: 'Ảnh banner Ritual Panel', size: '1800x1200' },
   { id: 'cosmetic-gallery-product-set', name: 'Thư viện - Bộ sản phẩm overview', size: '1600x2000' },
@@ -184,6 +185,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [selectedProduct, setSelectedProduct] = useState<string>('Luminous Revitalization Sheer Set');
   const [prodName, setProdName] = useState('');
   const [prodType, setProdType] = useState('');
+  const [prodVolume, setProdVolume] = useState('');
+  const [prodPrice, setProdPrice] = useState('');
   const [prodDesc, setProdDesc] = useState('');
   const [prodBenefits, setProdBenefits] = useState<string[]>([]);
   const [prodIngredients, setProdIngredients] = useState<string[]>([]);
@@ -195,6 +198,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       const content = heroBlock?.content || {};
       setProdName(content.title || 'Luminous Revitalization Sheer Set');
       setProdType('Bộ sản phẩm phục hồi');
+      setProdVolume('');
+      setProdPrice('');
       setProdDesc(content.description || '');
       setProdBenefits(content.benefits || []);
       setProdIngredients(content.ingredients || []);
@@ -205,6 +210,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       if (item) {
         setProdName(item.name || '');
         setProdType(item.type || '');
+        setProdVolume(item.volume || '');
+        setProdPrice(item.price || '');
         setProdDesc(item.desc || '');
         setProdBenefits(item.benefits || []);
         // ingredients can be string or array
@@ -265,7 +272,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         if (cardsBlock && cardsBlock.content && Array.isArray(cardsBlock.content.items)) {
           cardsBlock.content.items = cardsBlock.content.items.map((item: any) => {
             if (item.name === selectedProduct) {
-              return {
+              const updatedItem: any = {
                 ...item,
                 name: prodName,
                 type: prodType,
@@ -273,6 +280,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                 benefits: prodBenefits,
                 ingredients: prodIngredients.join(' · ')
               };
+              if (prodVolume) updatedItem.volume = prodVolume;
+              if (prodPrice) updatedItem.price = prodPrice;
+              return updatedItem;
             }
             return item;
           });
@@ -599,26 +609,29 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar product list */}
           <div className="lg:col-span-1 space-y-2">
-            {[
-              'Luminous Revitalization Sheer Set',
-              'Regenaglow Nourish Sheer Cream',
-              'Calmiance Superior Sheer Gel',
-              'Gentle Activation Renew Ampoule',
-              'P30 Boost Facial Moisturizer',
-              'P30 Boost Facial Hydrating Toner'
-            ].map(p => (
-              <button
-                key={p}
-                onClick={() => setSelectedProduct(p)}
-                className={`w-full text-left p-3 rounded-lg text-xs font-semibold transition border ${
-                  selectedProduct === p
-                    ? 'bg-blue-50 text-blue-700 border-blue-200 shadow-sm'
-                    : 'bg-white text-slate-700 border-slate-100 hover:bg-slate-50'
-                }`}
-              >
-                {p}
-              </button>
-            ))}
+            {(() => {
+              const productNames = ['Luminous Revitalization Sheer Set'];
+              const cardsBlock = blocks.find(b => b.block_type === 'cosmetic-product-cards');
+              const items = cardsBlock?.content?.items || [];
+              items.forEach((item: any) => {
+                if (item.name && !productNames.includes(item.name)) {
+                  productNames.push(item.name);
+                }
+              });
+              return productNames.map(p => (
+                <button
+                  key={p}
+                  onClick={() => setSelectedProduct(p)}
+                  className={`w-full text-left p-3 rounded-lg text-xs font-semibold transition border ${
+                    selectedProduct === p
+                      ? 'bg-blue-50 text-blue-700 border-blue-200 shadow-sm'
+                      : 'bg-white text-slate-700 border-slate-100 hover:bg-slate-50'
+                  }`}
+                >
+                  {p}
+                </button>
+              ));
+            })()}
           </div>
 
           {/* Product form */}
@@ -652,11 +665,45 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               </div>
 
               <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Dung tích</label>
+                <input
+                  type="text"
+                  value={prodVolume}
+                  onChange={e => setProdVolume(e.target.value)}
+                  disabled={selectedProduct === 'Luminous Revitalization Sheer Set'}
+                  className="w-full text-sm p-2 border border-slate-300 rounded-md disabled:bg-slate-50"
+                  placeholder="Ví dụ: 50ml, 120ml..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Giá hiển thị (nếu có)</label>
+                <input
+                  type="text"
+                  value={prodPrice}
+                  onChange={e => setProdPrice(e.target.value)}
+                  disabled={selectedProduct === 'Luminous Revitalization Sheer Set'}
+                  className="w-full text-sm p-2 border border-slate-300 rounded-md disabled:bg-slate-50"
+                  placeholder="Ví dụ: 850.000vnd..."
+                />
+              </div>
+
+              <div className="col-span-2 md:col-span-1">
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Ảnh đại diện (Media Slot)</label>
                 <div className="flex items-center gap-3">
                   {(() => {
-                    const slotId = REQUIRED_SLOTS.find(s => s.name.includes(selectedProduct.replace('Revitalization ', '').replace(' Facial', '').split(' ')[0]))?.id 
-                                  || (selectedProduct.includes('Luminous') ? 'cosmetic-product-luminous-set' : '');
+                    const slotId = (() => {
+                      if (selectedProduct === 'Luminous Revitalization Sheer Set') {
+                        return 'cosmetic-product-luminous-set';
+                      }
+                      const cardsBlock = blocks.find(b => b.block_type === 'cosmetic-product-cards');
+                      const items = cardsBlock?.content?.items || [];
+                      const item = items.find((i: any) => i.name === selectedProduct);
+                      if (item && item.mediaSlot) {
+                        return item.mediaSlot;
+                      }
+                      return REQUIRED_SLOTS.find(s => s.name.toLowerCase().includes(selectedProduct.toLowerCase().replace('revitalization ', '').replace(' facial', '').split(' ')[0]))?.id || '';
+                    })();
                     const asset = mediaAssets.find(m => m.metadata?.slot === slotId && !m.metadata?.archivedFromSlot);
                     return (
                       <>
@@ -671,6 +718,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           <span className="text-xs text-slate-500 block truncate">{slotId}</span>
                           {slotId && (
                             <button
+                              type="button"
                               onClick={() => setPickerOpenSlot(slotId)}
                               className="text-[10px] text-blue-600 font-bold hover:underline"
                             >

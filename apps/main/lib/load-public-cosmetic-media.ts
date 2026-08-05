@@ -28,6 +28,8 @@ export interface CosmeticPageMedia {
   p30Moisturizer?: string;
   /** P30 Boost Facial Hydrating Toner product card */
   p30Toner?: string;
+  /** Lumiglow Rosy Sheer Sunscreen product card */
+  lumiglowSunscreen?: string;
   /** Daily Clinical Ritual panel image */
   ritualPanel?: string;
   /** Premium Program / Spa Clinic visual */
@@ -54,6 +56,7 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-product-renew-ampoule':    'renewAmpoule',
   'cosmetic-product-p30-moisturizer':  'p30Moisturizer',
   'cosmetic-product-p30-toner':        'p30Toner',
+  'cosmetic-product-lumiglow-sunscreen': 'lumiglowSunscreen',
   'cosmetic-gallery-ritual-panel':     'ritualPanel',
   'cosmetic-premium-program':          'premiumProgram',
   'cosmetic-gallery-product-set':      'galleryProductSet',
