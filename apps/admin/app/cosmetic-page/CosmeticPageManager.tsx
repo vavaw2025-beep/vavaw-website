@@ -97,7 +97,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const totalSections = blocks.length;
   const activeCount = blocks.filter(b => b.is_active).length;
   const inactiveCount = totalSections - activeCount;
-  const missingMediaCount = REQUIRED_SLOTS.filter(slot => !mediaAssets.find(m => m.metadata?.slot === slot && !m.metadata?.archivedFromSlot)).length;
+  const missingMediaCount = REQUIRED_SLOTS.filter(slot => !mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot)).length;
 
   const showSuccess = (msg: string) => {
     setGlobalSuccess(msg);
