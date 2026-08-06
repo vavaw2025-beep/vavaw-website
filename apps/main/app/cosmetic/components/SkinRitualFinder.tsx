@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { CosmeticPageMedia } from '@/lib/load-public-cosmetic-media';
 import { CosmeticCtaTracker } from '../cosmetic-tracker';
-import { FlaskConical, Droplet, Sparkles, CheckCircle, RefreshCw } from 'lucide-react';
+import { FlaskConical, Droplet, Sparkles, CheckCircle, RefreshCw, Check } from 'lucide-react';
 
 interface SkinRitualFinderProps {
   dailyRitual: any;
@@ -208,15 +208,18 @@ export function SkinRitualFinder({ dailyRitual, products, cosmeticMedia }: SkinR
                       key={group.id}
                       type="button"
                       onClick={() => setSelectedAge(group.id)}
-                      className={`p-3 text-left border transition-all duration-300 ${
+                      className={`relative p-3.5 pr-8 text-left border transition-all duration-300 ${
                         selectedAge === group.id
                           ? 'bg-white border-[#050A5C] text-[#050A5C] shadow-sm font-semibold'
-                          : 'bg-white/50 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300'
+                          : 'bg-white/55 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300'
                       }`}
-                      style={{ borderRadius: '1px' }}
+                      style={{ borderRadius: '1px', minHeight: '48px' }}
                     >
                       <span className="block text-xs">{group.label}</span>
                       <span className="block text-[8px] text-slate-400 font-light mt-0.5 line-clamp-1">{group.description}</span>
+                      {selectedAge === group.id && (
+                        <Check className="absolute top-2.5 right-2.5 h-3 w-3 text-[#050A5C]" />
+                      )}
                     </button>
                   ))}
                 </div>
@@ -234,14 +237,17 @@ export function SkinRitualFinder({ dailyRitual, products, cosmeticMedia }: SkinR
                       key={c.id}
                       type="button"
                       onClick={() => setSelectedConcern(c.id)}
-                      className={`p-3 text-left border text-xs transition-all duration-300 ${
+                      className={`relative p-3.5 pr-8 text-left border text-xs transition-all duration-300 flex items-center ${
                         selectedConcern === c.id
                           ? 'bg-white border-[#050A5C] text-[#050A5C] shadow-sm font-semibold'
-                          : 'bg-white/50 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300'
+                          : 'bg-white/55 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300'
                       }`}
-                      style={{ borderRadius: '1px' }}
+                      style={{ borderRadius: '1px', minHeight: '48px' }}
                     >
-                      {c.label}
+                      <span>{c.label}</span>
+                      {selectedConcern === c.id && (
+                        <Check className="absolute top-3.5 right-2.5 h-3 w-3 text-[#050A5C]" />
+                      )}
                     </button>
                   ))}
                 </div>
@@ -259,19 +265,21 @@ export function SkinRitualFinder({ dailyRitual, products, cosmeticMedia }: SkinR
                       key={g.id}
                       type="button"
                       onClick={() => setSelectedGoal(g.id)}
-                      className={`p-3 text-left border text-xs transition-all duration-300 ${
+                      className={`relative p-3.5 pr-8 text-left border text-xs transition-all duration-300 flex items-center ${
                         selectedGoal === g.id
                           ? 'bg-white border-[#050A5C] text-[#050A5C] shadow-sm font-semibold'
-                          : 'bg-white/50 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300'
+                          : 'bg-white/55 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300'
                       }`}
-                      style={{ borderRadius: '1px' }}
+                      style={{ borderRadius: '1px', minHeight: '48px' }}
                     >
-                      {g.label}
+                      <span>{g.label}</span>
+                      {selectedGoal === g.id && (
+                        <Check className="absolute top-3.5 right-2.5 h-3 w-3 text-[#050A5C]" />
+                      )}
                     </button>
                   ))}
                 </div>
               </div>
-
             </div>
 
             {/* Disclaimer */}
