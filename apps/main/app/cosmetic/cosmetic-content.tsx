@@ -1336,25 +1336,25 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
         return (
           <section className={`${SECTION_WHITE} py-24 md:py-32 px-6 border-t ${SILVER_BORDER}`}>
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-7xl mx-auto">
               
               {/* Main 2-Column Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+              <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-14 xl:gap-20 items-center">
                 
-                {/* Left Column: Framed Image */}
+                {/* Left Column: Large Framed Image */}
                 <motion.div
-                  className="flex flex-col gap-4"
-                  initial={{ opacity: 0, scale: 0.97 }}
+                  className="flex flex-col gap-4 w-full"
+                  initial={{ opacity: 0, scale: 0.98 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.85 }}
+                  transition={{ duration: 0.75 }}
                 >
-                  <div className="relative aspect-square w-full border border-[#D9DEE8] bg-[#F7F9FC] flex items-center justify-center p-6 md:p-8 overflow-hidden" style={{ borderRadius: '1px' }}>
+                  <div className="relative aspect-[4/5] lg:min-h-[620px] w-full border border-[#D9DEE8] bg-[#F7F9FC] flex items-center justify-center p-6 md:p-8 overflow-hidden" style={{ borderRadius: '1px' }}>
                     {imageUrl ? (
                       <img
                         src={imageUrl}
                         alt={title}
-                        className="w-[85%] h-[85%] object-contain mix-blend-multiply bg-[#F7F9FC] transition-transform duration-700 hover:scale-103"
+                        className="w-full h-full object-contain mix-blend-multiply bg-[#F7F9FC] transition-transform duration-700 hover:scale-103"
                       />
                     ) : (
                       <div className="w-16 h-16 bg-[#F7F9FC] flex items-center justify-center">
@@ -1363,14 +1363,14 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                     )}
                   </div>
                   <div className="flex justify-between items-center text-[9px] tracking-[0.2em] font-semibold text-[#050A5C]/45 uppercase px-1">
-                    <span>{title}</span>
-                    <span>Clinical recovery set</span>
+                    <span>LUMINOUS REVITALIZATION SHEER SET</span>
+                    <span>CLINICAL RECOVERY SET</span>
                   </div>
                 </motion.div>
 
                 {/* Right Column: Clean premium details */}
                 <motion.div
-                  className="flex flex-col space-y-6"
+                  className="flex flex-col space-y-6 min-w-0 w-full"
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: '-60px' }}
@@ -1395,14 +1395,14 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                   
                   <Divider />
                   
-                  <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-sm md:text-base leading-relaxed">
+                  <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-sm leading-relaxed max-w-xl">
                     {description}
                   </motion.p>
 
                   {/* Benefits tags */}
                   {benefits && benefits.length > 0 && (
                     <motion.div variants={fadeUp} className="flex flex-wrap gap-2 pt-1">
-                      {benefits.map((b: string) => (
+                      {benefits.slice(0, 3).map((b: string) => (
                         <span key={b} className="border border-[#D9DEE8] px-3.5 py-1 text-[9px] tracking-[0.15em] uppercase text-[#050A5C] font-semibold bg-[#F4F7FB]/70" style={{ borderRadius: '1px' }}>
                           {b}
                         </span>
@@ -1410,11 +1410,11 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                     </motion.div>
                   )}
 
-                  {/* Set Includes - 2 clickable products */}
+                  {/* Set Includes - 2 compact tabbed selector cards */}
                   {setProducts && setProducts.length > 0 && (
-                    <motion.div variants={fadeUp} className="space-y-4 pt-4 border-t border-slate-100">
-                      <span className="block text-[9px] tracking-[0.2em] uppercase text-[#050A5C]/40 font-bold">Set Includes</span>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <motion.div variants={fadeUp} className="space-y-3 pt-4 border-t border-slate-100 min-w-0">
+                      <span className="block text-[9px] tracking-[0.2em] uppercase text-[#050A5C]/40 font-bold">Inside the Set</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {setProducts.slice(0, 2).map((p: any, i: number) => {
                           const isActive = selectedSetProductIndex === i;
                           return (
@@ -1422,22 +1422,21 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                               key={i}
                               type="button"
                               onClick={() => setSelectedSetProductIndex(i)}
-                              className={`text-left border p-5 flex flex-col justify-between transition-all duration-300 ${
+                              className={`text-left border p-4 flex flex-col justify-between transition-all duration-200 min-w-0 ${
                                 isActive 
                                   ? 'border-[#050A5C] bg-[#050A5C]/5 shadow-sm'
-                                  : 'border-[#D9DEE8] bg-[#F7F9FC] hover:border-slate-300'
+                                  : 'border-[#D9DEE8]/60 bg-white hover:border-slate-300'
                               }`}
-                              style={{ borderRadius: '1px', minHeight: '140px' }}
+                              style={{ borderRadius: '1px' }}
                             >
-                              <div className="w-full">
-                                <span className={`block text-[8px] font-mono font-bold tracking-wider mb-1 ${isActive ? 'text-[#050A5C]/60' : 'text-slate-400'}`}>0{i + 1} · {p.role}</span>
-                                <span className="block text-xs font-bold text-[#050A5C]">{p.name}</span>
-                                <p className="text-[11px] text-slate-500 font-light mt-1.5 leading-relaxed">{p.description}</p>
+                              <div className="min-w-0 w-full">
+                                <div className="flex justify-between items-center mb-1 w-full">
+                                  <span className={`text-[8px] font-mono font-bold tracking-wider ${isActive ? 'text-[#050A5C]/60' : 'text-slate-400'}`}>0{i + 1} · {p.role}</span>
+                                  {isActive && <span className="text-[7px] font-bold text-[#050A5C] font-mono bg-[#050A5C]/10 px-1 py-0.2" style={{ borderRadius: '1px' }}>ACTIVE</span>}
+                                </div>
+                                <span className="block text-xs font-bold text-[#050A5C] truncate">{p.name}</span>
                               </div>
-                              <div className="w-full flex justify-between items-center mt-3">
-                                <span className="text-[9px] font-mono text-slate-400 font-semibold">{p.size}</span>
-                                {isActive && <span className="text-[9px] font-bold text-[#050A5C] font-mono">ACTIVE</span>}
-                              </div>
+                              <span className="block text-[9px] font-mono text-slate-400 mt-2 font-semibold">{p.size}</span>
                             </button>
                           );
                         })}
@@ -1459,14 +1458,13 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                     return (
                       <motion.div
                         key={selectedSetProductIndex}
-                        initial={{ opacity: 0, y: 6 }}
+                        initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="border border-[#D9DEE8] p-5 bg-[#F7F9FC] grid grid-cols-1 xl:grid-cols-[260px_1fr] gap-6 items-start min-w-0"
-                        style={{ borderRadius: '1px' }}
+                        transition={{ duration: 0.2 }}
+                        className="border-t border-[#D9DEE8]/60 pt-5 mt-4 grid grid-cols-1 sm:grid-cols-[110px_1fr] gap-5 items-start min-w-0"
                       >
-                        {/* Left: Product image frame */}
-                        <div className="w-full xl:w-[260px] max-w-full xl:max-w-[260px] aspect-[4/5] bg-[#F7F9FC] border border-[#D9DEE8] p-4 flex flex-col items-center justify-center overflow-hidden relative mx-auto xl:mx-0 flex-shrink-0" style={{ borderRadius: '1px' }}>
+                        {/* Left: Compact Thumbnail Image */}
+                        <div className="w-[110px] h-[110px] bg-[#F7F9FC] border border-[#D9DEE8] p-2 flex flex-col items-center justify-center overflow-hidden relative flex-shrink-0 mx-auto sm:mx-0" style={{ borderRadius: '1px' }}>
                           {activeImageUrl ? (
                             <img
                               src={activeImageUrl}
@@ -1474,74 +1472,65 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                               className="w-full h-full object-contain mix-blend-multiply bg-[#F7F9FC]"
                             />
                           ) : (
-                            <div className="flex flex-col items-center justify-center text-center p-4 space-y-2">
-                              <FlaskConical className="h-6 w-6 text-[#050A5C]/20 stroke-[1.2]" />
-                              <span className="text-[10px] font-bold text-slate-400">Chưa có ảnh chi tiết</span>
-                              <span className="text-[8px] text-slate-400 font-light leading-normal max-w-[180px]">Upload ảnh trong Admin → Cosmetic Page → Hình ảnh</span>
+                            <div className="flex flex-col items-center justify-center text-center p-1 space-y-1.5">
+                              <FlaskConical className="h-5 w-5 text-[#050A5C]/20 stroke-[1.2]" />
+                              <span className="text-[8px] font-bold text-slate-400 leading-none">Chưa có ảnh</span>
+                              <span className="text-[6px] text-slate-400 font-light leading-tight max-w-[80px]">Upload trong Admin</span>
                             </div>
                           )}
                         </div>
 
                         {/* Right: Product details */}
-                        <div className="flex flex-col justify-between space-y-4 min-w-0 w-full">
-                          <div className="space-y-2 min-w-0">
-                            <span className="block text-[8px] font-mono font-bold tracking-widest text-[#050A5C]/40 uppercase">{activeP.role || "TREATMENT"}</span>
-                            <div className="flex flex-col sm:flex-row justify-between items-baseline gap-2 min-w-0">
-                              <h4 className="text-sm font-bold text-[#050A5C] truncate max-w-full">{activeP.name}</h4>
-                              <span className="text-[10px] font-mono text-slate-400 font-semibold flex-shrink-0">{activeP.size}</span>
+                        <div className="flex flex-col space-y-3 min-w-0 w-full">
+                          <div className="space-y-1 min-w-0">
+                            <h4 className="text-xs font-bold text-[#050A5C] truncate">{activeP.name}</h4>
+                            <div className="text-[9px] font-mono text-slate-400 font-semibold uppercase tracking-wider">
+                              {activeP.size} &middot; {activeP.role}
                             </div>
-                            {activeP.detailTitle && (
-                              <p className="text-xs font-semibold text-slate-700 leading-snug">{activeP.detailTitle}</p>
-                            )}
                             {activeP.detailDescription && (
-                              <p className="text-[11px] text-slate-500 font-light leading-relaxed">{activeP.detailDescription}</p>
+                              <p className="text-[11px] text-slate-500 font-light leading-relaxed line-clamp-2 mt-1">
+                                {activeP.detailDescription}
+                              </p>
                             )}
                           </div>
 
                           {/* Actives chips */}
                           {activeP.actives && activeP.actives.length > 0 && (
-                            <div className="space-y-1.5 min-w-0">
-                              <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold">Key Actives</span>
-                              <div className="flex flex-wrap gap-1.5">
-                                {activeP.actives.map((act: string, i: number) => (
-                                  <span key={i} className="text-[9px] font-mono text-[#050A5C] border border-[#050A5C]/10 px-2 py-0.5 bg-[#050A5C]/5" style={{ borderRadius: '1px' }}>{act}</span>
-                                ))}
-                              </div>
+                            <div className="flex flex-wrap gap-1">
+                              {activeP.actives.slice(0, 3).map((act: string, i: number) => (
+                                <span key={i} className="text-[8px] font-mono text-[#050A5C] border border-[#050A5C]/10 px-1.5 py-0.5 bg-[#050A5C]/5" style={{ borderRadius: '1px' }}>{act}</span>
+                              ))}
                             </div>
                           )}
 
-                          {/* Benefits bullet list */}
+                          {/* Benefits compact bullets */}
                           {activeP.benefits && activeP.benefits.length > 0 && (
-                            <div className="space-y-1.5 min-w-0">
-                              <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold">Benefits</span>
-                              <div className="space-y-1">
-                                {activeP.benefits.map((b: string, i: number) => (
-                                  <div key={i} className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-[#050A5C]/30 flex-shrink-0" />
-                                    <span className="text-[10px] text-slate-600 font-light leading-relaxed">{b}</span>
-                                  </div>
-                                ))}
-                              </div>
+                            <div className="space-y-0.5">
+                              {activeP.benefits.slice(0, 3).map((b: string, i: number) => (
+                                <div key={i} className="flex items-center gap-1.5">
+                                  <div className="w-1 h-1 rounded-full bg-[#050A5C]/35 flex-shrink-0" />
+                                  <span className="text-[10px] text-slate-600 font-light truncate">{b}</span>
+                                </div>
+                              ))}
                             </div>
                           )}
 
-                          {/* Usage note */}
+                          {/* Muted usage note */}
                           {activeP.usage && (
-                            <div className="border-t border-[#D9DEE8]/60 pt-2.5 mt-1 min-w-0">
-                              <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold mb-1">Cách dùng (Usage)</span>
-                              <p className="text-[10px] text-slate-500 font-light leading-relaxed italic">{activeP.usage}</p>
-                            </div>
+                            <p className="text-[9px] text-slate-400 font-light leading-relaxed italic border-l border-slate-200 pl-2">
+                              HDSD: {activeP.usage}
+                            </p>
                           )}
                         </div>
                       </motion.div>
                     );
                   })()}
 
-                  <motion.div variants={fadeUp} className="pt-6">
+                  <motion.div variants={fadeUp} className="pt-4">
                     <CosmeticCtaTracker
                       label={ctaLabel}
                       href={ctaHref}
-                      className="w-full sm:w-auto h-[48px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[10px] tracking-[0.25em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm"
+                      className="w-full h-[48px] flex items-center justify-center bg-[#050A5C] text-white text-[10px] tracking-[0.25em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm font-semibold"
                     />
                   </motion.div>
                 </motion.div>

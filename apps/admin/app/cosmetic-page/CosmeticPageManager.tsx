@@ -1909,6 +1909,24 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         <span>Sản phẩm trong Set (Set Products)</span>
                         <button type="button" onClick={() => setHeroSetProducts([...heroSetProducts, { id: '', name: '', size: '', role: '', description: '', detailTitle: '', detailDescription: '', actives: [], benefits: [], usage: '', mediaSlot: '' }])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm sản phẩm</button>
                       </h4>
+
+                      <p className="text-[10px] text-slate-500 italic bg-amber-50 border border-amber-200 rounded px-2.5 py-1.5 leading-relaxed">
+                        ⚠️ <strong>Lưu ý:</strong> Ảnh trong phần này là ảnh mô tả riêng của từng sản phẩm trong set. Không dùng lại ảnh thumbnail sản phẩm cũ.
+                      </p>
+
+                      {/* Quick Upload Shortcuts */}
+                      <div className="flex flex-wrap gap-2 p-3 bg-blue-50/50 border border-blue-100 rounded-lg text-xs">
+                        <span className="font-bold text-slate-700 w-full mb-1 flex items-center gap-1">⚡ Phím tắt tải ảnh sản phẩm:</span>
+                        <Link href="/media?purpose=cosmetic-page-media&slot=cosmetic-set-cellurevive-ampoule&returnTo=/cosmetic-page" className="bg-blue-600 text-white font-bold px-3 py-1 rounded hover:bg-blue-700 inline-flex items-center gap-1 shadow-sm">
+                          <Upload className="h-3 w-3" />
+                          <span>Upload ảnh CELLUREVIVE</span>
+                        </Link>
+                        <Link href="/media?purpose=cosmetic-page-media&slot=cosmetic-set-regenaglow-sheer-cream&returnTo=/cosmetic-page" className="bg-blue-600 text-white font-bold px-3 py-1 rounded hover:bg-blue-700 inline-flex items-center gap-1 shadow-sm">
+                          <Upload className="h-3 w-3" />
+                          <span>Upload ảnh REGENAGLOW</span>
+                        </Link>
+                      </div>
+
                       <div className="space-y-3">
                         {heroSetProducts.map((item, idx) => (
                           <div key={idx} className="p-3 border border-slate-200 rounded-lg space-y-2 bg-slate-50/50">
@@ -1930,18 +1948,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                               <div>
-                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">ID sản phẩm (không dấu, cách bằng -)</label>
-                                <input type="text" placeholder="Ví dụ: cellurevive-ampoule" value={item.id || ''} onChange={e => {
-                                  const l = [...heroSetProducts];
-                                  l[idx] = { ...l[idx], id: e.target.value };
-                                  setHeroSetProducts(l);
-                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
-                              </div>
-                              <div>
                                 <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Tên sản phẩm</label>
                                 <input type="text" placeholder="Tên sản phẩm (ví dụ: CELLUREVIVE Ampoule)" value={item.name || ''} onChange={e => {
                                   const l = [...heroSetProducts];
                                   l[idx] = { ...l[idx], name: e.target.value };
+                                  // Auto-generate id if empty
+                                  if (!l[idx].id) {
+                                    l[idx].id = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                                  }
                                   setHeroSetProducts(l);
                                 }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
                               </div>
@@ -1953,7 +1967,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                   setHeroSetProducts(l);
                                 }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
                               </div>
-                              <div>
+                              <div className="col-span-2">
                                 <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Vai trò (Role)</label>
                                 <input type="text" placeholder="Vai trò (ví dụ: Ampoule cô đặc)" value={item.role || ''} onChange={e => {
                                   const l = [...heroSetProducts];
@@ -1970,18 +1984,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                 }} rows={1} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
                               </div>
                               <div className="col-span-2">
-                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Tiêu đề chi tiết (Detail Title)</label>
-                                <input type="text" placeholder="Ví dụ: Tinh chất phục hồi chuyên sâu" value={item.detailTitle || ''} onChange={e => {
-                                  const l = [...heroSetProducts];
-                                  l[idx] = { ...l[idx], detailTitle: e.target.value };
-                                  setHeroSetProducts(l);
-                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
-                              </div>
-                              <div className="col-span-2">
                                 <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Mô tả chi tiết (Detail Description)</label>
                                 <textarea placeholder="Giải thích chi tiết công dụng..." value={item.detailDescription || ''} onChange={e => {
                                   const l = [...heroSetProducts];
                                   l[idx] = { ...l[idx], detailDescription: e.target.value };
+                                  // Auto-generate detailTitle if empty
+                                  if (!l[idx].detailTitle) {
+                                    l[idx].detailTitle = l[idx].role === 'Ampoule cô đặc' ? 'Tinh chất phục hồi chuyên sâu' : 'Kem dưỡng khóa ẩm và phục hồi hàng rào da';
+                                  }
                                   setHeroSetProducts(l);
                                 }} rows={2} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
                               </div>
@@ -2018,7 +2028,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                     setHeroSetProducts(l);
                                   }} className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white h-[32px]">
                                     <option value="">-- chọn slot --</option>
-                                    {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}
+                                    <option value="cosmetic-set-cellurevive-ampoule">Ảnh chi tiết CELLUREVIVE Ampoule trong set</option>
+                                    <option value="cosmetic-set-regenaglow-sheer-cream">Ảnh chi tiết REGENAGLOW NOURISH SHEER CREAM trong set</option>
                                   </select>
                                   {(() => {
                                     if (!item.mediaSlot) return null;
@@ -2028,7 +2039,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                         <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded ${
                                           hasImage ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
                                         }`}>
-                                          {hasImage ? 'Đã có ảnh' : 'Chưa có ảnh chi tiết'}
+                                          {hasImage ? 'Đã có ảnh riêng' : 'Chưa có ảnh riêng'}
                                         </span>
                                         <Link 
                                           href={`/media?purpose=cosmetic-page-media&slot=${item.mediaSlot}&returnTo=/cosmetic-page`}
