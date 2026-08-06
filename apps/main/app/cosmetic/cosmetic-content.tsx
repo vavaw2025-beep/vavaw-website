@@ -26,7 +26,8 @@ import {
   Droplet, 
   ScanHeart, 
   Atom, 
-  WandSparkles 
+  WandSparkles,
+  CheckCircle
 } from 'lucide-react';
 
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
@@ -1205,86 +1206,211 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 4 — HERO PRODUCT FEATURE
       ─────────────────────────────────────────────────────────────────────── */}
-      {heroProduct && (
-      <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-            {/* Left: Luminous Set image / framed gradient */}
-            <motion.div
-              className={`relative aspect-[3/4] w-full border ${SILVER_BORDER} overflow-hidden`}
-              initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.85 }}
-            >
-              <EditorialImage
-                src={cosmeticMedia.luminousSet}
-                alt="VAVAW Luminous Revitalization Sheer Set"
-                className="absolute inset-0 w-full h-full"
-                fallbackGradient="from-[#E8EDF6] to-[#D9DEE8]"
-                frame
-              />
-            </motion.div>
+      {heroProduct && (() => {
+        const content = heroProduct.content || heroProduct;
+        const eyebrow = content.eyebrow || 'FEATURED SET';
+        const title = content.title || 'Luminous Revitalization Sheer Set';
+        const headline = content.headline || 'Chăm sóc chuyên sâu — củng cố hàng rào bảo vệ và phục hồi làn da rạng rỡ.';
+        const description = content.description || 'Bộ chăm sóc da cao cấp kết hợp tinh chất tái tạo, dưỡng phục hồi và hoạt chất hỗ trợ hàng rào bảo vệ da, giúp da ẩm mịn, sáng khỏe và đàn hồi hơn mỗi ngày.';
+        const mediaSlot = content.mediaSlot || 'cosmetic-product-luminous-set';
+        const ingredients = content.ingredients || ['Exosome', 'Collagen', 'Peptide Complex'];
+        const benefits = content.benefits || [
+          'Hỗ trợ phục hồi hàng rào bảo vệ da',
+          'Cấp ẩm và duy trì độ mềm mượt',
+          'Cải thiện độ sáng và độ đàn hồi da'
+        ];
+        const insideBoxItems = content.insideBox || [
+          {
+            name: "Regenaglow Nourish Sheer Cream",
+            role: "Dưỡng phục hồi",
+            description: "Dưỡng phục hồi, khóa ẩm và hỗ trợ hàng rào bảo vệ da."
+          },
+          {
+            name: "Gentle Activation Renew Ampoule",
+            role: "Tinh chất tái tạo",
+            description: "Tinh chất hỗ trợ tái tạo, tăng độ rạng rỡ và làm mịn bề mặt da."
+          },
+          {
+            name: "Treatment Support Vials",
+            role: "Dưỡng chất cô đặc",
+            description: "Dưỡng chất cô đặc hỗ trợ phục hồi chuyên sâu theo từng giai đoạn chăm sóc."
+          }
+        ];
+        const scienceTitle = content.scienceTitle || 'Clinical Recovery Logic';
+        const scienceDescription = content.scienceDescription || 'Bộ sản phẩm được thiết kế như một routine phục hồi có hệ thống: chuẩn bị da, bổ sung hoạt chất, phục hồi hàng rào bảo vệ và khóa ẩm để duy trì làn da ổn định hơn.';
+        const usageSteps = content.usageSteps || [
+          "Sau khi làm sạch và cân bằng da, thoa ampoule lên toàn mặt.",
+          "Massage nhẹ đến khi dưỡng chất thẩm thấu.",
+          "Tiếp tục với sheer cream để khóa ẩm và hỗ trợ phục hồi hàng rào bảo vệ da.",
+          "Ban ngày dùng thêm kem chống nắng để bảo vệ da."
+        ];
+        const ctaLabel = content.ctaLabel || 'Start an Inquiry';
+        const ctaHref = content.ctaHref || '/contact?type=cosmetic_interest&product=luminous_set';
+        
+        const imageUrl = getProductImage(title, mediaSlot, cosmeticMedia) || cosmeticMedia.luminousSet;
 
-            {/* Right: product detail */}
-            <motion.div
-              className="flex flex-col"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-60px' }}
-              variants={stagger}
-            >
-              <motion.div variants={fadeUp}>
-                <SectionLabel>{heroProduct.eyebrow}</SectionLabel>
-              </motion.div>
-              <motion.h2
-                variants={fadeUp}
-                className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight leading-snug mb-4 whitespace-pre-line"
-              >
-                {heroProduct.title}
-              </motion.h2>
-              <Divider />
-              <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-base leading-relaxed mb-8">
-                {heroProduct.description}
-              </motion.p>
+        return (
+          <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
+            <div className="max-w-6xl mx-auto">
+              
+              {/* Main 2-Column Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-stretch">
+                
+                {/* Left: Packshot Box Frame & Caption */}
+                <motion.div
+                  className="lg:col-span-5 flex flex-col gap-4"
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.85 }}
+                >
+                  <div className="relative aspect-square w-full border border-[#D9DEE8] bg-[#F7F9FC] flex items-center justify-center p-8 overflow-hidden" style={{ borderRadius: '1px' }}>
+                    <img
+                      src={imageUrl}
+                      alt={title}
+                      className="w-full h-full object-contain mix-blend-multiply bg-[#F7F9FC] transition-transform duration-700 hover:scale-103"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center text-[9px] tracking-[0.2em] font-semibold text-[#050A5C]/45 uppercase px-1">
+                    <span>{title}</span>
+                    <span>Clinical recovery set</span>
+                  </div>
+                </motion.div>
 
-              {/* Key ingredients */}
-              <motion.div variants={fadeUp} className="mb-8">
-                <p className="text-[10px] tracking-[0.22em] uppercase text-[#050A5C]/50 font-semibold mb-4">Key Ingredients</p>
-                <div className="flex flex-wrap gap-2">
-                  {(heroProduct.ingredients || []).map((ing: string) => (
-                    <span key={ing} className={`border ${SILVER_BORDER} px-4 py-2 text-[11px] tracking-[0.14em] uppercase text-[#050A5C] font-medium bg-[#F4F7FB]`}>
-                      {ing}
-                    </span>
-                  ))}
+                {/* Right: Content details */}
+                <motion.div
+                  className="lg:col-span-7 flex flex-col justify-between"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-60px' }}
+                  variants={stagger}
+                >
+                  <div className="space-y-6">
+                    <motion.div variants={fadeUp}>
+                      <SectionLabel>{eyebrow}</SectionLabel>
+                    </motion.div>
+                    <motion.h2
+                      variants={fadeUp}
+                      className="text-3xl md:text-5xl font-light text-[#050A5C] tracking-tight leading-tight font-serif"
+                    >
+                      {title}
+                    </motion.h2>
+                    
+                    {headline && (
+                      <motion.p variants={fadeUp} className="text-base md:text-lg font-light text-[#050A5C]/80 leading-relaxed max-w-xl italic">
+                        {headline}
+                      </motion.p>
+                    )}
+                    
+                    <Divider />
+                    
+                    <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-sm md:text-base leading-relaxed">
+                      {description}
+                    </motion.p>
+
+                    {/* Key Ingredients chips */}
+                    {ingredients && ingredients.length > 0 && (
+                      <motion.div variants={fadeUp} className="pt-2">
+                        <p className="text-[9px] tracking-[0.25em] uppercase text-[#050A5C]/40 font-bold mb-3.5">Key Ingredients</p>
+                        <div className="flex flex-wrap gap-2">
+                          {ingredients.map((ing: string) => (
+                            <span key={ing} className="border border-[#D9DEE8] px-3.5 py-1.5 text-[10px] tracking-[0.15em] uppercase text-[#050A5C] font-semibold bg-[#F4F7FB]/70" style={{ borderRadius: '1px' }}>
+                              {ing}
+                            </span>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Benefits list */}
+                    {benefits && benefits.length > 0 && (
+                      <motion.div variants={fadeUp} className="pt-2">
+                        <p className="text-[9px] tracking-[0.25em] uppercase text-[#050A5C]/40 font-bold mb-3.5">Benefits</p>
+                        <div className="space-y-3">
+                          {benefits.map((b: string, i: number) => (
+                            <div key={i} className="flex items-center gap-3">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#050A5C]/40 flex-shrink-0" />
+                              <span className="text-xs md:text-sm text-slate-700 font-light leading-relaxed">{b}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+
+                  <motion.div variants={fadeUp} className="pt-8">
+                    <CosmeticCtaTracker
+                      label={ctaLabel}
+                      href={ctaHref}
+                      className="w-full sm:w-auto h-[50px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[10px] tracking-[0.25em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm"
+                    />
+                  </motion.div>
+                </motion.div>
+
+              </div>
+
+              {/* Compact Editorial Sub-Panels Row */}
+              <div className="mt-24 pt-16 border-t border-[#D9DEE8] grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+                
+                {/* Panel 1: Inside the Box */}
+                <div className="space-y-6">
+                  <h3 className="text-xs font-bold tracking-[0.2em] text-[#050A5C] uppercase flex items-center gap-2">
+                    <FlaskConical className="h-4 w-4 shrink-0 text-[#050A5C]/60 stroke-[1.5]" />
+                    Inside the Set
+                  </h3>
+                  <div className="space-y-4">
+                    {insideBoxItems.map((item: any, i: number) => (
+                      <div key={i} className="border-l-2 border-[#050A5C]/20 pl-4 py-0.5">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-xs font-semibold text-[#050A5C]">{item.name}</span>
+                          <span className="text-[8px] font-mono uppercase text-slate-400 bg-slate-100 px-1.5 py-0.5" style={{ borderRadius: '1px' }}>{item.role}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 font-light mt-1.5 leading-relaxed">{item.description}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </motion.div>
 
-              {/* Benefits */}
-              <motion.div variants={fadeUp} className="mb-10">
-                <p className="text-[10px] tracking-[0.22em] uppercase text-[#050A5C]/50 font-semibold mb-4">Benefits</p>
-                <div className="space-y-3">
-                  {(heroProduct.benefits || []).map((b: string, i: number) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="w-1 h-1 rounded-full bg-[#050A5C]/50 flex-shrink-0" />
-                      <span className="text-sm text-[#1F2933] font-light">{b}</span>
+                {/* Panel 2: Why It Works */}
+                <div className="space-y-6">
+                  <h3 className="text-xs font-bold tracking-[0.2em] text-[#050A5C] uppercase flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 shrink-0 text-[#050A5C]/60 stroke-[1.5]" />
+                    {scienceTitle}
+                  </h3>
+                  <div className="space-y-4">
+                    <p className="text-xs text-slate-600 font-light leading-relaxed bg-[#F7F9FC] border border-[#D9DEE8] p-4 rounded-[1px]">
+                      {scienceDescription}
+                    </p>
+                    <div className="grid grid-cols-3 gap-2 text-center text-[8px] font-mono font-bold tracking-wider text-[#050A5C]/50">
+                      <div className="border border-[#D9DEE8] p-2 bg-[#F7F9FC]">01 PREPARE</div>
+                      <div className="border border-[#D9DEE8] p-2 bg-[#F7F9FC]">02 RESTORE</div>
+                      <div className="border border-[#D9DEE8] p-2 bg-[#F7F9FC]">03 PROTECT</div>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </motion.div>
 
-              <motion.div variants={fadeUp}>
-                <CosmeticCtaTracker
-                  label={heroProduct.ctaLabel || "Start an Inquiry"}
-                  href={heroProduct.ctaHref || "/contact"}
-                  className="w-full sm:w-auto h-[52px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[11px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors shadow-sm"
-                />
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-      )}
+                {/* Panel 3: How to Use */}
+                <div className="space-y-6">
+                  <h3 className="text-xs font-bold tracking-[0.2em] text-[#050A5C] uppercase flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 shrink-0 text-[#050A5C]/60 stroke-[1.5]" />
+                    How to Use
+                  </h3>
+                  <div className="space-y-3">
+                    {usageSteps.map((step: string, i: number) => (
+                      <div key={i} className="flex gap-3 text-xs font-light text-slate-600 leading-relaxed">
+                        <span className="text-[10px] font-mono font-semibold text-[#050A5C] mt-0.5">0{i + 1}.</span>
+                        <p>{step}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+        );
+      })()}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 5 — PRODUCT EDITORIAL CARDS

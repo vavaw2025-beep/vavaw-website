@@ -166,6 +166,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     }
   };
 
+  // cosmetic-hero-product visual states
+  const [heroHeadline, setHeroHeadline] = useState('');
+  const [heroMediaSlot, setHeroMediaSlot] = useState('');
+  const [heroIngredients, setHeroIngredients] = useState('');
+  const [heroBenefits, setHeroBenefits] = useState<string[]>([]);
+  const [heroInsideBox, setHeroInsideBox] = useState<any[]>([]);
+  const [heroScienceTitle, setHeroScienceTitle] = useState('');
+  const [heroScienceDescription, setHeroScienceDescription] = useState('');
+  const [heroUsageSteps, setHeroUsageSteps] = useState<string[]>([]);
+
   // 2. Edit section modal helpers
   const startEditingSection = (block: ContentBlockRecord) => {
     setEditingBlock(block);
@@ -182,6 +192,19 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     setEditIsActive(block.is_active);
     setEditItemsJson(content.items ? JSON.stringify(content.items, null, 2) : '');
     setPhilosophyItems(content.items || []);
+
+    if (block.block_type === 'cosmetic-hero-product') {
+      setHeroHeadline(content.headline || '');
+      setHeroMediaSlot(content.mediaSlot || 'cosmetic-product-luminous-set');
+      setHeroIngredients(
+        Array.isArray(content.ingredients) ? content.ingredients.join(', ') : (content.ingredients || '')
+      );
+      setHeroBenefits(content.benefits || []);
+      setHeroInsideBox(content.insideBox || []);
+      setHeroScienceTitle(content.scienceTitle || '');
+      setHeroScienceDescription(content.scienceDescription || '');
+      setHeroUsageSteps(content.usageSteps || []);
+    }
 
     // Signature collection featured set
     if (block.block_type === 'cosmetic-signature-collection') {
@@ -312,6 +335,20 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         payload_items_order: updatedContent.items.map((item: any) => item.name),
         featured: updatedContent.featured
       });
+    } else if (editingBlock.block_type === 'cosmetic-hero-product') {
+      const ingArray = heroIngredients
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      updatedContent.headline = heroHeadline;
+      updatedContent.mediaSlot = heroMediaSlot || 'cosmetic-product-luminous-set';
+      updatedContent.ingredients = ingArray;
+      updatedContent.benefits = heroBenefits;
+      updatedContent.insideBox = heroInsideBox;
+      updatedContent.scienceTitle = heroScienceTitle;
+      updatedContent.scienceDescription = heroScienceDescription;
+      updatedContent.usageSteps = heroUsageSteps;
     } else {
       if (isJsonDirty && parsedItems !== undefined) {
         updatedContent.items = parsedItems;
@@ -1805,6 +1842,133 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         <Plus className="h-3 w-3" />
                         <span>Thêm thẻ triết lý mới</span>
                       </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── cosmetic-hero-product editor ── */}
+                {editingBlock.block_type === 'cosmetic-hero-product' && (
+                  <div className="col-span-2 space-y-6 border-t border-slate-100 pt-4 mt-2">
+                    <p className="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 leading-relaxed">
+                      💡 <strong>Hướng dẫn:</strong> Section này chỉ giới thiệu nhanh bộ sản phẩm nổi bật trong trang /cosmetic. Landing riêng cho từng sản phẩm sẽ làm sau.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="md:col-span-2">
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Headline lớn (tiếng Việt)</label>
+                        <input type="text" value={heroHeadline} onChange={e => setHeroHeadline(e.target.value)}
+                          className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                          placeholder="Ví dụ: Chăm sóc chuyên sâu — củng cố hàng rào bảo vệ..." />
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Media Slot ảnh chính</label>
+                        <select value={heroMediaSlot} onChange={e => setHeroMediaSlot(e.target.value)}
+                          className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]">
+                          <option value="">-- chọn slot --</option>
+                          {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}
+                        </select>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thành phần nổi bật (ngăn cách bằng dấu phẩy)</label>
+                        <input type="text" value={heroIngredients} onChange={e => setHeroIngredients(e.target.value)}
+                          className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                          placeholder="Ví dụ: Exosome, Collagen, Peptide Complex" />
+                      </div>
+                    </div>
+
+                    {/* Benefits Repeater */}
+                    <div className="space-y-3 pt-2">
+                      <h4 className="text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                        <span>Lợi ích chính (Benefits)</span>
+                        <button type="button" onClick={() => setHeroBenefits([...heroBenefits, ''])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm lợi ích</button>
+                      </h4>
+                      <div className="space-y-2">
+                        {heroBenefits.map((b, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input type="text" value={b} onChange={e => {
+                              const l = [...heroBenefits];
+                              l[idx] = e.target.value;
+                              setHeroBenefits(l);
+                            }} className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white" placeholder="Mô tả lợi ích..." />
+                            <button type="button" onClick={() => setHeroBenefits(heroBenefits.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 p-1"><Trash2 className="h-4 w-4" /></button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Inside the Box Repeater */}
+                    <div className="space-y-3 pt-2">
+                      <h4 className="text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                        <span>Sản phẩm trong hộp (Inside the Set)</span>
+                        <button type="button" onClick={() => setHeroInsideBox([...heroInsideBox, { name: '', role: '', description: '' }])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm sản phẩm</button>
+                      </h4>
+                      <div className="space-y-3">
+                        {heroInsideBox.map((item, idx) => (
+                          <div key={idx} className="p-3 border border-slate-200 rounded-lg space-y-2 bg-slate-50/50">
+                            <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                              <span>Sản phẩm #{idx + 1}</span>
+                              <button type="button" onClick={() => setHeroInsideBox(heroInsideBox.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700"><Trash2 className="h-3.5 w-3.5" /></button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <input type="text" placeholder="Tên sản phẩm" value={item.name || ''} onChange={e => {
+                                const l = [...heroInsideBox];
+                                l[idx] = { ...l[idx], name: e.target.value };
+                                setHeroInsideBox(l);
+                              }} className="text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              <input type="text" placeholder="Vai trò (ví dụ: Dưỡng phục hồi)" value={item.role || ''} onChange={e => {
+                                const l = [...heroInsideBox];
+                                l[idx] = { ...l[idx], role: e.target.value };
+                                setHeroInsideBox(l);
+                              }} className="text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              <textarea placeholder="Mô tả công dụng..." value={item.description || ''} onChange={e => {
+                                const l = [...heroInsideBox];
+                                l[idx] = { ...l[idx], description: e.target.value };
+                                setHeroInsideBox(l);
+                              }} rows={2} className="col-span-2 text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Science Panel */}
+                    <div className="space-y-3 pt-2">
+                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Khoa học & Logic (Science Panel)</h4>
+                      <div className="grid grid-cols-1 gap-2 bg-slate-50/50 p-3 border border-slate-200 rounded-lg">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề khoa học</label>
+                          <input type="text" value={heroScienceTitle} onChange={e => setHeroScienceTitle(e.target.value)}
+                            className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" placeholder="Clinical Recovery Logic" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả khoa học</label>
+                          <textarea rows={2} value={heroScienceDescription} onChange={e => setHeroScienceDescription(e.target.value)}
+                            className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" placeholder="Bộ sản phẩm được thiết kế như..." />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* How to Use Steps Repeater */}
+                    <div className="space-y-3 pt-2">
+                      <h4 className="text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                        <span>Các bước sử dụng (How to Use)</span>
+                        <button type="button" onClick={() => setHeroUsageSteps([...heroUsageSteps, ''])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm bước mới</button>
+                      </h4>
+                      <div className="space-y-2">
+                        {heroUsageSteps.map((step, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <span className="text-xs font-mono font-bold text-slate-400">0{idx + 1}</span>
+                            <input type="text" value={step} onChange={e => {
+                              const l = [...heroUsageSteps];
+                              l[idx] = e.target.value;
+                              setHeroUsageSteps(l);
+                            }} className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white" placeholder="Sau khi làm sạch da..." />
+                            <button type="button" onClick={() => setHeroUsageSteps(heroUsageSteps.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 p-1"><Trash2 className="h-4 w-4" /></button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
