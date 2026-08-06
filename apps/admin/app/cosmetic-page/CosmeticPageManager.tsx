@@ -147,7 +147,29 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const totalSections = blocks.length;
   const activeCount = blocks.filter(b => b.is_active).length;
   const inactiveCount = totalSections - activeCount;
-  const missingMediaCount = REQUIRED_SLOTS.filter(slot => !mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot)).length;
+
+  const imageSlots = REQUIRED_SLOTS.filter(slot => !slot.id.startsWith('cosmetic-video-'));
+  const videoSlots = REQUIRED_SLOTS.filter(slot => slot.id.startsWith('cosmetic-video-'));
+
+  const uploadedImagesCount = imageSlots.filter(slot => {
+    return mediaAssets.some(m => 
+      m.metadata?.slot === slot.id && 
+      !m.metadata?.archivedFromSlot &&
+      (['image', 'preview-image', 'hero-image'].includes(m.type) || m.mime_type?.startsWith('image/'))
+    );
+  }).length;
+
+  const uploadedVideosCount = videoSlots.filter(slot => {
+    return mediaAssets.some(m => 
+      m.metadata?.slot === slot.id && 
+      !m.metadata?.archivedFromSlot &&
+      (m.type === 'video' || m.mime_type?.startsWith('video/'))
+    );
+  }).length;
+
+  const totalMediaCount = uploadedImagesCount + uploadedVideosCount;
+  const totalRequiredSlots = REQUIRED_SLOTS.length;
+  const missingMediaCount = totalRequiredSlots - totalMediaCount;
 
   const showSuccess = (msg: string) => {
     setGlobalSuccess(msg);
@@ -829,9 +851,30 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               <div className="text-3xl font-extrabold text-slate-500">{inactiveCount}</div>
             </div>
             <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
-              <div className="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1">Thiếu ảnh</div>
+              <div className="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1">Media còn thiếu</div>
               <div className={`text-3xl font-extrabold ${missingMediaCount > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
                 {missingMediaCount}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Ảnh đã tải</div>
+              <div className="text-2xl font-extrabold text-slate-900">
+                {uploadedImagesCount} <span className="text-sm font-normal text-slate-400">/ 17</span>
+              </div>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Video đã tải</div>
+              <div className="text-2xl font-extrabold text-slate-900">
+                {uploadedVideosCount} <span className="text-sm font-normal text-slate-400">/ 6</span>
+              </div>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tổng media</div>
+              <div className="text-2xl font-extrabold text-slate-900">
+                {totalMediaCount} <span className="text-sm font-normal text-slate-400">/ 23</span>
               </div>
             </div>
           </div>
@@ -1711,7 +1754,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               <span className="font-semibold">Số section hoạt động:</span> {activeCount} / {totalSections}
             </div>
             <div>
-              <span className="font-semibold">Số ảnh đã tải lên:</span> {REQUIRED_SLOTS.length - missingMediaCount} / {REQUIRED_SLOTS.length}
+              <span className="font-semibold">Ảnh đã tải:</span> {uploadedImagesCount} / 17
+            </div>
+            <div>
+              <span className="font-semibold">Video đã tải:</span> {uploadedVideosCount} / 6
+            </div>
+            <div>
+              <span className="font-semibold">Tổng media đã cấu hình:</span> {totalMediaCount} / 23
+            </div>
+            <div>
+              <span className="font-semibold">Media còn thiếu:</span> {missingMediaCount}
             </div>
             <div className="pt-4">
               <a 
