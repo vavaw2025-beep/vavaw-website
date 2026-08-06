@@ -188,22 +188,22 @@ BEGIN
   ELSE
     -- Enrich existing items non-destructively
     FOR v_i IN 0..jsonb_array_length(v_items) - 1 LOOP
-      v_content := jsonb_set(v_content, '{items}', v_items);
-      v_new_items := v_new_items || jsonb_build_array(
-        -- We will enrich this item if we find matching default
-        COALESCE(
-          (
-            SELECT v_def_item
-            FROM (
-              SELECT jsonb_array_elements(v_default_items) AS v_def_item
-            ) AS defs
-            WHERE LOWER(v_def_item->>'name') = LOWER(v_items->v_i->>'name')
-               OR LOWER(v_def_item->>'id') = LOWER(v_items->v_i->>'id')
-            LIMIT 1
-          ),
-          v_items->v_i
-        )
-      );
+      v_def_item := NULL;
+
+      SELECT def_val INTO v_def_item
+      FROM (
+        SELECT jsonb_array_elements(v_default_items) AS def_val
+      ) AS defs
+      WHERE LOWER(def_val->>'name') = LOWER(v_items->v_i->>'name')
+         OR LOWER(def_val->>'id') = LOWER(v_items->v_i->>'id')
+      LIMIT 1;
+
+      IF v_def_item IS NOT NULL THEN
+        -- Merge: default_item || existing_item (existing CMS/admin fields win)
+        v_new_items := v_new_items || jsonb_build_array(v_def_item || (v_items->v_i));
+      ELSE
+        v_new_items := v_new_items || jsonb_build_array(v_items->v_i);
+      END IF;
     END LOOP;
     v_content := jsonb_set(v_content, '{items}', v_new_items);
   END IF;
