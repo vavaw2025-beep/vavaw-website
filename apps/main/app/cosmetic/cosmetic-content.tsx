@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import type { BusinessEntry } from '@vavaw/brand-config';
@@ -297,7 +297,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
   // ── Ritual system interactive state ─────────────────────────────────────────
   const [activeStationIdx, setActiveStationIdx] = useState<number>(-1); // -1 = not yet initialised
   const [openAccordionIdx, setOpenAccordionIdx] = useState<number | null>(null);
-  const [selectedSetProductIndex, setSelectedSetProductIndex] = useState<number>(0);
+  const [selectedView, setSelectedView] = useState<'set' | 'cellurevive-ampoule' | 'regenaglow-sheer-cream'>('set');
 
   const handleImageError = (path: string) => {
     setImageErrors(prev => ({ ...prev, [path]: true }));
@@ -1332,16 +1332,103 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
         const ctaLabel = content.ctaLabel || 'Start Consultation';
         const ctaHref = content.ctaHref || '/contact?type=cosmetic_interest&product=luminous_set';
         
-        const imageUrl = getProductImage(title, mediaSlot, cosmeticMedia) || cosmeticMedia.luminousSet;
+        // selectedView: 'set' | 'cellurevive-ampoule' | 'regenaglow-sheer-cream'
+        const cellurevive = setProducts?.find((p: any) => p.id === 'cellurevive-ampoule' || p.mediaSlot?.includes('cellurevive')) || setProducts?.[0];
+        const regenaglow = setProducts?.find((p: any) => p.id === 'regenaglow-sheer-cream' || p.mediaSlot?.includes('regenaglow')) || setProducts?.[1];
+
+        // Resolve big image stage URL based on selectedView
+        let displayImageUrl = '';
+        let displayCaptionLeft = '';
+        let displayCaptionRight = '';
+        let isPlaceholder = false;
+
+        if (selectedView === 'set') {
+          displayImageUrl = getProductImage(title, mediaSlot, cosmeticMedia) || cosmeticMedia.luminousSet || '';
+          displayCaptionLeft = 'LUMINOUS REVITALIZATION SHEER SET';
+          displayCaptionRight = 'CLINICAL RECOVERY SET';
+        } else {
+          const activeP = selectedView === 'cellurevive-ampoule' ? cellurevive : regenaglow;
+          if (activeP) {
+            const canonical = activeP.mediaSlot ? normalizePublicSlot(activeP.mediaSlot) : undefined;
+            const activePKey = canonical ? MEDIA_SLOT_TO_KEY[canonical] : undefined;
+            displayImageUrl = activePKey && cosmeticMedia[activePKey] && isValidHeroImageUrl(cosmeticMedia[activePKey])
+              ? cosmeticMedia[activePKey]
+              : '';
+            displayCaptionLeft = activeP.name?.toUpperCase() || '';
+            displayCaptionRight = activeP.size || '';
+            if (!displayImageUrl) {
+              isPlaceholder = true;
+            }
+          }
+        }
+
+        const RenderSelectorTabs = () => (
+          <div className="grid grid-cols-3 gap-2 w-full">
+            {/* Set Overview Tab */}
+            <button
+              type="button"
+              onClick={() => setSelectedView('set')}
+              className={`text-left border p-3 flex flex-col justify-between transition-all duration-200 min-w-0 ${
+                selectedView === 'set'
+                  ? 'border-[#050A5C] bg-[#050A5C]/5 shadow-sm'
+                  : 'border-[#D9DEE8]/60 bg-white hover:border-slate-300'
+              }`}
+              style={{ borderRadius: '1px' }}
+            >
+              <span className={`block text-[7px] font-mono font-bold tracking-wider mb-0.5 ${selectedView === 'set' ? 'text-[#050A5C]/60' : 'text-slate-400'}`}>OVERVIEW</span>
+              <span className="block text-[10px] font-bold text-[#050A5C] truncate">Luminous Set</span>
+            </button>
+
+            {/* CELLUREVIVE Tab */}
+            {cellurevive && (
+              <button
+                type="button"
+                onClick={() => setSelectedView('cellurevive-ampoule')}
+                className={`text-left border p-3 flex flex-col justify-between transition-all duration-200 min-w-0 ${
+                  selectedView === 'cellurevive-ampoule'
+                    ? 'border-[#050A5C] bg-[#050A5C]/5 shadow-sm'
+                    : 'border-[#D9DEE8]/60 bg-white hover:border-slate-300'
+                }`}
+                style={{ borderRadius: '1px' }}
+              >
+                <span className={`block text-[7px] font-mono font-bold tracking-wider mb-0.5 ${selectedView === 'cellurevive-ampoule' ? 'text-[#050A5C]/60' : 'text-slate-400'}`}>01 · AMPOULE</span>
+                <span className="block text-[10px] font-bold text-[#050A5C] truncate">CELLUREVIVE</span>
+              </button>
+            )}
+
+            {/* REGENAGLOW Tab */}
+            {regenaglow && (
+              <button
+                type="button"
+                onClick={() => setSelectedView('regenaglow-sheer-cream')}
+                className={`text-left border p-3 flex flex-col justify-between transition-all duration-200 min-w-0 ${
+                  selectedView === 'regenaglow-sheer-cream'
+                    ? 'border-[#050A5C] bg-[#050A5C]/5 shadow-sm'
+                    : 'border-[#D9DEE8]/60 bg-white hover:border-slate-300'
+                }`}
+                style={{ borderRadius: '1px' }}
+              >
+                <span className={`block text-[7px] font-mono font-bold tracking-wider mb-0.5 ${selectedView === 'regenaglow-sheer-cream' ? 'text-[#050A5C]/60' : 'text-slate-400'}`}>02 · CREAM</span>
+                <span className="block text-[10px] font-bold text-[#050A5C] truncate">REGENAGLOW</span>
+              </button>
+            )}
+          </div>
+        );
 
         return (
           <section className={`${SECTION_WHITE} py-24 md:py-32 px-6 border-t ${SILVER_BORDER}`}>
             <div className="max-w-7xl mx-auto">
               
+              {/* Mobile Selector: Rendered above the visual image grid */}
+              <div className="block lg:hidden mb-6">
+                <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold mb-2">Select View</span>
+                <RenderSelectorTabs />
+              </div>
+
               {/* Main 2-Column Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-14 xl:gap-20 items-center">
                 
-                {/* Left Column: Large Framed Image */}
+                {/* Left Column: Large Dynamic Framed Image */}
                 <motion.div
                   className="flex flex-col gap-4 w-full"
                   initial={{ opacity: 0, scale: 0.98 }}
@@ -1350,182 +1437,176 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                   transition={{ duration: 0.75 }}
                 >
                   <div className="relative aspect-[4/5] lg:min-h-[620px] w-full border border-[#D9DEE8] bg-[#F7F9FC] flex items-center justify-center p-6 md:p-8 overflow-hidden" style={{ borderRadius: '1px' }}>
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt={title}
-                        className="w-full h-full object-contain mix-blend-multiply bg-[#F7F9FC] transition-transform duration-700 hover:scale-103"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 bg-[#F7F9FC] flex items-center justify-center">
-                        <FlaskConical className="h-8 w-8 text-[#050A5C]/15 stroke-[1.2]" />
-                      </div>
-                    )}
+                    <AnimatePresence mode="wait">
+                      {!isPlaceholder && displayImageUrl ? (
+                        <motion.img
+                          key={selectedView}
+                          src={displayImageUrl}
+                          alt={displayCaptionLeft}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="w-full h-full object-contain mix-blend-multiply bg-[#F7F9FC] transition-transform duration-700 hover:scale-103"
+                        />
+                      ) : (
+                        <motion.div
+                          key={`placeholder-${selectedView}`}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="flex flex-col items-center justify-center text-center p-6 space-y-3"
+                        >
+                          <FlaskConical className="h-10 w-10 text-[#050A5C]/20 stroke-[1.2]" />
+                          <span className="text-sm font-bold text-slate-400">Chưa có ảnh sản phẩm</span>
+                          <span className="text-xs text-slate-400 font-light leading-normal max-w-xs">Upload ảnh trong Admin &rarr; Cosmetic Page &rarr; Hình ảnh</span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                   <div className="flex justify-between items-center text-[9px] tracking-[0.2em] font-semibold text-[#050A5C]/45 uppercase px-1">
-                    <span>LUMINOUS REVITALIZATION SHEER SET</span>
-                    <span>CLINICAL RECOVERY SET</span>
+                    <span>{displayCaptionLeft}</span>
+                    <span>{displayCaptionRight}</span>
                   </div>
                 </motion.div>
 
                 {/* Right Column: Clean premium details */}
-                <motion.div
-                  className="flex flex-col space-y-6 min-w-0 w-full"
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: '-60px' }}
-                  variants={stagger}
-                >
-                  <motion.div variants={fadeUp}>
-                    <SectionLabel>{eyebrow}</SectionLabel>
-                  </motion.div>
-                  
-                  <motion.h2
-                    variants={fadeUp}
-                    className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight font-serif"
-                  >
-                    {title}
-                  </motion.h2>
-                  
-                  {headline && (
-                    <motion.p variants={fadeUp} className="text-sm md:text-base font-light text-[#050A5C]/80 leading-relaxed italic">
-                      {headline}
-                    </motion.p>
-                  )}
-                  
-                  <Divider />
-                  
-                  <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-sm leading-relaxed max-w-xl">
-                    {description}
-                  </motion.p>
+                <div className="flex flex-col space-y-6 min-w-0 w-full">
+                  {/* Desktop Selector: Rendered inside the right column */}
+                  <div className="hidden lg:block">
+                    <RenderSelectorTabs />
+                  </div>
 
-                  {/* Benefits tags */}
-                  {benefits && benefits.length > 0 && (
-                    <motion.div variants={fadeUp} className="flex flex-wrap gap-2 pt-1">
-                      {benefits.slice(0, 3).map((b: string) => (
-                        <span key={b} className="border border-[#D9DEE8] px-3.5 py-1 text-[9px] tracking-[0.15em] uppercase text-[#050A5C] font-semibold bg-[#F4F7FB]/70" style={{ borderRadius: '1px' }}>
-                          {b}
-                        </span>
-                      ))}
-                    </motion.div>
-                  )}
-
-                  {/* Set Includes - 2 compact tabbed selector cards */}
-                  {setProducts && setProducts.length > 0 && (
-                    <motion.div variants={fadeUp} className="space-y-3 pt-4 border-t border-slate-100 min-w-0">
-                      <span className="block text-[9px] tracking-[0.2em] uppercase text-[#050A5C]/40 font-bold">Inside the Set</span>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {setProducts.slice(0, 2).map((p: any, i: number) => {
-                          const isActive = selectedSetProductIndex === i;
-                          return (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={() => setSelectedSetProductIndex(i)}
-                              className={`text-left border p-4 flex flex-col justify-between transition-all duration-200 min-w-0 ${
-                                isActive 
-                                  ? 'border-[#050A5C] bg-[#050A5C]/5 shadow-sm'
-                                  : 'border-[#D9DEE8]/60 bg-white hover:border-slate-300'
-                              }`}
-                              style={{ borderRadius: '1px' }}
-                            >
-                              <div className="min-w-0 w-full">
-                                <div className="flex justify-between items-center mb-1 w-full">
-                                  <span className={`text-[8px] font-mono font-bold tracking-wider ${isActive ? 'text-[#050A5C]/60' : 'text-slate-400'}`}>0{i + 1} · {p.role}</span>
-                                  {isActive && <span className="text-[7px] font-bold text-[#050A5C] font-mono bg-[#050A5C]/10 px-1 py-0.2" style={{ borderRadius: '1px' }}>ACTIVE</span>}
-                                </div>
-                                <span className="block text-xs font-bold text-[#050A5C] truncate">{p.name}</span>
-                              </div>
-                              <span className="block text-[9px] font-mono text-slate-400 mt-2 font-semibold">{p.size}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Selected Product Detail Panel */}
-                  {setProducts && setProducts[selectedSetProductIndex] && (() => {
-                    const activeP = setProducts[selectedSetProductIndex];
-                    
-                    // Resolve exact slot only, no fallback to old thumbnails or name matches
-                    const canonical = activeP.mediaSlot ? normalizePublicSlot(activeP.mediaSlot) : undefined;
-                    const activePKey = canonical ? MEDIA_SLOT_TO_KEY[canonical] : undefined;
-                    const activeImageUrl = activePKey && cosmeticMedia[activePKey] && isValidHeroImageUrl(cosmeticMedia[activePKey])
-                      ? cosmeticMedia[activePKey]
-                      : undefined;
-
-                    return (
+                  <AnimatePresence mode="wait">
+                    {selectedView === 'set' ? (
                       <motion.div
-                        key={selectedSetProductIndex}
-                        initial={{ opacity: 0, y: 4 }}
+                        key="set"
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="border-t border-[#D9DEE8]/60 pt-5 mt-4 grid grid-cols-1 sm:grid-cols-[110px_1fr] gap-5 items-start min-w-0"
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25 }}
+                        className="space-y-6"
                       >
-                        {/* Left: Compact Thumbnail Image */}
-                        <div className="w-[110px] h-[110px] bg-[#F7F9FC] border border-[#D9DEE8] p-2 flex flex-col items-center justify-center overflow-hidden relative flex-shrink-0 mx-auto sm:mx-0" style={{ borderRadius: '1px' }}>
-                          {activeImageUrl ? (
-                            <img
-                              src={activeImageUrl}
-                              alt={activeP.name}
-                              className="w-full h-full object-contain mix-blend-multiply bg-[#F7F9FC]"
-                            />
-                          ) : (
-                            <div className="flex flex-col items-center justify-center text-center p-1 space-y-1.5">
-                              <FlaskConical className="h-5 w-5 text-[#050A5C]/20 stroke-[1.2]" />
-                              <span className="text-[8px] font-bold text-slate-400 leading-none">Chưa có ảnh</span>
-                              <span className="text-[6px] text-slate-400 font-light leading-tight max-w-[80px]">Upload trong Admin</span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Right: Product details */}
-                        <div className="flex flex-col space-y-3 min-w-0 w-full">
-                          <div className="space-y-1 min-w-0">
-                            <h4 className="text-xs font-bold text-[#050A5C] truncate">{activeP.name}</h4>
-                            <div className="text-[9px] font-mono text-slate-400 font-semibold uppercase tracking-wider">
-                              {activeP.size} &middot; {activeP.role}
-                            </div>
-                            {activeP.detailDescription && (
-                              <p className="text-[11px] text-slate-500 font-light leading-relaxed line-clamp-2 mt-1">
-                                {activeP.detailDescription}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Actives chips */}
-                          {activeP.actives && activeP.actives.length > 0 && (
-                            <div className="flex flex-wrap gap-1">
-                              {activeP.actives.slice(0, 3).map((act: string, i: number) => (
-                                <span key={i} className="text-[8px] font-mono text-[#050A5C] border border-[#050A5C]/10 px-1.5 py-0.5 bg-[#050A5C]/5" style={{ borderRadius: '1px' }}>{act}</span>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Benefits compact bullets */}
-                          {activeP.benefits && activeP.benefits.length > 0 && (
-                            <div className="space-y-0.5">
-                              {activeP.benefits.slice(0, 3).map((b: string, i: number) => (
-                                <div key={i} className="flex items-center gap-1.5">
-                                  <div className="w-1 h-1 rounded-full bg-[#050A5C]/35 flex-shrink-0" />
-                                  <span className="text-[10px] text-slate-600 font-light truncate">{b}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Muted usage note */}
-                          {activeP.usage && (
-                            <p className="text-[9px] text-slate-400 font-light leading-relaxed italic border-l border-slate-200 pl-2">
-                              HDSD: {activeP.usage}
+                        <div className="space-y-2">
+                          <SectionLabel>{eyebrow || 'FEATURED SET'}</SectionLabel>
+                          <h2 className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight font-serif">
+                            {title}
+                          </h2>
+                          {headline && (
+                            <p className="text-sm md:text-base font-light text-[#050A5C]/80 leading-relaxed italic">
+                              {headline}
                             </p>
                           )}
                         </div>
-                      </motion.div>
-                    );
-                  })()}
+                        
+                        <Divider />
+                        
+                        <p className="text-[#6B7280] font-light text-sm leading-relaxed max-w-xl">
+                          {description}
+                        </p>
 
+                        {/* Benefits tags */}
+                        {benefits && benefits.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-1">
+                            {benefits.slice(0, 3).map((b: string) => (
+                              <span key={b} className="border border-[#D9DEE8] px-3.5 py-1 text-[9px] tracking-[0.15em] uppercase text-[#050A5C] font-semibold bg-[#F4F7FB]/70" style={{ borderRadius: '1px' }}>
+                                {b}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Inside the Set List */}
+                        <div className="pt-4 border-t border-slate-100 space-y-2">
+                          <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/40 font-bold">Bộ sản phẩm bao gồm (Set Includes)</span>
+                          <div className="flex flex-col gap-1.5 text-xs text-slate-600 font-light">
+                            {cellurevive && (
+                              <div className="flex justify-between items-center border border-[#D9DEE8]/50 p-2.5 bg-white" style={{ borderRadius: '1px' }}>
+                                <span className="font-bold text-[#050A5C]">01. {cellurevive.name}</span>
+                                <span className="text-[10px] font-mono text-slate-400 font-semibold">{cellurevive.size}</span>
+                              </div>
+                            )}
+                            {regenaglow && (
+                              <div className="flex justify-between items-center border border-[#D9DEE8]/50 p-2.5 bg-white" style={{ borderRadius: '1px' }}>
+                                <span className="font-bold text-[#050A5C]">02. {regenaglow.name}</span>
+                                <span className="text-[10px] font-mono text-slate-400 font-semibold">{regenaglow.size}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      (() => {
+                        const activeP = selectedView === 'cellurevive-ampoule' ? cellurevive : regenaglow;
+                        if (!activeP) return null;
+                        return (
+                          <motion.div
+                            key={activeP.id || selectedView}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -8 }}
+                            transition={{ duration: 0.25 }}
+                            className="space-y-5"
+                          >
+                            <div className="space-y-2">
+                              <SectionLabel>PRODUCT IN THE SET</SectionLabel>
+                              <h2 className="text-3xl font-light text-[#050A5C] tracking-tight font-serif">
+                                {activeP.name}
+                              </h2>
+                              <div className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider">
+                                {activeP.size} &middot; {activeP.role}
+                              </div>
+                            </div>
+                            
+                            <Divider />
+
+                            {activeP.detailDescription && (
+                              <p className="text-sm text-slate-600 font-light leading-relaxed max-w-xl">
+                                {activeP.detailDescription}
+                              </p>
+                            )}
+
+                            {/* Actives chips */}
+                            {activeP.actives && activeP.actives.length > 0 && (
+                              <div className="space-y-1.5 min-w-0">
+                                <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold">Key Actives</span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {activeP.actives.slice(0, 3).map((act: string, i: number) => (
+                                    <span key={i} className="text-[9px] font-mono text-[#050A5C] border border-[#050A5C]/10 px-2 py-0.5 bg-[#050A5C]/5" style={{ borderRadius: '1px' }}>{act}</span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Benefits compact bullets */}
+                            {activeP.benefits && activeP.benefits.length > 0 && (
+                              <div className="space-y-1.5 min-w-0">
+                                <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold">Benefits</span>
+                                <div className="space-y-1">
+                                  {activeP.benefits.slice(0, 3).map((b: string, i: number) => (
+                                    <div key={i} className="flex items-center gap-2">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-[#050A5C]/30 flex-shrink-0" />
+                                      <span className="text-[11px] text-slate-600 font-light truncate">{b}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Muted usage note */}
+                            {activeP.usage && (
+                              <p className="text-[10px] text-slate-400 font-light leading-relaxed italic border-l border-slate-200 pl-2">
+                                HDSD: {activeP.usage}
+                              </p>
+                            )}
+                          </motion.div>
+                        );
+                      })()
+                    )}
+                  </AnimatePresence>
+
+                  {/* Primary CTA */}
                   <motion.div variants={fadeUp} className="pt-4">
                     <CosmeticCtaTracker
                       label={ctaLabel}
@@ -1533,7 +1614,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                       className="w-full h-[48px] flex items-center justify-center bg-[#050A5C] text-white text-[10px] tracking-[0.25em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm font-semibold"
                     />
                   </motion.div>
-                </motion.div>
+                </div>
 
               </div>
 
