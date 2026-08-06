@@ -8,6 +8,8 @@ import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { canManageContentBlocks, canDeleteContentBlocks } from '@vavaw/auth';
 import { DeleteContentBlockButton } from './DeleteContentBlockButton';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ContentPage() {
   const mode = getAdminDataSourceMode();
 

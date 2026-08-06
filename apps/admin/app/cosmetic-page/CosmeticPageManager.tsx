@@ -99,6 +99,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [isSaving, setIsSaving] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [globalSuccess, setGlobalSuccess] = useState<string | null>(null);
+  const [isJsonDirty, setIsJsonDirty] = useState(false);
 
   // Section editor local state
   const [editTitle, setEditTitle] = useState('');
@@ -168,6 +169,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const startEditingSection = (block: ContentBlockRecord) => {
     setEditingBlock(block);
     setJsonError(null);
+    setIsJsonDirty(false);
     const content = block.content || {};
     setEditTitle(content.title || '');
     setEditEyebrow(content.eyebrow || '');
@@ -269,13 +271,25 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
         }));
 
-      if (parsedItems !== undefined) {
+      if (isJsonDirty && parsedItems !== undefined) {
         updatedContent.items = normalizeSigItems(parsedItems);
       } else {
         updatedContent.items = normalizeSigItems(sigItems);
       }
+
+      // Debug logs in development
+      console.log('[CosmeticPageManager] Save Payload:', {
+        block_id: editingBlock.id,
+        block_type: editingBlock.block_type,
+        site_key: editingBlock.site_key,
+        page_path: editingBlock.page_path,
+        isJsonDirty,
+        ui_sigItems_order: sigItems.map(item => item.name),
+        payload_items_order: updatedContent.items.map((item: any) => item.name),
+        featured: updatedContent.featured
+      });
     } else {
-      if (parsedItems !== undefined) {
+      if (isJsonDirty && parsedItems !== undefined) {
         updatedContent.items = parsedItems;
       }
     }
@@ -1652,19 +1666,29 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                     className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Vai trò / loại sản phẩm</label>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Vai trò / loại sản phẩm (Type)</label>
                                   <input type="text" value={item.type || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], type: e.target.value }; setSigItems(l); }}
-                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="Ví dụ: Booster, Active Treatment" />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thành phần nổi bật</label>
-                                  <input type="text" value={item.key || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], key: e.target.value }; setSigItems(l); }}
-                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thứ tự bước (Step)</label>
+                                  <input type="text" value={item.step || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], step: e.target.value }; setSigItems(l); }}
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="Ví dụ: 01" />
                                 </div>
-                                <div className="md:col-span-2">
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả ngắn</label>
-                                  <textarea value={item.description || item.desc || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], description: e.target.value }; setSigItems(l); }}
-                                    rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Vai trò tùy chỉnh (Role)</label>
+                                  <input type="text" value={item.role || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], role: e.target.value }; setSigItems(l); }}
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="Ví dụ: TREAT, PREPARE" />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đề xuất sử dụng (Usage)</label>
+                                  <select value={item.usage || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], usage: e.target.value }; setSigItems(l); }}
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]">
+                                    <option value="">-- tự động theo loại --</option>
+                                    <option value="AM">AM (Sáng)</option>
+                                    <option value="PM">PM (Tối)</option>
+                                    <option value="AM · PM">AM · PM (Sáng & Tối)</option>
+                                  </select>
                                 </div>
                                 <div className="md:col-span-2">
                                   <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Media Slot</label>
@@ -1675,6 +1699,23 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                       <option key={slot.value} value={slot.value}>{slot.label}</option>
                                     ))}
                                   </select>
+                                </div>
+                                <div className="md:col-span-2">
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thành phần nổi bật</label>
+                                  <input type="text" value={item.key || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], key: e.target.value }; setSigItems(l); }}
+                                    className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="Ví dụ: Ceramide NP · Madecassoside" />
+                                </div>
+                                <div className="md:col-span-2">
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả ngắn</label>
+                                  <textarea value={item.description || item.desc || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], description: e.target.value }; setSigItems(l); }}
+                                    rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div className="md:col-span-2 flex items-center py-1">
+                                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                                    <input type="checkbox" checked={!!item.highlight} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], highlight: e.target.checked }; setSigItems(l); }}
+                                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                                    <span className="text-[10px] font-bold text-slate-700 uppercase">Sản phẩm chủ đạo (CORE / Highlight)</span>
+                                  </label>
                                 </div>
                               </div>
                             </div>
@@ -1715,7 +1756,10 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                       )}
                       <textarea 
                         value={editItemsJson} 
-                        onChange={e => setEditItemsJson(e.target.value)}
+                        onChange={e => {
+                          setEditItemsJson(e.target.value);
+                          setIsJsonDirty(true);
+                        }}
                         rows={10}
                         className="w-full text-xs font-mono p-3 border border-slate-300 rounded-md bg-white focus:outline-none focus:border-blue-500" 
                         placeholder="[ { ... } ]"

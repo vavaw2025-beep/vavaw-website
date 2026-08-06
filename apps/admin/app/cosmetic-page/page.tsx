@@ -5,6 +5,8 @@ import { getAdminDataSourceMode } from '../../lib/data-source';
 import { CosmeticPageManager } from './CosmeticPageManager';
 import { ContentBlockRecord, MediaAssetRecord } from '@vavaw/db';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Cosmetic Page Management | VAVAW Admin',
 };
