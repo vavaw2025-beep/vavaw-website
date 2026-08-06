@@ -136,6 +136,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [featuredCtaHref, setFeaturedCtaHref] = useState('');
   const [sigItems, setSigItems] = useState<any[]>([]);
 
+  // Ingredient Intelligence Map states
+  const [ingLogicTitle, setIngLogicTitle] = useState('');
+  const [ingLogicDescription, setIngLogicDescription] = useState('');
+  const [ingItems, setIngItems] = useState<any[]>([]);
+
   // Sync prop changes
   useEffect(() => {
     setBlocks(initialBlocks);
@@ -273,6 +278,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         })
       );
     }
+
+    if (block.block_type === 'cosmetic-ingredients') {
+      setIngLogicTitle(content.logicTitle || 'Clinical Formula Logic');
+      setIngLogicDescription(content.logicDescription || 'Mỗi hoạt chất được đặt vào đúng vai trò trong routine: chuẩn bị da, hỗ trợ tái tạo, làm dịu, khóa ẩm và bảo vệ ban ngày.');
+      setIngItems(content.items || []);
+    }
   };
 
   const handleSaveSectionEdits = async () => {
@@ -385,6 +396,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       updatedContent.scienceDescription = heroScienceDescription;
       updatedContent.usageSteps = heroUsageSteps;
       updatedContent.setProducts = heroSetProducts;
+    } else if (editingBlock.block_type === 'cosmetic-ingredients') {
+      updatedContent.logicTitle = ingLogicTitle;
+      updatedContent.logicDescription = ingLogicDescription;
+      if (isJsonDirty && parsedItems !== undefined) {
+        updatedContent.items = parsedItems;
+      } else {
+        updatedContent.items = ingItems;
+      }
     } else {
       if (isJsonDirty && parsedItems !== undefined) {
         updatedContent.items = parsedItems;
@@ -1852,7 +1871,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   </div>
                 )}
 
-                {editingBlock.block_type !== 'cosmetic-brand-philosophy' && (
+                {editingBlock.block_type !== 'cosmetic-brand-philosophy' && editingBlock.block_type !== 'cosmetic-ingredients' && (
                   <>
                     <div>
                       <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nút (CTA Label)</label>
@@ -2421,6 +2440,281 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                     </div>
                   );
                 })()}
+
+                {/* ── Active Ingredient Intelligence Map custom editor ── */}
+                {editingBlock.block_type === 'cosmetic-ingredients' && (
+                  <div className="col-span-2 space-y-6 border-t border-slate-100 pt-4 mt-2">
+                    <p className="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 leading-relaxed">
+                      💡 <strong>Hướng dẫn:</strong> Bản đồ hoạt chất được cấu trúc dưới dạng danh sách hoạt chất tương tác (Ingredient Intelligence Map). Mỗi hoạt chất kết nối trực tiếp với sản phẩm, routine stage, và các chỉ định phục hồi da.
+                    </p>
+
+                    {/* Global Logic fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/50 p-4 rounded-xl border border-slate-200">
+                      <div className="md:col-span-2">
+                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
+                          Tiêu đề phần Logic công thức (Formula Logic Strip)
+                        </h4>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">Tiêu đề Logic</label>
+                        <input
+                          type="text"
+                          value={ingLogicTitle}
+                          onChange={e => setIngLogicTitle(e.target.value)}
+                          className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">Mô tả Logic</label>
+                        <textarea
+                          value={ingLogicDescription}
+                          onChange={e => setIngLogicDescription(e.target.value)}
+                          rows={2}
+                          className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Repeater List */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
+                          Danh sách hoạt chất ({ingItems.length})
+                        </h4>
+                      </div>
+
+                      <div className="space-y-4">
+                        {ingItems.map((item, idx) => (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-xl bg-slate-50/30 space-y-3 relative">
+                            {/* Header row */}
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                              <span className="text-xs font-bold text-slate-400 font-mono">Hoạt chất #{idx + 1}</span>
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  disabled={idx === 0}
+                                  onClick={() => {
+                                    const l = [...ingItems];
+                                    const temp = l[idx];
+                                    l[idx] = l[idx - 1];
+                                    l[idx - 1] = temp;
+                                    setIngItems(l);
+                                  }}
+                                  className="p-1 hover:bg-slate-200 rounded disabled:opacity-30 transition"
+                                  title="Di chuyển lên"
+                                >
+                                  <ArrowUp className="h-3 w-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={idx === ingItems.length - 1}
+                                  onClick={() => {
+                                    const l = [...ingItems];
+                                    const temp = l[idx];
+                                    l[idx] = l[idx + 1];
+                                    l[idx + 1] = temp;
+                                    setIngItems(l);
+                                  }}
+                                  className="p-1 hover:bg-slate-200 rounded disabled:opacity-30 transition"
+                                  title="Di chuyển xuống"
+                                >
+                                  <ArrowDown className="h-3 w-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (confirm('Xóa hoạt chất này?')) {
+                                      setIngItems(ingItems.filter((_, i) => i !== idx));
+                                    }
+                                  }}
+                                  className="p-1 text-slate-400 hover:text-red-600 rounded transition"
+                                  title="Xóa hoạt chất"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Item Inputs Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mã hoạt chất (ID)</label>
+                                <input
+                                  type="text"
+                                  value={item.id || ''}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], id: e.target.value };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: exosome, peptide"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tên hoạt chất</label>
+                                <input
+                                  type="text"
+                                  value={item.name || ''}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], name: e.target.value };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: Exosome"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Phân loại (Category)</label>
+                                <input
+                                  type="text"
+                                  value={item.category || ''}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], category: e.target.value };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: Renewal Signal"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biểu tượng (Icon)</label>
+                                <select
+                                  value={item.icon || 'flask-conical'}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], icon: e.target.value };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]"
+                                >
+                                  {['atom', 'flask-conical', 'microscope', 'droplet', 'shield-check', 'sparkles', 'leaf', 'scan-heart', 'badge-check', 'sun', 'waves', 'gem'].map(iconName => (
+                                    <option key={iconName} value={iconName}>{iconName}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Routine Stage</label>
+                                <select
+                                  value={item.routineStage || 'RECOVER'}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], routineStage: e.target.value };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]"
+                                >
+                                  {['PREPARE', 'TREAT', 'RECOVER', 'SEAL', 'PROTECT', 'PREPARE / SEAL'].map(stage => (
+                                    <option key={stage} value={stage}>{stage}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Usage (Tần suất)</label>
+                                <select
+                                  value={item.usage || 'AM · PM'}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], usage: e.target.value };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]"
+                                >
+                                  {['AM', 'PM', 'AM · PM'].map(u => (
+                                    <option key={u} value={u}>{u}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div className="md:col-span-3">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Vai trò ngắn</label>
+                                <input
+                                  type="text"
+                                  value={item.shortRole || ''}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], shortRole: e.target.value };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: Hỗ trợ vẻ ngoài mịn màng, rạng rỡ."
+                                />
+                              </div>
+                              <div className="md:col-span-3">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả khoa học chi tiết</label>
+                                <textarea
+                                  value={item.description || ''}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], description: e.target.value };
+                                    setIngItems(l);
+                                  }}
+                                  rows={3}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Nhập đoạn mô tả chuyên sâu về cơ chế hoạt động của hoạt chất..."
+                                />
+                              </div>
+                              <div className="md:col-span-3">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Key Support Claims (Ngăn cách bằng dấu phẩy)</label>
+                                <input
+                                  type="text"
+                                  value={Array.isArray(item.supports) ? item.supports.join(', ') : item.supports || ''}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], supports: e.target.value.split(',').map(s => s.trim()).filter(Boolean) };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: Radiance support, Texture refinement"
+                                />
+                              </div>
+                              <div className="md:col-span-3">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Recommended For (Ngăn cách bằng dấu phẩy)</label>
+                                <input
+                                  type="text"
+                                  value={Array.isArray(item.bestFor) ? item.bestFor.join(', ') : item.bestFor || ''}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], bestFor: e.target.value.split(',').map(s => s.trim()).filter(Boolean) };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: Da xỉn màu, Da nhạy cảm"
+                                />
+                              </div>
+                              <div className="md:col-span-3">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Có trong sản phẩm (Ngăn cách bằng dấu phẩy)</label>
+                                <input
+                                  type="text"
+                                  value={Array.isArray(item.foundIn) ? item.foundIn.join(', ') : item.foundIn || ''}
+                                  onChange={e => {
+                                    const l = [...ingItems];
+                                    l[idx] = { ...l[idx], foundIn: e.target.value.split(',').map(s => s.trim()).filter(Boolean) };
+                                    setIngItems(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: Gentle Activation Renew Ampoule, CELLUREVIVE Ampoule"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setIngItems([...ingItems, { id: '', name: '', category: 'Clinical Support', icon: 'flask-conical', routineStage: 'RECOVER', usage: 'AM · PM', shortRole: '', description: '', supports: [], bestFor: [], foundIn: [] }])}
+                        className="text-xs text-blue-600 font-bold flex items-center gap-1 hover:underline mt-1 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-lg"
+                      >
+                        <Plus className="h-3 w-3" />
+                        <span>Thêm hoạt chất mới</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 <div className="col-span-2 flex items-center py-2">
                   <label className="flex items-center gap-2 cursor-pointer select-none">

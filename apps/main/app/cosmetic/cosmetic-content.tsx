@@ -10,6 +10,7 @@ import type { PublicHeroMedia } from '@/lib/load-public-hero-media';
 import type { CosmeticPageMedia } from '@/lib/load-public-cosmetic-media';
 import { ClinicalFormulaLab } from './components/ClinicalFormulaLab';
 import { SkinRitualFinder } from './components/SkinRitualFinder';
+import IngredientIntelligenceMap from './components/IngredientIntelligenceMap';
 import { 
   FlaskConical, 
   Microscope, 
@@ -413,17 +414,116 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
   });
 
   const ingredientsBlock = getBlockContent(blocks, 'cosmetic-ingredients', {
-    title: 'Clinical Ingredients',
-    eyebrow: 'Active Ingredients',
+    eyebrow: 'ACTIVE INGREDIENT INTELLIGENCE',
+    title: 'Bản đồ hoạt chất phục hồi da',
+    description: 'Khám phá cách các hoạt chất trong hệ sản phẩm VAVAW hỗ trợ phục hồi, cấp ẩm, làm dịu, tái tạo và bảo vệ làn da.',
+    logicTitle: 'Clinical Formula Logic',
+    logicDescription: 'Mỗi hoạt chất được đặt vào đúng vai trò trong routine: chuẩn bị da, hỗ trợ tái tạo, làm dịu, khóa ẩm và bảo vệ ban ngày.',
     items: [
-      { name: 'Exosome', role: 'Cellular regeneration & recovery' },
-      { name: 'Collagen', role: 'Skin firmness & elasticity support' },
-      { name: 'Peptide Complex', role: 'Anti-ageing signal communication' },
-      { name: 'Bakuchiol', role: 'Gentle plant-derived retinol alternative' },
-      { name: 'Cica 7 Complex', role: 'Barrier repair & soothing complex' },
-      { name: 'Hyaluronic Acid', role: 'Multi-depth moisture binding' },
-      { name: 'Aloe Extract', role: 'Calming & instant hydration' },
-      { name: 'Oriental Botanicals', role: 'Traditional Korean herbal balance' },
+      {
+        id: 'exosome',
+        name: 'Exosome',
+        category: 'Renewal Signal',
+        icon: 'atom',
+        routineStage: 'TREAT',
+        usage: 'PM',
+        shortRole: 'Hỗ trợ vẻ ngoài mịn màng, rạng rỡ.',
+        description: 'Hoạt chất được ứng dụng trong công thức chăm sóc chuyên sâu, hỗ trợ cải thiện vẻ ngoài của làn da xỉn màu, kém sức sống và cần phục hồi sau treatment.',
+        supports: ['Radiance support', 'Texture refinement', 'Skin renewal appearance'],
+        bestFor: ['Da xỉn màu', 'Da có dấu hiệu lão hóa', 'Da cần phục hồi sau treatment'],
+        foundIn: ['Gentle Activation Renew Ampoule', 'CELLUREVIVE Ampoule']
+      },
+      {
+        id: 'peptide',
+        name: 'Peptide Complex',
+        category: 'Firmness Support',
+        icon: 'sparkles',
+        routineStage: 'RECOVER',
+        usage: 'AM · PM',
+        shortRole: 'Hỗ trợ độ đàn hồi và săn chắc tự nhiên.',
+        description: 'Hỗn hợp peptide chuỗi sinh học hỗ trợ cải thiện độ săn chắc của da, làm mờ các nếp nhăn mảnh và tăng cường vẻ căng mịn.',
+        supports: ['Visible firmness', 'Wrinkle appearance improvement', 'Skin elasticity support'],
+        bestFor: ['Da giảm độ đàn hồi', 'Da xuất hiện nếp nhăn', 'Da thiếu săn chắc'],
+        foundIn: ['Regenaglow Nourish Sheer Cream', 'P30 Boost Facial Moisturizer']
+      },
+      {
+        id: 'collagen',
+        name: 'Collagen Support',
+        category: 'Elasticity Support',
+        icon: 'scan-heart',
+        routineStage: 'RECOVER',
+        usage: 'AM · PM',
+        shortRole: 'Giúp cải thiện độ đàn hồi và độ dày biểu bì.',
+        description: 'Phức hợp collagen hỗ trợ bổ sung cấu trúc nền cho da, mang lại làn da trông căng mọng, săn chắc và giảm thiểu tình trạng chảy xệ.',
+        supports: ['Elasticity support', 'Plumping effect', 'Skin structure integrity'],
+        bestFor: ['Da thiếu ẩm', 'Da có nếp nhăn sâu', 'Da kém căng bóng'],
+        foundIn: ['Regenaglow Nourish Sheer Cream', 'CELLUREVIVE Ampoule']
+      },
+      {
+        id: 'cica',
+        name: 'Cica 7 Complex',
+        category: 'Soothing Barrier Care',
+        icon: 'leaf',
+        routineStage: 'RECOVER',
+        usage: 'AM · PM',
+        shortRole: 'Làm dịu làn da nhạy cảm, kích ứng.',
+        description: 'Chiết xuất rau má cô đặc kết hợp 7 hoạt chất sinh học hỗ trợ phục hồi hàng rào bảo vệ da, làm dịu nhanh các tình trạng đỏ rát và nhạy cảm.',
+        supports: ['Redness appearance reduction', 'Skin barrier support', 'Soothing sensitive areas'],
+        bestFor: ['Da nhạy cảm', 'Da dễ đỏ rát', 'Da sau các liệu trình công nghệ cao'],
+        foundIn: ['Calmiance Superior Sheer Gel']
+      },
+      {
+        id: 'ha',
+        name: 'Hyaluronic Acid',
+        category: 'Hydration Layer',
+        icon: 'droplet',
+        routineStage: 'PREPARE / SEAL',
+        usage: 'AM · PM',
+        shortRole: 'Cấp ẩm sâu đa tầng, khóa ẩm bảo vệ.',
+        description: 'Các phân tử HA đa kích thước thẩm thấu sâu vào các tầng biểu bì, giữ nước tối ưu và duy trì độ ẩm mịn suốt cả ngày.',
+        supports: ['Deep hydration', 'Moisture barrier seal', 'Instant plumpness appearance'],
+        bestFor: ['Da khô ráp', 'Da mất nước', 'Da bong tróc'],
+        foundIn: ['P30 Boost Facial Hydrating Toner', 'P30 Boost Facial Moisturizer']
+      },
+      {
+        id: 'niacinamide',
+        name: 'Niacinamide',
+        category: 'Tone & Barrier Support',
+        icon: 'badge-check',
+        routineStage: 'PROTECT',
+        usage: 'AM',
+        shortRole: 'Dưỡng sáng da, củng cố hàng rào bảo vệ.',
+        description: 'Hoạt chất đa năng hỗ trợ điều hòa bã nhờn, cải thiện tông da không đều màu và củng cố hàng rào bảo vệ da trước tác hại môi trường.',
+        supports: ['Brightening support', 'Skin tone evening', 'Moisture retention control'],
+        bestFor: ['Da không đều màu', 'Da có vết thâm sạm', 'Da xỉn màu'],
+        foundIn: ['LUMIGLOW ROSY SHEER SUNSCREEN SPF50+/PA+++']
+      },
+      {
+        id: 'bakuchiol',
+        name: 'Bakuchiol',
+        category: 'Gentle Renewal Support',
+        icon: 'microscope',
+        routineStage: 'TREAT',
+        usage: 'PM',
+        shortRole: 'Hỗ trợ chu kỳ sừng hóa tự nhiên của da.',
+        description: 'Hoạt chất chống oxy hóa chiết xuất tự nhiên hoạt động tương tự retinol nhưng vô cùng dịu nhẹ, không gây kích ứng hay nhạy cảm ánh sáng.',
+        supports: ['Gentle renewal support', 'Anti-ageing care', 'Skin texture refinement'],
+        bestFor: ['Da lão hóa sớm', 'Da nhạy cảm với retinol', 'Da kém mịn màng'],
+        foundIn: ['Gentle Activation Renew Ampoule', 'LUMIGLOW ROSY SHEER SUNSCREEN SPF50+/PA+++']
+      },
+      {
+        id: 'uv-filter',
+        name: 'Hybrid UV Filter',
+        category: 'Daily Protection Shield',
+        icon: 'shield-check',
+        routineStage: 'PROTECT',
+        usage: 'AM',
+        shortRole: 'Màng lọc bảo vệ da trước tia UVA/UVB.',
+        description: 'Sự kết hợp tối ưu giữa màng lọc vật lý và hóa học giúp phản xạ và hấp thụ các tia UV gây hại, bảo vệ làn da khỏi lão hóa sớm.',
+        supports: ['UV shield support', 'Photo-ageing defense', 'Sun damage prevention'],
+        bestFor: ['Mọi loại da', 'Da tiếp xúc với ánh nắng', 'Da sau liệu trình cần bảo vệ nghiêm ngặt'],
+        foundIn: ['LUMIGLOW ROSY SHEER SUNSCREEN SPF50+/PA+++']
+      }
     ]
   });
 
@@ -1631,57 +1731,19 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       )}
 
       {/* ───────────────────────────────────────────────────────────────────────
-          SECTION 6 — DAILY CLINICAL RITUAL
+          SECTION 6 — ACTIVE INGREDIENT INTELLIGENCE
+      ─────────────────────────────────────────────────────────────────────── */}
+      {ingredientsBlock && (
+        <IngredientIntelligenceMap ingredientsBlock={ingredientsBlock} />
+      )}
+
+      {/* ───────────────────────────────────────────────────────────────────────
+          SECTION 7 — DAILY CLINICAL RITUAL
       ─────────────────────────────────────────────────────────────────────── */}
       {dailyRitual && (
         <SkinRitualFinder dailyRitual={dailyRitual} products={productCards} cosmeticMedia={cosmeticMedia} />
       )}
 
-      {/* ───────────────────────────────────────────────────────────────────────
-          SECTION 7 — CLINICAL INGREDIENTS
-      ─────────────────────────────────────────────────────────────────────── */}
-      {ingredientsBlock && (
-      <section className={`${SECTION_COOL} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            className="mb-16 text-center"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-60px' }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeUp}><SectionLabel>{ingredientsBlock.eyebrow}</SectionLabel></motion.div>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight">
-              {ingredientsBlock.title}
-            </motion.h2>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-40px' }}
-            variants={staggerSlow}
-          >
-            {(ingredientsBlock.items || []).map((ing: any) => (
-              <motion.div
-                key={ing.name}
-                variants={fadeUp}
-                className={`bg-white border ${SILVER_BORDER} p-6 text-center hover:border-[#050A5C]/30 hover:shadow-sm transition-all duration-400 group`}
-                whileHover={{ y: -2, scale: 1.02 }}
-                transition={{ duration: 0.25 }}
-              >
-                <div className="w-6 h-px bg-[#050A5C]/20 mx-auto mb-4" />
-                <h4 className="text-sm font-medium text-[#050A5C] mb-2 group-hover:text-[#101A8C] transition-colors">
-                  {ing.name}
-                </h4>
-                <p className="text-[10px] text-[#9CA3AF] font-light leading-relaxed">{ing.role}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-      )}
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 8 — PREMIUM PROGRAM / SPA CLINIC
