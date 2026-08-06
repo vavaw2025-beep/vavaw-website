@@ -206,9 +206,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           const defaults = getDefaultCosmeticItemMetadata(item.name || '', idx);
           return {
             ...item,
-            step: item.step ?? defaults.step,
-            role: item.role ?? defaults.role,
-            usage: item.usage ?? defaults.usage,
+            step: item.step || defaults.step,
+            role: item.role || defaults.role,
+            usage: item.usage || defaults.usage,
             highlight: item.highlight !== undefined ? Boolean(item.highlight) : defaults.highlight,
             mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
           };
@@ -278,9 +278,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           const defaults = getDefaultCosmeticItemMetadata(item.name || '', idx);
           return {
             ...item,
-            step: item.step ?? defaults.step,
-            role: item.role ?? defaults.role,
-            usage: item.usage ?? defaults.usage,
+            step: item.step || defaults.step,
+            role: item.role || defaults.role,
+            usage: item.usage || defaults.usage,
             highlight: item.highlight !== undefined ? Boolean(item.highlight) : defaults.highlight,
             mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
           };
@@ -293,6 +293,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       }
 
       // Debug logs in development
+      console.log('[signature save payload]', updatedContent.items.map((item: any) => ({
+        name: item.name,
+        step: item.step,
+        role: item.role,
+        usage: item.usage,
+        highlight: item.highlight,
+        mediaSlot: item.mediaSlot
+      })));
+
       console.log('[CosmeticPageManager] Save Payload:', {
         block_id: editingBlock.id,
         block_type: editingBlock.block_type,
