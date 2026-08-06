@@ -8,6 +8,7 @@ import type { BusinessEntry } from '@vavaw/brand-config';
 import { CosmeticCtaTracker } from './cosmetic-tracker';
 import type { PublicHeroMedia } from '@/lib/load-public-hero-media';
 import type { CosmeticPageMedia } from '@/lib/load-public-cosmetic-media';
+import { ClinicalFormulaLab } from './components/ClinicalFormulaLab';
 import { 
   FlaskConical, 
   Microscope, 
@@ -1288,123 +1289,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           SECTION 5 — PRODUCT EDITORIAL CARDS
       ─────────────────────────────────────────────────────────────────────── */}
       {productCards && (
-      <section className={`${SECTION_COOL} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            className="mb-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-60px' }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeUp}><SectionLabel>{productCards.eyebrow}</SectionLabel></motion.div>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight">
-              {productCards.title}
-            </motion.h2>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-40px' }}
-            variants={staggerSlow}
-          >
-            {(productCards.items || []).map((product: any, i: number) => {
-              // Get product image URL
-              let imageUrl: string | undefined = undefined;
-              if (product.mediaSlot) {
-                const slotKeyMap: Record<string, keyof CosmeticPageMedia> = {
-                  'cosmetic-product-luminous-set':     'luminousSet',
-                  'cosmetic-product-regenaglow-cream': 'regenaglow',
-                  'cosmetic-product-calmiance-gel':    'calmiance',
-                  'cosmetic-product-renew-ampoule':    'renewAmpoule',
-                  'cosmetic-product-p30-moisturizer':  'p30Moisturizer',
-                  'cosmetic-product-p30-toner':        'p30Toner',
-                  'cosmetic-product-lumiglow-sunscreen': 'lumiglowSunscreen',
-                };
-                const key = slotKeyMap[product.mediaSlot] || product.mediaSlot as keyof CosmeticPageMedia;
-                imageUrl = cosmeticMedia[key];
-              }
-
-              // Fallback if missing
-              if (!imageUrl && product.name) {
-                const name = product.name;
-                if (name.includes('Regenaglow')) imageUrl = cosmeticMedia.regenaglow;
-                else if (name.includes('Calmiance')) imageUrl = cosmeticMedia.calmiance;
-                else if (name.includes('Renew Ampoule')) imageUrl = cosmeticMedia.renewAmpoule;
-                else if (name.includes('Moisturizer')) imageUrl = cosmeticMedia.p30Moisturizer;
-                else if (name.includes('Toner')) imageUrl = cosmeticMedia.p30Toner;
-                else if (name.includes('Sunscreen')) imageUrl = cosmeticMedia.lumiglowSunscreen;
-              }
-
-              const hasImage = imageUrl && isValidHeroImageUrl(imageUrl);
-
-              return (
-                <motion.article
-                  key={i}
-                  variants={fadeUp}
-                  className={`border ${SILVER_BORDER} bg-white flex flex-col hover:border-[#050A5C]/30 hover:shadow-md transition-all duration-500 group overflow-hidden`}
-                  whileHover={{ y: -3 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {/* Top Image / Gradient Fallback */}
-                  <div className="relative w-full h-56 border-b border-[#D9DEE8] bg-[#F7F9FC] overflow-hidden flex items-center justify-center">
-                    {hasImage ? (
-                      <img
-                        src={imageUrl!.trim()}
-                        alt={product.name}
-                        className="h-full w-full object-contain bg-[#F7F9FC]"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#E8EDF6] to-[#D9DEE8] flex items-center justify-center">
-                        <div className="absolute inset-4 border border-[#C5CEDF]/30 pointer-events-none" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Text content */}
-                  <div className="p-8 flex-1 flex flex-col">
-                    {/* Product type */}
-                    <span className="block text-[9px] tracking-[0.25em] uppercase text-[#050A5C]/40 font-semibold mb-4">
-                      {product.type}
-                    </span>
-
-                    {/* Product name */}
-                    <h3 className="text-lg font-light text-[#050A5C] leading-snug mb-2 group-hover:text-[#101A8C] transition-colors">
-                      {product.name}
-                    </h3>
-
-                    {/* Price and Volume if present */}
-                    {(product.price || product.volume) && (
-                      <p className="text-[10px] text-slate-400 font-semibold tracking-wider mb-2">
-                        {product.price}{product.volume ? ` | ${product.volume}` : ''}
-                      </p>
-                    )}
-
-                    <div className="w-6 h-px bg-[#050A5C]/20 mb-4" />
-
-                    {/* Ingredients */}
-                    <p className="text-[10px] text-[#9CA3AF] tracking-wide mb-5">{product.ingredients}</p>
-
-                    {/* Benefit tags */}
-                    <div className="flex flex-wrap gap-2 mb-5">
-                      {(product.benefits || []).map((b: string) => (
-                        <span key={b} className={`text-[9px] tracking-[0.12em] uppercase border ${SILVER_BORDER} px-2.5 py-1 text-[#050A5C] font-medium bg-[#F4F7FB]`}>
-                          {b}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-xs text-[#6B7280] font-light leading-relaxed flex-1">{product.desc}</p>
-                  </div>
-                </motion.article>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
+        <ClinicalFormulaLab productCards={productCards} cosmeticMedia={cosmeticMedia} />
       )}
 
       {/* ───────────────────────────────────────────────────────────────────────

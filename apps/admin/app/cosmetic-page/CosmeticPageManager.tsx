@@ -339,6 +339,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [prodDesc, setProdDesc] = useState('');
   const [prodBenefits, setProdBenefits] = useState<string[]>([]);
   const [prodIngredients, setProdIngredients] = useState<string[]>([]);
+  const [prodDetailDesc, setProdDetailDesc] = useState('');
+  const [prodSkinConcerns, setProdSkinConcerns] = useState('');
+  const [prodBestFor, setProdBestFor] = useState('');
+  const [prodUsage, setProdUsage] = useState('');
+  const [prodMediaSlot, setProdMediaSlot] = useState('');
+  const [prodHighlight, setProdHighlight] = useState(false);
 
   // Load product content based on selection
   useEffect(() => {
@@ -352,6 +358,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setProdDesc(content.description || '');
       setProdBenefits(content.benefits || []);
       setProdIngredients(content.ingredients || []);
+      setProdDetailDesc('');
+      setProdSkinConcerns('');
+      setProdBestFor('');
+      setProdUsage('');
+      setProdMediaSlot('cosmetic-product-luminous-set');
+      setProdHighlight(false);
     } else {
       const cardsBlock = blocks.find(b => b.block_type === 'cosmetic-product-cards');
       const items = cardsBlock?.content?.items || [];
@@ -361,11 +373,18 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         setProdType(item.type || '');
         setProdVolume(item.volume || '');
         setProdPrice(item.price || '');
-        setProdDesc(item.desc || '');
+        setProdDesc(item.desc || item.shortDescription || '');
         setProdBenefits(item.benefits || []);
         // ingredients can be string or array
         const rawIng = item.ingredients || '';
         setProdIngredients(typeof rawIng === 'string' ? rawIng.split(' · ') : rawIng);
+        setProdDetailDesc(item.description || '');
+        const rawConcerns = item.skinConcerns || '';
+        setProdSkinConcerns(Array.isArray(rawConcerns) ? rawConcerns.join(', ') : rawConcerns);
+        setProdBestFor(item.bestFor || '');
+        setProdUsage(item.usage || '');
+        setProdMediaSlot(item.mediaSlot || '');
+        setProdHighlight(!!item.highlight);
       }
     }
   }, [selectedProduct, blocks]);
@@ -426,8 +445,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                 name: prodName,
                 type: prodType,
                 desc: prodDesc,
+                shortDescription: prodDesc,
+                description: prodDetailDesc,
                 benefits: prodBenefits,
-                ingredients: prodIngredients.join(' · ')
+                ingredients: prodIngredients,
+                skinConcerns: prodSkinConcerns.split(',').map(s => s.trim()).filter(Boolean),
+                bestFor: prodBestFor,
+                usage: prodUsage,
+                highlight: prodHighlight,
+                mediaSlot: prodMediaSlot
               };
               if (prodVolume) updatedItem.volume = prodVolume;
               if (prodPrice) updatedItem.price = prodPrice;
@@ -437,16 +463,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           });
         }
 
-        // Sync with signature collection item
+        // Sync with signature collection item by name (sharing mediaSlot, usage, highlight)
         const sigBlock = newBlocks.find((b: any) => b.block_type === 'cosmetic-signature-collection');
         if (sigBlock && sigBlock.content && Array.isArray(sigBlock.content.items)) {
           sigBlock.content.items = sigBlock.content.items.map((item: any) => {
             if (item.name === selectedProduct) {
               return {
                 ...item,
-                name: prodName,
-                type: prodType,
-                key: prodIngredients.join(' · ')
+                mediaSlot: prodMediaSlot,
+                usage: prodUsage,
+                highlight: prodHighlight
               };
             }
             return item;
@@ -837,22 +863,26 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                 />
               </div>
 
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Cách dùng / AM-PM</label>
+                <select
+                  value={prodUsage}
+                  onChange={e => setProdUsage(e.target.value)}
+                  disabled={selectedProduct === 'Luminous Revitalization Sheer Set'}
+                  className="w-full text-sm p-2 border border-slate-300 rounded-md disabled:bg-slate-50 h-[38px]"
+                >
+                  <option value="">-- tự động theo loại --</option>
+                  <option value="AM">AM (Sáng)</option>
+                  <option value="PM">PM (Tối)</option>
+                  <option value="AM · PM">AM · PM (Sáng & Tối)</option>
+                </select>
+              </div>
+
               <div className="col-span-2 md:col-span-1">
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Ảnh đại diện (Media Slot)</label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mb-2">
                   {(() => {
-                    const slotId = (() => {
-                      if (selectedProduct === 'Luminous Revitalization Sheer Set') {
-                        return 'cosmetic-product-luminous-set';
-                      }
-                      const cardsBlock = blocks.find(b => b.block_type === 'cosmetic-product-cards');
-                      const items = cardsBlock?.content?.items || [];
-                      const item = items.find((i: any) => i.name === selectedProduct);
-                      if (item && item.mediaSlot) {
-                        return item.mediaSlot;
-                      }
-                      return REQUIRED_SLOTS.find(s => s.name.toLowerCase().includes(selectedProduct.toLowerCase().replace('revitalization ', '').replace(' facial', '').split(' ')[0]))?.id || '';
-                    })();
+                    const slotId = prodMediaSlot || 'cosmetic-product-luminous-set';
                     const asset = mediaAssets.find(m => m.metadata?.slot === slotId && !m.metadata?.archivedFromSlot);
                     return (
                       <>
@@ -865,7 +895,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </div>
                         <div className="flex-1 min-w-0">
                           <span className="text-xs text-slate-500 block truncate">{slotId}</span>
-                          {slotId && (
+                          {slotId && selectedProduct !== 'Luminous Revitalization Sheer Set' && (
                             <button
                               type="button"
                               onClick={() => setPickerOpenSlot(slotId)}
@@ -879,17 +909,80 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                     );
                   })()}
                 </div>
+                {selectedProduct !== 'Luminous Revitalization Sheer Set' && (
+                  <select
+                    value={prodMediaSlot}
+                    onChange={e => setProdMediaSlot(e.target.value)}
+                    className="w-full text-xs p-2 border border-slate-300 rounded-md focus:border-blue-500 bg-white"
+                  >
+                    <option value="">-- Chọn Media Slot --</option>
+                    {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => (
+                      <option key={slot.value} value={slot.value}>{slot.label}</option>
+                    ))}
+                  </select>
+                )}
               </div>
+
+              {selectedProduct !== 'Luminous Revitalization Sheer Set' && (
+                <div className="col-span-2 flex items-center pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={prodHighlight}
+                      onChange={e => setProdHighlight(e.target.checked)}
+                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-xs font-bold text-slate-700 uppercase">Sản phẩm chủ đạo (CORE / Highlight)</span>
+                  </label>
+                </div>
+              )}
 
               <div className="col-span-2">
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mô tả ngắn *</label>
                 <textarea
                   value={prodDesc}
                   onChange={e => setProdDesc(e.target.value)}
-                  rows={3}
+                  rows={2}
                   className="w-full text-sm p-2 border border-slate-300 rounded-md"
                 />
               </div>
+
+              {selectedProduct !== 'Luminous Revitalization Sheer Set' && (
+                <>
+                  <div className="col-span-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mô tả chi tiết</label>
+                    <textarea
+                      value={prodDetailDesc}
+                      onChange={e => setProdDetailDesc(e.target.value)}
+                      rows={4}
+                      className="w-full text-sm p-2 border border-slate-300 rounded-md"
+                      placeholder="Mô tả đầy đủ tác dụng, công nghệ và chi tiết sản phẩm..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Vấn đề da phù hợp (cách nhau bởi dấu phẩy)</label>
+                    <input
+                      type="text"
+                      value={prodSkinConcerns}
+                      onChange={e => setProdSkinConcerns(e.target.value)}
+                      className="w-full text-sm p-2 border border-slate-300 rounded-md"
+                      placeholder="Ví dụ: Da nhạy cảm, Tổn thương, Thâm sạm..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phù hợp cho (Best For)</label>
+                    <input
+                      type="text"
+                      value={prodBestFor}
+                      onChange={e => setProdBestFor(e.target.value)}
+                      className="w-full text-sm p-2 border border-slate-300 rounded-md"
+                      placeholder="Ví dụ: Da sau treatment, da kích ứng..."
+                    />
+                  </div>
+                </>
+              )}
 
               {/* Benefit tags */}
               <div className="col-span-2 space-y-2">
