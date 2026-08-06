@@ -22,6 +22,8 @@ const HUMAN_SLOTS: Record<string, { name: string; size: string }> = {
   'cosmetic-gallery-skin': { name: 'Thư viện - Làn da cận cảnh', size: '1600x2000, dưới 1.5MB' },
   'cosmetic-gallery-serum': { name: 'Thư viện - Tinh chất serum cận cảnh', size: '1600x2000, dưới 1.5MB' },
   'cosmetic-gallery-packaging': { name: 'Thư viện - Bao bì sản phẩm', size: '1600x2000, dưới 1.5MB' },
+  'cosmetic-set-cellurevive-ampoule': { name: 'Ảnh chi tiết CELLUREVIVE Ampoule trong set', size: '1200x1500 hoặc 1600x2000, dưới 1MB' },
+  'cosmetic-set-regenaglow-sheer-cream': { name: 'Ảnh chi tiết REGENAGLOW NOURISH SHEER CREAM trong set', size: '1200x1500 hoặc 1600x2000, dưới 1MB' },
 };
 
 function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {

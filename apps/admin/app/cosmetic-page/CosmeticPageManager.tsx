@@ -53,7 +53,9 @@ const REQUIRED_SLOTS = [
   { id: 'cosmetic-gallery-clinic', name: 'Thư viện - Phòng khám / Trị liệu', size: '1800x1200' },
   { id: 'cosmetic-gallery-skin', name: 'Thư viện - Làn da cận cảnh', size: '1600x2000' },
   { id: 'cosmetic-gallery-serum', name: 'Thư viện - Tinh chất serum cận cảnh', size: '1600x2000' },
-  { id: 'cosmetic-gallery-packaging', name: 'Thư viện - Bao bì sản phẩm', size: '1600x2000' }
+  { id: 'cosmetic-gallery-packaging', name: 'Thư viện - Bao bì sản phẩm', size: '1600x2000' },
+  { id: 'cosmetic-set-cellurevive-ampoule', name: 'Ảnh chi tiết CELLUREVIVE Ampoule trong set', size: '1200x1500 hoặc 1600x2000' },
+  { id: 'cosmetic-set-regenaglow-sheer-cream', name: 'Ảnh chi tiết REGENAGLOW NOURISH SHEER CREAM trong set', size: '1200x1500 hoặc 1600x2000' }
 ];
 
 const BLOCK_NAMES: Record<string, string> = {
@@ -2009,14 +2011,36 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                               </div>
                               <div className="col-span-2">
                                 <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Media Slot ảnh riêng</label>
-                                <select value={item.mediaSlot || ''} onChange={e => {
-                                  const l = [...heroSetProducts];
-                                  l[idx] = { ...l[idx], mediaSlot: e.target.value };
-                                  setHeroSetProducts(l);
-                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white h-[34px]">
-                                  <option value="">-- chọn slot --</option>
-                                  {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}
-                                </select>
+                                <div className="flex items-center gap-2 mb-1.5">
+                                  <select value={item.mediaSlot || ''} onChange={e => {
+                                    const l = [...heroSetProducts];
+                                    l[idx] = { ...l[idx], mediaSlot: e.target.value };
+                                    setHeroSetProducts(l);
+                                  }} className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white h-[32px]">
+                                    <option value="">-- chọn slot --</option>
+                                    {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}
+                                  </select>
+                                  {(() => {
+                                    if (!item.mediaSlot) return null;
+                                    const hasImage = mediaAssets.some(m => m.metadata?.slot === item.mediaSlot && !m.metadata?.archivedFromSlot);
+                                    return (
+                                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                                        <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded ${
+                                          hasImage ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
+                                        }`}>
+                                          {hasImage ? 'Đã có ảnh' : 'Chưa có ảnh chi tiết'}
+                                        </span>
+                                        <Link 
+                                          href={`/media?purpose=cosmetic-page-media&slot=${item.mediaSlot}&returnTo=/cosmetic-page`}
+                                          className="text-[9px] bg-blue-600 text-white hover:bg-blue-700 font-bold px-2 py-1 rounded shadow-sm inline-flex items-center gap-1"
+                                        >
+                                          <Upload className="h-2.5 w-2.5" />
+                                          <span>Upload</span>
+                                        </Link>
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
                               </div>
                             </div>
                           </div>

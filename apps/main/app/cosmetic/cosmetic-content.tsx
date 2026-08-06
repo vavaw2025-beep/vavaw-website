@@ -1349,7 +1349,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                   viewport={{ once: true }}
                   transition={{ duration: 0.85 }}
                 >
-                  <div className="relative aspect-square w-full border border-[#D9DEE8] bg-[#F7F9FC] flex items-center justify-center p-12 overflow-hidden" style={{ borderRadius: '1px' }}>
+                  <div className="relative aspect-square w-full border border-[#D9DEE8] bg-[#F7F9FC] flex items-center justify-center p-6 md:p-8 overflow-hidden" style={{ borderRadius: '1px' }}>
                     {imageUrl ? (
                       <img
                         src={imageUrl}
@@ -1448,36 +1448,47 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                   {/* Selected Product Detail Panel */}
                   {setProducts && setProducts[selectedSetProductIndex] && (() => {
                     const activeP = setProducts[selectedSetProductIndex];
-                    const activeImageUrl = getProductImage(activeP.name, activeP.mediaSlot, cosmeticMedia);
+                    
+                    // Resolve exact slot only, no fallback to old thumbnails or name matches
+                    const canonical = activeP.mediaSlot ? normalizePublicSlot(activeP.mediaSlot) : undefined;
+                    const activePKey = canonical ? MEDIA_SLOT_TO_KEY[canonical] : undefined;
+                    const activeImageUrl = activePKey && cosmeticMedia[activePKey] && isValidHeroImageUrl(cosmeticMedia[activePKey])
+                      ? cosmeticMedia[activePKey]
+                      : undefined;
+
                     return (
                       <motion.div
                         key={selectedSetProductIndex}
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.25 }}
-                        className="border border-[#D9DEE8] p-5 bg-[#F7F9FC] grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch"
+                        className="border border-[#D9DEE8] p-5 bg-[#F7F9FC] grid grid-cols-1 xl:grid-cols-[260px_1fr] gap-6 items-start min-w-0"
                         style={{ borderRadius: '1px' }}
                       >
                         {/* Left: Product image frame */}
-                        <div className="md:col-span-4 aspect-[4/5] bg-white border border-[#D9DEE8]/60 p-4 flex items-center justify-center overflow-hidden relative" style={{ borderRadius: '1px' }}>
+                        <div className="w-full xl:w-[260px] max-w-full xl:max-w-[260px] aspect-[4/5] bg-[#F7F9FC] border border-[#D9DEE8] p-4 flex flex-col items-center justify-center overflow-hidden relative mx-auto xl:mx-0 flex-shrink-0" style={{ borderRadius: '1px' }}>
                           {activeImageUrl ? (
                             <img
                               src={activeImageUrl}
                               alt={activeP.name}
-                              className="w-full h-full object-contain mix-blend-multiply bg-white"
+                              className="w-full h-full object-contain mix-blend-multiply bg-[#F7F9FC]"
                             />
                           ) : (
-                            <FlaskConical className="h-6 w-6 text-[#050A5C]/15 stroke-[1.2]" />
+                            <div className="flex flex-col items-center justify-center text-center p-4 space-y-2">
+                              <FlaskConical className="h-6 w-6 text-[#050A5C]/20 stroke-[1.2]" />
+                              <span className="text-[10px] font-bold text-slate-400">Chưa có ảnh chi tiết</span>
+                              <span className="text-[8px] text-slate-400 font-light leading-normal max-w-[180px]">Upload ảnh trong Admin → Cosmetic Page → Hình ảnh</span>
+                            </div>
                           )}
                         </div>
 
                         {/* Right: Product details */}
-                        <div className="md:col-span-8 flex flex-col justify-between space-y-4">
-                          <div className="space-y-2">
+                        <div className="flex flex-col justify-between space-y-4 min-w-0 w-full">
+                          <div className="space-y-2 min-w-0">
                             <span className="block text-[8px] font-mono font-bold tracking-widest text-[#050A5C]/40 uppercase">{activeP.role || "TREATMENT"}</span>
-                            <div className="flex justify-between items-baseline gap-2">
-                              <h4 className="text-sm font-bold text-[#050A5C]">{activeP.name}</h4>
-                              <span className="text-[10px] font-mono text-slate-400 font-semibold">{activeP.size}</span>
+                            <div className="flex flex-col sm:flex-row justify-between items-baseline gap-2 min-w-0">
+                              <h4 className="text-sm font-bold text-[#050A5C] truncate max-w-full">{activeP.name}</h4>
+                              <span className="text-[10px] font-mono text-slate-400 font-semibold flex-shrink-0">{activeP.size}</span>
                             </div>
                             {activeP.detailTitle && (
                               <p className="text-xs font-semibold text-slate-700 leading-snug">{activeP.detailTitle}</p>
@@ -1489,7 +1500,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
                           {/* Actives chips */}
                           {activeP.actives && activeP.actives.length > 0 && (
-                            <div className="space-y-1.5">
+                            <div className="space-y-1.5 min-w-0">
                               <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold">Key Actives</span>
                               <div className="flex flex-wrap gap-1.5">
                                 {activeP.actives.map((act: string, i: number) => (
@@ -1501,7 +1512,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
                           {/* Benefits bullet list */}
                           {activeP.benefits && activeP.benefits.length > 0 && (
-                            <div className="space-y-1.5">
+                            <div className="space-y-1.5 min-w-0">
                               <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold">Benefits</span>
                               <div className="space-y-1">
                                 {activeP.benefits.map((b: string, i: number) => (
@@ -1516,7 +1527,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
                           {/* Usage note */}
                           {activeP.usage && (
-                            <div className="border-t border-[#D9DEE8]/60 pt-2.5 mt-1">
+                            <div className="border-t border-[#D9DEE8]/60 pt-2.5 mt-1 min-w-0">
                               <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold mb-1">Cách dùng (Usage)</span>
                               <p className="text-[10px] text-slate-500 font-light leading-relaxed italic">{activeP.usage}</p>
                             </div>

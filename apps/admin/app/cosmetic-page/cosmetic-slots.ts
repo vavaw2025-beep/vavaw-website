@@ -52,12 +52,12 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
   },
   {
     value: 'cosmetic-set-cellurevive-ampoule',
-    label: 'Ảnh CELLUREVIVE Ampoule trong set',
+    label: 'Ảnh chi tiết CELLUREVIVE Ampoule trong set',
     aliases: ['cellurevive-ampoule', 'cellurevive'],
   },
   {
     value: 'cosmetic-set-regenaglow-sheer-cream',
-    label: 'Ảnh REGENAGLOW NOURISH SHEER CREAM trong set',
+    label: 'Ảnh chi tiết REGENAGLOW NOURISH SHEER CREAM trong set',
     aliases: ['regenaglow-sheer-cream', 'regenaglow-set-cream'],
   },
 ];
