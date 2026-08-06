@@ -1905,7 +1905,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                     <div className="space-y-3 pt-2">
                       <h4 className="text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
                         <span>Sản phẩm trong Set (Set Products)</span>
-                        <button type="button" onClick={() => setHeroSetProducts([...heroSetProducts, { name: '', size: '', role: '', description: '' }])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm sản phẩm</button>
+                        <button type="button" onClick={() => setHeroSetProducts([...heroSetProducts, { id: '', name: '', size: '', role: '', description: '', detailTitle: '', detailDescription: '', actives: [], benefits: [], usage: '', mediaSlot: '' }])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm sản phẩm</button>
                       </h4>
                       <div className="space-y-3">
                         {heroSetProducts.map((item, idx) => (
@@ -1927,26 +1927,97 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                               </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
-                              <input type="text" placeholder="Tên sản phẩm (ví dụ: CELLUREVIVE Ampoule)" value={item.name || ''} onChange={e => {
-                                const l = [...heroSetProducts];
-                                l[idx] = { ...l[idx], name: e.target.value };
-                                setHeroSetProducts(l);
-                              }} className="text-xs p-1.5 border border-slate-300 rounded bg-white" />
-                              <input type="text" placeholder="Kích thước (ví dụ: 7ml × 4ea)" value={item.size || ''} onChange={e => {
-                                const l = [...heroSetProducts];
-                                l[idx] = { ...l[idx], size: e.target.value };
-                                setHeroSetProducts(l);
-                              }} className="text-xs p-1.5 border border-slate-300 rounded bg-white" />
-                              <input type="text" placeholder="Vai trò (ví dụ: Ampoule cô đặc)" value={item.role || ''} onChange={e => {
-                                const l = [...heroSetProducts];
-                                l[idx] = { ...l[idx], role: e.target.value };
-                                setHeroSetProducts(l);
-                              }} className="text-xs p-1.5 border border-slate-300 rounded bg-white" />
-                              <textarea placeholder="Mô tả công dụng..." value={item.description || ''} onChange={e => {
-                                const l = [...heroSetProducts];
-                                l[idx] = { ...l[idx], description: e.target.value };
-                                setHeroSetProducts(l);
-                              }} rows={2} className="col-span-2 text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              <div>
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">ID sản phẩm (không dấu, cách bằng -)</label>
+                                <input type="text" placeholder="Ví dụ: cellurevive-ampoule" value={item.id || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], id: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div>
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Tên sản phẩm</label>
+                                <input type="text" placeholder="Tên sản phẩm (ví dụ: CELLUREVIVE Ampoule)" value={item.name || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], name: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div>
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Dung tích / Quy cách</label>
+                                <input type="text" placeholder="Kích thước (ví dụ: 7ml × 4ea)" value={item.size || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], size: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div>
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Vai trò (Role)</label>
+                                <input type="text" placeholder="Vai trò (ví dụ: Ampoule cô đặc)" value={item.role || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], role: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Mô tả tóm tắt</label>
+                                <textarea placeholder="Mô tả công dụng ngắn..." value={item.description || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], description: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} rows={1} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Tiêu đề chi tiết (Detail Title)</label>
+                                <input type="text" placeholder="Ví dụ: Tinh chất phục hồi chuyên sâu" value={item.detailTitle || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], detailTitle: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Mô tả chi tiết (Detail Description)</label>
+                                <textarea placeholder="Giải thích chi tiết công dụng..." value={item.detailDescription || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], detailDescription: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} rows={2} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div>
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Hoạt chất chính (dấu phẩy)</label>
+                                <input type="text" placeholder="Exosome, Peptide, Collagen" value={Array.isArray(item.actives) ? item.actives.join(', ') : (item.actives || '')} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], actives: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean) };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div>
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Lợi ích chính (dấu phẩy)</label>
+                                <input type="text" placeholder="Hỗ trợ phục hồi, Làm mềm da" value={Array.isArray(item.benefits) ? item.benefits.join(', ') : (item.benefits || '')} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], benefits: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean) };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Cách sử dụng ngắn (Usage)</label>
+                                <input type="text" placeholder="Ví dụ: Thoa sau bước toner..." value={item.usage || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], usage: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[8px] font-bold text-slate-400 uppercase mb-0.5">Media Slot ảnh riêng</label>
+                                <select value={item.mediaSlot || ''} onChange={e => {
+                                  const l = [...heroSetProducts];
+                                  l[idx] = { ...l[idx], mediaSlot: e.target.value };
+                                  setHeroSetProducts(l);
+                                }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white h-[34px]">
+                                  <option value="">-- chọn slot --</option>
+                                  {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}
+                                </select>
+                              </div>
                             </div>
                           </div>
                         ))}

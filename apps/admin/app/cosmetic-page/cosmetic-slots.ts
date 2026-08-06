@@ -50,6 +50,16 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     label: 'Kem chống nắng Lumiglow Sunscreen',
     aliases: ['lumiglow-sunscreen', 'lumiglow', 'sunscreen'],
   },
+  {
+    value: 'cosmetic-set-cellurevive-ampoule',
+    label: 'Ảnh CELLUREVIVE Ampoule trong set',
+    aliases: ['cellurevive-ampoule', 'cellurevive'],
+  },
+  {
+    value: 'cosmetic-set-regenaglow-sheer-cream',
+    label: 'Ảnh REGENAGLOW NOURISH SHEER CREAM trong set',
+    aliases: ['regenaglow-sheer-cream', 'regenaglow-set-cream'],
+  },
 ];
 
 /** All canonical slot key strings, for use as a simple string array */
@@ -81,7 +91,7 @@ export function normalizeCosmeticMediaSlot(value?: string): string | undefined {
   }
 
   // Already starts with prefix but wasn't in our list (future-proofing)
-  if (v.startsWith('cosmetic-product-')) return v;
+  if (v.startsWith('cosmetic-product-') || v.startsWith('cosmetic-set-')) return v;
 
   return undefined;
 }

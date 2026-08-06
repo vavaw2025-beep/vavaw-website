@@ -138,6 +138,8 @@ const MEDIA_SLOT_TO_KEY: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-product-p30-moisturizer':    'p30Moisturizer',
   'cosmetic-product-p30-toner':          'p30Toner',
   'cosmetic-product-lumiglow-sunscreen': 'lumiglowSunscreen',
+  'cosmetic-set-cellurevive-ampoule':    'setCellureviveAmpoule',
+  'cosmetic-set-regenaglow-sheer-cream': 'setRegenaglowSheerCream',
 };
 
 // Legacy / short alias map — handles DB data not yet migrated to canonical keys.
@@ -159,6 +161,9 @@ const SLOT_ALIAS_TO_CANONICAL: Record<string, string> = {
   'lumiglow-sunscreen':  'cosmetic-product-lumiglow-sunscreen',
   'lumiglow':            'cosmetic-product-lumiglow-sunscreen',
   'sunscreen':           'cosmetic-product-lumiglow-sunscreen',
+  'cellurevive-ampoule': 'cosmetic-set-cellurevive-ampoule',
+  'cellurevive':         'cosmetic-set-cellurevive-ampoule',
+  'regenaglow-sheer-cream': 'cosmetic-set-regenaglow-sheer-cream',
 };
 
 /** Normalize a media slot value to canonical form before image resolution. */
@@ -292,6 +297,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
   // ── Ritual system interactive state ─────────────────────────────────────────
   const [activeStationIdx, setActiveStationIdx] = useState<number>(-1); // -1 = not yet initialised
   const [openAccordionIdx, setOpenAccordionIdx] = useState<number | null>(null);
+  const [selectedSetProductIndex, setSelectedSetProductIndex] = useState<number>(0);
 
   const handleImageError = (path: string) => {
     setImageErrors(prev => ({ ...prev, [path]: true }));
@@ -1211,7 +1217,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
         const eyebrow = content.eyebrow || 'FEATURED SET';
         const title = content.title || 'Luminous Revitalization Sheer Set';
         const headline = content.headline || 'Chăm sóc chuyên sâu — củng cố hàng rào bảo vệ và phục hồi làn da rạng rỡ.';
-        const description = content.description || 'Bộ chăm sóc phục hồi chuyên sâu kết hợp ampoule cô đặc và kem dưỡng phục hồi, giúp hỗ trợ hàng rào bảo vệ da, cải thiện độ ẩm và mang lại làn da rạng rỡ hơn.';
+        const description = content.description || 'Bộ chăm sóc phục hiệu chuyên sâu kết hợp ampoule cô đặc và kem dưỡng phục hồi, giúp hỗ trợ hàng rào bảo vệ da, cải thiện độ ẩm và mang lại làn da rạng rỡ hơn.';
         const mediaSlot = content.mediaSlot || 'cosmetic-product-luminous-set';
         const benefits = content.benefits || [
           'Barrier Support',
@@ -1234,48 +1240,90 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
             setProducts = [];
             if (cellureviveLegacy) {
               setProducts.push({
+                id: 'cellurevive-ampoule',
                 name: cellureviveLegacy.name || 'CELLUREVIVE Ampoule',
                 size: cellureviveLegacy.size || '7ml × 4ea',
                 role: cellureviveLegacy.role || 'Ampoule cô đặc',
-                description: cellureviveLegacy.description || cellureviveLegacy.desc || 'Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn.'
+                description: cellureviveLegacy.description || cellureviveLegacy.desc || 'Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn.',
+                detailTitle: "Tinh chất phục hồi chuyên sâu",
+                detailDescription: "Ampoule cô đặc trong bộ Luminous Set, được thiết kế để hỗ trợ làn da cần phục hồi, cải thiện độ rạng rỡ và tăng cảm giác mịn màng sau các bước chăm sóc nền.",
+                actives: ["Exosome", "Peptide Complex", "Collagen Support"],
+                benefits: ["Hỗ trợ phục hồi", "Tăng độ rạng rỡ", "Làm mịn bề mặt da"],
+                usage: "Dùng sau bước cân bằng da. Thoa lượng vừa đủ lên toàn mặt, massage nhẹ đến khi thẩm thấu.",
+                mediaSlot: "cosmetic-set-cellurevive-ampoule"
               });
             } else {
               setProducts.push({
+                id: 'cellurevive-ampoule',
                 name: 'CELLUREVIVE Ampoule',
                 size: '7ml × 4ea',
                 role: 'Ampoule cô đặc',
-                description: 'Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn.'
+                description: 'Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn.',
+                detailTitle: "Tinh chất phục hồi chuyên sâu",
+                detailDescription: "Ampoule cô đặc trong bộ Luminous Set, được thiết kế để hỗ trợ làn da cần phục hồi, cải thiện độ rạng rỡ và tăng cảm giác mịn màng sau các bước chăm sóc nền.",
+                actives: ["Exosome", "Peptide Complex", "Collagen Support"],
+                benefits: ["Hỗ trợ phục hồi", "Tăng độ rạng rỡ", "Làm mịn bề mặt da"],
+                usage: "Dùng sau bước cân bằng da. Thoa lượng vừa đủ lên toàn mặt, massage nhẹ đến khi thẩm thấu.",
+                mediaSlot: "cosmetic-set-cellurevive-ampoule"
               });
             }
 
             if (regenaglowLegacy) {
               setProducts.push({
+                id: 'regenaglow-sheer-cream',
                 name: regenaglowLegacy.name || 'REGENAGLOW NOURISH SHEER CREAM',
                 size: regenaglowLegacy.size || '30ml × 1ea',
                 role: regenaglowLegacy.role || 'Kem dưỡng phục hồi',
-                description: regenaglowLegacy.description || regenaglowLegacy.desc || 'Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn.'
+                description: regenaglowLegacy.description || regenaglowLegacy.desc || 'Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn.',
+                detailTitle: "Kem dưỡng khóa ẩm và phục hồi hàng rào da",
+                detailDescription: "Kem dưỡng trong bộ Luminous Set giúp hoàn thiện routine phục hồi bằng cách khóa ẩm, hỗ trợ hàng rào bảo vệ và duy trì làn da mềm mượt, ổn định hơn.",
+                actives: ["Collagen", "Peptide Complex", "Moisture Barrier Support"],
+                benefits: ["Khóa ẩm", "Củng cố hàng rào da", "Làm mềm da"],
+                usage: "Dùng sau ampoule. Lấy lượng vừa đủ, thoa đều lên mặt và cổ, vỗ nhẹ để dưỡng chất thẩm thấu.",
+                mediaSlot: "cosmetic-set-regenaglow-sheer-cream"
               });
             } else {
               setProducts.push({
+                id: 'regenaglow-sheer-cream',
                 name: 'REGENAGLOW NOURISH SHEER CREAM',
                 size: '30ml × 1ea',
                 role: 'Kem dưỡng phục hồi',
-                description: 'Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn.'
+                description: 'Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn.',
+                detailTitle: "Kem dưỡng khóa ẩm và phục hồi hàng rào da",
+                detailDescription: "Kem dưỡng trong bộ Luminous Set giúp hoàn thiện routine phục hồi bằng cách khóa ẩm, hỗ trợ hàng rào bảo vệ và duy trì làn da mềm mượt, ổn định hơn.",
+                actives: ["Collagen", "Peptide Complex", "Moisture Barrier Support"],
+                benefits: ["Khóa ẩm", "Củng cố hàng rào da", "Làm mềm da"],
+                usage: "Dùng sau ampoule. Lấy lượng vừa đủ, thoa đều lên mặt và cổ, vỗ nhẹ để dưỡng chất thẩm thấu.",
+                mediaSlot: "cosmetic-set-regenaglow-sheer-cream"
               });
             }
           } else {
             setProducts = [
               {
+                id: 'cellurevive-ampoule',
                 name: "CELLUREVIVE Ampoule",
                 size: "7ml × 4ea",
                 role: "Ampoule cô đặc",
-                description: "Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn."
+                description: "Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn.",
+                detailTitle: "Tinh chất phục hồi chuyên sâu",
+                detailDescription: "Ampoule cô đặc trong bộ Luminous Set, được thiết kế để hỗ trợ làn da cần phục hồi, cải thiện độ rạng rỡ và tăng cảm giác mịn màng sau các bước chăm sóc nền.",
+                actives: ["Exosome", "Peptide Complex", "Collagen Support"],
+                benefits: ["Hỗ trợ phục hồi", "Tăng độ rạng rỡ", "Làm mịn bề mặt da"],
+                usage: "Dùng sau bước cân bằng da. Thoa lượng vừa đủ lên toàn mặt, massage nhẹ đến khi thẩm thấu.",
+                mediaSlot: "cosmetic-set-cellurevive-ampoule"
               },
               {
+                id: 'regenaglow-sheer-cream',
                 name: "REGENAGLOW NOURISH SHEER CREAM",
                 size: "30ml × 1ea",
                 role: "Kem dưỡng phục hồi",
-                description: "Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn."
+                description: "Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn.",
+                detailTitle: "Kem dưỡng khóa ẩm và phục hồi hàng rào da",
+                detailDescription: "Kem dưỡng trong bộ Luminous Set giúp hoàn thiện routine phục hồi bằng cách khóa ẩm, hỗ trợ hàng rào bảo vệ và duy trì làn da mềm mượt, ổn định hơn.",
+                actives: ["Collagen", "Peptide Complex", "Moisture Barrier Support"],
+                benefits: ["Khóa ẩm", "Củng cố hàng rào da", "Làm mềm da"],
+                usage: "Dùng sau ampoule. Lấy lượng vừa đủ, thoa đều lên mặt và cổ, vỗ nhẹ để dưỡng chất thẩm thấu.",
+                mediaSlot: "cosmetic-set-regenaglow-sheer-cream"
               }
             ];
           }
@@ -1362,24 +1410,121 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                     </motion.div>
                   )}
 
-                  {/* Set Includes - 2 clean products */}
+                  {/* Set Includes - 2 clickable products */}
                   {setProducts && setProducts.length > 0 && (
                     <motion.div variants={fadeUp} className="space-y-4 pt-4 border-t border-slate-100">
                       <span className="block text-[9px] tracking-[0.2em] uppercase text-[#050A5C]/40 font-bold">Set Includes</span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {setProducts.slice(0, 2).map((p: any, i: number) => (
-                          <div key={i} className="border border-[#D9DEE8] p-4 bg-[#F7F9FC] flex flex-col justify-between transition-colors hover:border-slate-300" style={{ borderRadius: '1px' }}>
-                            <div>
-                              <span className="block text-[8px] font-mono font-bold text-slate-400 tracking-wider mb-1">0{i + 1} · {p.role}</span>
-                              <span className="block text-xs font-bold text-[#050A5C]">{p.name}</span>
-                              <p className="text-[11px] text-slate-500 font-light mt-1.5 leading-relaxed">{p.description}</p>
-                            </div>
-                            <span className="block text-[9px] font-mono text-slate-400 mt-3 font-semibold">{p.size}</span>
-                          </div>
-                        ))}
+                        {setProducts.slice(0, 2).map((p: any, i: number) => {
+                          const isActive = selectedSetProductIndex === i;
+                          return (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => setSelectedSetProductIndex(i)}
+                              className={`text-left border p-5 flex flex-col justify-between transition-all duration-300 ${
+                                isActive 
+                                  ? 'border-[#050A5C] bg-[#050A5C]/5 shadow-sm'
+                                  : 'border-[#D9DEE8] bg-[#F7F9FC] hover:border-slate-300'
+                              }`}
+                              style={{ borderRadius: '1px', minHeight: '140px' }}
+                            >
+                              <div className="w-full">
+                                <span className={`block text-[8px] font-mono font-bold tracking-wider mb-1 ${isActive ? 'text-[#050A5C]/60' : 'text-slate-400'}`}>0{i + 1} · {p.role}</span>
+                                <span className="block text-xs font-bold text-[#050A5C]">{p.name}</span>
+                                <p className="text-[11px] text-slate-500 font-light mt-1.5 leading-relaxed">{p.description}</p>
+                              </div>
+                              <div className="w-full flex justify-between items-center mt-3">
+                                <span className="text-[9px] font-mono text-slate-400 font-semibold">{p.size}</span>
+                                {isActive && <span className="text-[9px] font-bold text-[#050A5C] font-mono">ACTIVE</span>}
+                              </div>
+                            </button>
+                          );
+                        })}
                       </div>
                     </motion.div>
                   )}
+
+                  {/* Selected Product Detail Panel */}
+                  {setProducts && setProducts[selectedSetProductIndex] && (() => {
+                    const activeP = setProducts[selectedSetProductIndex];
+                    const activeImageUrl = getProductImage(activeP.name, activeP.mediaSlot, cosmeticMedia);
+                    return (
+                      <motion.div
+                        key={selectedSetProductIndex}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="border border-[#D9DEE8] p-5 bg-[#F7F9FC] grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch"
+                        style={{ borderRadius: '1px' }}
+                      >
+                        {/* Left: Product image frame */}
+                        <div className="md:col-span-4 aspect-[4/5] bg-white border border-[#D9DEE8]/60 p-4 flex items-center justify-center overflow-hidden relative" style={{ borderRadius: '1px' }}>
+                          {activeImageUrl ? (
+                            <img
+                              src={activeImageUrl}
+                              alt={activeP.name}
+                              className="w-full h-full object-contain mix-blend-multiply bg-white"
+                            />
+                          ) : (
+                            <FlaskConical className="h-6 w-6 text-[#050A5C]/15 stroke-[1.2]" />
+                          )}
+                        </div>
+
+                        {/* Right: Product details */}
+                        <div className="md:col-span-8 flex flex-col justify-between space-y-4">
+                          <div className="space-y-2">
+                            <span className="block text-[8px] font-mono font-bold tracking-widest text-[#050A5C]/40 uppercase">{activeP.role || "TREATMENT"}</span>
+                            <div className="flex justify-between items-baseline gap-2">
+                              <h4 className="text-sm font-bold text-[#050A5C]">{activeP.name}</h4>
+                              <span className="text-[10px] font-mono text-slate-400 font-semibold">{activeP.size}</span>
+                            </div>
+                            {activeP.detailTitle && (
+                              <p className="text-xs font-semibold text-slate-700 leading-snug">{activeP.detailTitle}</p>
+                            )}
+                            {activeP.detailDescription && (
+                              <p className="text-[11px] text-slate-500 font-light leading-relaxed">{activeP.detailDescription}</p>
+                            )}
+                          </div>
+
+                          {/* Actives chips */}
+                          {activeP.actives && activeP.actives.length > 0 && (
+                            <div className="space-y-1.5">
+                              <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold">Key Actives</span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {activeP.actives.map((act: string, i: number) => (
+                                  <span key={i} className="text-[9px] font-mono text-[#050A5C] border border-[#050A5C]/10 px-2 py-0.5 bg-[#050A5C]/5" style={{ borderRadius: '1px' }}>{act}</span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Benefits bullet list */}
+                          {activeP.benefits && activeP.benefits.length > 0 && (
+                            <div className="space-y-1.5">
+                              <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold">Benefits</span>
+                              <div className="space-y-1">
+                                {activeP.benefits.map((b: string, i: number) => (
+                                  <div key={i} className="flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#050A5C]/30 flex-shrink-0" />
+                                    <span className="text-[10px] text-slate-600 font-light leading-relaxed">{b}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Usage note */}
+                          {activeP.usage && (
+                            <div className="border-t border-[#D9DEE8]/60 pt-2.5 mt-1">
+                              <span className="block text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-bold mb-1">Cách dùng (Usage)</span>
+                              <p className="text-[10px] text-slate-500 font-light leading-relaxed italic">{activeP.usage}</p>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })()}
 
                   <motion.div variants={fadeUp} className="pt-6">
                     <CosmeticCtaTracker

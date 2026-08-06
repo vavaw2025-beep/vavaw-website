@@ -46,6 +46,10 @@ export interface CosmeticPageMedia {
   gallerySkin?: string;
   /** Gallery slot 6 — serum / ampoule close-up */
   gallerySerum?: string;
+  /** CELLUREVIVE Ampoule in Luminous Set */
+  setCellureviveAmpoule?: string;
+  /** REGENAGLOW cream in Luminous Set */
+  setRegenaglowSheerCream?: string;
 }
 
 // Slot name → CosmeticPageMedia key mapping
@@ -65,6 +69,8 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-gallery-packaging':        'galleryPackaging',
   'cosmetic-gallery-skin':             'gallerySkin',
   'cosmetic-gallery-serum':            'gallerySerum',
+  'cosmetic-set-cellurevive-ampoule':   'setCellureviveAmpoule',
+  'cosmetic-set-regenaglow-sheer-cream': 'setRegenaglowSheerCream',
 };
 
 function isValidUrl(value: unknown): value is string {
