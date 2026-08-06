@@ -1211,65 +1211,108 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
         const eyebrow = content.eyebrow || 'FEATURED SET';
         const title = content.title || 'Luminous Revitalization Sheer Set';
         const headline = content.headline || 'Chăm sóc chuyên sâu — củng cố hàng rào bảo vệ và phục hồi làn da rạng rỡ.';
-        const description = content.description || 'Bộ chăm sóc da cao cấp kết hợp tinh chất tái tạo, dưỡng phục hồi và hoạt chất hỗ trợ hàng rào bảo vệ da, giúp da ẩm mịn, sáng khỏe và đàn hồi hơn mỗi ngày.';
+        const description = content.description || 'Bộ chăm sóc phục hồi chuyên sâu kết hợp ampoule cô đặc và kem dưỡng phục hồi, giúp hỗ trợ hàng rào bảo vệ da, cải thiện độ ẩm và mang lại làn da rạng rỡ hơn.';
         const mediaSlot = content.mediaSlot || 'cosmetic-product-luminous-set';
-        const ingredients = content.ingredients || ['Exosome', 'Collagen', 'Peptide Complex'];
         const benefits = content.benefits || [
-          'Hỗ trợ phục hồi hàng rào bảo vệ da',
-          'Cấp ẩm và duy trì độ mềm mượt',
-          'Cải thiện độ sáng và độ đàn hồi da'
+          'Barrier Support',
+          'Radiance Recovery',
+          'Moisture Retention'
         ];
-        const insideBoxItems = content.insideBox || [
-          {
-            name: "Regenaglow Nourish Sheer Cream",
-            role: "Dưỡng phục hồi",
-            description: "Dưỡng phục hồi, khóa ẩm và hỗ trợ hàng rào bảo vệ da."
-          },
-          {
-            name: "Gentle Activation Renew Ampoule",
-            role: "Tinh chất tái tạo",
-            description: "Tinh chất hỗ trợ tái tạo, tăng độ rạng rỡ và làm mịn bề mặt da."
-          },
-          {
-            name: "Treatment Support Vials",
-            role: "Dưỡng chất cô đặc",
-            description: "Dưỡng chất cô đặc hỗ trợ phục hồi chuyên sâu theo từng giai đoạn chăm sóc."
+
+        // Derive setProducts with legacy insideBox compatibility
+        let setProducts = content.setProducts;
+        if (!setProducts || !Array.isArray(setProducts) || setProducts.length === 0) {
+          const legacyInsideBox = content.insideBox || [];
+          if (legacyInsideBox.length > 0) {
+            const cellureviveLegacy = legacyInsideBox.find((p: any) => 
+              p.name?.toLowerCase().includes('cellurevive') || p.name?.toLowerCase().includes('ampoule')
+            );
+            const regenaglowLegacy = legacyInsideBox.find((p: any) => 
+              p.name?.toLowerCase().includes('regenaglow') || p.name?.toLowerCase().includes('cream')
+            );
+            
+            setProducts = [];
+            if (cellureviveLegacy) {
+              setProducts.push({
+                name: cellureviveLegacy.name || 'CELLUREVIVE Ampoule',
+                size: cellureviveLegacy.size || '7ml × 4ea',
+                role: cellureviveLegacy.role || 'Ampoule cô đặc',
+                description: cellureviveLegacy.description || cellureviveLegacy.desc || 'Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn.'
+              });
+            } else {
+              setProducts.push({
+                name: 'CELLUREVIVE Ampoule',
+                size: '7ml × 4ea',
+                role: 'Ampoule cô đặc',
+                description: 'Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn.'
+              });
+            }
+
+            if (regenaglowLegacy) {
+              setProducts.push({
+                name: regenaglowLegacy.name || 'REGENAGLOW NOURISH SHEER CREAM',
+                size: regenaglowLegacy.size || '30ml × 1ea',
+                role: regenaglowLegacy.role || 'Kem dưỡng phục hồi',
+                description: regenaglowLegacy.description || regenaglowLegacy.desc || 'Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn.'
+              });
+            } else {
+              setProducts.push({
+                name: 'REGENAGLOW NOURISH SHEER CREAM',
+                size: '30ml × 1ea',
+                role: 'Kem dưỡng phục hồi',
+                description: 'Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn.'
+              });
+            }
+          } else {
+            setProducts = [
+              {
+                name: "CELLUREVIVE Ampoule",
+                size: "7ml × 4ea",
+                role: "Ampoule cô đặc",
+                description: "Hỗ trợ phục hồi làn da, cải thiện độ sáng và giúp bề mặt da trông mịn màng, tươi khỏe hơn."
+              },
+              {
+                name: "REGENAGLOW NOURISH SHEER CREAM",
+                size: "30ml × 1ea",
+                role: "Kem dưỡng phục hồi",
+                description: "Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn."
+              }
+            ];
           }
-        ];
-        const scienceTitle = content.scienceTitle || 'Clinical Recovery Logic';
-        const scienceDescription = content.scienceDescription || 'Bộ sản phẩm được thiết kế như một routine phục hồi có hệ thống: chuẩn bị da, bổ sung hoạt chất, phục hồi hàng rào bảo vệ và khóa ẩm để duy trì làn da ổn định hơn.';
-        const usageSteps = content.usageSteps || [
-          "Sau khi làm sạch và cân bằng da, thoa ampoule lên toàn mặt.",
-          "Massage nhẹ đến khi dưỡng chất thẩm thấu.",
-          "Tiếp tục với sheer cream để khóa ẩm và hỗ trợ phục hồi hàng rào bảo vệ da.",
-          "Ban ngày dùng thêm kem chống nắng để bảo vệ da."
-        ];
-        const ctaLabel = content.ctaLabel || 'Start an Inquiry';
+        }
+
+        const ctaLabel = content.ctaLabel || 'Start Consultation';
         const ctaHref = content.ctaHref || '/contact?type=cosmetic_interest&product=luminous_set';
         
         const imageUrl = getProductImage(title, mediaSlot, cosmeticMedia) || cosmeticMedia.luminousSet;
 
         return (
-          <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
+          <section className={`${SECTION_WHITE} py-24 md:py-32 px-6 border-t ${SILVER_BORDER}`}>
             <div className="max-w-6xl mx-auto">
               
               {/* Main 2-Column Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-stretch">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
                 
-                {/* Left: Packshot Box Frame & Caption */}
+                {/* Left Column: Framed Image */}
                 <motion.div
-                  className="lg:col-span-5 flex flex-col gap-4"
+                  className="flex flex-col gap-4"
                   initial={{ opacity: 0, scale: 0.97 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.85 }}
                 >
-                  <div className="relative aspect-square w-full border border-[#D9DEE8] bg-[#F7F9FC] flex items-center justify-center p-8 overflow-hidden" style={{ borderRadius: '1px' }}>
-                    <img
-                      src={imageUrl}
-                      alt={title}
-                      className="w-full h-full object-contain mix-blend-multiply bg-[#F7F9FC] transition-transform duration-700 hover:scale-103"
-                    />
+                  <div className="relative aspect-square w-full border border-[#D9DEE8] bg-[#F7F9FC] flex items-center justify-center p-12 overflow-hidden" style={{ borderRadius: '1px' }}>
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={title}
+                        className="w-[85%] h-[85%] object-contain mix-blend-multiply bg-[#F7F9FC] transition-transform duration-700 hover:scale-103"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 bg-[#F7F9FC] flex items-center justify-center">
+                        <FlaskConical className="h-8 w-8 text-[#050A5C]/15 stroke-[1.2]" />
+                      </div>
+                    )}
                   </div>
                   <div className="flex justify-between items-center text-[9px] tracking-[0.2em] font-semibold text-[#050A5C]/45 uppercase px-1">
                     <span>{title}</span>
@@ -1277,133 +1320,75 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                   </div>
                 </motion.div>
 
-                {/* Right: Content details */}
+                {/* Right Column: Clean premium details */}
                 <motion.div
-                  className="lg:col-span-7 flex flex-col justify-between"
+                  className="flex flex-col space-y-6"
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: '-60px' }}
                   variants={stagger}
                 >
-                  <div className="space-y-6">
-                    <motion.div variants={fadeUp}>
-                      <SectionLabel>{eyebrow}</SectionLabel>
-                    </motion.div>
-                    <motion.h2
-                      variants={fadeUp}
-                      className="text-3xl md:text-5xl font-light text-[#050A5C] tracking-tight leading-tight font-serif"
-                    >
-                      {title}
-                    </motion.h2>
-                    
-                    {headline && (
-                      <motion.p variants={fadeUp} className="text-base md:text-lg font-light text-[#050A5C]/80 leading-relaxed max-w-xl italic">
-                        {headline}
-                      </motion.p>
-                    )}
-                    
-                    <Divider />
-                    
-                    <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-sm md:text-base leading-relaxed">
-                      {description}
+                  <motion.div variants={fadeUp}>
+                    <SectionLabel>{eyebrow}</SectionLabel>
+                  </motion.div>
+                  
+                  <motion.h2
+                    variants={fadeUp}
+                    className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight font-serif"
+                  >
+                    {title}
+                  </motion.h2>
+                  
+                  {headline && (
+                    <motion.p variants={fadeUp} className="text-sm md:text-base font-light text-[#050A5C]/80 leading-relaxed italic">
+                      {headline}
                     </motion.p>
+                  )}
+                  
+                  <Divider />
+                  
+                  <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-sm md:text-base leading-relaxed">
+                    {description}
+                  </motion.p>
 
-                    {/* Key Ingredients chips */}
-                    {ingredients && ingredients.length > 0 && (
-                      <motion.div variants={fadeUp} className="pt-2">
-                        <p className="text-[9px] tracking-[0.25em] uppercase text-[#050A5C]/40 font-bold mb-3.5">Key Ingredients</p>
-                        <div className="flex flex-wrap gap-2">
-                          {ingredients.map((ing: string) => (
-                            <span key={ing} className="border border-[#D9DEE8] px-3.5 py-1.5 text-[10px] tracking-[0.15em] uppercase text-[#050A5C] font-semibold bg-[#F4F7FB]/70" style={{ borderRadius: '1px' }}>
-                              {ing}
-                            </span>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
+                  {/* Benefits tags */}
+                  {benefits && benefits.length > 0 && (
+                    <motion.div variants={fadeUp} className="flex flex-wrap gap-2 pt-1">
+                      {benefits.map((b: string) => (
+                        <span key={b} className="border border-[#D9DEE8] px-3.5 py-1 text-[9px] tracking-[0.15em] uppercase text-[#050A5C] font-semibold bg-[#F4F7FB]/70" style={{ borderRadius: '1px' }}>
+                          {b}
+                        </span>
+                      ))}
+                    </motion.div>
+                  )}
 
-                    {/* Benefits list */}
-                    {benefits && benefits.length > 0 && (
-                      <motion.div variants={fadeUp} className="pt-2">
-                        <p className="text-[9px] tracking-[0.25em] uppercase text-[#050A5C]/40 font-bold mb-3.5">Benefits</p>
-                        <div className="space-y-3">
-                          {benefits.map((b: string, i: number) => (
-                            <div key={i} className="flex items-center gap-3">
-                              <div className="w-1.5 h-1.5 rounded-full bg-[#050A5C]/40 flex-shrink-0" />
-                              <span className="text-xs md:text-sm text-slate-700 font-light leading-relaxed">{b}</span>
+                  {/* Set Includes - 2 clean products */}
+                  {setProducts && setProducts.length > 0 && (
+                    <motion.div variants={fadeUp} className="space-y-4 pt-4 border-t border-slate-100">
+                      <span className="block text-[9px] tracking-[0.2em] uppercase text-[#050A5C]/40 font-bold">Set Includes</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {setProducts.slice(0, 2).map((p: any, i: number) => (
+                          <div key={i} className="border border-[#D9DEE8] p-4 bg-[#F7F9FC] flex flex-col justify-between transition-colors hover:border-slate-300" style={{ borderRadius: '1px' }}>
+                            <div>
+                              <span className="block text-[8px] font-mono font-bold text-slate-400 tracking-wider mb-1">0{i + 1} · {p.role}</span>
+                              <span className="block text-xs font-bold text-[#050A5C]">{p.name}</span>
+                              <p className="text-[11px] text-slate-500 font-light mt-1.5 leading-relaxed">{p.description}</p>
                             </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
+                            <span className="block text-[9px] font-mono text-slate-400 mt-3 font-semibold">{p.size}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
 
-                  <motion.div variants={fadeUp} className="pt-8">
+                  <motion.div variants={fadeUp} className="pt-6">
                     <CosmeticCtaTracker
                       label={ctaLabel}
                       href={ctaHref}
-                      className="w-full sm:w-auto h-[50px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[10px] tracking-[0.25em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm"
+                      className="w-full sm:w-auto h-[48px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[10px] tracking-[0.25em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm"
                     />
                   </motion.div>
                 </motion.div>
-
-              </div>
-
-              {/* Compact Editorial Sub-Panels Row */}
-              <div className="mt-24 pt-16 border-t border-[#D9DEE8] grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
-                
-                {/* Panel 1: Inside the Box */}
-                <div className="space-y-6">
-                  <h3 className="text-xs font-bold tracking-[0.2em] text-[#050A5C] uppercase flex items-center gap-2">
-                    <FlaskConical className="h-4 w-4 shrink-0 text-[#050A5C]/60 stroke-[1.5]" />
-                    Inside the Set
-                  </h3>
-                  <div className="space-y-4">
-                    {insideBoxItems.map((item: any, i: number) => (
-                      <div key={i} className="border-l-2 border-[#050A5C]/20 pl-4 py-0.5">
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-xs font-semibold text-[#050A5C]">{item.name}</span>
-                          <span className="text-[8px] font-mono uppercase text-slate-400 bg-slate-100 px-1.5 py-0.5" style={{ borderRadius: '1px' }}>{item.role}</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 font-light mt-1.5 leading-relaxed">{item.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Panel 2: Why It Works */}
-                <div className="space-y-6">
-                  <h3 className="text-xs font-bold tracking-[0.2em] text-[#050A5C] uppercase flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 shrink-0 text-[#050A5C]/60 stroke-[1.5]" />
-                    {scienceTitle}
-                  </h3>
-                  <div className="space-y-4">
-                    <p className="text-xs text-slate-600 font-light leading-relaxed bg-[#F7F9FC] border border-[#D9DEE8] p-4 rounded-[1px]">
-                      {scienceDescription}
-                    </p>
-                    <div className="grid grid-cols-3 gap-2 text-center text-[8px] font-mono font-bold tracking-wider text-[#050A5C]/50">
-                      <div className="border border-[#D9DEE8] p-2 bg-[#F7F9FC]">01 PREPARE</div>
-                      <div className="border border-[#D9DEE8] p-2 bg-[#F7F9FC]">02 RESTORE</div>
-                      <div className="border border-[#D9DEE8] p-2 bg-[#F7F9FC]">03 PROTECT</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Panel 3: How to Use */}
-                <div className="space-y-6">
-                  <h3 className="text-xs font-bold tracking-[0.2em] text-[#050A5C] uppercase flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 shrink-0 text-[#050A5C]/60 stroke-[1.5]" />
-                    How to Use
-                  </h3>
-                  <div className="space-y-3">
-                    {usageSteps.map((step: string, i: number) => (
-                      <div key={i} className="flex gap-3 text-xs font-light text-slate-600 leading-relaxed">
-                        <span className="text-[10px] font-mono font-semibold text-[#050A5C] mt-0.5">0{i + 1}.</span>
-                        <p>{step}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
               </div>
 
