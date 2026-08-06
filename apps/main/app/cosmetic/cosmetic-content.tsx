@@ -643,22 +643,31 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
         const rawItems: any[] = signatureCollection.items || [];
 
-        // Use module-level inference helpers
-        const stationItems = rawItems.map((item, i) => ({
-          ...item,
-          _step: item.step || item.number || String(i + 1).padStart(2, '0'),
-          _role: inferRitualRole(item),
-          _usage: inferRitualUsage(item),
-          _isCore: !!(item.highlight) || (item.name || '').toLowerCase().includes('ampoule'),
-          _img: getProductImage(item.name || item.title || '', item.mediaSlot, cosmeticMedia),
-          _desc: item.description || item.desc || item.detail || '',
-          _ingredients: Array.isArray(item.ingredients)
-            ? item.ingredients
-            : typeof item.key === 'string'
-              ? item.key.split('·').map((s: string) => s.trim()).filter(Boolean)
-              : [],
-          _why: inferRitualWhyStep(item),
-        }));
+        // Use CMS metadata when available, fallback to dynamic inference otherwise
+        const stationItems = rawItems.map((item, i) => {
+          const defaults = {
+            step: String(i + 1).padStart(2, '0'),
+            role: inferRitualRole(item),
+            usage: inferRitualUsage(item),
+            highlight: (item.name || '').toLowerCase().includes('ampoule'),
+          };
+
+          return {
+            ...item,
+            _step: item.step || item.number || defaults.step,
+            _role: item.role || defaults.role,
+            _usage: item.usage || defaults.usage,
+            _isCore: item.highlight !== undefined ? Boolean(item.highlight) : defaults.highlight,
+            _img: getProductImage(item.name || item.title || '', item.mediaSlot, cosmeticMedia),
+            _desc: item.description || item.desc || item.detail || '',
+            _ingredients: Array.isArray(item.ingredients)
+              ? item.ingredients
+              : typeof item.key === 'string'
+                ? item.key.split('·').map((s: string) => s.trim()).filter(Boolean)
+                : [],
+            _why: inferRitualWhyStep(item),
+          };
+        });
 
         // Resolve active station — prefer highlighted item, else index 0 (preserving CMS order)
         const defaultActiveIdx = stationItems.findIndex(s => s.highlight === true) >= 0

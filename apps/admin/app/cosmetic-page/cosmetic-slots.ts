@@ -85,3 +85,45 @@ export function normalizeCosmeticMediaSlot(value?: string): string | undefined {
 
   return undefined;
 }
+
+export interface CosmeticItemMetadata {
+  step: string;
+  role: string;
+  usage: string;
+  highlight: boolean;
+}
+
+/**
+ * Provide suggested default metadata based on product name and array index.
+ */
+export function getDefaultCosmeticItemMetadata(name: string, index: number): CosmeticItemMetadata {
+  const n = (name || '').toLowerCase();
+
+  if (n.includes('calmiance') || n.includes('gel')) {
+    return { step: '01', role: 'RECOVER', usage: 'AM · PM', highlight: false };
+  }
+  if (n.includes('toner')) {
+    return { step: '02', role: 'PREPARE', usage: 'AM · PM', highlight: false };
+  }
+  if (n.includes('renew') || n.includes('ampoule')) {
+    return { step: '03', role: 'TREAT', usage: 'PM', highlight: true };
+  }
+  if (n.includes('moisturizer')) {
+    return { step: '04', role: 'SEAL', usage: 'AM · PM', highlight: false };
+  }
+  if (n.includes('regenaglow') || n.includes('cream')) {
+    return { step: '05', role: 'NOURISH', usage: 'AM · PM', highlight: false };
+  }
+  if (n.includes('lumiglow') || n.includes('sunscreen')) {
+    return { step: '06', role: 'PROTECT', usage: 'AM', highlight: false };
+  }
+
+  // Fallback
+  return {
+    step: String(index + 1).padStart(2, '0'),
+    role: 'CARE',
+    usage: 'AM · PM',
+    highlight: false,
+  };
+}
+

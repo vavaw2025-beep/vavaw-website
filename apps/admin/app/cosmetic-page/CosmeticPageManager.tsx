@@ -10,6 +10,7 @@ import {
   COSMETIC_PRODUCT_MEDIA_SLOTS,
   SIG_MEDIA_SLOT_VALUES,
   normalizeCosmeticMediaSlot,
+  getDefaultCosmeticItemMetadata,
 } from './cosmetic-slots';
 import { 
   Settings, 
@@ -199,12 +200,19 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       );
       setFeaturedCtaLabel(feat.ctaLabel || content.ctaLabel || 'Explore the Ritual');
       setFeaturedCtaHref(feat.ctaHref || content.ctaHref || '/contact?type=cosmetic_interest');
-      // Normalize each item's mediaSlot on load
+      // Normalize each item's mediaSlot on load and populate step/role/usage/highlight defaults
       setSigItems(
-        (content.items || []).map((item: any) => ({
-          ...item,
-          mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
-        }))
+        (content.items || []).map((item: any, idx: number) => {
+          const defaults = getDefaultCosmeticItemMetadata(item.name || '', idx);
+          return {
+            ...item,
+            step: item.step ?? defaults.step,
+            role: item.role ?? defaults.role,
+            usage: item.usage ?? defaults.usage,
+            highlight: item.highlight !== undefined ? Boolean(item.highlight) : defaults.highlight,
+            mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
+          };
+        })
       );
     }
   };
@@ -266,10 +274,17 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       // Items: prefer Advanced JSON if explicitly edited, otherwise use repeater
       // Always normalize mediaSlot to canonical value before saving
       const normalizeSigItems = (items: any[]) =>
-        items.map((item) => ({
-          ...item,
-          mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
-        }));
+        items.map((item, idx) => {
+          const defaults = getDefaultCosmeticItemMetadata(item.name || '', idx);
+          return {
+            ...item,
+            step: item.step ?? defaults.step,
+            role: item.role ?? defaults.role,
+            usage: item.usage ?? defaults.usage,
+            highlight: item.highlight !== undefined ? Boolean(item.highlight) : defaults.highlight,
+            mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
+          };
+        });
 
       if (isJsonDirty && parsedItems !== undefined) {
         updatedContent.items = normalizeSigItems(parsedItems);
