@@ -62,6 +62,40 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
   },
 ];
 
+/** Canonical video slot definitions for Clinical Formula Lab product videos */
+export const COSMETIC_VIDEO_MEDIA_SLOTS: CosmeticSlotDef[] = [
+  {
+    value: 'cosmetic-video-regenaglow-cream',
+    label: 'Video Regenaglow Nourish Sheer Cream',
+    aliases: ['video-regenaglow-cream', 'video-regenaglow'],
+  },
+  {
+    value: 'cosmetic-video-calmiance-gel',
+    label: 'Video Calmiance Superior Sheer Gel',
+    aliases: ['video-calmiance-gel', 'video-calmiance'],
+  },
+  {
+    value: 'cosmetic-video-renew-ampoule',
+    label: 'Video Gentle Activation Renew Ampoule',
+    aliases: ['video-renew-ampoule', 'video-renew'],
+  },
+  {
+    value: 'cosmetic-video-p30-moisturizer',
+    label: 'Video P30 Boost Facial Moisturizer',
+    aliases: ['video-p30-moisturizer'],
+  },
+  {
+    value: 'cosmetic-video-p30-toner',
+    label: 'Video P30 Boost Facial Hydrating Toner',
+    aliases: ['video-p30-toner'],
+  },
+  {
+    value: 'cosmetic-video-lumiglow-sunscreen',
+    label: 'Video Lumiglow Rosy Sheer Sunscreen',
+    aliases: ['video-lumiglow-sunscreen', 'video-lumiglow'],
+  },
+];
+
 /** All canonical slot key strings, for use as a simple string array */
 export const SIG_MEDIA_SLOT_VALUES: string[] =
   COSMETIC_PRODUCT_MEDIA_SLOTS.map((s) => s.value);
@@ -90,8 +124,14 @@ export function normalizeCosmeticMediaSlot(value?: string): string | undefined {
     if (slot.aliases.some((a) => a.toLowerCase() === v)) return slot.value;
   }
 
+  // Check video slots
+  for (const slot of COSMETIC_VIDEO_MEDIA_SLOTS) {
+    if (v === slot.value) return slot.value;
+    if (slot.aliases.some((a) => a.toLowerCase() === v)) return slot.value;
+  }
+
   // Already starts with prefix but wasn't in our list (future-proofing)
-  if (v.startsWith('cosmetic-product-') || v.startsWith('cosmetic-set-')) return v;
+  if (v.startsWith('cosmetic-product-') || v.startsWith('cosmetic-set-') || v.startsWith('cosmetic-video-')) return v;
 
   return undefined;
 }

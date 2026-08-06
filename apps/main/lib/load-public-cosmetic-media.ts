@@ -50,6 +50,18 @@ export interface CosmeticPageMedia {
   setCellureviveAmpoule?: string;
   /** REGENAGLOW cream in Luminous Set */
   setRegenaglowSheerCream?: string;
+  /** Video: Regenaglow Nourish Sheer Cream */
+  videoRegenaglowCream?: string;
+  /** Video: Calmiance Superior Sheer Gel */
+  videoCalmianceGel?: string;
+  /** Video: Gentle Activation Renew Ampoule */
+  videoRenewAmpoule?: string;
+  /** Video: P30 Boost Facial Moisturizer */
+  videoP30Moisturizer?: string;
+  /** Video: P30 Boost Facial Hydrating Toner */
+  videoP30Toner?: string;
+  /** Video: Lumiglow Rosy Sheer Sunscreen */
+  videoLumiglowSunscreen?: string;
 }
 
 // Slot name → CosmeticPageMedia key mapping
@@ -71,6 +83,13 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-gallery-serum':            'gallerySerum',
   'cosmetic-set-cellurevive-ampoule':   'setCellureviveAmpoule',
   'cosmetic-set-regenaglow-sheer-cream': 'setRegenaglowSheerCream',
+  // Video slots for Clinical Formula Lab
+  'cosmetic-video-regenaglow-cream':  'videoRegenaglowCream',
+  'cosmetic-video-calmiance-gel':     'videoCalmianceGel',
+  'cosmetic-video-renew-ampoule':     'videoRenewAmpoule',
+  'cosmetic-video-p30-moisturizer':   'videoP30Moisturizer',
+  'cosmetic-video-p30-toner':         'videoP30Toner',
+  'cosmetic-video-lumiglow-sunscreen': 'videoLumiglowSunscreen',
 };
 
 function isValidUrl(value: unknown): value is string {
@@ -110,7 +129,7 @@ export async function loadPublicCosmeticMedia(
     const { data: assets, error } = await supabase
       .from('media_assets')
       .select('url, metadata, created_at, updated_at')
-      .eq('type', 'image')
+      .in('type', ['image', 'video'])
       .order('updated_at', { ascending: false, nullsFirst: false })
       .order('created_at', { ascending: false })
       .limit(200);

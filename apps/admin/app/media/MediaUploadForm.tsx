@@ -24,6 +24,12 @@ const HUMAN_SLOTS: Record<string, { name: string; size: string }> = {
   'cosmetic-gallery-packaging': { name: 'Thư viện - Bao bì sản phẩm', size: '1600x2000, dưới 1.5MB' },
   'cosmetic-set-cellurevive-ampoule': { name: 'Ảnh chi tiết CELLUREVIVE Ampoule trong set', size: '1200x1500 hoặc 1600x2000, dưới 1MB' },
   'cosmetic-set-regenaglow-sheer-cream': { name: 'Ảnh chi tiết REGENAGLOW NOURISH SHEER CREAM trong set', size: '1200x1500 hoặc 1600x2000, dưới 1MB' },
+  'cosmetic-video-regenaglow-cream': { name: 'Video Regenaglow Nourish Sheer Cream', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
+  'cosmetic-video-calmiance-gel': { name: 'Video Calmiance Superior Sheer Gel', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
+  'cosmetic-video-renew-ampoule': { name: 'Video Gentle Activation Renew Ampoule', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
+  'cosmetic-video-p30-moisturizer': { name: 'Video P30 Boost Facial Moisturizer', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
+  'cosmetic-video-p30-toner': { name: 'Video P30 Boost Facial Hydrating Toner', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
+  'cosmetic-video-lumiglow-sunscreen': { name: 'Video Lumiglow Rosy Sheer Sunscreen', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
 };
 
 function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
@@ -46,12 +52,14 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  const isVideoSlot = isCosmeticSlotMode && slotParam?.startsWith('cosmetic-video-');
+
   useEffect(() => {
     if (isCosmeticSlotMode) {
       setSiteKey('main');
-      setType('image');
+      setType(isVideoSlot ? 'video' : 'image');
     }
-  }, [isCosmeticSlotMode]);
+  }, [isCosmeticSlotMode, isVideoSlot]);
 
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -140,7 +148,7 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
           <CheckCircle2 className="h-10 w-10 text-emerald-600" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-lg font-bold text-slate-900">Đã cập nhật ảnh thành công!</h3>
+          <h3 className="text-lg font-bold text-slate-900">{isVideoSlot ? 'Đã cập nhật video thành công!' : 'Đã cập nhật ảnh thành công!'}</h3>
           <p className="text-sm text-slate-600">Đã cập nhật ảnh cho slot: <strong>{displayName}</strong></p>
         </div>
         <div className="flex flex-col gap-2 pt-2">
@@ -205,6 +213,9 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
           <div className="text-xs text-slate-600 pl-7 space-y-1">
             <p><strong>Technical Slot:</strong> <code className="bg-blue-100/50 px-1 py-0.5 rounded font-mono text-[10px] text-blue-700">{slotParam}</code></p>
             <p><strong>Khuyên dùng:</strong> {activeSlotInfo.size}</p>
+            {isVideoSlot && (
+              <p className="text-blue-700 font-semibold mt-1">Đây là video sản phẩm cho Clinical Formulas. Khuyến nghị: video dọc 9:16, 1080×1920, MP4/WebM.</p>
+            )}
           </div>
         </div>
       )}
@@ -288,7 +299,11 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
             <span className="text-[10px] font-bold text-slate-500 uppercase block">Xem trước ảnh sắp tải lên</span>
             <div className="flex gap-4 items-center">
               <div className="w-20 h-20 rounded bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
-                <img src={previewUrl} alt="Local preview" className="w-full h-full object-cover" />
+                {isVideoSlot ? (
+                  <video src={previewUrl} className="w-full h-full object-cover" muted />
+                ) : (
+                  <img src={previewUrl} alt="Local preview" className="w-full h-full object-cover" />
+                )}
               </div>
               <div className="text-xs text-slate-600 space-y-1">
                 <p><strong>Tên file:</strong> {selectedFile.name}</p>
@@ -310,13 +325,15 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept={isVideoSlot ? 'video/mp4,video/webm,video/quicktime' : 'image/jpeg,image/png,image/webp,image/avif'}
             required
             onChange={handleFileChange}
             className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
           <p className="mt-1 text-xs text-slate-500">
-            Hỗ trợ định dạng: JPG, PNG, WEBP, AVIF (Tối đa 5MB)
+            {isVideoSlot
+              ? 'Hỗ trợ định dạng: MP4, WebM, MOV (Tối đa 50MB)'
+              : 'Hỗ trợ định dạng: JPG, PNG, WEBP, AVIF (Tối đa 5MB)'}
           </p>
         </div>
 

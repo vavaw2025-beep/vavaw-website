@@ -8,6 +8,7 @@ import { ContentBlockRecord, MediaAssetRecord } from '@vavaw/db';
 import Link from 'next/link';
 import {
   COSMETIC_PRODUCT_MEDIA_SLOTS,
+  COSMETIC_VIDEO_MEDIA_SLOTS,
   SIG_MEDIA_SLOT_VALUES,
   normalizeCosmeticMediaSlot,
   getDefaultCosmeticItemMetadata,
@@ -29,7 +30,8 @@ import {
   Upload, 
   FolderOpen,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Video
 } from 'lucide-react';
 
 interface CosmeticPageManagerProps {
@@ -55,7 +57,14 @@ const REQUIRED_SLOTS = [
   { id: 'cosmetic-gallery-serum', name: 'Thư viện - Tinh chất serum cận cảnh', size: '1600x2000' },
   { id: 'cosmetic-gallery-packaging', name: 'Thư viện - Bao bì sản phẩm', size: '1600x2000' },
   { id: 'cosmetic-set-cellurevive-ampoule', name: 'Ảnh chi tiết CELLUREVIVE Ampoule trong set', size: '1200x1500 hoặc 1600x2000' },
-  { id: 'cosmetic-set-regenaglow-sheer-cream', name: 'Ảnh chi tiết REGENAGLOW NOURISH SHEER CREAM trong set', size: '1200x1500 hoặc 1600x2000' }
+  { id: 'cosmetic-set-regenaglow-sheer-cream', name: 'Ảnh chi tiết REGENAGLOW NOURISH SHEER CREAM trong set', size: '1200x1500 hoặc 1600x2000' },
+  // Video slots for Clinical Formula Lab
+  { id: 'cosmetic-video-regenaglow-cream', name: 'Video Regenaglow Nourish Sheer Cream', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
+  { id: 'cosmetic-video-calmiance-gel', name: 'Video Calmiance Superior Sheer Gel', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
+  { id: 'cosmetic-video-renew-ampoule', name: 'Video Gentle Activation Renew Ampoule', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
+  { id: 'cosmetic-video-p30-moisturizer', name: 'Video P30 Boost Facial Moisturizer', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
+  { id: 'cosmetic-video-p30-toner', name: 'Video P30 Boost Facial Hydrating Toner', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
+  { id: 'cosmetic-video-lumiglow-sunscreen', name: 'Video Lumiglow Rosy Sheer Sunscreen', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
 ];
 
 const BLOCK_NAMES: Record<string, string> = {
@@ -386,6 +395,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [prodBestFor, setProdBestFor] = useState('');
   const [prodUsage, setProdUsage] = useState('');
   const [prodMediaSlot, setProdMediaSlot] = useState('');
+  const [prodVideoSlot, setProdVideoSlot] = useState('');
   const [prodHighlight, setProdHighlight] = useState(false);
 
   // Load product content based on selection
@@ -426,6 +436,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         setProdBestFor(item.bestFor || '');
         setProdUsage(item.usage || '');
         setProdMediaSlot(item.mediaSlot || '');
+        setProdVideoSlot(item.videoSlot || '');
         setProdHighlight(!!item.highlight);
       }
     }
@@ -495,7 +506,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                 bestFor: prodBestFor,
                 usage: prodUsage,
                 highlight: prodHighlight,
-                mediaSlot: prodMediaSlot
+                mediaSlot: prodMediaSlot,
+                videoSlot: prodVideoSlot
               };
               if (prodVolume) updatedItem.volume = prodVolume;
               if (prodPrice) updatedItem.price = prodPrice;
@@ -780,7 +792,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           }`}
         >
           <ImageIcon className="h-4 w-4" />
-          <span>Hình ảnh</span>
+          <span>Hình ảnh & Video</span>
         </button>
         <button
           onClick={() => setActiveTab('preview')}
@@ -1024,6 +1036,61 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   </select>
                 )}
               </div>
+
+              {/* Video Slot for Clinical Formulas */}
+              {selectedProduct !== 'Luminous Revitalization Sheer Set' && (
+                <div className="col-span-2 md:col-span-1">
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    <Video className="h-3 w-3 inline mr-1" />
+                    Video sản phẩm (Video Slot)
+                  </label>
+                  <div className="flex items-center gap-3 mb-2">
+                    {(() => {
+                      const vSlot = prodVideoSlot;
+                      const vAsset = vSlot ? mediaAssets.find(m => m.metadata?.slot === vSlot && !m.metadata?.archivedFromSlot) : null;
+                      return (
+                        <>
+                          <div className={`w-12 h-12 border rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0 ${vAsset ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-100 border-slate-200'}`}>
+                            {vAsset ? (
+                              <Video className="h-5 w-5 text-emerald-600" />
+                            ) : (
+                              <Video className="h-5 w-5 text-slate-300" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className={`text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
+                              vAsset ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
+                            }`}>
+                              {vAsset ? 'Đã có video' : 'Chưa có video'}
+                            </span>
+                            {vSlot && (
+                              <Link
+                                href={`/media?purpose=cosmetic-page-media&slot=${vSlot}&returnTo=/cosmetic-page`}
+                                className="text-[10px] text-blue-600 font-bold hover:underline block mt-1"
+                              >
+                                Upload video sản phẩm
+                              </Link>
+                            )}
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                  <select
+                    value={prodVideoSlot}
+                    onChange={e => setProdVideoSlot(e.target.value)}
+                    className="w-full text-xs p-2 border border-slate-300 rounded-md focus:border-blue-500 bg-white"
+                  >
+                    <option value="">-- Chọn Video Slot --</option>
+                    {COSMETIC_VIDEO_MEDIA_SLOTS.map(slot => (
+                      <option key={slot.value} value={slot.value}>{slot.label}</option>
+                    ))}
+                  </select>
+                  <p className="text-[9px] text-slate-400 mt-1">
+                    Video này sẽ hiển thị trong phần Clinical Formulas khi khách chọn sản phẩm. Nên dùng video dọc 9:16, 1080×1920, MP4/WebM.
+                  </p>
+                </div>
+              )}
 
               {selectedProduct !== 'Luminous Revitalization Sheer Set' && (
                 <div className="col-span-2 flex items-center pt-2">
@@ -1473,6 +1540,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {REQUIRED_SLOTS.map(slot => {
               const asset = mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot);
+              const isVideoSlot = slot.id.startsWith('cosmetic-video-');
               return (
                 <div key={slot.id} className={`p-4 rounded-xl border transition-all flex gap-4 ${
                   asset 
@@ -1482,19 +1550,35 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   {/* Thumbnail */}
                   <div className="w-24 h-24 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center relative group">
                     {asset ? (
-                      <>
-                        <img src={asset.url} alt={slot.name} className="w-full h-full object-cover" />
-                        <a 
-                          href={asset.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
-                        >
-                          Xem ảnh
-                        </a>
-                      </>
+                      isVideoSlot ? (
+                        <>
+                          <div className="w-full h-full bg-[#050A5C]/10 flex items-center justify-center">
+                            <Video className="h-8 w-8 text-[#050A5C]/40" />
+                          </div>
+                          <a 
+                            href={asset.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
+                          >
+                            Xem video
+                          </a>
+                        </>
+                      ) : (
+                        <>
+                          <img src={asset.url} alt={slot.name} className="w-full h-full object-cover" />
+                          <a 
+                            href={asset.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
+                          >
+                            Xem ảnh
+                          </a>
+                        </>
+                      )
                     ) : (
-                      <div className="text-[10px] text-slate-400 font-bold text-center p-2">Chưa có ảnh</div>
+                      <div className="text-[10px] text-slate-400 font-bold text-center p-2">{isVideoSlot ? 'Chưa có video' : 'Chưa có ảnh'}</div>
                     )}
                   </div>
 
@@ -1529,7 +1613,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         }`}
                       >
                         <Upload className="h-3 w-3" />
-                        <span>{asset ? 'Đổi ảnh' : 'Tải ảnh'}</span>
+                        <span>{isVideoSlot ? (asset ? 'Đổi video' : 'Tải video') : (asset ? 'Đổi ảnh' : 'Tải ảnh')}</span>
                       </Link>
 
                       {/* Select from library */}
@@ -1553,7 +1637,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           rel="noopener noreferrer"
                           className="px-2 py-1 bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[10px] rounded hover:bg-slate-100 transition inline-flex items-center gap-1"
                         >
-                          Xem ảnh
+                          {isVideoSlot ? 'Xem video' : 'Xem ảnh'}
                         </a>
                       )}
 
