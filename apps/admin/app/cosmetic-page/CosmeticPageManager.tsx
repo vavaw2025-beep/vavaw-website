@@ -664,16 +664,17 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     await handleSaveBlock(ritBlock.id, ritBlock.site_key, ritBlock.page_path, updatedContent, ritBlock.is_active, ritBlock.sort_order);
   };
 
-  // ─── MEDIA SLOT MANAGER LOGIC ──────────────────────────────────────────
   const handleRemoveMediaSlot = async (slot: string) => {
-    if (!confirm("Bạn chỉ đang gỡ ảnh khỏi vị trí này. File vẫn còn trong Media Library.")) return;
+    const isVideo = slot.startsWith('cosmetic-video-');
+    const label = isVideo ? 'video' : 'ảnh';
+    if (!confirm(`Bạn chỉ đang gỡ ${label} khỏi vị trí này. File vẫn còn trong Media Library.`)) return;
 
     setIsSaving(true);
     const res = await removeCosmeticMediaSlot(slot);
     setIsSaving(false);
 
     if (res.success) {
-      showSuccess('Đã gỡ ảnh khỏi slot thành công!');
+      showSuccess(`Đã gỡ ${label} khỏi slot thành công!`);
       router.refresh();
     } else {
       alert(res.error || 'Có lỗi xảy ra.');
@@ -697,8 +698,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     }
   };
 
-  // Library images filtering
-  const libraryImages = mediaAssets.filter(m => m.type === 'image' || m.mime_type?.startsWith('image'));
+  // Library filtering
+  const isPickerVideoSlot = pickerOpenSlot?.startsWith('cosmetic-video-');
+  const libraryAssets = mediaAssets.filter(m => {
+    if (isPickerVideoSlot) {
+      return m.type === 'video' || m.mime_type?.startsWith('video');
+    }
+    return m.type === 'image' || m.mime_type?.startsWith('image');
+  });
 
   return (
     <div className="space-y-8 bg-slate-50/50 p-6 rounded-2xl border border-slate-100 shadow-sm">
@@ -1535,129 +1542,162 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       )}
 
       {/* ─── TAB CONTENT 6: IMAGES (MEDIA SLOTS) ───────────────────────── */}
-      {activeTab === 'images' && (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {REQUIRED_SLOTS.map(slot => {
-              const asset = mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot);
-              const isVideoSlot = slot.id.startsWith('cosmetic-video-');
-              return (
-                <div key={slot.id} className={`p-4 rounded-xl border transition-all flex gap-4 ${
-                  asset 
-                    ? 'bg-white border-slate-200 shadow-sm hover:border-slate-300' 
-                    : 'bg-slate-50/50 border-dashed border-slate-300'
-                }`}>
-                  {/* Thumbnail */}
-                  <div className="w-24 h-24 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center relative group">
-                    {asset ? (
-                      isVideoSlot ? (
-                        <>
-                          <div className="w-full h-full bg-[#050A5C]/10 flex items-center justify-center">
-                            <Video className="h-8 w-8 text-[#050A5C]/40" />
-                          </div>
-                          <a 
-                            href={asset.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
-                          >
-                            Xem video
-                          </a>
-                        </>
-                      ) : (
-                        <>
-                          <img src={asset.url} alt={slot.name} className="w-full h-full object-cover" />
-                          <a 
-                            href={asset.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
-                          >
-                            Xem ảnh
-                          </a>
-                        </>
-                      )
-                    ) : (
-                      <div className="text-[10px] text-slate-400 font-bold text-center p-2">{isVideoSlot ? 'Chưa có video' : 'Chưa có ảnh'}</div>
-                    )}
-                  </div>
+      {activeTab === 'images' && (() => {
+        const group1Slots = REQUIRED_SLOTS.filter(s => !s.id.startsWith('cosmetic-video-') && !s.id.startsWith('cosmetic-set-') && s.id !== 'cosmetic-product-luminous-set');
+        const group2Slots = REQUIRED_SLOTS.filter(s => s.id.startsWith('cosmetic-video-'));
+        const group3Slots = REQUIRED_SLOTS.filter(s => s.id.startsWith('cosmetic-set-') || s.id === 'cosmetic-product-luminous-set');
 
-                  {/* Info & Actions */}
-                  <div className="flex-1 min-w-0 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-xs font-bold text-slate-900 truncate">{slot.name}</h4>
-                        <span className={`text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
-                          asset ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
-                        }`}>
-                          {asset ? 'Đã tải lên' : 'Chưa tải'}
-                        </span>
+        const renderSlotCard = (slot: typeof REQUIRED_SLOTS[number]) => {
+          const asset = mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot);
+          const isVideoSlot = slot.id.startsWith('cosmetic-video-');
+          return (
+            <div key={slot.id} className={`p-4 rounded-xl border transition-all flex gap-4 ${
+              asset 
+                ? 'bg-white border-slate-200 shadow-sm hover:border-slate-300' 
+                : 'bg-slate-50/50 border-dashed border-slate-300'
+            }`}>
+              {/* Thumbnail */}
+              <div className="w-24 h-24 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center relative group">
+                {asset ? (
+                  isVideoSlot ? (
+                    <>
+                      <div className="w-full h-full bg-[#050A5C]/10 flex items-center justify-center">
+                        <Video className="h-8 w-8 text-[#050A5C]/40" />
                       </div>
-                      <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{slot.id}</p>
-                      <p className="text-[10px] text-slate-500 mt-1">Khuyên dùng: {slot.size}</p>
-                      {asset?.created_at && (
-                        <p className="text-[9px] text-slate-400 mt-0.5">
-                          Ngày tải lên: {new Date(asset.created_at).toLocaleDateString('vi-VN')}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-1.5 mt-2 pt-2 border-t border-slate-100">
-                      {/* Upload / Change Image link */}
-                      <Link 
-                        href={`/media?purpose=cosmetic-page-media&slot=${slot.id}&returnTo=/cosmetic-page`}
-                        className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
-                          asset 
-                            ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' 
-                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
-                        }`}
+                      <a 
+                        href={asset.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
                       >
-                        <Upload className="h-3 w-3" />
-                        <span>{isVideoSlot ? (asset ? 'Đổi video' : 'Tải video') : (asset ? 'Đổi ảnh' : 'Tải ảnh')}</span>
-                      </Link>
-
-                      {/* Select from library */}
-                      <button
-                        onClick={() => setPickerOpenSlot(slot.id)}
-                        className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
-                          asset 
-                            ? 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100' 
-                            : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm'
-                        }`}
+                        Xem video
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <img src={asset.url} alt={slot.name} className="w-full h-full object-cover" />
+                      <a 
+                        href={asset.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
                       >
-                        <FolderOpen className="h-3 w-3" />
-                        <span>Chọn từ thư viện</span>
-                      </button>
+                        Xem ảnh
+                      </a>
+                    </>
+                  )
+                ) : (
+                  <div className="text-[10px] text-slate-400 font-bold text-center p-2">{isVideoSlot ? 'Chưa có video' : 'Chưa có ảnh'}</div>
+                )}
+              </div>
 
-                      {/* View image URL */}
-                      {asset && (
-                        <a
-                          href={asset.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-2 py-1 bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[10px] rounded hover:bg-slate-100 transition inline-flex items-center gap-1"
-                        >
-                          {isVideoSlot ? 'Xem video' : 'Xem ảnh'}
-                        </a>
-                      )}
-
-                      {/* Remove slot association */}
-                      {asset && (
-                        <button
-                          onClick={() => handleRemoveMediaSlot(slot.id)}
-                          className="px-2 py-1 text-red-600 font-bold text-[10px] rounded hover:bg-red-50 transition ml-auto"
-                        >
-                          Gỡ khỏi slot
-                        </button>
-                      )}
-                    </div>
+              {/* Info & Actions */}
+              <div className="flex-1 min-w-0 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-slate-900 truncate">{slot.name}</h4>
+                    <span className={`text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
+                      asset ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
+                    }`}>
+                      {asset ? 'Đã tải lên' : 'Chưa tải'}
+                    </span>
                   </div>
+                  <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{slot.id}</p>
+                  <p className="text-[10px] text-slate-500 mt-1">Khuyên dùng: {slot.size}</p>
+                  {asset && (
+                    <div className="text-[9px] text-slate-400 mt-1 space-y-0.5">
+                      {asset.mime_type && <p>Định dạng: <span className="font-mono">{asset.mime_type}</span></p>}
+                      {asset.size_bytes && <p>Dung lượng: <span className="font-mono">{(asset.size_bytes / 1024 / 1024).toFixed(2)} MB</span></p>}
+                      {asset.created_at && (
+                        <p>Ngày tải lên: {new Date(asset.created_at).toLocaleDateString('vi-VN')}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
-              );
-            })}
+
+                <div className="flex flex-wrap items-center gap-1.5 mt-2 pt-2 border-t border-slate-100">
+                  {/* Upload / Change Image link */}
+                  <Link 
+                    href={`/media?purpose=cosmetic-page-media&slot=${slot.id}&returnTo=/cosmetic-page`}
+                    className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
+                      asset 
+                        ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' 
+                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
+                    }`}
+                  >
+                    <Upload className="h-3 w-3" />
+                    <span>{isVideoSlot ? (asset ? 'Đổi video' : 'Tải video') : (asset ? 'Đổi ảnh' : 'Tải ảnh')}</span>
+                  </Link>
+
+                  {/* Select from library */}
+                  <button
+                    onClick={() => setPickerOpenSlot(slot.id)}
+                    className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
+                      asset 
+                        ? 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100' 
+                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm'
+                    }`}
+                  >
+                    <FolderOpen className="h-3 w-3" />
+                    <span>Chọn từ thư viện</span>
+                  </button>
+
+                  {/* View image URL */}
+                  {asset && (
+                    <a
+                      href={asset.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-1 bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[10px] rounded hover:bg-slate-100 transition inline-flex items-center gap-1"
+                    >
+                      {isVideoSlot ? 'Xem video' : 'Xem ảnh'}
+                    </a>
+                  )}
+
+                  {/* Remove slot association */}
+                  {asset && (
+                    <button
+                      onClick={() => handleRemoveMediaSlot(slot.id)}
+                      className="px-2 py-1 text-red-600 font-bold text-[10px] rounded hover:bg-red-50 transition ml-auto"
+                    >
+                      Gỡ khỏi slot
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        return (
+          <div className="space-y-8 animate-fade-in">
+            {/* Group 1: Ảnh sản phẩm */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Ảnh sản phẩm & Thư viện</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {group1Slots.map(slot => renderSlotCard(slot))}
+              </div>
+            </div>
+
+            {/* Group 2: Video Clinical Formulas */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Video Clinical Formulas</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {group2Slots.map(slot => renderSlotCard(slot))}
+              </div>
+            </div>
+
+            {/* Group 3: Video/ảnh bộ sản phẩm (Set) */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Video/ảnh Set & Bộ sản phẩm</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {group3Slots.map(slot => renderSlotCard(slot))}
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
+
 
       {/* ─── TAB CONTENT 7: PREVIEW ────────────────────────────────────── */}
       {activeTab === 'preview' && (
@@ -2397,7 +2437,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             {/* Modal Header */}
             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Chọn ảnh từ thư viện cho slot</h3>
+                <h3 className="text-base font-bold text-slate-900">Chọn {isPickerVideoSlot ? 'video' : 'ảnh'} từ thư viện cho slot</h3>
                 <p className="text-[10px] text-slate-400 font-mono mt-0.5">{pickerOpenSlot}</p>
               </div>
               <button 
@@ -2416,16 +2456,20 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   {pickerError}
                 </div>
               )}
-              {libraryImages.length === 0 ? (
+              {libraryAssets.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300 text-slate-500 text-xs">
-                  Không tìm thấy ảnh nào trong thư viện Media Assets.
+                  Không tìm thấy {isPickerVideoSlot ? 'video' : 'ảnh'} nào trong thư viện Media Assets.
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {libraryImages.slice(0, 50).map(asset => (
+                  {libraryAssets.slice(0, 50).map(asset => (
                     <div key={asset.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between hover:border-blue-500 transition-colors">
-                      <div className="relative aspect-video sm:aspect-square bg-slate-50">
-                        <img src={asset.url} alt={asset.alt_text || ''} className="w-full h-full object-cover" />
+                      <div className="relative aspect-video sm:aspect-square bg-slate-50 flex items-center justify-center">
+                        {isPickerVideoSlot ? (
+                          <Video className="h-8 w-8 text-slate-400" />
+                        ) : (
+                          <img src={asset.url} alt={asset.alt_text || ''} className="w-full h-full object-cover" />
+                        )}
                       </div>
                       <div className="p-3 space-y-1">
                         <p className="text-[10px] text-slate-400 font-mono truncate">{asset.site_key}</p>
@@ -2438,7 +2482,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           disabled={isSaving}
                           className="w-full mt-2 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-lg transition disabled:opacity-50"
                         >
-                          {isSaving ? 'Đang chọn...' : 'Chọn ảnh'}
+                          {isSaving ? 'Đang chọn...' : (isPickerVideoSlot ? 'Chọn video' : 'Chọn ảnh')}
                         </button>
                       </div>
                     </div>

@@ -96,8 +96,15 @@ export async function assignMediaAssetToSlot(mediaAssetId: string, slot: string)
       return { success: false, error: selectError?.message || 'Không tìm thấy file phương tiện.' };
     }
 
-    if (asset.type !== 'image' && !asset.mime_type?.startsWith('image')) {
-      return { success: false, error: 'Chỉ có thể chọn file ảnh cho slot này.' };
+    const isVideoSlot = slot.startsWith('cosmetic-video-');
+    if (isVideoSlot) {
+      if (asset.type !== 'video' && !asset.mime_type?.startsWith('video')) {
+        return { success: false, error: 'Chỉ có thể chọn file video cho slot này.' };
+      }
+    } else {
+      if (asset.type !== 'image' && !asset.mime_type?.startsWith('image')) {
+        return { success: false, error: 'Chỉ có thể chọn file ảnh cho slot này.' };
+      }
     }
 
     // 1. Archive current active asset for that slot

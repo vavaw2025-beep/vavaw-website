@@ -240,4 +240,123 @@ export async function deleteMediaAssetAction(id: string) {
   }
 }
 
+export async function registerUploadedMediaAsset(params: {
+  url: string;
+  type: string;
+  site_key: string;
+  alt_text?: string;
+  mime_type: string;
+  size_bytes: number;
+  storage_provider: string;
+  metadata: {
+    slot?: string;
+    purpose?: string;
+    originalName?: string;
+    uploadedVia: string;
+    bucket: string;
+    path: string;
+  };
+}) {
+  const mode = getAdminDataSourceMode();
+  if (mode !== 'supabase') {
+    return { success: false, error: 'Media registration is disabled in mock mode.' };
+  }
+
+  const profile = await getCurrentAdminProfile();
+  if (!profile || profile.status !== 'active') {
+    console.warn("[media] registration failed", { stage: 'missing_admin_profile', reason: 'Unauthorized or disabled profile' });
+    return { success: false, error: 'Unauthorized or disabled profile.' };
+  }
+
+  if (!canManageContent(profile.role)) {
+    console.warn("[media] registration failed", { stage: 'missing_admin_profile', reason: 'Insufficient permissions' });
+    return { success: false, error: 'Insufficient permissions to register media.' };
+  }
+
+  try {
+    const supabase = await getAdminServerSupabaseClient();
+
+    // If replacing an active slot, mark the old one as archivedFromSlot
+    if (params.metadata?.slot) {
+      const slot = params.metadata.slot;
+      const { data: existingAssets } = await supabase
+        .from('media_assets')
+        .select('id, metadata')
+        .eq('metadata->>slot', slot)
+        .is('metadata->>archivedFromSlot', null);
+
+      if (existingAssets && existingAssets.length > 0) {
+        for (const asset of existingAssets) {
+          const updatedMeta = {
+            ...(asset.metadata || {}),
+            archivedFromSlot: slot
+          };
+          await supabase
+            .from('media_assets')
+            .update({ metadata: updatedMeta })
+            .eq('id', asset.id);
+        }
+      }
+    }
+
+    const { error: dbError } = await createMediaAsset(supabase, {
+      site_key: params.site_key,
+      type: params.type as any,
+      url: params.url,
+      alt_text: params.alt_text,
+      storage_provider: params.storage_provider as any,
+      mime_type: params.mime_type,
+      size_bytes: params.size_bytes,
+      metadata: params.metadata,
+    });
+
+    if (dbError) {
+      console.warn("[media] registration failed", { stage: 'db_insert_failed', reason: dbError.message });
+      return { success: false, error: 'Failed to save media asset to database.' };
+    }
+
+    revalidatePath('/media');
+    
+    let targetApp: 'main' | 'beauty' | 'franchise' | 'all' = 'all';
+    let targetPaths = ['/'];
+    if (params.site_key === 'main') {
+      targetApp = 'main';
+    } else if (params.site_key === 'cosmetic') {
+      targetApp = 'main';
+      targetPaths = ['/cosmetic'];
+    } else if (params.site_key === 'beauty') {
+      targetApp = 'beauty';
+    } else if (params.site_key === 'franchise') {
+      targetApp = 'franchise';
+    }
+    
+    triggerPublicRevalidation({
+      app: targetApp,
+      paths: targetPaths,
+      reason: 'media_uploaded'
+    }).catch(console.error);
+
+    const isVideo = params.type === 'video';
+    trackEvent(isVideo ? 'media_video_uploaded' : 'media_uploaded', {
+      app: 'admin',
+      entityType: 'media_asset',
+      metadata: { role: profile.role, siteKey: params.site_key, type: params.type, mimeType: params.mime_type },
+    });
+    
+    await writeAuditLog({
+      action: isVideo ? 'media_video_uploaded' : 'media_uploaded',
+      entityType: 'media',
+      status: 'success',
+      metadata: { media_type: isVideo ? 'video' : 'image', content_type: params.mime_type }
+    });
+
+    return { success: true };
+  } catch (err: any) {
+    console.warn("[media] registration failed", { stage: 'unknown_error', reason: err.message });
+    captureError(err, { app: 'admin', severity: 'error' });
+    return { success: false, error: 'Failed to register media asset due to an unexpected server error.' };
+  }
+}
+
+
 

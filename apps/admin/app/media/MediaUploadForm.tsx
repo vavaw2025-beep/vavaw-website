@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { Upload, XCircle, CheckCircle2, AlertCircle, ExternalLink, Image as ImageIcon } from 'lucide-react';
+import { Upload, XCircle, CheckCircle2, AlertCircle, ExternalLink, Image as ImageIcon, Video, Loader2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import { uploadMediaAction } from './actions';
+import { uploadMediaAction, registerUploadedMediaAsset } from './actions';
+import { createBrowserSupabaseClient } from '@vavaw/auth';
 import { Suspense } from 'react';
 import Link from 'next/link';
 
@@ -62,6 +63,7 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
   }, [isCosmeticSlotMode, isVideoSlot]);
 
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'validating' | 'uploading_storage' | 'registering_media' | 'revalidating' | 'success' | 'error'>('idle');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -77,6 +79,7 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       setError(null);
+      setUploadStatus('idle');
     } else {
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -87,52 +90,114 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    setUploadStatus('validating');
 
     const files = fileInputRef.current?.files;
     if (!files || files.length === 0) {
-      setError('Vui lòng chọn một file ảnh để tải lên.');
+      setError(isVideoSlot ? 'Vui lòng chọn một file video để tải lên.' : 'Vui lòng chọn một file ảnh để tải lên.');
+      setUploadStatus('error');
       return;
     }
 
     const file = files[0];
-    const isVideo = file.type.startsWith('video');
+    const isVideo = file.type.startsWith('video') || isVideoSlot;
     const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
     const maxMb = isVideo ? 50 : 5;
 
     if (file.size > maxSize) {
       setError(`Dung lượng file (${(file.size / (1024 * 1024)).toFixed(2)}MB) vượt quá dung lượng cho phép tối đa ${maxMb}MB.`);
+      setUploadStatus('error');
       return;
     }
 
     setIsUploading(true);
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('site_key', siteKey);
-    formData.append('type', type);
-    formData.append('alt_text', altText || (isCosmeticSlotMode ? `VAVAW Cosmetic ${HUMAN_SLOTS[slotParam!]?.name || slotParam}` : ''));
-    if (brandSlot && !isCosmeticSlotMode) {
-      formData.append('brand_slot', brandSlot);
-    }
-    if (purposeParam) formData.append('purpose', purposeParam);
-    if (slotParam) formData.append('slot', slotParam);
-
     try {
-      const result = await uploadMediaAction(formData);
+      // 1. Upload file directly to storage using browser client
+      setUploadStatus('uploading_storage');
+      
+      const supabase = createBrowserSupabaseClient();
+      
+      // Sanitize extension and generate safe path
+      const originalExt = (file.name.split('.').pop() || '').toLowerCase();
+      const safeExt = /^[a-z0-9]+$/.test(originalExt) ? originalExt : (isVideo ? 'mp4' : 'jpg');
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 8);
+      const folder = isVideo ? 'videos' : 'images';
+      const storagePath = `media/${siteKey}/${folder}/${timestamp}-${random}.${safeExt}`;
 
-      if (!result.success) {
-        setError(result.error || 'Upload failed.');
-      } else {
-        setSuccess('Media asset uploaded and registered successfully!');
-        setAltText('');
-        setSelectedFile(null);
-        setPreviewUrl(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('vavaw-media')
+        .upload(storagePath, file, {
+          contentType: file.type,
+          upsert: true
+        });
+
+      if (uploadError) {
+        console.error('Supabase storage upload error:', uploadError);
+        setError(`Supabase Storage upload failed: ${uploadError.message}`);
+        setUploadStatus('error');
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('vavaw-media')
+        .getPublicUrl(storagePath);
+
+      if (!publicUrlData || !publicUrlData.publicUrl) {
+        setError('Failed to retrieve public URL from storage.');
+        setUploadStatus('error');
+        return;
+      }
+
+      const publicUrl = publicUrlData.publicUrl;
+
+      // 2. Register media asset via server action
+      setUploadStatus('registering_media');
+      
+      const metadata: any = { 
+        bucket: 'vavaw-media', 
+        path: storagePath,
+        originalName: file.name,
+        uploadedVia: 'admin-direct-storage'
+      };
+      
+      if (purposeParam && slotParam) {
+        metadata.purpose = purposeParam;
+        metadata.slot = slotParam;
+      } else if (brandSlot) {
+        metadata.purpose = 'brand-logo';
+        metadata.slot = brandSlot;
+      }
+
+      const registrationResult = await registerUploadedMediaAsset({
+        url: publicUrl,
+        type: isVideo ? 'video' : type,
+        site_key: siteKey,
+        alt_text: altText || (isCosmeticSlotMode ? `VAVAW Cosmetic ${HUMAN_SLOTS[slotParam!]?.name || slotParam}` : ''),
+        mime_type: file.type,
+        size_bytes: file.size,
+        storage_provider: 'supabase',
+        metadata,
+      });
+
+      if (!registrationResult.success) {
+        setError(`Media registration failed: ${registrationResult.error || 'Unknown error'}`);
+        setUploadStatus('error');
+        return;
+      }
+
+      setUploadStatus('success');
+      setSuccess('Media asset uploaded and registered successfully!');
+      setAltText('');
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
       }
     } catch (err: any) {
       setError(err.message || 'Có lỗi xảy ra trong quá trình tải lên.');
+      setUploadStatus('error');
     } finally {
       setIsUploading(false);
     }
@@ -149,7 +214,7 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
         </div>
         <div className="space-y-2">
           <h3 className="text-lg font-bold text-slate-900">{isVideoSlot ? 'Đã cập nhật video thành công!' : 'Đã cập nhật ảnh thành công!'}</h3>
-          <p className="text-sm text-slate-600">Đã cập nhật ảnh cho slot: <strong>{displayName}</strong></p>
+          <p className="text-sm text-slate-600">Đã cập nhật {isVideoSlot ? 'video' : 'ảnh'} cho slot: <strong>{displayName}</strong></p>
         </div>
         <div className="flex flex-col gap-2 pt-2">
           <Link 
@@ -185,8 +250,8 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
   return (
     <div className="bg-white p-6 shadow rounded-lg border border-slate-200 space-y-4">
       <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-        <Upload className="h-5 w-5 text-blue-600" />
-        <span>{isCosmeticSlotMode ? 'Tải lên hình ảnh vị trí Cosmetic' : 'Upload New Asset'}</span>
+        {isVideoSlot ? <Video className="h-5 w-5 text-blue-600" /> : <Upload className="h-5 w-5 text-blue-600" />}
+        <span>{isCosmeticSlotMode ? (isVideoSlot ? 'Tải lên video sản phẩm' : 'Tải lên hình ảnh vị trí Cosmetic') : 'Upload New Asset'}</span>
       </h2>
 
       {error && (
@@ -207,28 +272,36 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
       {isCosmeticSlotMode && activeSlotInfo && (
         <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 space-y-2">
           <div className="flex gap-2 items-center">
-            <ImageIcon className="h-5 w-5 text-blue-600" />
-            <span className="font-bold text-sm">Bạn đang tải ảnh cho: {activeSlotInfo.name}</span>
+            {isVideoSlot ? <Video className="h-5 w-5 text-blue-600" /> : <ImageIcon className="h-5 w-5 text-blue-600" />}
+            <span className="font-bold text-sm">Bạn đang tải {isVideoSlot ? 'video' : 'ảnh'} cho: {activeSlotInfo.name}</span>
           </div>
           <div className="text-xs text-slate-600 pl-7 space-y-1">
             <p><strong>Technical Slot:</strong> <code className="bg-blue-100/50 px-1 py-0.5 rounded font-mono text-[10px] text-blue-700">{slotParam}</code></p>
             <p><strong>Khuyên dùng:</strong> {activeSlotInfo.size}</p>
             {isVideoSlot && (
-              <p className="text-blue-700 font-semibold mt-1">Đây là video sản phẩm cho Clinical Formulas. Khuyến nghị: video dọc 9:16, 1080×1920, MP4/WebM.</p>
+              <p className="text-blue-700 font-semibold mt-1">Đây là video sản phẩm cho Clinical Formulas. Khuyến nghị: video dọc 9:16, 1080×1920, MP4/WebM, tối đa 50MB.</p>
             )}
           </div>
         </div>
       )}
 
-      {/* Current Image Details */}
+      {/* Current Asset Details */}
       {isCosmeticSlotMode && currentSlotAsset && (
         <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-4">
-          <div className="w-16 h-16 rounded bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
-            <img src={currentSlotAsset.url} alt="Ảnh hiện tại" className="w-full h-full object-cover" />
+          <div className="w-16 h-16 rounded bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center">
+            {isVideoSlot ? (
+              <Video className="h-6 w-6 text-slate-400" />
+            ) : (
+              <img src={currentSlotAsset.url} alt="Ảnh hiện tại" className="w-full h-full object-cover" />
+            )}
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-500 uppercase block">Ảnh hiện tại</span>
-            <p className="text-xs text-slate-600 mt-1">Ảnh mới sẽ thay thế slot này, nhưng file cũ sẽ không bị xóa.</p>
+            <span className="text-[10px] font-bold text-slate-500 uppercase block">
+              {isVideoSlot ? 'Video hiện tại' : 'Ảnh hiện tại'}
+            </span>
+            <p className="text-xs text-slate-600 mt-1">
+              {isVideoSlot ? 'Video mới sẽ thay thế slot này, nhưng file cũ sẽ không bị xóa.' : 'Ảnh mới sẽ thay thế slot này, nhưng file cũ sẽ không bị xóa.'}
+            </p>
           </div>
         </div>
       )}
@@ -296,11 +369,13 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
         {/* Selected File local preview card */}
         {previewUrl && selectedFile && (
           <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
-            <span className="text-[10px] font-bold text-slate-500 uppercase block">Xem trước ảnh sắp tải lên</span>
+            <span className="text-[10px] font-bold text-slate-500 uppercase block">
+              {isVideoSlot ? 'Xem trước video sắp tải lên' : 'Xem trước ảnh sắp tải lên'}
+            </span>
             <div className="flex gap-4 items-center">
-              <div className="w-20 h-20 rounded bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
+              <div className="w-20 h-20 rounded bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center">
                 {isVideoSlot ? (
-                  <video src={previewUrl} className="w-full h-full object-cover" muted />
+                  <Video className="h-6 w-6 text-slate-400" />
                 ) : (
                   <img src={previewUrl} alt="Local preview" className="w-full h-full object-cover" />
                 )}
@@ -309,10 +384,16 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
                 <p><strong>Tên file:</strong> {selectedFile.name}</p>
                 <p><strong>Dung lượng:</strong> {(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                 <p><strong>Định dạng:</strong> {selectedFile.type}</p>
-                {selectedFile.size > 5 * 1024 * 1024 && (
+                {!isVideoSlot && selectedFile.size > 5 * 1024 * 1024 && (
                   <p className="text-red-600 font-bold flex items-center gap-1">
                     <AlertCircle className="h-4 w-4" />
                     Cảnh báo: File vượt quá kích thước 5MB khuyên dùng!
+                  </p>
+                )}
+                {isVideoSlot && selectedFile.size > 50 * 1024 * 1024 && (
+                  <p className="text-red-600 font-bold flex items-center gap-1">
+                    <AlertCircle className="h-4 w-4" />
+                    Cảnh báo: Video vượt quá kích thước 50MB cho phép!
                   </p>
                 )}
               </div>
@@ -321,7 +402,9 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Chọn file ảnh *</label>
+          <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
+            {isVideoSlot ? 'Chọn file video *' : 'Chọn file ảnh *'}
+          </label>
           <input
             ref={fileInputRef}
             type="file"
@@ -337,14 +420,22 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
           </p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           <button
             type="submit"
             disabled={isUploading}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md shadow transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
           >
-            <Upload className="h-4 w-4" />
-            <span>{isUploading ? 'Đang tải lên Supabase...' : 'Upload File'}</span>
+            {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+            <span>
+              {uploadStatus === 'idle' && (isVideoSlot ? 'Upload Video' : 'Upload Image')}
+              {uploadStatus === 'validating' && 'Đang kiểm tra file...'}
+              {uploadStatus === 'uploading_storage' && (isVideoSlot ? 'Đang tải video lên Supabase Storage...' : 'Đang tải ảnh lên Supabase Storage...')}
+              {uploadStatus === 'registering_media' && (isVideoSlot ? 'Đang đăng ký video vào Media Library...' : 'Đang đăng ký ảnh vào Media Library...')}
+              {uploadStatus === 'revalidating' && 'Đang làm mới trang public...'}
+              {uploadStatus === 'success' && 'Hoàn tất'}
+              {uploadStatus === 'error' && 'Thử lại'}
+            </span>
           </button>
           
           {isCosmeticSlotMode && (
