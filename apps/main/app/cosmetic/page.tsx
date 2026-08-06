@@ -89,6 +89,33 @@ export default async function CosmeticPage() {
                 <div className="truncate"><span className="opacity-50">First Block Title:</span> {String(blocks[0].content?.title || 'none')}</div>
               </>
             )}
+            {(() => {
+              const sigBlock = blocks.find(b => b.blockType === 'cosmetic-signature-collection');
+              const items = sigBlock?.content?.items as any[] | undefined;
+              return (
+                <div className="mt-2 pt-2 border-t border-white/20 text-[10px] space-y-1">
+                  <div className="font-semibold text-blue-300">Recovery Block Status:</div>
+                  <div><span className="opacity-50">Block Found:</span> {sigBlock ? 'Yes' : 'No'}</div>
+                  {sigBlock && (
+                    <>
+                      <div><span className="opacity-50">Item Count:</span> {items?.length ?? 0}</div>
+                      {items && items.length > 0 && (
+                        <>
+                          <div><span className="opacity-50">First Item:</span> {items[0]?.name || 'unnamed'}</div>
+                          <div><span className="opacity-50">First MediaSlot:</span> {items[0]?.mediaSlot || 'none'}</div>
+                          <div className="mt-1 font-semibold text-blue-200">Raw DB Order:</div>
+                          <ol className="list-decimal pl-4 opacity-90 max-h-24 overflow-y-auto">
+                            {items.map((it, idx) => (
+                              <li key={idx} className="truncate">{it.name || 'unnamed'}</li>
+                            ))}
+                          </ol>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}

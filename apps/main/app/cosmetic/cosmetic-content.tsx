@@ -660,9 +660,9 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           _why: inferRitualWhyStep(item),
         }));
 
-        // Resolve active station — prefer core treatment, else 0
-        const defaultActiveIdx = stationItems.findIndex(s => s._isCore) >= 0
-          ? stationItems.findIndex(s => s._isCore)
+        // Resolve active station — prefer highlighted item, else index 0 (preserving CMS order)
+        const defaultActiveIdx = stationItems.findIndex(s => s.highlight === true) >= 0
+          ? stationItems.findIndex(s => s.highlight === true)
           : 0;
         const resolvedActive = activeStationIdx === -1 ? defaultActiveIdx : activeStationIdx;
         const activeStation = stationItems[resolvedActive] ?? null;
