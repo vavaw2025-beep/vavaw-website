@@ -176,6 +176,42 @@ function safeCosmeticHref(href: string | undefined): string {
   return h;
 }
 
+// ─── Ritual role / usage inference (module-level, used by component + IIFE) ────
+function inferRitualRole(item: any): string {
+  if (item.role) return item.role;
+  const n = (item.name || item.title || '').toLowerCase();
+  if (n.includes('toner')) return 'PREPARE';
+  if (n.includes('ampoule')) return 'TREAT';
+  if (n.includes('gel')) return 'RECOVER';
+  if (n.includes('moisturizer')) return 'SEAL';
+  if (n.includes('cream')) return 'NOURISH';
+  if (n.includes('lumiglow') || n.includes('sunscreen')) return 'PROTECT';
+  if (n.includes('cleanser')) return 'CLEANSE';
+  return 'CARE';
+}
+
+function inferRitualUsage(item: any): string | null {
+  if (item.usage) return item.usage;
+  const n = (item.name || item.title || '').toLowerCase();
+  if (n.includes('toner')) return 'AM · PM';
+  if (n.includes('ampoule')) return 'AM · PM';
+  if (n.includes('moisturizer') || n.includes('cream') || n.includes('gel')) return 'AM · PM';
+  if (n.includes('lumiglow') || n.includes('sunscreen')) return 'AM';
+  return null;
+}
+
+function inferRitualWhyStep(item: any): string {
+  if (item.detail) return item.detail;
+  const n = (item.name || '').toLowerCase();
+  if (n.includes('toner')) return 'Toner prepares and balances the skin, maximising absorption of subsequent treatments.';
+  if (n.includes('ampoule')) return 'A concentrated treatment step targeting cellular renewal, barrier support, and visible skin correction.';
+  if (n.includes('gel')) return 'Calms reactive skin and reinforces the protective barrier with a multi-extract complex.';
+  if (n.includes('moisturizer')) return 'Seals the treatment layers and provides sustained, deep hydration throughout the day.';
+  if (n.includes('cream')) return 'Delivers lasting nourishment and actively supports skin recovery and renewal.';
+  if (n.includes('lumiglow') || n.includes('sunscreen')) return 'Completes the ritual by shielding recovered skin from environmental stressors and UV exposure.';
+  return 'Each step works in synergy to strengthen, restore, and protect the skin.';
+}
+
 // ─── Animation variants ────────────────────────────────────────────────────────
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -220,6 +256,9 @@ function Divider() {
 
 export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks = [] }: CosmeticContentProps) {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  // ── Ritual system interactive state ─────────────────────────────────────────
+  const [activeStationIdx, setActiveStationIdx] = useState<number>(-1); // -1 = not yet initialised
+  const [openAccordionIdx, setOpenAccordionIdx] = useState<number | null>(null);
 
   const handleImageError = (path: string) => {
     setImageErrors(prev => ({ ...prev, [path]: true }));
@@ -574,39 +613,29 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
         const rawItems: any[] = signatureCollection.items || [];
 
-        // Infer ritual role from product name if item.role or item.step missing
-        function inferRole(item: any): string {
-          if (item.role) return item.role;
-          const n = (item.name || '').toLowerCase();
-          if (n.includes('toner')) return 'PREPARE';
-          if (n.includes('ampoule')) return 'TREAT';
-          if (n.includes('gel')) return 'RECOVER';
-          if (n.includes('moisturizer')) return 'SEAL';
-          if (n.includes('cream')) return 'NOURISH';
-          if (n.includes('lumiglow') || n.includes('sunscreen')) return 'PROTECT';
-          if (n.includes('cleanser')) return 'CLEANSE';
-          return 'CARE';
-        }
-
-        function inferUsage(item: any): string | null {
-          if (item.usage) return item.usage;
-          const n = (item.name || '').toLowerCase();
-          if (n.includes('toner')) return 'AM · PM';
-          if (n.includes('ampoule')) return 'PM';
-          if (n.includes('moisturizer') || n.includes('cream') || n.includes('gel')) return 'AM · PM';
-          if (n.includes('lumiglow') || n.includes('sunscreen')) return 'AM';
-          return null;
-        }
-
+        // Use module-level inference helpers
         const stationItems = rawItems.map((item, i) => ({
           ...item,
-          _step: item.step || String(i + 1).padStart(2, '0'),
-          _role: inferRole(item),
-          _usage: inferUsage(item),
+          _step: item.step || item.number || String(i + 1).padStart(2, '0'),
+          _role: inferRitualRole(item),
+          _usage: inferRitualUsage(item),
           _isCore: !!(item.highlight) || (item.name || '').toLowerCase().includes('ampoule'),
-          _img: getProductImage(item.name || '', item.mediaSlot, cosmeticMedia),
-          _desc: item.description || item.desc || '',
+          _img: getProductImage(item.name || item.title || '', item.mediaSlot, cosmeticMedia),
+          _desc: item.description || item.desc || item.detail || '',
+          _ingredients: Array.isArray(item.ingredients)
+            ? item.ingredients
+            : typeof item.key === 'string'
+              ? item.key.split('·').map((s: string) => s.trim()).filter(Boolean)
+              : [],
+          _why: inferRitualWhyStep(item),
         }));
+
+        // Resolve active station — prefer core treatment, else 0
+        const defaultActiveIdx = stationItems.findIndex(s => s._isCore) >= 0
+          ? stationItems.findIndex(s => s._isCore)
+          : 0;
+        const resolvedActive = activeStationIdx === -1 ? defaultActiveIdx : activeStationIdx;
+        const activeStation = stationItems[resolvedActive] ?? null;
 
         // System trust badges (static — premium branding row)
         const trustBadges = [
@@ -750,153 +779,349 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                     <div className="h-px flex-1 bg-[#D9DEE8]" />
                   </motion.div>
 
-                  {/* Desktop: horizontal ritual stations */}
-                  <div className="hidden md:grid gap-0" style={{ gridTemplateColumns: `repeat(${Math.min(stationItems.length, 6)}, 1fr)` }}>
-                    {stationItems.slice(0, 6).map((station, i) => (
-                      <motion.div
-                        key={i}
-                        className={`group relative flex flex-col border-r last:border-r-0 border-[#D9DEE8]
-                          transition-all duration-500 ease-out
-                          ${station._isCore ? 'bg-[#F0F4FB]' : 'bg-white/60 hover:bg-white/90'}
-                          motion-reduce:hover:transform-none`}
-                        style={{ backdropFilter: 'blur(4px)' }}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: '-30px' }}
-                        transition={{ duration: 0.6, delay: i * 0.08, ease: 'easeOut' }}
-                        whileHover={{ y: -2 }}
-                      >
-                        {/* Core treatment highlight accent */}
-                        {station._isCore && (
-                          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#050A5C]/40" />
-                        )}
-
-                        <div className="p-5 xl:p-6 flex flex-col flex-1">
-                          {/* Step number */}
-                          <div className="flex items-end justify-between mb-4">
-                            <span
-                              className="font-serif font-light text-[#050A5C]/10 leading-none select-none"
-                              style={{ fontSize: 'clamp(3.5rem, 6vw, 5.5rem)', lineHeight: 1 }}
-                              aria-hidden="true"
-                            >
-                              {station._step}
-                            </span>
-                            {station._usage && (
-                              <span className="text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-medium mb-1">
-                                {station._usage}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Role label */}
-                          <div className="flex items-center gap-2 mb-4">
-                            <div className={`w-3 h-px ${station._isCore ? 'bg-[#050A5C]/60' : 'bg-[#050A5C]/25'}`} />
-                            <span className={`text-[9px] tracking-[0.32em] uppercase font-semibold ${station._isCore ? 'text-[#050A5C]/70' : 'text-[#050A5C]/40'}`}>
-                              {station._role}
-                            </span>
-                            {station._isCore && (
-                              <span className="text-[7px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1.5 py-0.5 ml-1">
-                                CORE
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Product packshot */}
+                  {/* Desktop: interactive ritual stations */}
+                  <div
+                    className="hidden md:grid gap-0 border border-[#D9DEE8]"
+                    style={{ gridTemplateColumns: `repeat(${Math.min(stationItems.length, 6)}, 1fr)` }}
+                  >
+                    {stationItems.slice(0, 6).map((station, i) => {
+                      const isActive = i === resolvedActive;
+                      return (
+                        <motion.button
+                          key={i}
+                          type="button"
+                          aria-pressed={isActive}
+                          aria-label={`Step ${station._step}: ${station._role} — ${station.name || ''}`}
+                          className={`group relative flex flex-col text-left border-r last:border-r-0 border-[#D9DEE8]
+                            transition-all duration-300 ease-out cursor-pointer outline-none
+                            focus-visible:ring-2 focus-visible:ring-[#050A5C]/40 focus-visible:ring-inset
+                            ${isActive
+                              ? 'bg-[#EBF0FA]'
+                              : station._isCore
+                                ? 'bg-[#F4F7FB] hover:bg-[#EBF0FA]'
+                                : 'bg-white/60 hover:bg-white'}
+                            motion-reduce:transition-none`}
+                          onClick={() => setActiveStationIdx(i)}
+                          onMouseEnter={() => setActiveStationIdx(i)}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: '-30px' }}
+                          transition={{ duration: 0.6, delay: i * 0.08, ease: 'easeOut' }}
+                        >
+                          {/* Active / core top accent */}
                           <div
-                            className={`relative mb-4 mx-auto w-full bg-[#F7F9FC] flex items-center justify-center overflow-hidden
-                              ${station._isCore ? 'border border-[#050A5C]/15 ring-1 ring-[#050A5C]/8' : 'border border-[#E8EDF6]'}`}
-                            style={{ aspectRatio: '3/4', maxHeight: '180px' }}
-                          >
-                            {station._img ? (
-                              <img
-                                src={station._img}
-                                alt={station.name || ''}
-                                className="w-full h-full object-contain p-3"
-                                onError={(e) => {
-                                  (e.currentTarget as HTMLImageElement).style.display = 'none';
-                                  (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
+                            className="absolute top-0 left-0 right-0 h-[2px] transition-opacity duration-300"
+                            style={{
+                              background: '#050A5C',
+                              opacity: isActive ? 0.5 : station._isCore ? 0.2 : 0,
+                            }}
+                          />
+
+                          <div className="p-5 xl:p-6 flex flex-col flex-1 w-full">
+                            {/* Step number */}
+                            <div className="flex items-end justify-between mb-3">
+                              <span
+                                className="font-serif font-light leading-none select-none transition-opacity duration-300"
+                                style={{
+                                  fontSize: 'clamp(3rem, 5vw, 5rem)',
+                                  lineHeight: 1,
+                                  color: '#050A5C',
+                                  opacity: isActive ? 0.18 : 0.08,
+                                }}
+                                aria-hidden="true"
+                              >
+                                {station._step}
+                              </span>
+                              {station._usage && (
+                                <span className="text-[8px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-medium">
+                                  {station._usage}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Role label */}
+                            <div className="flex items-center gap-2 mb-3">
+                              <div
+                                className="h-px transition-all duration-300"
+                                style={{
+                                  width: isActive ? '16px' : '10px',
+                                  background: '#050A5C',
+                                  opacity: isActive ? 0.6 : 0.22,
                                 }}
                               />
-                            ) : (
-                              <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]">
-                                <div className="absolute inset-3 border border-[#C5CEDF]/25" />
-                              </div>
+                              <span
+                                className="text-[9px] tracking-[0.32em] uppercase font-semibold transition-colors duration-300"
+                                style={{ color: isActive ? 'rgba(5,10,92,0.85)' : 'rgba(5,10,92,0.38)' }}
+                              >
+                                {station._role}
+                              </span>
+                              {station._isCore && (
+                                <span className="text-[7px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1.5 py-0.5">
+                                  CORE
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Product packshot */}
+                            <div
+                              className="relative mb-3 mx-auto w-full bg-[#F7F9FC] flex items-center justify-center overflow-hidden border border-[#E8EDF6] transition-all duration-300"
+                              style={{
+                                aspectRatio: '3/4',
+                                maxHeight: '160px',
+                                borderColor: isActive ? 'rgba(5,10,92,0.18)' : undefined,
+                              }}
+                            >
+                              {station._img ? (
+                                <img
+                                  src={station._img}
+                                  alt={station.name || ''}
+                                  className="w-full h-full object-contain p-3 transition-opacity duration-300"
+                                  style={{ opacity: isActive ? 1 : 0.8 }}
+                                  onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                    (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
+                                  }}
+                                />
+                              ) : (
+                                <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]">
+                                  <div className="absolute inset-3 border border-[#C5CEDF]/25" />
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Product name */}
+                            <h3
+                              className="text-[11px] font-medium leading-snug mb-1 transition-colors duration-300 line-clamp-2"
+                              style={{ color: isActive ? '#050A5C' : '#1F2933' }}
+                            >
+                              {station.name || station.title}
+                            </h3>
+
+                            {/* Key */}
+                            {station.key && (
+                              <p className="text-[9px] text-[#9CA3AF] tracking-[0.12em] uppercase">{station.key}</p>
                             )}
                           </div>
-
-                          {/* Product name */}
-                          <h3 className="text-[11px] font-medium text-[#1F2933] leading-snug mb-2 group-hover:text-[#050A5C] transition-colors duration-300 line-clamp-2">
-                            {station.name}
-                          </h3>
-
-                          {/* Key ingredient */}
-                          {station.key && (
-                            <p className="text-[9px] text-[#9CA3AF] tracking-[0.12em] uppercase mb-2">{station.key}</p>
-                          )}
-
-                          {/* Description */}
-                          {station._desc && (
-                            <p className="text-[10px] text-[#6B7280] font-light leading-relaxed line-clamp-3 mt-auto pt-2">
-                              {station._desc}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Bottom connector line — ritual sequence */}
-                        {i < stationItems.length - 1 && (
-                          <div aria-hidden="true" className="absolute -right-px top-1/4 h-px w-3 bg-[#C5CEDF]/60 hidden" />
-                        )}
-                      </motion.div>
-                    ))}
+                        </motion.button>
+                      );
+                    })}
                   </div>
 
-                  {/* Mobile: vertical ritual cards */}
-                  <div className="md:hidden space-y-4">
-                    {stationItems.map((station, i) => (
-                      <motion.div
-                        key={i}
-                        className={`relative flex gap-5 border border-[#D9DEE8] p-5
-                          ${station._isCore ? 'bg-[#F0F4FB]' : 'bg-white/80'}`}
-                        initial={{ opacity: 0, x: -16 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: '-20px' }}
-                        transition={{ duration: 0.5, delay: i * 0.06 }}
-                      >
-                        {station._isCore && (
-                          <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-[#050A5C]/40" />
+                  {/* ── Desktop Detail Panel ── */}
+                  {activeStation && (
+                    <motion.div
+                      key={resolvedActive}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, ease: 'easeOut' }}
+                      className="hidden md:grid grid-cols-12 gap-8 border border-t-0 border-[#D9DEE8] bg-white/80 px-8 py-7"
+                      aria-live="polite"
+                    >
+                      {/* Left — Step + Role */}
+                      <div className="col-span-2 flex flex-col justify-center border-r border-[#E8EDF6] pr-8">
+                        <span
+                          className="font-serif font-light leading-none text-[#050A5C]/12 select-none block mb-2"
+                          style={{ fontSize: 'clamp(3rem, 4vw, 4.5rem)', lineHeight: 1 }}
+                          aria-hidden="true"
+                        >
+                          {activeStation._step}
+                        </span>
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-4 h-px bg-[#050A5C]/40" />
+                          <span className="text-[9px] tracking-[0.32em] uppercase font-semibold text-[#050A5C]/60">
+                            {activeStation._role}
+                          </span>
+                        </div>
+                        {activeStation._isCore && (
+                          <span className="text-[7px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1.5 py-0.5 w-fit mt-1">
+                            CORE TREATMENT
+                          </span>
                         )}
+                        {activeStation._usage && (
+                          <span className="text-[9px] tracking-[0.2em] uppercase text-[#050A5C]/35 font-medium mt-3">
+                            {activeStation._usage}
+                          </span>
+                        )}
+                      </div>
 
+                      {/* Center — Product name + description + why */}
+                      <div className="col-span-6 flex flex-col justify-center">
+                        <h3 className="text-lg font-light text-[#050A5C] leading-snug mb-3">
+                          {activeStation.name || activeStation.title}
+                        </h3>
+                        {activeStation._desc && (
+                          <p className="text-sm text-[#5A6374] font-light leading-relaxed mb-4">
+                            {activeStation._desc}
+                          </p>
+                        )}
+                        {activeStation._why && (
+                          <div className="border-t border-[#E8EDF6] pt-4">
+                            <span className="block text-[9px] tracking-[0.28em] uppercase text-[#050A5C]/35 font-semibold mb-2">
+                              Why this step matters
+                            </span>
+                            <p className="text-xs text-[#6B7280] font-light leading-relaxed">
+                              {activeStation._why}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Right — Ingredients + image thumb */}
+                      <div className="col-span-4 flex gap-6 items-center">
                         {/* Image */}
-                        <div className="w-20 h-24 bg-[#F7F9FC] border border-[#E8EDF6] flex items-center justify-center shrink-0 overflow-hidden">
-                          {station._img ? (
+                        {activeStation._img && (
+                          <div className="w-20 h-24 shrink-0 bg-[#F7F9FC] border border-[#E0E7F0] flex items-center justify-center overflow-hidden">
                             <img
-                              src={station._img}
-                              alt={station.name || ''}
+                              src={activeStation._img}
+                              alt={activeStation.name || ''}
                               className="w-full h-full object-contain p-2"
                               onError={(e) => {
                                 (e.currentTarget as HTMLImageElement).style.display = 'none';
-                                (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
                               }}
                             />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                          </div>
+                        )}
+                        {/* Ingredients */}
+                        <div className="flex flex-col flex-1">
+                          {activeStation._ingredients.length > 0 && (
+                            <>
+                              <span className="block text-[9px] tracking-[0.28em] uppercase text-[#050A5C]/35 font-semibold mb-2">
+                                Key Actives
+                              </span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {activeStation._ingredients.map((ing: string) => (
+                                  <span
+                                    key={ing}
+                                    className="text-[9px] tracking-[0.12em] uppercase border border-[#D9DEE8] px-2 py-1 text-[#050A5C]/70 font-medium"
+                                  >
+                                    {ing}
+                                  </span>
+                                ))}
+                              </div>
+                            </>
                           )}
                         </div>
+                      </div>
+                    </motion.div>
+                  )}
 
-                        <div className="flex flex-col flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-serif font-light text-[#050A5C]/15 text-2xl leading-none">{station._step}</span>
-                            <span className="text-[8px] tracking-[0.28em] uppercase text-[#050A5C]/45 font-semibold">{station._role}</span>
+                  {/* Mobile: vertical accordion ritual cards */}
+                  <div className="md:hidden space-y-2">
+                    {stationItems.map((station, i) => {
+                      const isOpen = openAccordionIdx === i;
+                      return (
+                        <div key={i} className={`border border-[#D9DEE8] overflow-hidden ${
+                          station._isCore ? 'bg-[#F4F7FB]' : 'bg-white/80'
+                        }`}>
+                          {/* Accordion header button */}
+                          <button
+                            type="button"
+                            aria-expanded={isOpen}
+                            aria-controls={`accordion-panel-${i}`}
+                            id={`accordion-btn-${i}`}
+                            className={`w-full flex items-center gap-4 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#050A5C]/30 focus-visible:ring-inset transition-colors duration-200 ${
+                              isOpen ? 'bg-[#EBF0FA]' : ''
+                            }`}
+                            onClick={() => setOpenAccordionIdx(isOpen ? null : i)}
+                          >
+                            {/* Core side accent */}
                             {station._isCore && (
-                              <span className="text-[6px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1 py-0.5">CORE</span>
+                              <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-[#050A5C]/40" />
                             )}
-                          </div>
-                          <h3 className="text-sm font-medium text-[#1F2933] leading-snug mb-1">{station.name}</h3>
-                          {station.key && <p className="text-[9px] text-[#9CA3AF] tracking-wide uppercase mb-1">{station.key}</p>}
-                          {station._usage && <p className="text-[9px] text-[#050A5C]/35 tracking-[0.15em] uppercase">{station._usage}</p>}
+
+                            {/* Image thumb */}
+                            <div className="w-14 h-16 shrink-0 bg-[#F7F9FC] border border-[#E8EDF6] flex items-center justify-center overflow-hidden">
+                              {station._img ? (
+                                <img
+                                  src={station._img}
+                                  alt={station.name || ''}
+                                  className="w-full h-full object-contain p-1.5"
+                                  onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                    (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                              )}
+                            </div>
+
+                            {/* Text */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <span className="font-serif font-light text-[#050A5C]/15 text-xl leading-none">{station._step}</span>
+                                <span className="text-[8px] tracking-[0.26em] uppercase text-[#050A5C]/45 font-semibold">{station._role}</span>
+                                {station._isCore && (
+                                  <span className="text-[6px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1 py-0.5">CORE</span>
+                                )}
+                              </div>
+                              <p className="text-sm font-medium text-[#1F2933] leading-snug truncate">{station.name || station.title}</p>
+                              {station.key && !isOpen && (
+                                <p className="text-[9px] text-[#9CA3AF] tracking-wide uppercase mt-0.5">{station.key}</p>
+                              )}
+                            </div>
+
+                            {/* Chevron */}
+                            <svg
+                              className={`w-4 h-4 text-[#050A5C]/30 shrink-0 transition-transform duration-300 ${
+                                isOpen ? 'rotate-180' : ''
+                              }`}
+                              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+
+                          {/* Accordion detail panel */}
+                          {isOpen && (
+                            <motion.div
+                              id={`accordion-panel-${i}`}
+                              role="region"
+                              aria-labelledby={`accordion-btn-${i}`}
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.3, ease: 'easeOut' }}
+                              className="px-4 pb-5 pt-2 border-t border-[#D9DEE8]"
+                            >
+                              {/* Description */}
+                              {station._desc && (
+                                <p className="text-sm text-[#5A6374] font-light leading-relaxed mb-4">
+                                  {station._desc}
+                                </p>
+                              )}
+                              {/* Ingredients */}
+                              {station._ingredients.length > 0 && (
+                                <div className="mb-4">
+                                  <span className="block text-[9px] tracking-[0.28em] uppercase text-[#050A5C]/35 font-semibold mb-2">Key Actives</span>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {station._ingredients.map((ing: string) => (
+                                      <span key={ing} className="text-[9px] tracking-[0.12em] uppercase border border-[#D9DEE8] px-2 py-1 text-[#050A5C]/70">
+                                        {ing}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {/* Usage + Why */}
+                              <div className="flex items-center gap-4">
+                                {station._usage && (
+                                  <span className="text-[9px] tracking-[0.2em] uppercase text-[#050A5C]/40 font-semibold border border-[#D9DEE8] px-2 py-1">
+                                    {station._usage}
+                                  </span>
+                                )}
+                              </div>
+                              {station._why && (
+                                <div className="mt-4 border-t border-[#E8EDF6] pt-3">
+                                  <span className="block text-[9px] tracking-[0.28em] uppercase text-[#050A5C]/35 font-semibold mb-1">Why this step</span>
+                                  <p className="text-xs text-[#6B7280] font-light leading-relaxed">{station._why}</p>
+                                </div>
+                              )}
+                            </motion.div>
+                          )}
                         </div>
-                      </motion.div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </>
               )}
