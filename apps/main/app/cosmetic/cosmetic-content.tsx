@@ -9,6 +9,7 @@ import { CosmeticCtaTracker } from './cosmetic-tracker';
 import type { PublicHeroMedia } from '@/lib/load-public-hero-media';
 import type { CosmeticPageMedia } from '@/lib/load-public-cosmetic-media';
 import { ClinicalFormulaLab } from './components/ClinicalFormulaLab';
+import { SkinRitualFinder } from './components/SkinRitualFinder';
 import { 
   FlaskConical, 
   Microscope, 
@@ -1296,66 +1297,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           SECTION 6 — DAILY CLINICAL RITUAL
       ─────────────────────────────────────────────────────────────────────── */}
       {dailyRitual && (
-      <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* Left: Steps */}
-            <div>
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: '-60px' }}
-                variants={stagger}
-              >
-                <motion.div variants={fadeUp}><SectionLabel>{dailyRitual.eyebrow}</SectionLabel></motion.div>
-                <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight mb-12">
-                  {dailyRitual.title}
-                </motion.h2>
-              </motion.div>
-
-              <div className="space-y-0">
-                {(dailyRitual.items || []).map((item: any, i: number) => (
-                  <motion.div
-                    key={i}
-                    className={`flex gap-6 py-7 border-b ${SILVER_BORDER} group`}
-                    initial={{ opacity: 0, x: -16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: '-30px' }}
-                    transition={{ duration: 0.6, delay: i * 0.08 }}
-                  >
-                    <span className="text-[12px] font-mono font-semibold text-[#050A5C]/30 tracking-widest mt-0.5 w-8 flex-shrink-0">
-                      {item.step}
-                    </span>
-                    <div>
-                      <p className="text-sm font-medium text-[#050A5C] mb-1.5 group-hover:text-[#101A8C] transition-colors">
-                        {item.name}
-                      </p>
-                      <p className="text-xs text-[#9CA3AF] font-light leading-relaxed">{item.detail}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: Ritual panel image / framed gradient */}
-            <motion.div
-              className={`relative hidden lg:block aspect-square border ${SILVER_BORDER} overflow-hidden`}
-              initial={{ opacity: 0, scale: 0.96 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9 }}
-            >
-              <EditorialImage
-                src={cosmeticMedia.ritualPanel}
-                alt="VAVAW clinical skincare ritual"
-                className="absolute inset-0 w-full h-full"
-                fallbackGradient="from-[#EBF0F8] via-[#F4F7FB] to-[#D9DEE8]"
-                frame
-              />
-            </motion.div>
-          </div>
-        </div>
-      </section>
+        <SkinRitualFinder dailyRitual={dailyRitual} products={productCards} cosmeticMedia={cosmeticMedia} />
       )}
 
       {/* ───────────────────────────────────────────────────────────────────────

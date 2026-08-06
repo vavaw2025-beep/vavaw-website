@@ -532,10 +532,42 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
   // ─── RITUAL STEPS STATE & LOGIC ─────────────────────────────────────────
   const [ritualList, setRitualList] = useState<any[]>([]);
+  const [ritualEyebrow, setRitualEyebrow] = useState('');
+  const [ritualTitle, setRitualTitle] = useState('');
+  const [ritualDescription, setRitualDescription] = useState('');
+  const [ritualCtaLabel, setRitualCtaLabel] = useState('');
+  const [ritualCtaHref, setRitualCtaHref] = useState('');
+  const [ageGroupsList, setAgeGroupsList] = useState<any[]>([]);
+  const [concernsList, setConcernsList] = useState<any[]>([]);
+  const [goalsList, setGoalsList] = useState<any[]>([]);
+  const [recommendationsList, setRecommendationsList] = useState<any[]>([]);
 
   useEffect(() => {
     const ritBlock = blocks.find(b => b.block_type === 'cosmetic-daily-ritual');
-    setRitualList(ritBlock?.content?.items || []);
+    const content = ritBlock?.content || {};
+    setRitualList(content.items || []);
+    setRitualEyebrow(content.eyebrow || 'DAILY CLINICAL RITUAL');
+    setRitualTitle(content.title || 'Find Your Clinical Ritual');
+    setRitualDescription(content.description || 'Answer a few quick questions to discover a Korean clinical skincare ritual designed for your skin stage and concern.');
+    setRitualCtaLabel(content.ctaLabel || 'Nhận tư vấn cá nhân hóa');
+    setRitualCtaHref(content.ctaHref || '/contact?type=cosmetic_interest');
+    setAgeGroupsList(content.ageGroups || []);
+    setConcernsList(content.concerns || []);
+    setGoalsList(content.goals || []);
+    setRecommendationsList(
+      (content.recommendations || []).map((rec: any) => ({
+        id: rec.id || '',
+        matchAgeGroup: rec.match?.ageGroup || '',
+        matchConcern: rec.match?.concern || '',
+        matchGoal: rec.match?.goal || '',
+        title: rec.title || '',
+        description: rec.description || '',
+        whyThisFits: rec.whyThisFits || '',
+        morning: Array.isArray(rec.morning) ? rec.morning.join('\n') : rec.morning || '',
+        evening: Array.isArray(rec.evening) ? rec.evening.join('\n') : rec.evening || '',
+        actives: Array.isArray(rec.actives) ? rec.actives.join(', ') : rec.actives || '',
+      }))
+    );
   }, [blocks]);
 
   const handleSaveRitual = async () => {
@@ -544,6 +576,34 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
     const updatedContent = {
       ...ritBlock.content,
+      eyebrow: ritualEyebrow,
+      title: ritualTitle,
+      description: ritualDescription,
+      ctaLabel: ritualCtaLabel,
+      ctaHref: ritualCtaHref,
+      ageGroups: ageGroupsList,
+      concerns: concernsList,
+      goals: goalsList,
+      recommendations: recommendationsList.map((rec: any) => {
+        const matchObj: any = {
+          concern: rec.matchConcern,
+          goal: rec.matchGoal,
+        };
+        if (rec.matchAgeGroup) {
+          matchObj.ageGroup = rec.matchAgeGroup;
+        }
+        return {
+          id: rec.id,
+          match: matchObj,
+          title: rec.title,
+          description: rec.description,
+          whyThisFits: rec.whyThisFits,
+          morning: typeof rec.morning === 'string' ? rec.morning.split('\n').map((s: string) => s.trim()).filter(Boolean) : rec.morning,
+          evening: typeof rec.evening === 'string' ? rec.evening.split('\n').map((s: string) => s.trim()).filter(Boolean) : rec.evening,
+          actives: typeof rec.actives === 'string' ? rec.actives.split(',').map((s: string) => s.trim()).filter(Boolean) : rec.actives,
+        };
+      }),
+      // Keep legacy items preserved
       items: ritualList
     };
 
@@ -1170,102 +1230,187 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       {activeTab === 'ritual' && (
         <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm space-y-6">
           <h3 className="font-bold text-slate-900 border-b border-slate-100 pb-3 flex justify-between items-center text-base">
-            <span>Quản lý quy trình chăm sóc da</span>
-            <span className="text-[10px] text-slate-400 font-mono">cosmetic-daily-ritual items</span>
+            <span>Skin Ritual Finder Manager / Bộ gợi ý quy trình cá nhân hóa</span>
+            <span className="text-[10px] text-slate-400 font-mono">cosmetic-daily-ritual content</span>
           </h3>
 
-          <div className="space-y-4">
-            {ritualList.map((item, idx) => (
-              <div key={idx} className="p-4 border border-slate-200 rounded-xl bg-slate-50/50 flex flex-col md:flex-row items-stretch md:items-center gap-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-1">
-                  <div className="md:col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Số bước</label>
-                    <input
-                      type="text"
-                      value={item.step || ''}
-                      onChange={e => {
-                        const newList = [...ritualList];
-                        newList[idx].step = e.target.value;
-                        setRitualList(newList);
-                      }}
-                      className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
-                      placeholder="Ví dụ: 01"
-                    />
-                  </div>
-                  <div className="md:col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tên bước</label>
-                    <input
-                      type="text"
-                      value={item.name || ''}
-                      onChange={e => {
-                        const newList = [...ritualList];
-                        newList[idx].name = e.target.value;
-                        setRitualList(newList);
-                      }}
-                      className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả quy trình</label>
-                    <input
-                      type="text"
-                      value={item.detail || ''}
-                      onChange={e => {
-                        const newList = [...ritualList];
-                        newList[idx].detail = e.target.value;
-                        setRitualList(newList);
-                      }}
-                      className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
-                    />
-                  </div>
-                </div>
+          {/* Section general configuration */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/50 p-4 border border-slate-200 rounded-xl">
+            <h4 className="col-span-2 text-xs font-bold text-slate-700 uppercase tracking-wider">Cấu hình chung chuyên mục</h4>
+            <div>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Eyebrow</label>
+              <input type="text" value={ritualEyebrow} onChange={e => setRitualEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Title</label>
+              <input type="text" value={ritualTitle} onChange={e => setRitualTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Description</label>
+              <textarea value={ritualDescription} onChange={e => setRitualDescription(e.target.value)} rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">CTA Label</label>
+              <input type="text" value={ritualCtaLabel} onChange={e => setRitualCtaLabel(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">CTA Link (Href)</label>
+              <input type="text" value={ritualCtaHref} onChange={e => setRitualCtaHref(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+            </div>
+          </div>
 
-                <div className="flex items-center justify-end gap-2 border-t md:border-t-0 pt-2 md:pt-0">
-                  <button
-                    onClick={() => {
-                      if (idx === 0) return;
-                      const newList = [...ritualList];
-                      const temp = newList[idx];
-                      newList[idx] = newList[idx - 1];
-                      newList[idx - 1] = temp;
-                      setRitualList(newList);
-                    }}
-                    disabled={idx === 0}
-                    className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-30"
-                  >
-                    <ArrowUp className="h-3.5 w-3.5 text-slate-500" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (idx === ritualList.length - 1) return;
-                      const newList = [...ritualList];
-                      const temp = newList[idx];
-                      newList[idx] = newList[idx + 1];
-                      newList[idx + 1] = temp;
-                      setRitualList(newList);
-                    }}
-                    disabled={idx === ritualList.length - 1}
-                    className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-30"
-                  >
-                    <ArrowDown className="h-3.5 w-3.5 text-slate-500" />
-                  </button>
-                  <button
-                    onClick={() => setRitualList(ritualList.filter((_, i) => i !== idx))}
-                    className="p-1.5 border border-red-100 rounded-lg hover:bg-red-50 text-red-500"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
+          {/* Repeaters grid */}
+          <div className="space-y-6 pt-4 border-t border-slate-100">
+            {/* A. Age Groups */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                <span>1. Nhóm độ tuổi (Age Groups)</span>
+                <button type="button" onClick={() => setAgeGroupsList([...ageGroupsList, { id: '', label: '', description: '' }])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm nhóm mới</button>
+              </h4>
+              <div className="space-y-2">
+                {ageGroupsList.map((g, idx) => (
+                  <div key={idx} className="p-3 border border-slate-200 rounded-lg flex items-center gap-3 bg-white">
+                    <input type="text" placeholder="ID (ví dụ: 18-24)" value={g.id || ''} onChange={e => { const l = [...ageGroupsList]; l[idx] = { ...l[idx], id: e.target.value }; setAgeGroupsList(l); }} className="w-1/4 text-xs p-1.5 border border-slate-300 rounded" />
+                    <input type="text" placeholder="Nhãn (ví dụ: 18–24)" value={g.label || ''} onChange={e => { const l = [...ageGroupsList]; l[idx] = { ...l[idx], label: e.target.value }; setAgeGroupsList(l); }} className="w-1/4 text-xs p-1.5 border border-slate-300 rounded" />
+                    <input type="text" placeholder="Mô tả ngắn" value={g.description || ''} onChange={e => { const l = [...ageGroupsList]; l[idx] = { ...l[idx], description: e.target.value }; setAgeGroupsList(l); }} className="flex-1 text-xs p-1.5 border border-slate-300 rounded" />
+                    <button type="button" onClick={() => setAgeGroupsList(ageGroupsList.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 p-1"><Trash2 className="h-4 w-4" /></button>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
 
-            <button
-              onClick={() => setRitualList([...ritualList, { step: '', name: '', detail: '' }])}
-              className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 font-bold hover:bg-slate-50/50 flex items-center justify-center gap-1.5 text-xs transition"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Thêm bước Ritual mới</span>
-            </button>
+            {/* B. Concerns */}
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                <span>2. Vấn đề da (Skin Concerns)</span>
+                <button type="button" onClick={() => setConcernsList([...concernsList, { id: '', label: '' }])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm vấn đề</button>
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {concernsList.map((c, idx) => (
+                  <div key={idx} className="p-2 border border-slate-200 rounded-lg flex items-center gap-3 bg-white">
+                    <input type="text" placeholder="ID (ví dụ: barrier)" value={c.id || ''} onChange={e => { const l = [...concernsList]; l[idx] = { ...l[idx], id: e.target.value }; setConcernsList(l); }} className="w-1/3 text-xs p-1.5 border border-slate-300 rounded" />
+                    <input type="text" placeholder="Nhãn tiếng Việt" value={c.label || ''} onChange={e => { const l = [...concernsList]; l[idx] = { ...l[idx], label: e.target.value }; setConcernsList(l); }} className="flex-1 text-xs p-1.5 border border-slate-300 rounded" />
+                    <button type="button" onClick={() => setConcernsList(concernsList.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 p-1"><Trash2 className="h-4 w-4" /></button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* C. Goals */}
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                <span>3. Mục tiêu dưỡng da (Skincare Goals)</span>
+                <button type="button" onClick={() => setGoalsList([...goalsList, { id: '', label: '' }])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm mục tiêu</button>
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {goalsList.map((g, idx) => (
+                  <div key={idx} className="p-2 border border-slate-200 rounded-lg flex items-center gap-3 bg-white">
+                    <input type="text" placeholder="ID (ví dụ: recover)" value={g.id || ''} onChange={e => { const l = [...goalsList]; l[idx] = { ...l[idx], id: e.target.value }; setGoalsList(l); }} className="w-1/3 text-xs p-1.5 border border-slate-300 rounded" />
+                    <input type="text" placeholder="Nhãn tiếng Việt" value={g.label || ''} onChange={e => { const l = [...goalsList]; l[idx] = { ...l[idx], label: e.target.value }; setGoalsList(l); }} className="flex-1 text-xs p-1.5 border border-slate-300 rounded" />
+                    <button type="button" onClick={() => setGoalsList(goalsList.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 p-1"><Trash2 className="h-4 w-4" /></button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* D. Recommendations */}
+            <div className="space-y-4 pt-2">
+              <h4 className="text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                <span>4. Gợi ý liệu trình (Recommendations)</span>
+                <button type="button" onClick={() => setRecommendationsList([...recommendationsList, { id: '', matchAgeGroup: '', matchConcern: '', matchGoal: '', title: '', description: '', whyThisFits: '', morning: '', evening: '', actives: '' }])} className="text-[10px] text-blue-600 font-bold hover:underline">+ Thêm gợi ý liệu trình</button>
+              </h4>
+              <div className="space-y-4">
+                {recommendationsList.map((rec, idx) => (
+                  <div key={idx} className="p-4 border border-slate-300 rounded-xl bg-slate-50/50 space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                      <span className="text-[11px] font-bold text-slate-600 uppercase font-mono">Liệu trình #{idx + 1}</span>
+                      <button type="button" onClick={() => setRecommendationsList(recommendationsList.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 p-1"><Trash2 className="h-4 w-4" /></button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mã ID gợi ý</label>
+                        <input type="text" placeholder="Ví dụ: barrier-recovery" value={rec.id || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], id: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề liệu trình</label>
+                        <input type="text" placeholder="Ví dụ: Barrier Recovery Ritual" value={rec.title || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], title: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thành phần hoạt tính (cách nhau dấu phẩy)</label>
+                        <input type="text" placeholder="Cica 7 Complex, Aloe..." value={rec.actives || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], actives: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-white p-3 border border-slate-200 rounded-lg">
+                      <div className="col-span-3 text-[10px] font-bold text-slate-600 uppercase">Quy luật khớp điều kiện (Matching rules)</div>
+                      <div>
+                        <label className="block text-[9px] text-slate-400 font-bold uppercase mb-0.5">Nhóm tuổi (Tùy chọn)</label>
+                        <select value={rec.matchAgeGroup || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], matchAgeGroup: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white">
+                          <option value="">-- Bất kỳ độ tuổi --</option>
+                          {ageGroupsList.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[9px] text-slate-400 font-bold uppercase mb-0.5">Vấn đề da *</label>
+                        <select value={rec.matchConcern || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], matchConcern: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white">
+                          <option value="">-- Chọn vấn đề da --</option>
+                          {concernsList.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[9px] text-slate-400 font-bold uppercase mb-0.5">Mục tiêu *</label>
+                        <select value={rec.matchGoal || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], matchGoal: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white">
+                          <option value="">-- Chọn mục tiêu --</option>
+                          {goalsList.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả tổng quan</label>
+                        <textarea rows={2} value={rec.description || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], description: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" placeholder="A calming routine designed to restore..." />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tại sao phù hợp (whyThisFits)</label>
+                        <textarea rows={2} value={rec.whyThisFits || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], whyThisFits: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" placeholder="Phù hợp với làn da nhạy cảm sau treatment..." />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Sản phẩm dùng Ban sáng (Morning - một dòng mỗi sản phẩm)</label>
+                        <textarea rows={3} value={rec.morning || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], morning: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white font-mono" placeholder="P30 Boost Facial Hydrating Toner&#13;Calmiance Superior Sheer Gel" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Sản phẩm dùng Ban đêm (Evening - một dòng mỗi sản phẩm)</label>
+                        <textarea rows={3} value={rec.evening || ''} onChange={e => { const l = [...recommendationsList]; l[idx] = { ...l[idx], evening: e.target.value }; setRecommendationsList(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white font-mono" placeholder="P30 Boost Facial Hydrating Toner&#13;Regenaglow Nourish Sheer Cream" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* E. Legacy Steps list fallback - kept collapsed at bottom for safety */}
+            <div className="pt-4 border-t border-slate-200/60">
+              <details className="text-slate-500 cursor-pointer">
+                <summary className="text-[10px] font-bold uppercase tracking-wider select-none hover:text-slate-700">Legacy Steps Config (Cấu hình các bước cũ - dự phòng)</summary>
+                <div className="space-y-4 pt-3">
+                  {ritualList.map((item, idx) => (
+                    <div key={idx} className="p-3 border border-slate-200 rounded-lg flex items-center gap-3 bg-slate-50/50">
+                      <input type="text" value={item.step || ''} onChange={e => { const l = [...ritualList]; l[idx].step = e.target.value; setRitualList(l); }} className="w-12 text-xs p-1 border border-slate-300 rounded bg-white" placeholder="01" />
+                      <input type="text" value={item.name || ''} onChange={e => { const l = [...ritualList]; l[idx].name = e.target.value; setRitualList(l); }} className="w-1/4 text-xs p-1 border border-slate-300 rounded bg-white" placeholder="Tên bước" />
+                      <input type="text" value={item.detail || ''} onChange={e => { const l = [...ritualList]; l[idx].detail = e.target.value; setRitualList(l); }} className="flex-1 text-xs p-1 border border-slate-300 rounded bg-white" placeholder="Mô tả bước" />
+                      <button type="button" onClick={() => setRitualList(ritualList.filter((_, i) => i !== idx))} className="text-red-500"><Trash2 className="h-4 w-4" /></button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => setRitualList([...ritualList, { step: '', name: '', detail: '' }])} className="text-xs text-blue-600 font-bold hover:underline">+ Thêm bước cũ mới</button>
+                </div>
+              </details>
+            </div>
+
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex justify-end">
@@ -1274,7 +1419,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               disabled={isSaving}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow disabled:opacity-50"
             >
-              {isSaving ? 'Đang lưu...' : 'Lưu quy trình ritual'}
+              {isSaving ? 'Đang lưu...' : 'Lưu quy trình'}
             </button>
           </div>
         </div>
