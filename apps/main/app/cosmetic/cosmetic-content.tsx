@@ -125,7 +125,7 @@ function EditorialImage({
 }
 
 // ─── Product image resolution ──────────────────────────────────────────────────
-// Map each slot string to the CosmeticPageMedia camelCase key.
+// Map each canonical slot string → CosmeticPageMedia camelCase key.
 // This mirrors the SLOT_MAP in load-public-cosmetic-media.ts.
 const MEDIA_SLOT_TO_KEY: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-product-luminous-set':       'luminousSet',
@@ -137,21 +137,51 @@ const MEDIA_SLOT_TO_KEY: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-product-lumiglow-sunscreen': 'lumiglowSunscreen',
 };
 
+// Legacy / short alias map — handles DB data not yet migrated to canonical keys.
+const SLOT_ALIAS_TO_CANONICAL: Record<string, string> = {
+  'luminous-set':        'cosmetic-product-luminous-set',
+  'luminous':            'cosmetic-product-luminous-set',
+  'featured-set':        'cosmetic-product-luminous-set',
+  'regenaglow-cream':    'cosmetic-product-regenaglow-cream',
+  'regenaglow':          'cosmetic-product-regenaglow-cream',
+  'calmiance-gel':       'cosmetic-product-calmiance-gel',
+  'calmiance':           'cosmetic-product-calmiance-gel',
+  'renew-ampoule':       'cosmetic-product-renew-ampoule',
+  'renew':               'cosmetic-product-renew-ampoule',
+  'ampoule':             'cosmetic-product-renew-ampoule',
+  'p30-moisturizer':     'cosmetic-product-p30-moisturizer',
+  'moisturizer':         'cosmetic-product-p30-moisturizer',
+  'p30-toner':           'cosmetic-product-p30-toner',
+  'toner':               'cosmetic-product-p30-toner',
+  'lumiglow-sunscreen':  'cosmetic-product-lumiglow-sunscreen',
+  'lumiglow':            'cosmetic-product-lumiglow-sunscreen',
+  'sunscreen':           'cosmetic-product-lumiglow-sunscreen',
+};
+
+/** Normalize a media slot value to canonical form before image resolution. */
+function normalizePublicSlot(slot?: string): string | undefined {
+  if (!slot) return undefined;
+  const s = slot.trim().toLowerCase();
+  if (MEDIA_SLOT_TO_KEY[s]) return s;                        // Already canonical
+  return SLOT_ALIAS_TO_CANONICAL[s] ?? undefined;            // Alias → canonical
+}
+
 function getProductImage(
   productName: string,
   mediaSlot: string | undefined,
   cosmeticMedia: CosmeticPageMedia
 ): string | undefined {
-  // Step 1: resolve by explicit slot → camelCase key
-  if (mediaSlot) {
-    const key = MEDIA_SLOT_TO_KEY[mediaSlot];
+  // Step 1: resolve by explicit slot (normalize legacy aliases first)
+  const canonical = normalizePublicSlot(mediaSlot);
+  if (canonical) {
+    const key = MEDIA_SLOT_TO_KEY[canonical];
     if (key && cosmeticMedia[key] && isValidHeroImageUrl(cosmeticMedia[key])) {
       return cosmeticMedia[key];
     }
   }
   // Step 2: fallback by product name to camelCase key
   const name = (productName || '').toLowerCase();
-  const nameSlot =
+  const nameSlot: keyof CosmeticPageMedia | null =
     name.includes('regenaglow') ? 'regenaglow' :
     name.includes('calmiance')  ? 'calmiance' :
     name.includes('renew')      ? 'renewAmpoule' :
@@ -161,7 +191,7 @@ function getProductImage(
     name.includes('luminous') ? 'luminousSet' :
     null;
   if (nameSlot) {
-    const url = cosmeticMedia[nameSlot as keyof CosmeticPageMedia];
+    const url = cosmeticMedia[nameSlot];
     if (url && isValidHeroImageUrl(url)) return url;
   }
   return undefined;

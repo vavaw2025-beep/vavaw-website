@@ -6,6 +6,11 @@ import { updateContentBlockAction } from '../content/actions';
 import { removeCosmeticMediaSlot, assignMediaAssetToSlot } from './actions';
 import { ContentBlockRecord, MediaAssetRecord } from '@vavaw/db';
 import Link from 'next/link';
+import {
+  COSMETIC_PRODUCT_MEDIA_SLOTS,
+  SIG_MEDIA_SLOT_VALUES,
+  normalizeCosmeticMediaSlot,
+} from './cosmetic-slots';
 import { 
   Settings, 
   Layers, 
@@ -184,10 +189,21 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setFeaturedIngredients(
         Array.isArray(feat.ingredients) ? feat.ingredients.join(', ') : (feat.ingredients || '')
       );
-      setFeaturedMediaSlot(feat.mediaSlot || 'cosmetic-product-luminous-set');
+      // Normalize legacy short slot key → canonical on load
+      setFeaturedMediaSlot(
+        normalizeCosmeticMediaSlot(feat.mediaSlot) ??
+        normalizeCosmeticMediaSlot('cosmetic-product-luminous-set') ??
+        'cosmetic-product-luminous-set'
+      );
       setFeaturedCtaLabel(feat.ctaLabel || content.ctaLabel || 'Explore the Ritual');
       setFeaturedCtaHref(feat.ctaHref || content.ctaHref || '/contact?type=cosmetic_interest');
-      setSigItems(content.items || []);
+      // Normalize each item's mediaSlot on load
+      setSigItems(
+        (content.items || []).map((item: any) => ({
+          ...item,
+          mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
+        }))
+      );
     }
   };
 
@@ -246,10 +262,17 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       };
 
       // Items: prefer Advanced JSON if explicitly edited, otherwise use repeater
+      // Always normalize mediaSlot to canonical value before saving
+      const normalizeSigItems = (items: any[]) =>
+        items.map((item) => ({
+          ...item,
+          mediaSlot: normalizeCosmeticMediaSlot(item.mediaSlot) ?? item.mediaSlot ?? '',
+        }));
+
       if (parsedItems !== undefined) {
-        updatedContent.items = parsedItems;
+        updatedContent.items = normalizeSigItems(parsedItems);
       } else {
-        updatedContent.items = sigItems;
+        updatedContent.items = normalizeSigItems(sigItems);
       }
     } else {
       if (parsedItems !== undefined) {
@@ -1512,15 +1535,6 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
                 {/* ── Signature Recovery Collection custom editor ── */}
                 {editingBlock.block_type === 'cosmetic-signature-collection' && (() => {
-                  const SIG_MEDIA_SLOTS = [
-                    'cosmetic-product-luminous-set',
-                    'cosmetic-product-regenaglow-cream',
-                    'cosmetic-product-calmiance-gel',
-                    'cosmetic-product-renew-ampoule',
-                    'cosmetic-product-p30-moisturizer',
-                    'cosmetic-product-p30-toner',
-                    'cosmetic-product-lumiglow-sunscreen',
-                  ];
                   return (
                     <div className="col-span-2 space-y-6 border-t border-slate-100 pt-4 mt-2">
                       <p className="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 leading-relaxed">
@@ -1563,7 +1577,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             <select value={featuredMediaSlot} onChange={e => setFeaturedMediaSlot(e.target.value)}
                               className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]">
                               <option value="">-- chọn slot --</option>
-                              {SIG_MEDIA_SLOTS.map(s => <option key={s} value={s}>{s.replace('cosmetic-product-', '')}</option>)}
+                              {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}
                             </select>
                           </div>
                           <div className="md:col-span-2">
@@ -1657,7 +1671,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                   <select value={item.mediaSlot || ''} onChange={e => { const l = [...sigItems]; l[idx] = { ...l[idx], mediaSlot: e.target.value }; setSigItems(l); }}
                                     className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]">
                                     <option value="">-- để trống = tự khớp theo tên --</option>
-                                    {SIG_MEDIA_SLOTS.map(s => <option key={s} value={s}>{s.replace('cosmetic-product-', '')}</option>)}
+                                    {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => (
+                                      <option key={slot.value} value={slot.value}>{slot.label}</option>
+                                    ))}
                                   </select>
                                 </div>
                               </div>
