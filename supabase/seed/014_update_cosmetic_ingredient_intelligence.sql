@@ -163,28 +163,44 @@ BEGIN
     RETURN;
   END IF;
 
-  -- Ensure header metadata exists
-  IF (v_content->>'eyebrow') IS NULL THEN
-    v_content := v_content || jsonb_build_object('eyebrow', 'ACTIVE INGREDIENT INTELLIGENCE');
-  END IF;
-  IF (v_content->>'title') IS NULL THEN
-    v_content := v_content || jsonb_build_object('title', 'Bản đồ hoạt chất phục hồi da');
-  END IF;
-  IF (v_content->>'description') IS NULL THEN
-    v_content := v_content || jsonb_build_object('description', 'Khám phá cách các hoạt chất trong hệ sản phẩm VAVAW hỗ trợ phục hồi, cấp ẩm, làm dịu, tái tạo và bảo vệ làn da.');
-  END IF;
-  IF (v_content->>'logicTitle') IS NULL THEN
-    v_content := v_content || jsonb_build_object('logicTitle', 'Clinical Formula Logic');
-  END IF;
-  IF (v_content->>'logicDescription') IS NULL THEN
-    v_content := v_content || jsonb_build_object('logicDescription', 'Mỗi hoạt chất được đặt vào đúng vai trò trong routine: chuẩn bị da, hỗ trợ tái tạo, làm dịu, khóa ẩm và bảo vệ ban ngày.');
-  END IF;
-
   v_items := COALESCE(v_content->'items', '[]'::jsonb);
 
-  -- If empty list, load defaults directly
-  IF jsonb_array_length(v_items) = 0 THEN
+  -- Check if there are legacy/null ingredient items or legacy title
+  IF LOWER(v_content->>'title') = 'clinical ingredients' OR jsonb_array_length(v_items) = 0 THEN
+    v_matched := true; -- v_matched used as a legacy flag here
+  ELSE
+    v_matched := false;
+    FOR v_i IN 0..jsonb_array_length(v_items) - 1 LOOP
+      v_def_item := v_items->v_i;
+      IF (v_def_item->>'id') IS NULL 
+         OR (v_def_item->>'routineStage') IS NULL 
+         OR (v_def_item->>'category') IS NULL 
+         OR (v_def_item->'supports') IS NULL 
+         OR (v_def_item->'bestFor') IS NULL 
+         OR (v_def_item->'foundIn') IS NULL THEN
+        v_matched := true;
+        EXIT;
+      END IF;
+    END LOOP;
+  END IF;
+
+  -- Force update header fields to new copy
+  v_content := v_content || jsonb_build_object(
+    'eyebrow', 'ACTIVE INGREDIENT INTELLIGENCE',
+    'title', 'Bản đồ hoạt chất phục hồi da',
+    'description', 'Khám phá cách các hoạt chất trong hệ sản phẩm VAVAW hỗ trợ phục hồi, cấp ẩm, làm dịu, tái tạo và bảo vệ làn da.',
+    'logicTitle', 'Clinical Formula Logic',
+    'logicDescription', 'Mỗi hoạt chất được đặt vào đúng vai trò trong routine: chuẩn bị da, hỗ trợ tái tạo, làm dịu, khóa ẩm và bảo vệ ban ngày.'
+  );
+
+  IF v_matched THEN
+    -- Backup existing content.items into legacyIngredientItems if not already present
+    IF (v_content->'legacyIngredientItems') IS NULL THEN
+      v_content := jsonb_set(v_content, '{legacyIngredientItems}', v_items);
+    END IF;
+    -- Replace content.items with canonical 8 items
     v_content := jsonb_set(v_content, '{items}', v_default_items);
+    RAISE NOTICE 'Legacy ingredient items normalized and backed up.';
   ELSE
     -- Enrich existing items non-destructively
     FOR v_i IN 0..jsonb_array_length(v_items) - 1 LOOP

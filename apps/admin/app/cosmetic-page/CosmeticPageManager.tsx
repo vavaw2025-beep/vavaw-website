@@ -2486,12 +2486,26 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                       </div>
 
                       <div className="space-y-4">
-                        {ingItems.map((item, idx) => (
-                          <div key={idx} className="p-4 border border-slate-200 rounded-xl bg-slate-50/30 space-y-3 relative">
-                            {/* Header row */}
-                            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                              <span className="text-xs font-bold text-slate-400 font-mono">Hoạt chất #{idx + 1}</span>
-                              <div className="flex items-center gap-1.5">
+                        {ingItems.map((item, idx) => {
+                          const isMissingIntelligence = !item.id || !item.category || !item.routineStage ||
+                            !item.supports || (Array.isArray(item.supports) && item.supports.length === 0) ||
+                            !item.bestFor || (Array.isArray(item.bestFor) && item.bestFor.length === 0) ||
+                            !item.foundIn || (Array.isArray(item.foundIn) && item.foundIn.length === 0);
+
+                          return (
+                            <div key={idx} className="p-4 border border-slate-200 rounded-xl bg-slate-50/30 space-y-3 relative">
+                              {/* Header row */}
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <div className="flex items-center">
+                                  <span className="text-xs font-bold text-slate-400 font-mono">Hoạt chất #{idx + 1}</span>
+                                  {isMissingIntelligence && (
+                                    <span className="ml-2 text-[9px] font-bold text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-0.5 inline-flex items-center gap-1 shadow-sm">
+                                      <AlertCircle className="h-2.5 w-2.5" />
+                                      <span>Thiếu dữ liệu Intelligence</span>
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1.5">
                                 <button
                                   type="button"
                                   disabled={idx === 0}
@@ -2701,7 +2715,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                               </div>
                             </div>
                           </div>
-                        ))}
+                        );
+                      })}
                       </div>
 
                       <button

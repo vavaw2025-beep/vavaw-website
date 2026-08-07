@@ -83,8 +83,8 @@ export function normalizeIngredientItem(item: any, fallbackIdx: number): Ingredi
       usage: 'AM · PM',
       shortRole: 'Hỗ trợ cải thiện vẻ đẹp của làn da.',
       description: 'Hoạt chất phục hồi và nuôi dưỡng sâu hàng rào bảo vệ tự nhiên.',
-      supports: ['Skin support'],
-      bestFor: ['Mọi loại da'],
+      supports: [],
+      bestFor: [],
       foundIn: []
     };
   }
@@ -95,14 +95,14 @@ export function normalizeIngredientItem(item: any, fallbackIdx: number): Ingredi
   const id = item.id || (item.name ? item.name.toLowerCase().replace(/\s+/g, '-') : `ing-${fallbackIdx}`);
   const name = item.name || (isLegacy ? 'Hoạt chất bổ sung' : `Hoạt chất #${fallbackIdx + 1}`);
   const category = item.category || 'Clinical Support';
-  const icon = item.icon && ICON_MAP[item.icon] ? item.icon : 'flask-conical';
+  const icon = item.icon && ICON_MAP[item.icon] ? item.icon : (fallbackIdx % 2 === 0 ? 'atom' : 'flask-conical');
   const routineStage = item.routineStage || 'RECOVER';
   const usage = item.usage || 'AM · PM';
   const shortRole = item.shortRole || item.role || (isLegacy ? item.text : 'Hỗ trợ tối ưu hóa quy trình dưỡng da.');
   const description = item.description || (isLegacy ? item.text : 'Được đặc chế hỗ trợ sự khỏe mạnh của lớp màng Hydrolipid.');
-  const supports = parseList(item.supports || item.supportList || ['Dưỡng da khỏe mạnh']);
-  const bestFor = parseList(item.bestFor || ['Mọi loại da']);
-  const foundIn = parseList(item.foundIn || item.products);
+  const supports = parseList(item.supports || item.supportList || []);
+  const bestFor = parseList(item.bestFor || []);
+  const foundIn = parseList(item.foundIn || item.products || []);
 
   return { id, name, category, icon, routineStage, usage, shortRole, description, supports, bestFor, foundIn };
 }
