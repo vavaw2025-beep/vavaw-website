@@ -65,6 +65,7 @@ const REQUIRED_SLOTS = [
   { id: 'cosmetic-video-p30-moisturizer', name: 'Video P30 Boost Facial Moisturizer', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
   { id: 'cosmetic-video-p30-toner', name: 'Video P30 Boost Facial Hydrating Toner', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
   { id: 'cosmetic-video-lumiglow-sunscreen', name: 'Video Lumiglow Rosy Sheer Sunscreen', size: 'Video dọc 9:16, 1080x1920, MP4/WebM' },
+  { id: 'cosmetic-premium-program-spa-video', name: 'Video trải nghiệm VAVAW tại spa / clinic', size: 'Video dọc 9:16 hoặc 4:5, dưới 50MB (soft spa scene)' },
 ];
 
 const BLOCK_NAMES: Record<string, string> = {
@@ -140,6 +141,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [ingLogicTitle, setIngLogicTitle] = useState('');
   const [ingLogicDescription, setIngLogicDescription] = useState('');
   const [ingItems, setIngItems] = useState<any[]>([]);
+  // Premium Program / Spa Bridge states
+  const [premHeadline, setPremHeadline] = useState('');
+  const [premMediaSlot, setPremMediaSlot] = useState('');
+  const [premSecondaryCtaLabel, setPremSecondaryCtaLabel] = useState('');
+  const [premSecondaryCtaHref, setPremSecondaryCtaHref] = useState('');
+  const [premPillars, setPremPillars] = useState<any[]>([]);
 
   // Sync prop changes
   useEffect(() => {
@@ -284,6 +291,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setIngLogicDescription(content.logicDescription || 'Mỗi hoạt chất được đặt vào đúng vai trò trong routine: chuẩn bị da, hỗ trợ tái tạo, làm dịu, khóa ẩm và bảo vệ ban ngày.');
       setIngItems(content.items || []);
     }
+
+    if (block.block_type === 'cosmetic-premium-program') {
+      setPremHeadline(content.headline || '');
+      setPremMediaSlot(content.mediaSlot || 'cosmetic-premium-program-spa-video');
+      setPremSecondaryCtaLabel(content.secondaryCtaLabel || '');
+      setPremSecondaryCtaHref(content.secondaryCtaHref || '');
+      setPremPillars(content.pillars || content.items || []);
+    }
   };
 
   const handleSaveSectionEdits = async () => {
@@ -403,6 +418,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         updatedContent.items = parsedItems;
       } else {
         updatedContent.items = ingItems;
+      }
+    } else if (editingBlock.block_type === 'cosmetic-premium-program') {
+      updatedContent.headline = premHeadline;
+      updatedContent.mediaSlot = premMediaSlot;
+      updatedContent.secondaryCtaLabel = premSecondaryCtaLabel;
+      updatedContent.secondaryCtaHref = premSecondaryCtaHref;
+      if (isJsonDirty && parsedItems !== undefined) {
+        updatedContent.pillars = parsedItems;
+      } else {
+        updatedContent.pillars = premPillars;
       }
     } else {
       if (isJsonDirty && parsedItems !== undefined) {
@@ -887,13 +912,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Video đã tải</div>
               <div className="text-2xl font-extrabold text-slate-900">
-                {uploadedVideosCount} <span className="text-sm font-normal text-slate-400">/ 6</span>
+                {uploadedVideosCount} <span className="text-sm font-normal text-slate-400">/ 7</span>
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tổng media</div>
               <div className="text-2xl font-extrabold text-slate-900">
-                {totalMediaCount} <span className="text-sm font-normal text-slate-400">/ 23</span>
+                {totalMediaCount} <span className="text-sm font-normal text-slate-400">/ 24</span>
               </div>
             </div>
           </div>
@@ -1605,9 +1630,10 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
       {/* ─── TAB CONTENT 6: IMAGES (MEDIA SLOTS) ───────────────────────── */}
       {activeTab === 'images' && (() => {
-        const group1Slots = REQUIRED_SLOTS.filter(s => !s.id.startsWith('cosmetic-video-') && !s.id.startsWith('cosmetic-set-') && s.id !== 'cosmetic-product-luminous-set');
-        const group2Slots = REQUIRED_SLOTS.filter(s => s.id.startsWith('cosmetic-video-'));
+        const group1Slots = REQUIRED_SLOTS.filter(s => !s.id.startsWith('cosmetic-video-') && !s.id.startsWith('cosmetic-set-') && s.id !== 'cosmetic-product-luminous-set' && s.id !== 'cosmetic-premium-program');
+        const group2Slots = REQUIRED_SLOTS.filter(s => s.id.startsWith('cosmetic-video-') && s.id !== 'cosmetic-premium-program-spa-video');
         const group3Slots = REQUIRED_SLOTS.filter(s => s.id.startsWith('cosmetic-set-') || s.id === 'cosmetic-product-luminous-set');
+        const group4Slots = REQUIRED_SLOTS.filter(s => s.id === 'cosmetic-premium-program' || s.id === 'cosmetic-premium-program-spa-video');
 
         const renderSlotCard = (slot: typeof REQUIRED_SLOTS[number]) => {
           const asset = mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot);
@@ -1756,6 +1782,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                 {group3Slots.map(slot => renderSlotCard(slot))}
               </div>
             </div>
+
+            {/* Group 4: Video / ảnh spa & professional program */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Video / ảnh spa & professional program</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {group4Slots.map(slot => renderSlotCard(slot))}
+              </div>
+            </div>
           </div>
         );
       })()}
@@ -1776,10 +1810,10 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               <span className="font-semibold">Ảnh đã tải:</span> {uploadedImagesCount} / 17
             </div>
             <div>
-              <span className="font-semibold">Video đã tải:</span> {uploadedVideosCount} / 6
+              <span className="font-semibold">Video đã tải:</span> {uploadedVideosCount} / 7
             </div>
             <div>
-              <span className="font-semibold">Tổng media đã cấu hình:</span> {totalMediaCount} / 23
+              <span className="font-semibold">Tổng media đã cấu hình:</span> {totalMediaCount} / 24
             </div>
             <div>
               <span className="font-semibold">Media còn thiếu:</span> {missingMediaCount}
@@ -2726,6 +2760,166 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                       >
                         <Plus className="h-3 w-3" />
                         <span>Thêm hoạt chất mới</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Premium Program / Spa Bridge custom editor ── */}
+                {editingBlock.block_type === 'cosmetic-premium-program' && (
+                  <div className="col-span-2 space-y-6 border-t border-slate-100 pt-4 mt-2">
+                    <p className="text-[11px] text-blue-700 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 leading-relaxed">
+                      💡 <strong>Hướng dẫn:</strong> Section này dùng để kết nối VAVAW Cosmetic với trải nghiệm chăm sóc tại VAVAW Beauty & Co. Nên dùng video spa dọc hoặc ảnh spa/clinic có sản phẩm VAVAW xuất hiện tự nhiên.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/50 p-4 rounded-xl border border-slate-200">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Dòng tiêu đề phụ (Headline)</label>
+                        <input
+                          type="text"
+                          value={premHeadline}
+                          onChange={e => setPremHeadline(e.target.value)}
+                          className="w-full text-sm p-2 border border-slate-300 rounded-md bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                          placeholder="Ví dụ: Sản phẩm VAVAW được ứng dụng trong trải nghiệm chăm sóc phục hồi chuyên sâu tại spa."
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Media Slot (Chọn video hoặc ảnh)</label>
+                        <select
+                          value={premMediaSlot}
+                          onChange={e => setPremMediaSlot(e.target.value)}
+                          className="w-full text-sm p-2 border border-slate-300 rounded-md bg-white h-[38px] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        >
+                          <option value="cosmetic-premium-program-spa-video">cosmetic-premium-program-spa-video (Video trải nghiệm tại spa / clinic)</option>
+                          <option value="cosmetic-premium-program">cosmetic-premium-program (Ảnh Premium Program / Spa Clinic)</option>
+                        </select>
+                      </div>
+
+                      <div className="hidden md:block" />
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nút phụ (Secondary CTA Label)</label>
+                        <input
+                          type="text"
+                          value={premSecondaryCtaLabel}
+                          onChange={e => setPremSecondaryCtaLabel(e.target.value)}
+                          className="w-full text-sm p-2 border border-slate-300 rounded-md bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                          placeholder="Ví dụ: Nhận tư vấn sản phẩm"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Đường dẫn nút phụ (Secondary CTA Link)</label>
+                        <input
+                          type="text"
+                          value={premSecondaryCtaHref}
+                          onChange={e => setPremSecondaryCtaHref(e.target.value)}
+                          className="w-full text-sm p-2 border border-slate-300 rounded-md bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                          placeholder="Ví dụ: /contact?type=cosmetic_interest&source=premium_program"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Pillars repeater */}
+                    <div className="space-y-4">
+                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
+                        Các cột trụ chương trình (Program Pillars)
+                      </h4>
+
+                      <div className="space-y-4">
+                        {premPillars.map((pillar, idx) => (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-xl bg-slate-50/30 space-y-3 relative">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                              <span className="text-xs font-bold text-slate-400 font-mono">Trụ cột #{idx + 1}</span>
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  disabled={idx === 0}
+                                  onClick={() => {
+                                    const l = [...premPillars];
+                                    const temp = l[idx];
+                                    l[idx] = l[idx - 1];
+                                    l[idx - 1] = temp;
+                                    setPremPillars(l);
+                                  }}
+                                  className="p-1 hover:bg-slate-200 rounded disabled:opacity-30 transition"
+                                  title="Di chuyển lên"
+                                >
+                                  <ArrowUp className="h-3 w-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={idx === premPillars.length - 1}
+                                  onClick={() => {
+                                    const l = [...premPillars];
+                                    const temp = l[idx];
+                                    l[idx] = l[idx + 1];
+                                    l[idx + 1] = temp;
+                                    setPremPillars(l);
+                                  }}
+                                  className="p-1 hover:bg-slate-200 rounded disabled:opacity-30 transition"
+                                  title="Di chuyển xuống"
+                                >
+                                  <ArrowDown className="h-3 w-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (confirm('Xóa trụ cột này?')) {
+                                      setPremPillars(premPillars.filter((_, i) => i !== idx));
+                                    }
+                                  }}
+                                  className="p-1 text-slate-400 hover:text-red-600 rounded transition"
+                                  title="Xóa trụ cột"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề</label>
+                                <input
+                                  type="text"
+                                  value={pillar.title || pillar.icon || ''}
+                                  onChange={e => {
+                                    const l = [...premPillars];
+                                    l[idx] = { ...l[idx], title: e.target.value };
+                                    setPremPillars(l);
+                                  }}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: Spa-use recovery ritual"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả ngắn</label>
+                                <textarea
+                                  value={pillar.description || pillar.text || ''}
+                                  onChange={e => {
+                                    const l = [...premPillars];
+                                    l[idx] = { ...l[idx], description: e.target.value };
+                                    setPremPillars(l);
+                                  }}
+                                  rows={2}
+                                  className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                                  placeholder="Ví dụ: Ứng dụng sản phẩm trong quy trình chăm sóc phục hồi tại spa."
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setPremPillars([...premPillars, { title: '', description: '' }])}
+                        className="text-xs text-blue-600 font-bold flex items-center gap-1 hover:underline mt-1 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-lg"
+                      >
+                        <Plus className="h-3 w-3" />
+                        <span>Thêm trụ cột mới</span>
                       </button>
                     </div>
                   </div>

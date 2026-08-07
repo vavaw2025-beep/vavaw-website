@@ -1752,21 +1752,44 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       <section className={`${SECTION_WHITE} py-28 md:py-36 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left: Premium program image / framed gradient */}
+            {/* Left: Premium program video/image visual stage */}
             <motion.div
-              className={`relative aspect-[4/3] border ${SILVER_BORDER} overflow-hidden order-2 lg:order-1`}
+              className="relative aspect-[9/16] md:aspect-[4/5] border border-[#E2E8F0] overflow-hidden order-2 lg:order-1 bg-[#F8FAFC] rounded-2xl group shadow-sm"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.85 }}
             >
-              <EditorialImage
-                src={cosmeticMedia.premiumProgram}
-                alt="VAVAW premium skincare program — spa and clinic"
-                className="absolute inset-0 w-full h-full"
-                fallbackGradient="from-[#E8EDF6] to-[#D9DEE8]"
-                frame
-              />
+              {cosmeticMedia.premiumProgramSpaVideo ? (
+                <video
+                  key={cosmeticMedia.premiumProgramSpaVideo}
+                  src={cosmeticMedia.premiumProgramSpaVideo}
+                  muted
+                  playsInline
+                  loop
+                  autoPlay
+                  preload="metadata"
+                  className="w-full h-full object-cover"
+                />
+              ) : cosmeticMedia.premiumProgramImage ? (
+                <img
+                  src={cosmeticMedia.premiumProgramImage}
+                  alt="VAVAW professional spa program"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#050A5C]/5 to-transparent flex items-center justify-center p-8">
+                  <span className="text-[10px] font-mono tracking-wider text-[#050A5C]/40 uppercase">VAVAW Spa Stage</span>
+                </div>
+              )}
+              
+              {/* Subtle bottom overlay */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-6 pt-12 flex flex-col justify-end">
+                <div className="flex items-center justify-between text-white">
+                  <span className="text-[10px] font-mono tracking-widest uppercase opacity-90">Spa Recovery Ritual</span>
+                  <span className="text-[10px] font-bold tracking-widest uppercase opacity-80 border-l border-white/20 pl-3">VAVAW Beauty & Co</span>
+                </div>
+              </div>
             </motion.div>
 
             {/* Right: Content */}
@@ -1777,7 +1800,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
               viewport={{ once: true, margin: '-60px' }}
               variants={stagger}
             >
-              <motion.div variants={fadeUp}><SectionLabel>{premiumProgram.eyebrow}</SectionLabel></motion.div>
+              <motion.div variants={fadeUp}><SectionLabel>{premiumProgram.eyebrow || 'PROFESSIONAL SPA PROGRAM'}</SectionLabel></motion.div>
               <motion.h2
                 variants={fadeUp}
                 className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight leading-snug mb-4 whitespace-pre-wrap"
@@ -1785,24 +1808,47 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                 {premiumProgram.title}
               </motion.h2>
               <Divider />
-              <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-base leading-relaxed mb-10 whitespace-pre-wrap">
+              
+              {premiumProgram.headline && (
+                <motion.p variants={fadeUp} className="text-base md:text-lg font-light text-[#050A5C] italic leading-relaxed mb-6">
+                  {premiumProgram.headline}
+                </motion.p>
+              )}
+
+              <motion.p variants={fadeUp} className="text-[#6B7280] font-light text-sm leading-relaxed mb-8 whitespace-pre-wrap">
                 {premiumProgram.description}
               </motion.p>
 
-              <motion.div variants={fadeUp} className="space-y-5 mb-10">
-                {(premiumProgram.items || []).map((item: any, i: number) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <span className="text-[8px] text-[#050A5C]/30 mt-1.5 flex-shrink-0">{item.icon}</span>
-                    <p className="text-sm text-[#1F2933] font-light leading-relaxed">{item.text}</p>
-                  </div>
-                ))}
+              {/* Program Pillars */}
+              <motion.div variants={fadeUp} className="space-y-3.5 mb-8">
+                {((premiumProgram.pillars || premiumProgram.items || []).slice(0, 3)).map((pillar: any, i: number) => {
+                  const pTitle = pillar.title || pillar.icon || `Pillar ${i + 1}`;
+                  const pDesc = pillar.description || pillar.text || '';
+                  return (
+                    <div key={i} className="flex items-start gap-4 p-3.5 rounded-xl border border-[#E2E8F0]/60 bg-[#F8FAFC]/50 hover:bg-[#F8FAFC] transition-colors">
+                      <div className="w-5.5 h-5.5 rounded-full bg-[#050A5C]/5 flex items-center justify-center text-[10px] text-[#050A5C] font-mono shrink-0">
+                        0{i + 1}
+                      </div>
+                      <div className="space-y-1">
+                        <h4 className="text-xs font-bold text-[#050A5C] uppercase tracking-wider">{pTitle}</h4>
+                        {pDesc && <p className="text-xs text-slate-500 font-light leading-relaxed">{pDesc}</p>}
+                      </div>
+                    </div>
+                  );
+                })}
               </motion.div>
 
-              <motion.div variants={fadeUp}>
+              {/* CTAs */}
+              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-4">
                 <CosmeticCtaTracker
-                  label={premiumProgram.ctaLabel || "Start a Consultation"}
-                  href={premiumProgram.ctaHref || "/contact?type=cosmetic_interest"}
-                  className="w-full sm:w-auto h-[52px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[11px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors"
+                  label={premiumProgram.ctaLabel || "Trải nghiệm tại VAVAW Beauty & Co"}
+                  href={premiumProgram.ctaHref || "/go/beauty"}
+                  className="w-full sm:w-auto h-[52px] px-8 flex items-center justify-center bg-[#050A5C] text-white text-[11px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-all rounded-lg font-medium shadow-sm hover:shadow active:scale-[0.98]"
+                />
+                <CosmeticCtaTracker
+                  label={premiumProgram.secondaryCtaLabel || "Nhận tư vấn sản phẩm"}
+                  href={premiumProgram.secondaryCtaHref || "/contact?type=cosmetic_interest&source=premium_program"}
+                  className="w-full sm:w-auto h-[52px] px-8 flex items-center justify-center border border-[#050A5C]/20 text-[#050A5C] text-[11px] tracking-[0.2em] uppercase hover:bg-[#050A5C]/5 transition-all rounded-lg font-medium"
                 />
               </motion.div>
             </motion.div>

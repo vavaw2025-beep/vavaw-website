@@ -32,8 +32,10 @@ export interface CosmeticPageMedia {
   lumiglowSunscreen?: string;
   /** Daily Clinical Ritual panel image */
   ritualPanel?: string;
-  /** Premium Program / Spa Clinic visual */
-  premiumProgram?: string;
+  /** Premium Program / Spa Clinic image */
+  premiumProgramImage?: string;
+  /** Premium Program / Spa Clinic video */
+  premiumProgramSpaVideo?: string;
   /** Gallery slot 1 — product set overview */
   galleryProductSet?: string;
   /** Gallery slot 2 — texture / formula close-up */
@@ -74,7 +76,8 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-product-p30-toner':        'p30Toner',
   'cosmetic-product-lumiglow-sunscreen': 'lumiglowSunscreen',
   'cosmetic-gallery-ritual-panel':     'ritualPanel',
-  'cosmetic-premium-program':          'premiumProgram',
+  'cosmetic-premium-program-spa-video': 'premiumProgramSpaVideo',
+  'cosmetic-premium-program':          'premiumProgramImage',
   'cosmetic-gallery-product-set':      'galleryProductSet',
   'cosmetic-gallery-texture':          'galleryTexture',
   'cosmetic-gallery-clinic':           'galleryClinic',

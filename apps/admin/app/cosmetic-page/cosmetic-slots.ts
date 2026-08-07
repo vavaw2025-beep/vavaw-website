@@ -94,6 +94,11 @@ export const COSMETIC_VIDEO_MEDIA_SLOTS: CosmeticSlotDef[] = [
     label: 'Video Lumiglow Rosy Sheer Sunscreen',
     aliases: ['video-lumiglow-sunscreen', 'video-lumiglow'],
   },
+  {
+    value: 'cosmetic-premium-program-spa-video',
+    label: 'Video trải nghiệm VAVAW tại spa / clinic',
+    aliases: ['premium-program-spa-video', 'spa-video'],
+  },
 ];
 
 /** All canonical slot key strings, for use as a simple string array */
