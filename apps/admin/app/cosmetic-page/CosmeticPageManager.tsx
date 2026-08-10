@@ -281,7 +281,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     setEditCtaHref(content.ctaHref || '');
     setEditSortOrder(block.sort_order || 1);
     setEditIsActive(block.is_active);
-    if (block.block_type === 'cosmetic-product-landing-luminous-set') {
+    if (block.block_type.startsWith('cosmetic-product-landing-')) {
       setEditItemsJson(JSON.stringify(content, null, 2));
     } else {
       setEditItemsJson(content.items ? JSON.stringify(content.items, null, 2) : '');
@@ -359,7 +359,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       );
     }
 
-    if (block.block_type === 'cosmetic-product-landing-luminous-set') {
+    if (block.block_type.startsWith('cosmetic-product-landing-')) {
       setLandHeadline(content.headline || '');
       setLandHeroMediaSlot(content.heroMediaSlot || 'cosmetic-product-luminous-set');
       setLandSecondaryCtaLabel(content.secondaryCtaLabel || '');
@@ -524,7 +524,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       updatedContent.secondaryCtaLabel = finalSecondaryCtaLabel;
       updatedContent.secondaryCtaHref = finalSecondaryCtaHref;
       updatedContent.trustPoints = finalTrustPoints;
-    } else if (editingBlock.block_type === 'cosmetic-product-landing-luminous-set') {
+    } else if (editingBlock.block_type.startsWith('cosmetic-product-landing-')) {
       if (isJsonDirty && parsedItems !== undefined) {
         Object.assign(updatedContent, parsedItems);
       } else {
@@ -1988,54 +1988,71 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {(() => {
-              const landingBlock = blocks.find(b => b.block_type === 'cosmetic-product-landing-luminous-set');
-              return (
-                <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between">
-                  <div>
-                    <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider block mb-1">COSMETIC SET LANDING</span>
-                    <h3 className="text-lg font-bold text-slate-950">Luminous Revitalization Sheer Set</h3>
-                    <p className="text-xs text-slate-500 font-mono mt-1.5 bg-slate-50 p-2 rounded select-all">
-                      /cosmetic/products/luminous-revitalization-sheer-set
-                    </p>
-                    <div className="mt-4 flex items-center gap-3">
-                      <span className={`h-2.5 w-2.5 rounded-full ${landingBlock?.is_active ? 'bg-emerald-500' : 'bg-rose-500 animate-pulse'}`} />
-                      <span className="text-xs text-slate-600 font-medium">
-                        Trạng thái: {landingBlock ? (landingBlock.is_active ? 'Đang hoạt động (CMS)' : 'Đang tắt (Dùng mặc định static)') : 'Chưa có block'}
-                      </span>
+              const PRODUCT_LANDING_CONFIGS = [
+                {
+                  title: 'Luminous Revitalization Sheer Set',
+                  pagePath: '/cosmetic/products/luminous-revitalization-sheer-set',
+                  blockType: 'cosmetic-product-landing-luminous-set',
+                  label: 'COSMETIC SET LANDING'
+                },
+                {
+                  title: 'CELLUREVIVE Ampoule',
+                  pagePath: '/cosmetic/products/cellurevive-ampoule',
+                  blockType: 'cosmetic-product-landing-cellurevive-ampoule',
+                  label: 'COSMETIC AMPOULE LANDING'
+                }
+              ];
+
+              return PRODUCT_LANDING_CONFIGS.map((config) => {
+                const landingBlock = blocks.find(b => b.block_type === config.blockType);
+                return (
+                  <div key={config.blockType} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider block mb-1">{config.label}</span>
+                      <h3 className="text-lg font-bold text-slate-950">{config.title}</h3>
+                      <p className="text-xs text-slate-500 font-mono mt-1.5 bg-slate-50 p-2 rounded select-all">
+                        {config.pagePath}
+                      </p>
+                      <div className="mt-4 flex items-center gap-3">
+                        <span className={`h-2.5 w-2.5 rounded-full ${landingBlock?.is_active ? 'bg-emerald-500' : 'bg-rose-500 animate-pulse'}`} />
+                        <span className="text-xs text-slate-600 font-medium">
+                          Trạng thái: {landingBlock ? (landingBlock.is_active ? 'Đang hoạt động (CMS)' : 'Đang tắt (Dùng mặc định static)') : 'Chưa có block'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 flex items-center gap-3 border-t border-slate-100 pt-4">
+                      {landingBlock ? (
+                        <button
+                          onClick={() => startEditingSection(landingBlock)}
+                          className="flex-1 py-2 px-4 bg-[#050A5C] text-white rounded-lg text-xs font-semibold hover:bg-[#101A8C] transition flex items-center justify-center gap-1.5 shadow-sm"
+                        >
+                          <Settings className="h-3.5 w-3.5" />
+                          Sửa nội dung
+                        </button>
+                      ) : (
+                        <button
+                          disabled
+                          className="flex-1 py-2 px-4 bg-slate-100 text-slate-400 rounded-lg text-xs font-semibold cursor-not-allowed flex items-center justify-center gap-1.5"
+                          title="Vui lòng chạy file seed để tạo block này."
+                        >
+                          <Settings className="h-3.5 w-3.5" />
+                          Chưa có block
+                        </button>
+                      )}
+                      <a
+                        href={`${siteUrl}${config.pagePath}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 py-2 px-4 border border-slate-200 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-50 transition flex items-center justify-center gap-1.5"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        Xem trang public
+                      </a>
                     </div>
                   </div>
-
-                  <div className="mt-8 flex items-center gap-3 border-t border-slate-100 pt-4">
-                    {landingBlock ? (
-                      <button
-                        onClick={() => startEditingSection(landingBlock)}
-                        className="flex-1 py-2 px-4 bg-[#050A5C] text-white rounded-lg text-xs font-semibold hover:bg-[#101A8C] transition flex items-center justify-center gap-1.5 shadow-sm"
-                      >
-                        <Settings className="h-3.5 w-3.5" />
-                        Sửa nội dung
-                      </button>
-                    ) : (
-                      <button
-                        disabled
-                        className="flex-1 py-2 px-4 bg-slate-100 text-slate-400 rounded-lg text-xs font-semibold cursor-not-allowed flex items-center justify-center gap-1.5"
-                        title="Vui lòng chạy file seed 017 để tạo block này."
-                      >
-                        <Settings className="h-3.5 w-3.5" />
-                        Chưa có block
-                      </button>
-                    )}
-                    <a
-                      href={`${siteUrl}/cosmetic/products/luminous-revitalization-sheer-set`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 py-2 px-4 border border-slate-200 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-50 transition flex items-center justify-center gap-1.5"
-                    >
-                      <Eye className="h-3.5 w-3.5" />
-                      Xem trang public
-                    </a>
-                  </div>
-                </div>
-              );
+                );
+              });
             })()}
           </div>
         </div>
@@ -2064,7 +2081,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             {/* Modal Body */}
             <div className="p-5 flex-1 overflow-y-auto space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                {editingBlock.block_type !== 'cosmetic-product-landing-luminous-set' && (
+                {!editingBlock.block_type.startsWith('cosmetic-product-landing-') && (
                   <>
                     <div className="col-span-2">
                       <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tiêu đề (Title)</label>
@@ -2140,7 +2157,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   </>
                 )}
 
-                {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                {editingBlock.block_type.startsWith('cosmetic-product-landing-') && (
                   <div className="col-span-2 space-y-4">
                     {/* 1. Hero Details */}
                     <details className="group border border-slate-200 rounded-xl overflow-hidden" open>
