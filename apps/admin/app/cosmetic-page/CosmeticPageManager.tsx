@@ -183,8 +183,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const canEdit = ['owner', 'admin', 'editor'].includes(role);
 
   // Computed metrics
-  const totalSections = blocks.length;
-  const activeCount = blocks.filter(b => b.is_active).length;
+  const cosmeticPageBlocks = blocks.filter(b => !b.block_type.startsWith('cosmetic-product-landing-'));
+  const totalSections = cosmeticPageBlocks.length;
+  const activeCount = cosmeticPageBlocks.filter(b => b.is_active).length;
   const inactiveCount = totalSections - activeCount;
 
   const isGallerySectionActive = blocks.find(b => b.block_type === 'cosmetic-editorial-gallery')?.is_active ?? false;
@@ -896,7 +897,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   });
 
   return (
-    <div className="space-y-8 bg-slate-50/50 p-6 rounded-2xl border border-slate-100 shadow-sm">
+    <div className="w-full overflow-x-hidden space-y-8 bg-slate-50/50 p-6 rounded-2xl border border-slate-100 shadow-sm">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-6">
         <div>
@@ -934,7 +935,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       )}
 
       {/* Tabs IA */}
-      <div className="flex border-b border-slate-200 overflow-x-auto no-scrollbar">
+      <div className="w-full overflow-x-auto no-scrollbar">
+        <div className="flex border-b border-slate-200 min-w-max gap-2 px-1">
         <button
           onClick={() => setActiveTab('overview')}
           className={`py-3 px-5 text-sm font-semibold border-b-2 whitespace-nowrap flex items-center gap-2 transition ${
@@ -1007,6 +1009,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           <Layers className="h-4 w-4" />
           <span>Landing sản phẩm</span>
         </button>
+        </div>
       </div>
 
       {/* ─── TAB CONTENT 1: OVERVIEW ────────────────────────────────────── */}
@@ -1082,7 +1085,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       {activeTab === 'sections' && (
         <div className="space-y-4">
           <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden shadow-sm">
-            {blocks.filter(b => !b.block_type.startsWith('cosmetic-product-landing-')).map(block => (
+            {cosmeticPageBlocks.map(block => (
               <div key={block.id} className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors">
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">
