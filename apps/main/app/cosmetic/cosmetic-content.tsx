@@ -544,6 +544,8 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
     title: 'The Ritual Aesthetic',
     eyebrow: 'Visual Harmony'
   });
+  const editorialGalleryBlock = blocks?.find(b => b.blockType === 'cosmetic-editorial-gallery');
+  const isGalleryActive = editorialGalleryBlock ? (editorialGalleryBlock.isActive === true || (editorialGalleryBlock as any).is_active === true) : false;
 
   const finalCta = getBlockContent(blocks, 'cosmetic-final-cta', {
     title: 'Premium RAW Skincare System',
@@ -1863,7 +1865,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 9 — EDITORIAL GALLERY (no broken images, no placeholder text)
       ─────────────────────────────────────────────────────────────────────── */}
-      {editorialGallery && (
+      {editorialGallery && isGalleryActive && (
       <section className={`${SECTION_COOL} py-24 md:py-32 px-6 border-t ${SILVER_BORDER}`}>
         <div className="max-w-7xl mx-auto">
           <motion.div

@@ -161,8 +161,26 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const activeCount = blocks.filter(b => b.is_active).length;
   const inactiveCount = totalSections - activeCount;
 
-  const imageSlots = REQUIRED_SLOTS.filter(slot => !isCosmeticVideoMediaSlot(slot.id));
-  const videoSlots = REQUIRED_SLOTS.filter(slot => isCosmeticVideoMediaSlot(slot.id));
+  const isGallerySectionActive = blocks.find(b => b.block_type === 'cosmetic-editorial-gallery')?.is_active ?? false;
+  const EXCLUDED_GALLERY_SLOTS = [
+    'cosmetic-gallery-ritual-panel',
+    'cosmetic-gallery-product-set',
+    'cosmetic-gallery-texture',
+    'cosmetic-gallery-clinic',
+    'cosmetic-gallery-skin',
+    'cosmetic-gallery-serum',
+    'cosmetic-gallery-packaging'
+  ];
+
+  const activeRequiredSlots = REQUIRED_SLOTS.filter(slot => {
+    if (!isGallerySectionActive && EXCLUDED_GALLERY_SLOTS.includes(slot.id)) {
+      return false;
+    }
+    return true;
+  });
+
+  const imageSlots = activeRequiredSlots.filter(slot => !isCosmeticVideoMediaSlot(slot.id));
+  const videoSlots = activeRequiredSlots.filter(slot => isCosmeticVideoMediaSlot(slot.id));
 
   const uploadedImagesCount = imageSlots.filter(slot => {
     return mediaAssets.some(m => 
@@ -181,7 +199,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   }).length;
 
   const totalMediaCount = uploadedImagesCount + uploadedVideosCount;
-  const totalRequiredSlots = REQUIRED_SLOTS.length;
+  const totalRequiredSlots = activeRequiredSlots.length;
   const missingMediaCount = totalRequiredSlots - totalMediaCount;
 
   const showSuccess = (msg: string) => {
@@ -907,22 +925,29 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Ảnh đã tải</div>
               <div className="text-2xl font-extrabold text-slate-900">
-                {uploadedImagesCount} <span className="text-sm font-normal text-slate-400">/ 17</span>
+                {uploadedImagesCount} <span className="text-sm font-normal text-slate-400">/ {imageSlots.length}</span>
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Video đã tải</div>
               <div className="text-2xl font-extrabold text-slate-900">
-                {uploadedVideosCount} <span className="text-sm font-normal text-slate-400">/ 7</span>
+                {uploadedVideosCount} <span className="text-sm font-normal text-slate-400">/ {videoSlots.length}</span>
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tổng media</div>
               <div className="text-2xl font-extrabold text-slate-900">
-                {totalMediaCount} <span className="text-sm font-normal text-slate-400">/ 24</span>
+                {totalMediaCount} <span className="text-sm font-normal text-slate-400">/ {activeRequiredSlots.length}</span>
               </div>
             </div>
           </div>
+
+          {!isGallerySectionActive && (
+            <div className="bg-slate-50 border border-slate-200 text-slate-600 rounded-xl p-4 text-xs flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-slate-400 inline-block shrink-0" />
+              <span>Thư viện hình ảnh đang ẩn — có thể phát triển sau khi có feedback.</span>
+            </div>
+          )}
 
           <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm space-y-4">
             <h3 className="font-semibold text-slate-950 text-base">Liên kết trang</h3>
@@ -1683,13 +1708,18 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               {/* Info & Actions */}
               <div className="flex-1 min-w-0 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <h4 className="text-xs font-bold text-slate-900 truncate">{slot.name}</h4>
                     <span className={`text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
                       asset ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
                     }`}>
                       {asset ? 'Đã tải lên' : 'Chưa tải'}
                     </span>
+                    {!isGallerySectionActive && EXCLUDED_GALLERY_SLOTS.includes(slot.id) && (
+                      <span className="text-[9px] font-semibold bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-sm">
+                        Đang ẩn — không tính vào launch checklist
+                      </span>
+                    )}
                   </div>
                   <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{slot.id}</p>
                   <p className="text-[10px] text-slate-500 mt-1">Khuyên dùng: {slot.size}</p>
@@ -1808,13 +1838,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               <span className="font-semibold">Số section hoạt động:</span> {activeCount} / {totalSections}
             </div>
             <div>
-              <span className="font-semibold">Ảnh đã tải:</span> {uploadedImagesCount} / 17
+              <span className="font-semibold">Ảnh đã tải:</span> {uploadedImagesCount} / {imageSlots.length}
             </div>
             <div>
-              <span className="font-semibold">Video đã tải:</span> {uploadedVideosCount} / 7
+              <span className="font-semibold">Video đã tải:</span> {uploadedVideosCount} / {videoSlots.length}
             </div>
             <div>
-              <span className="font-semibold">Tổng media đã cấu hình:</span> {totalMediaCount} / 24
+              <span className="font-semibold">Tổng media đã cấu hình:</span> {totalMediaCount} / {activeRequiredSlots.length}
             </div>
             <div>
               <span className="font-semibold">Media còn thiếu:</span> {missingMediaCount}
