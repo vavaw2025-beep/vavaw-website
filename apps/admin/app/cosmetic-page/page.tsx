@@ -35,7 +35,7 @@ export default async function CosmeticPage() {
   const { data: blocksData, error: blocksError } = await supabase
     .from('content_blocks')
     .select('*')
-    .eq('page_path', '/cosmetic')
+    .in('page_path', ['/cosmetic', '/cosmetic/products/luminous-revitalization-sheer-set'])
     .order('sort_order', { ascending: true });
     
   if (blocksError) {

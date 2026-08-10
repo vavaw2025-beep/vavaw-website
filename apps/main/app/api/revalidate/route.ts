@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
-const ALLOWED_PATHS = ['/', '/cosmetic'];
+const ALLOWED_PATHS = ['/', '/cosmetic', '/cosmetic/products/luminous-revitalization-sheer-set'];
 
 export async function POST(req: NextRequest) {
   try {

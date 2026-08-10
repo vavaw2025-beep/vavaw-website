@@ -5,7 +5,7 @@ import { loadPublicCosmeticMedia } from '@/lib/load-public-cosmetic-media';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
 import { CosmeticCtaTracker } from '../../cosmetic-tracker';
 import { SiteFooter } from '@vavaw/ui';
-import { ShieldCheck, CheckCircle2, ChevronRight } from 'lucide-react';
+import { ShieldCheck, ChevronRight } from 'lucide-react';
 
 const DEFAULT_CONTENT = {
   eyebrow: 'VAVAW COSMETIC',
@@ -40,10 +40,10 @@ const DEFAULT_CONTENT = {
     { step: '05. Protect', title: 'Bảo vệ', description: 'Helps defend against external environmental stressors during daytime.' }
   ],
   activeTech: [
-    { name: 'Exosome', role: 'Phục hồi & truyền tín hiệu tế bào', description: 'Công nghệ sinh học tiên tiến giúp dẫn truyền dưỡng chất sâu, hỗ trợ tái tạo tự nhiên và làm dịu làn da nhạy cảm.', product: 'CELLUREVIVE Ampoule' },
-    { name: 'Collagen Water', role: 'Cấp ẩm & duy trì săn chắc', description: 'Cung cấp nền tảng ẩm mượt dồi dào, giúp da trông căng mịn và cải thiện vẻ rạng rỡ tự nhiên.', product: 'Cả hai sản phẩm' },
-    { name: 'Peptide Complex', role: 'Củng cố cấu trúc da', description: 'Chuỗi peptide chuyên biệt hỗ trợ hàng rào bảo vệ, tăng độ đàn hồi và duy trì bề mặt da săn mịn.', product: 'Cả hai sản phẩm' },
-    { name: 'MG3-Plus', role: 'Làm dịu & khóa ẩm sâu', description: 'Hoạt chất phục hồi độc quyền giúp giảm cảm giác khô yếu, kích ứng và khóa chặt độ ẩm trong nhiều giờ.', product: 'REGENAGLOW NOURISH SHEER CREAM' }
+    { name: 'Exosome', role: 'Hỗ trợ phục hồi & truyền tín hiệu tế bào', description: 'Công nghệ sinh học tiên tiến hỗ trợ vận chuyển dưỡng chất, giúp da trông khỏe mạnh hơn và mang lại cảm giác dễ chịu cho làn da nhạy cảm.', product: 'CELLUREVIVE Ampoule' },
+    { name: 'Collagen Water', role: 'Cấp ẩm & giúp duy trì săn chắc', description: 'Cung cấp nền tảng ẩm mượt dồi dào, giúp da trông căng mịn và cải thiện vẻ rạng rỡ tự nhiên.', product: 'Cả hai sản phẩm' },
+    { name: 'Peptide Complex', role: 'Hỗ trợ cấu trúc da', description: 'Chuỗi peptide chuyên biệt hỗ trợ hàng rào bảo vệ, giúp duy trì độ đàn hồi và bề mặt da trông săn mịn.', product: 'Cả hai sản phẩm' },
+    { name: 'MG3-Plus', role: 'Làm dịu & hỗ trợ giữ ẩm', description: 'Hoạt chất phục hồi giúp da cảm thấy dễ chịu hơn khi khô yếu và hỗ trợ duy trì độ ẩm trong nhiều giờ.', product: 'REGENAGLOW NOURISH SHEER CREAM' }
   ],
   whoItsFor: [
     'Da sau spa/treatment cần routine phục hồi nhẹ nhàng',
@@ -56,7 +56,7 @@ const DEFAULT_CONTENT = {
     { step: '01', title: 'Làm sạch và cân bằng da', description: 'Rửa mặt sạch bằng sữa rửa mặt dịu nhẹ, sau đó cân bằng độ ẩm bằng toner.' },
     { step: '02', title: 'Thoa CELLUREVIVE Ampoule', description: 'Mở nắp lọ ampoule, thoa một lượng vừa đủ lên toàn mặt.' },
     { step: '03', title: 'Massage nhẹ đến khi thẩm thấu', description: 'Vỗ nhẹ và massage hướng lên để các exosome thẩm thấu sâu vào da.' },
-    { step: '04', title: 'Khóa ẩm bằng REGENAGLOW NOURISH SHEER CREAM', description: 'Thoa một lớp kem mỏng để khóa chặt các dưỡng chất từ ampoule.' },
+    { step: '04', title: 'Giữ ẩm bằng REGENAGLOW NOURISH SHEER CREAM', description: 'Thoa một lớp kem mỏng để giúp duy trì các dưỡng chất từ ampoule.' },
     { step: '05', title: 'Bảo vệ ban ngày', description: 'Luôn kết hợp kem chống nắng có màng lọc bảo vệ phổ rộng khi đi ra ngoài.' }
   ],
   spaBridgeTitle: 'Có thể trải nghiệm trong quy trình chăm sóc tại VAVAW Beauty & Co',
@@ -67,7 +67,7 @@ const DEFAULT_CONTENT = {
     { label: 'Tên sản phẩm', value: 'Luminous Revitalization Sheer Set' },
     { label: 'Quy cách đóng gói', value: 'CELLUREVIVE Ampoule (7ml × 4 lọ) & REGENAGLOW NOURISH SHEER CREAM (30ml × 1 tuýp)' },
     { label: 'Công dụng chính', value: 'Hỗ trợ phục hồi da sau trị liệu, củng cố hàng rào ẩm, cải thiện độ đàn hồi và làm sáng da tự nhiên.' },
-    { label: 'Hướng dẫn bảo quan', value: 'Nơi khô ráo thoáng mát, tránh ánh nắng trực tiếp. Nên dùng lọ ampoule trong vòng 7 ngày sau khi mở nắp.' },
+    { label: 'Hướng dẫn bảo quản', value: 'Nơi khô ráo thoáng mát, tránh ánh nắng trực tiếp. Nên dùng lọ ampoule trong vòng 7 ngày sau khi mở nắp.' },
     { label: 'Lưu ý khi sử dụng', value: 'Chỉ dùng ngoài da. Tránh tiếp xúc trực tiếp với mắt. Ngưng sử dụng nếu có dấu hiệu kích ứng.' }
   ],
   finalTitle: 'Bắt đầu tư vấn Luminous Set',
@@ -102,8 +102,11 @@ export default async function LuminousProductLandingPage() {
     isPreview
   });
 
-  const cmsBlock = blocks?.find(b => b.blockType === 'cosmetic-product-landing-luminous-set')?.content || {};
-  const content = { ...DEFAULT_CONTENT, ...cmsBlock };
+  const blockRecord = blocks?.find(b => b.blockType === 'cosmetic-product-landing-luminous-set');
+  
+  // Requirement 2: Only use CMS content when the block exists and is_active=true
+  const useCms = blockRecord && (isPreview ? true : blockRecord.isActive);
+  const cmsBlock = (useCms ? (blockRecord.content || {}) : {}) as any;
 
   // Load cosmetic media urls
   const cosmeticMedia = await loadPublicCosmeticMedia(isPreview);
@@ -128,6 +131,99 @@ export default async function LuminousProductLandingPage() {
     );
   };
 
+  // Merge CMS and Default Fallback content safely
+  const eyebrow = cmsBlock.eyebrow || DEFAULT_CONTENT.eyebrow;
+  const title = cmsBlock.title || DEFAULT_CONTENT.title;
+  const headline = cmsBlock.headline || DEFAULT_CONTENT.headline;
+  const description = cmsBlock.description || DEFAULT_CONTENT.description;
+  const primaryCtaLabel = cmsBlock.primaryCtaLabel || cmsBlock.ctaLabel || DEFAULT_CONTENT.ctaLabel;
+  const primaryCtaHref = cmsBlock.primaryCtaHref || cmsBlock.ctaHref || DEFAULT_CONTENT.ctaHref;
+  const secondaryCtaLabel = cmsBlock.secondaryCtaLabel || DEFAULT_CONTENT.secondaryCtaLabel;
+  const secondaryCtaHref = cmsBlock.secondaryCtaHref || DEFAULT_CONTENT.secondaryCtaHref;
+  const heroMediaSlot = cmsBlock.heroMediaSlot || 'cosmetic-product-luminous-set';
+
+  // insideSet array
+  const insideSetRaw = cmsBlock.insideSet || cmsBlock.setProducts;
+  const setProducts = Array.isArray(insideSetRaw) && insideSetRaw.length > 0
+    ? insideSetRaw.map((p: any) => ({
+        name: p.name || '',
+        size: p.size || '',
+        role: p.role || '',
+        description: p.description || '',
+        mediaSlot: p.mediaSlot || ''
+      }))
+    : DEFAULT_CONTENT.setProducts;
+
+  // recoverySteps array
+  const recoveryStepsRaw = cmsBlock.recoverySteps || cmsBlock.recoveryLogic;
+  const recoveryLogic = Array.isArray(recoveryStepsRaw) && recoveryStepsRaw.length > 0
+    ? recoveryStepsRaw.map((step: any, idx: number) => ({
+        step: step.step || `0${idx + 1}`,
+        title: step.title || '',
+        description: step.description || ''
+      }))
+    : DEFAULT_CONTENT.recoveryLogic;
+
+  // technologies array
+  const technologiesRaw = cmsBlock.technologies || cmsBlock.activeTech;
+  const activeTech = Array.isArray(technologiesRaw) && technologiesRaw.length > 0
+    ? technologiesRaw.map((t: any) => ({
+        name: t.name || '',
+        role: t.role || '',
+        description: t.description || '',
+        product: t.foundIn || t.product || ''
+      }))
+    : DEFAULT_CONTENT.activeTech;
+
+  // whoFor array
+  const whoForRaw = cmsBlock.whoFor || cmsBlock.whoItsFor;
+  const whoItsFor = Array.isArray(whoForRaw) && whoForRaw.length > 0
+    ? whoForRaw.map((item: any) => typeof item === 'string' ? item : (item.text || ''))
+    : DEFAULT_CONTENT.whoItsFor;
+
+  // howToUse array
+  const howToUseRaw = cmsBlock.howToUse;
+  let howToUse = DEFAULT_CONTENT.howToUse;
+  if (Array.isArray(howToUseRaw) && howToUseRaw.length > 0) {
+    howToUse = howToUseRaw.map((item: any, idx: number) => {
+      if (typeof item === 'string') {
+        return {
+          step: `0${idx + 1}`,
+          title: item,
+          description: ''
+        };
+      }
+      return {
+        step: item.step || `0${idx + 1}`,
+        title: item.title || item.text || '',
+        description: item.description || ''
+      };
+    });
+  }
+
+  // spaBridge block
+  const spaBridgeRaw = (cmsBlock.spaBridge || {}) as any;
+  const spaBridgeTitle = spaBridgeRaw.title || cmsBlock.spaBridgeTitle || DEFAULT_CONTENT.spaBridgeTitle;
+  const spaBridgeDescription = spaBridgeRaw.description || cmsBlock.spaBridgeDescription || DEFAULT_CONTENT.spaBridgeDescription;
+  const spaBridgeCtaLabel = spaBridgeRaw.ctaLabel || cmsBlock.spaBridgeCtaLabel || DEFAULT_CONTENT.spaBridgeCtaLabel;
+  const spaBridgeCtaHref = spaBridgeRaw.ctaHref || cmsBlock.spaBridgeCtaHref || DEFAULT_CONTENT.spaBridgeCtaHref;
+
+  // productInfo array
+  const productInfoRaw = cmsBlock.productInfo;
+  const productInfo = Array.isArray(productInfoRaw) && productInfoRaw.length > 0
+    ? productInfoRaw.map((info: any) => ({
+        label: info.label || '',
+        value: info.value || ''
+      }))
+    : DEFAULT_CONTENT.productInfo;
+
+  // finalCta block
+  const finalCtaRaw = (cmsBlock.finalCta || {}) as any;
+  const finalTitle = finalCtaRaw.title || cmsBlock.finalTitle || DEFAULT_CONTENT.finalTitle;
+  const finalDescription = finalCtaRaw.description || cmsBlock.finalDescription || DEFAULT_CONTENT.finalDescription;
+  const finalCtaLabel = finalCtaRaw.ctaLabel || cmsBlock.finalCtaLabel || DEFAULT_CONTENT.finalCtaLabel;
+  const finalCtaHref = finalCtaRaw.ctaHref || cmsBlock.finalCtaHref || DEFAULT_CONTENT.finalCtaHref;
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#E2E8F0] selection:text-[#050A5C]">
       
@@ -147,7 +243,7 @@ export default async function LuminousProductLandingPage() {
           {/* Left Column: Visual Media packshot */}
           <div className="relative aspect-[4/5] bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center p-6 md:p-8">
             {renderSlotImage(
-              cosmeticMedia.luminousSet,
+              cosmeticMedia[heroMediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.luminousSet,
               'Luminous Revitalization Sheer Set',
               'from-[#050A5C]/20 to-[#050A5C]/40'
             )}
@@ -161,14 +257,14 @@ export default async function LuminousProductLandingPage() {
           <div className="space-y-6">
             <div className="space-y-2">
               <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
-                {content.eyebrow}
+                {eyebrow}
               </span>
               <h1 className="text-3xl md:text-4.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
-                {content.title}
+                {title}
               </h1>
-              {content.headline && (
+              {headline && (
                 <p className="text-sm md:text-base font-light text-[#050A5C]/80 italic leading-relaxed">
-                  {content.headline}
+                  {headline}
                 </p>
               )}
             </div>
@@ -176,18 +272,18 @@ export default async function LuminousProductLandingPage() {
             <hr className="border-slate-100" />
 
             <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap">
-              {content.description}
+              {description}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
               <CosmeticCtaTracker
-                label={content.ctaLabel}
-                href={content.ctaHref}
+                label={primaryCtaLabel}
+                href={primaryCtaHref}
                 className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center bg-[#050A5C] text-white text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm"
               />
               <CosmeticCtaTracker
-                label={content.secondaryCtaLabel}
-                href={content.secondaryCtaHref}
+                label={secondaryCtaLabel}
+                href={secondaryCtaHref}
                 className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-slate-200 text-slate-600 text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-slate-50 transition-colors rounded-[1px]"
               />
             </div>
@@ -205,7 +301,7 @@ export default async function LuminousProductLandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {content.setProducts.map((p, idx) => {
+            {setProducts.map((p, idx) => {
               const mediaUrl = idx === 0 ? cosmeticMedia.setCellureviveAmpoule : cosmeticMedia.setRegenaglowSheerCream;
               return (
                 <div key={idx} className="bg-white border border-slate-200 hover:border-slate-300 transition-colors flex flex-col p-6 space-y-6">
@@ -241,7 +337,7 @@ export default async function LuminousProductLandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-5xl mx-auto">
-            {content.recoveryLogic.map((logic, idx) => (
+            {recoveryLogic.map((logic, idx) => (
               <div key={idx} className="p-5 border border-slate-100 bg-slate-50/50 flex flex-col justify-between space-y-4">
                 <div>
                   <span className="block text-[10px] font-mono text-[#050A5C]/50 font-bold uppercase tracking-wider mb-2">{logic.step}</span>
@@ -264,7 +360,7 @@ export default async function LuminousProductLandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {content.activeTech.map((tech, idx) => (
+            {activeTech.map((tech, idx) => (
               <div key={idx} className="bg-white p-6 border border-slate-200 flex flex-col justify-between space-y-4 hover:border-slate-300 transition-colors">
                 <div className="space-y-2">
                   <h3 className="text-base font-bold text-[#050A5C]">{tech.name}</h3>
@@ -292,7 +388,7 @@ export default async function LuminousProductLandingPage() {
           </div>
 
           <div className="bg-slate-50/50 border border-slate-200 p-8 md:p-12 space-y-4 max-w-2xl mx-auto">
-            {content.whoItsFor.map((item, idx) => (
+            {whoItsFor.map((item, idx) => (
               <div key={idx} className="flex items-start gap-4">
                 <ShieldCheck className="h-5 w-5 text-[#050A5C] shrink-0 mt-0.5" />
                 <span className="text-xs md:text-sm text-slate-600 font-light leading-relaxed">{item}</span>
@@ -312,7 +408,7 @@ export default async function LuminousProductLandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-4xl mx-auto">
-            {content.howToUse.map((step, idx) => (
+            {howToUse.map((step, idx) => (
               <div key={idx} className="relative space-y-3 p-4">
                 <div className="text-3xl font-extrabold text-[#050A5C]/10 font-mono leading-none">{step.step}</div>
                 <h3 className="font-bold text-[#050A5C] text-xs uppercase tracking-wide leading-tight">{step.title}</h3>
@@ -328,15 +424,15 @@ export default async function LuminousProductLandingPage() {
         <div className="max-w-2xl mx-auto space-y-6">
           <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">PROFESSIONAL PARTNERSHIP</span>
           <h2 className="text-2xl md:text-3xl font-light text-[#050A5C] font-serif leading-tight">
-            {content.spaBridgeTitle}
+            {spaBridgeTitle}
           </h2>
           <p className="text-slate-500 font-light text-xs md:text-sm leading-relaxed max-w-xl mx-auto">
-            {content.spaBridgeDescription}
+            {spaBridgeDescription}
           </p>
           <div className="pt-4">
             <CosmeticCtaTracker
-              label={content.spaBridgeCtaLabel}
-              href={content.spaBridgeCtaHref}
+              label={spaBridgeCtaLabel}
+              href={spaBridgeCtaHref}
               className="inline-flex h-[48px] px-8 items-center justify-center bg-[#050A5C] text-white text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px]"
             />
           </div>
@@ -353,7 +449,7 @@ export default async function LuminousProductLandingPage() {
           </div>
 
           <div className="bg-white border border-slate-200 overflow-hidden max-w-2xl mx-auto divide-y divide-slate-100">
-            {content.productInfo.map((info, idx) => (
+            {productInfo.map((info, idx) => (
               <div key={idx} className="grid grid-cols-1 md:grid-cols-[180px_1fr] p-4 gap-2 text-xs">
                 <span className="font-bold text-[#050A5C] uppercase tracking-wider text-[10px] md:pt-0.5">{info.label}</span>
                 <span className="text-slate-600 font-light leading-relaxed">{info.value}</span>
@@ -369,15 +465,15 @@ export default async function LuminousProductLandingPage() {
         <div className="max-w-2xl mx-auto space-y-6 relative z-10">
           <span className="text-[10px] font-bold text-white/50 tracking-[0.25em] uppercase block">VAVAW COSMETIC CONSULTATION</span>
           <h2 className="text-2xl md:text-3.5xl font-light text-white tracking-tight leading-snug">
-            {content.finalTitle}
+            {finalTitle}
           </h2>
           <p className="text-white/70 font-light text-xs md:text-sm leading-relaxed max-w-xl mx-auto">
-            {content.finalDescription}
+            {finalDescription}
           </p>
           <div className="pt-4">
             <CosmeticCtaTracker
-              label={content.finalCtaLabel}
-              href={content.finalCtaHref}
+              label={finalCtaLabel}
+              href={finalCtaHref}
               className="inline-flex h-[48px] px-8 items-center justify-center bg-white text-[#050A5C] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#F4F7FB] transition-colors shadow-sm rounded-[1px]"
             />
           </div>

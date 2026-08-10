@@ -32,7 +32,8 @@ import {
   FolderOpen,
   Sparkles,
   ExternalLink,
-  Video
+  Video,
+  ChevronDown
 } from 'lucide-react';
 
 interface CosmeticPageManagerProps {
@@ -104,7 +105,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw-main.vercel.app';
   const router = useRouter();
   const [blocks, setBlocks] = useState<ContentBlockRecord[]>(initialBlocks);
-  const [activeTab, setActiveTab] = useState<'overview' | 'sections' | 'products' | 'ingredients' | 'ritual' | 'images' | 'preview'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'sections' | 'products' | 'ingredients' | 'ritual' | 'images' | 'preview' | 'landings'>('overview');
   
   // Modals & pickers
   const [editingBlock, setEditingBlock] = useState<ContentBlockRecord | null>(null);
@@ -152,6 +153,27 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [finalSecondaryCtaLabel, setFinalSecondaryCtaLabel] = useState('');
   const [finalSecondaryCtaHref, setFinalSecondaryCtaHref] = useState('');
   const [finalTrustPoints, setFinalTrustPoints] = useState<string[]>([]);
+
+  // Luminous product landing visual states
+  const [landHeadline, setLandHeadline] = useState('');
+  const [landHeroMediaSlot, setLandHeroMediaSlot] = useState('');
+  const [landSecondaryCtaLabel, setLandSecondaryCtaLabel] = useState('');
+  const [landSecondaryCtaHref, setLandSecondaryCtaHref] = useState('');
+  const [landInsideSet, setLandInsideSet] = useState<any[]>([]);
+  const [landRecoverySteps, setLandRecoverySteps] = useState<any[]>([]);
+  const [landTechnologies, setLandTechnologies] = useState<any[]>([]);
+  const [landWhoFor, setLandWhoFor] = useState<any[]>([]);
+  const [landHowToUse, setLandHowToUse] = useState<any[]>([]);
+  const [landSpaBridgeTitle, setLandSpaBridgeTitle] = useState('');
+  const [landSpaBridgeDescription, setLandSpaBridgeDescription] = useState('');
+  const [landSpaBridgeCtaLabel, setLandSpaBridgeCtaLabel] = useState('');
+  const [landSpaBridgeCtaHref, setLandSpaBridgeCtaHref] = useState('');
+  const [landProductInfo, setLandProductInfo] = useState<any[]>([]);
+  const [landFinalTitle, setLandFinalTitle] = useState('');
+  const [landFinalDescription, setLandFinalDescription] = useState('');
+  const [landFinalCtaLabel, setLandFinalCtaLabel] = useState('');
+  const [landFinalCtaHref, setLandFinalCtaHref] = useState('');
+
 
   // Sync prop changes
   useEffect(() => {
@@ -259,7 +281,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     setEditCtaHref(content.ctaHref || '');
     setEditSortOrder(block.sort_order || 1);
     setEditIsActive(block.is_active);
-    setEditItemsJson(content.items ? JSON.stringify(content.items, null, 2) : '');
+    if (block.block_type === 'cosmetic-product-landing-luminous-set') {
+      setEditItemsJson(JSON.stringify(content, null, 2));
+    } else {
+      setEditItemsJson(content.items ? JSON.stringify(content.items, null, 2) : '');
+    }
     setPhilosophyItems(content.items || []);
 
     if (block.block_type === 'cosmetic-hero-product') {
@@ -331,6 +357,38 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           ? content.trustPoints
           : ['Clinical Korean cosmetic ritual', 'Spa-use recovery guidance', 'Home-care routine support']
       );
+    }
+
+    if (block.block_type === 'cosmetic-product-landing-luminous-set') {
+      setLandHeadline(content.headline || '');
+      setLandHeroMediaSlot(content.heroMediaSlot || 'cosmetic-product-luminous-set');
+      setLandSecondaryCtaLabel(content.secondaryCtaLabel || '');
+      setLandSecondaryCtaHref(content.secondaryCtaHref || '');
+      setLandInsideSet(content.insideSet || content.setProducts || []);
+      setLandRecoverySteps(content.recoverySteps || content.recoveryLogic || []);
+      setLandTechnologies(content.technologies || content.activeTech || []);
+      setLandWhoFor(
+        Array.isArray(content.whoFor || content.whoItsFor)
+          ? (content.whoFor || content.whoItsFor).map((item: any) =>
+              typeof item === 'string' ? { text: item } : { text: item.text || '' }
+            )
+          : []
+      );
+      setLandHowToUse(content.howToUse || []);
+      
+      const spaBridge = content.spaBridge || {};
+      setLandSpaBridgeTitle(spaBridge.title || content.spaBridgeTitle || '');
+      setLandSpaBridgeDescription(spaBridge.description || content.spaBridgeDescription || '');
+      setLandSpaBridgeCtaLabel(spaBridge.ctaLabel || content.spaBridgeCtaLabel || '');
+      setLandSpaBridgeCtaHref(spaBridge.ctaHref || content.spaBridgeCtaHref || '');
+
+      setLandProductInfo(content.productInfo || []);
+
+      const finalCta = content.finalCta || {};
+      setLandFinalTitle(finalCta.title || content.finalTitle || '');
+      setLandFinalDescription(finalCta.description || content.finalDescription || '');
+      setLandFinalCtaLabel(finalCta.ctaLabel || content.finalCtaLabel || '');
+      setLandFinalCtaHref(finalCta.ctaHref || content.finalCtaHref || '');
     }
   };
 
@@ -466,6 +524,33 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       updatedContent.secondaryCtaLabel = finalSecondaryCtaLabel;
       updatedContent.secondaryCtaHref = finalSecondaryCtaHref;
       updatedContent.trustPoints = finalTrustPoints;
+    } else if (editingBlock.block_type === 'cosmetic-product-landing-luminous-set') {
+      if (isJsonDirty && parsedItems !== undefined) {
+        Object.assign(updatedContent, parsedItems);
+      } else {
+        updatedContent.headline = landHeadline;
+        updatedContent.heroMediaSlot = landHeroMediaSlot;
+        updatedContent.secondaryCtaLabel = landSecondaryCtaLabel;
+        updatedContent.secondaryCtaHref = landSecondaryCtaHref;
+        updatedContent.insideSet = landInsideSet;
+        updatedContent.recoverySteps = landRecoverySteps;
+        updatedContent.technologies = landTechnologies;
+        updatedContent.whoFor = landWhoFor.map((item: any) => item.text || '');
+        updatedContent.howToUse = landHowToUse;
+        updatedContent.spaBridge = {
+          title: landSpaBridgeTitle,
+          description: landSpaBridgeDescription,
+          ctaLabel: landSpaBridgeCtaLabel,
+          ctaHref: landSpaBridgeCtaHref
+        };
+        updatedContent.productInfo = landProductInfo;
+        updatedContent.finalCta = {
+          title: landFinalTitle,
+          description: landFinalDescription,
+          ctaLabel: landFinalCtaLabel,
+          ctaHref: landFinalCtaHref
+        };
+      }
     } else {
       if (isJsonDirty && parsedItems !== undefined) {
         updatedContent.items = parsedItems;
@@ -912,6 +997,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         >
           <Eye className="h-4 w-4" />
           <span>Xem trước</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('landings')}
+          className={`py-3 px-5 text-sm font-semibold border-b-2 whitespace-nowrap flex items-center gap-2 transition ${
+            activeTab === 'landings' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+          }`}
+        >
+          <Layers className="h-4 w-4" />
+          <span>Landing sản phẩm</span>
         </button>
       </div>
 
@@ -1882,6 +1976,71 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         </div>
       )}
 
+      {/* ─── TAB CONTENT 8: LANDINGS ────────────────────────────────────── */}
+      {activeTab === 'landings' && (
+        <div className="space-y-6 animate-fade-in">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">Landing Pages sản phẩm</h2>
+              <p className="text-sm text-slate-500">Quản lý nội dung các trang landing page kể chuyện sản phẩm Cosmetic.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(() => {
+              const landingBlock = blocks.find(b => b.block_type === 'cosmetic-product-landing-luminous-set');
+              return (
+                <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider block mb-1">COSMETIC SET LANDING</span>
+                    <h3 className="text-lg font-bold text-slate-950">Luminous Revitalization Sheer Set</h3>
+                    <p className="text-xs text-slate-500 font-mono mt-1.5 bg-slate-50 p-2 rounded select-all">
+                      /cosmetic/products/luminous-revitalization-sheer-set
+                    </p>
+                    <div className="mt-4 flex items-center gap-3">
+                      <span className={`h-2.5 w-2.5 rounded-full ${landingBlock?.is_active ? 'bg-emerald-500' : 'bg-rose-500 animate-pulse'}`} />
+                      <span className="text-xs text-slate-600 font-medium">
+                        Trạng thái: {landingBlock ? (landingBlock.is_active ? 'Đang hoạt động (CMS)' : 'Đang tắt (Dùng mặc định static)') : 'Chưa có block'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 flex items-center gap-3 border-t border-slate-100 pt-4">
+                    {landingBlock ? (
+                      <button
+                        onClick={() => startEditingSection(landingBlock)}
+                        className="flex-1 py-2 px-4 bg-[#050A5C] text-white rounded-lg text-xs font-semibold hover:bg-[#101A8C] transition flex items-center justify-center gap-1.5 shadow-sm"
+                      >
+                        <Settings className="h-3.5 w-3.5" />
+                        Sửa nội dung
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        className="flex-1 py-2 px-4 bg-slate-100 text-slate-400 rounded-lg text-xs font-semibold cursor-not-allowed flex items-center justify-center gap-1.5"
+                        title="Vui lòng chạy file seed 017 để tạo block này."
+                      >
+                        <Settings className="h-3.5 w-3.5" />
+                        Chưa có block
+                      </button>
+                    )}
+                    <a
+                      href={`${siteUrl}/cosmetic/products/luminous-revitalization-sheer-set`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex-1 py-2 px-4 border border-slate-200 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-50 transition flex items-center justify-center gap-1.5"
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                      Xem trang public
+                    </a>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
       {/* ─── SECTION EDITOR MODAL ────────────────────────────────────────── */}
       {editingBlock && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
@@ -1905,76 +2064,419 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             {/* Modal Body */}
             <div className="p-5 flex-1 overflow-y-auto space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tiêu đề (Title)</label>
-                  <input 
-                    type="text" 
-                    value={editTitle} 
-                    onChange={e => setEditTitle(e.target.value)}
-                    className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
-                  <input 
-                    type="text" 
-                    value={editEyebrow} 
-                    onChange={e => setEditEyebrow(e.target.value)}
-                    className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Thứ tự hiển thị</label>
-                  <input 
-                    type="number" 
-                    value={editSortOrder} 
-                    onChange={e => setEditSortOrder(parseInt(e.target.value) || 1)}
-                    className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                  />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mô tả (Description)</label>
-                  <textarea 
-                    value={editDesc} 
-                    onChange={e => setEditDesc(e.target.value)}
-                    rows={3}
-                    className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                  />
-                </div>
+                {editingBlock.block_type !== 'cosmetic-product-landing-luminous-set' && (
+                  <>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tiêu đề (Title)</label>
+                      <input 
+                        type="text" 
+                        value={editTitle} 
+                        onChange={e => setEditTitle(e.target.value)}
+                        className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                      <input 
+                        type="text" 
+                        value={editEyebrow} 
+                        onChange={e => setEditEyebrow(e.target.value)}
+                        className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Thứ tự hiển thị</label>
+                      <input 
+                        type="number" 
+                        value={editSortOrder} 
+                        onChange={e => setEditSortOrder(parseInt(e.target.value) || 1)}
+                        className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mô tả (Description)</label>
+                      <textarea 
+                        value={editDesc} 
+                        onChange={e => setEditDesc(e.target.value)}
+                        rows={3}
+                        className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                      />
+                    </div>
 
-                {editingBlock.block_type === 'cosmetic-brand-philosophy' && (
-                  <div className="col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Dòng mô tả phụ (Subtitle)</label>
-                    <input 
-                      type="text" 
-                      value={editSubtitle} 
-                      onChange={e => setEditSubtitle(e.target.value)}
-                      className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                    />
-                  </div>
+                    {editingBlock.block_type === 'cosmetic-brand-philosophy' && (
+                      <div className="col-span-2">
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Dòng mô tả phụ (Subtitle)</label>
+                        <input 
+                          type="text" 
+                          value={editSubtitle} 
+                          onChange={e => setEditSubtitle(e.target.value)}
+                          className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                        />
+                      </div>
+                    )}
+
+                    {editingBlock.block_type !== 'cosmetic-brand-philosophy' && editingBlock.block_type !== 'cosmetic-ingredients' && (
+                      <>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nút (CTA Label)</label>
+                          <input 
+                            type="text" 
+                            value={editCtaLabel} 
+                            onChange={e => setEditCtaLabel(e.target.value)}
+                            className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Đường dẫn nút (CTA Link)</label>
+                          <input 
+                            type="text" 
+                            value={editCtaHref} 
+                            onChange={e => setEditCtaHref(e.target.value)}
+                            className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                          />
+                        </div>
+                      </>
+                    )}
+                  </>
                 )}
 
-                {editingBlock.block_type !== 'cosmetic-brand-philosophy' && editingBlock.block_type !== 'cosmetic-ingredients' && (
-                  <>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nút (CTA Label)</label>
-                      <input 
-                        type="text" 
-                        value={editCtaLabel} 
-                        onChange={e => setEditCtaLabel(e.target.value)}
-                        className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Đường dẫn nút (CTA Link)</label>
-                      <input 
-                        type="text" 
-                        value={editCtaHref} 
-                        onChange={e => setEditCtaHref(e.target.value)}
-                        className="w-full text-sm p-2 border border-slate-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
-                      />
-                    </div>
-                  </>
+                {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                  <div className="col-span-2 space-y-4">
+                    {/* 1. Hero Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden" open>
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-750 select-none transition flex items-center justify-between">
+                        <span>1. Product Hero (Đầu trang)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                          <input type="text" value={editEyebrow} onChange={e => setEditEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thứ tự hiển thị (Sort Order)</label>
+                          <input type="number" value={editSortOrder} onChange={e => setEditSortOrder(parseInt(e.target.value) || 1)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tên sản phẩm (Title)</label>
+                          <input type="text" value={editTitle} onChange={e => setEditTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Dòng mô tả phụ (Headline)</label>
+                          <input type="text" value={landHeadline} onChange={e => setLandHeadline(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả sản phẩm (Description)</label>
+                          <textarea value={editDesc} onChange={e => setEditDesc(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nút chính (Primary CTA Label)</label>
+                          <input type="text" value={editCtaLabel} onChange={e => setEditCtaLabel(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đường dẫn nút chính (Primary CTA Link)</label>
+                          <input type="text" value={editCtaHref} onChange={e => setEditCtaHref(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nút phụ (Secondary CTA Label)</label>
+                          <input type="text" value={landSecondaryCtaLabel} onChange={e => setLandSecondaryCtaLabel(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đường dẫn nút phụ (Secondary CTA Link)</label>
+                          <input type="text" value={landSecondaryCtaHref} onChange={e => setLandSecondaryCtaHref(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh Hero (heroMediaSlot)</label>
+                          <select value={landHeroMediaSlot} onChange={e => setLandHeroMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white">
+                            <option value="cosmetic-product-luminous-set">Luminous Revitalization Sheer Set (cosmetic-product-luminous-set)</option>
+                            <option value="cosmetic-set-cellurevive-ampoule">CELLUREVIVE Ampoule (cosmetic-set-cellurevive-ampoule)</option>
+                            <option value="cosmetic-set-regenaglow-sheer-cream">REGENAGLOW Sheer Cream (cosmetic-set-regenaglow-sheer-cream)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </details>
+
+                    {/* 2. Inside The Set Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                        <span>2. Inside The Set (Thành phần trong bộ)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white space-y-4">
+                        <div className="space-y-3">
+                          {landInsideSet.map((item: any, idx: number) => (
+                            <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-slate-50/50 space-y-2.5">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                                <span className="text-[10px] font-bold text-slate-400 font-mono">Sản phẩm #{idx + 1}</span>
+                                <button type="button" onClick={() => setLandInsideSet(landInsideSet.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 transition">
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Tên sản phẩm</label>
+                                  <input type="text" value={item.name || ''} onChange={e => { const l = [...landInsideSet]; l[idx] = { ...l[idx], name: e.target.value }; setLandInsideSet(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Quy cách (Size)</label>
+                                  <input type="text" value={item.size || ''} onChange={e => { const l = [...landInsideSet]; l[idx] = { ...l[idx], size: e.target.value }; setLandInsideSet(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Vai trò (Role)</label>
+                                  <input type="text" value={item.role || ''} onChange={e => { const l = [...landInsideSet]; l[idx] = { ...l[idx], role: e.target.value }; setLandInsideSet(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Mô tả ngắn</label>
+                                  <textarea value={item.description || ''} onChange={e => { const l = [...landInsideSet]; l[idx] = { ...l[idx], description: e.target.value }; setLandInsideSet(l); }} rows={2} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Slot phương tiện (mediaSlot)</label>
+                                  <input type="text" value={item.mediaSlot || ''} onChange={e => { const l = [...landInsideSet]; l[idx] = { ...l[idx], mediaSlot: e.target.value }; setLandInsideSet(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <button type="button" onClick={() => setLandInsideSet([...landInsideSet, { name: '', size: '', role: '', description: '', mediaSlot: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                          <Plus className="h-3.5 w-3.5" />
+                          Thêm sản phẩm
+                        </button>
+                      </div>
+                    </details>
+
+                    {/* 3. Recovery Logic Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                        <span>3. Recovery Logic (Nguyên lý phục hồi 5 bước)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white space-y-4">
+                        <div className="space-y-3">
+                          {landRecoverySteps.map((item: any, idx: number) => (
+                            <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-slate-50/50 space-y-2.5">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                                <span className="text-[10px] font-bold text-slate-400 font-mono">Bước #{idx + 1}</span>
+                                <button type="button" onClick={() => setLandRecoverySteps(landRecoverySteps.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 transition">
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Tên bước (ví dụ: 01. Prepare)</label>
+                                  <input type="text" value={item.step || ''} onChange={e => { const l = [...landRecoverySteps]; l[idx] = { ...l[idx], step: e.target.value }; setLandRecoverySteps(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Tiêu đề bước</label>
+                                  <input type="text" value={item.title || ''} onChange={e => { const l = [...landRecoverySteps]; l[idx] = { ...l[idx], title: e.target.value }; setLandRecoverySteps(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Mô tả chi tiết</label>
+                                  <textarea value={item.description || ''} onChange={e => { const l = [...landRecoverySteps]; l[idx] = { ...l[idx], description: e.target.value }; setLandRecoverySteps(l); }} rows={2} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <button type="button" onClick={() => setLandRecoverySteps([...landRecoverySteps, { step: '', title: '', description: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                          <Plus className="h-3.5 w-3.5" />
+                          Thêm bước phục hồi
+                        </button>
+                      </div>
+                    </details>
+
+                    {/* 4. Active Technology Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                        <span>4. Active Technology (Công nghệ hoạt chất)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white space-y-4">
+                        <div className="space-y-3">
+                          {landTechnologies.map((item: any, idx: number) => (
+                            <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-slate-50/50 space-y-2.5">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                                <span className="text-[10px] font-bold text-slate-400 font-mono">Công nghệ #{idx + 1}</span>
+                                <button type="button" onClick={() => setLandTechnologies(landTechnologies.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 transition">
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Tên hoạt chất</label>
+                                  <input type="text" value={item.name || ''} onChange={e => { const l = [...landTechnologies]; l[idx] = { ...l[idx], name: e.target.value }; setLandTechnologies(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Vai trò hoạt chất</label>
+                                  <input type="text" value={item.role || ''} onChange={e => { const l = [...landTechnologies]; l[idx] = { ...l[idx], role: e.target.value }; setLandTechnologies(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Mô tả cách thức hoạt động</label>
+                                  <textarea value={item.description || ''} onChange={e => { const l = [...landTechnologies]; l[idx] = { ...l[idx], description: e.target.value }; setLandTechnologies(l); }} rows={2} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Ứng dụng trong sản phẩm (foundIn)</label>
+                                  <input type="text" value={item.foundIn || item.product || ''} onChange={e => { const l = [...landTechnologies]; l[idx] = { ...l[idx], foundIn: e.target.value }; setLandTechnologies(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <button type="button" onClick={() => setLandTechnologies([...landTechnologies, { name: '', role: '', description: '', foundIn: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                          <Plus className="h-3.5 w-3.5" />
+                          Thêm công nghệ hoạt chất
+                        </button>
+                      </div>
+                    </details>
+
+                    {/* 5. Who It's For Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                        <span>5. Who It's For (Đối tượng khuyên dùng)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white space-y-4">
+                        <div className="space-y-3">
+                          {landWhoFor.map((item: any, idx: number) => (
+                            <div key={idx} className="flex items-center gap-2">
+                              <input type="text" value={item.text || ''} onChange={e => { const l = [...landWhoFor]; l[idx] = { ...l[idx], text: e.target.value }; setLandWhoFor(l); }} className="flex-1 text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="Ví dụ: Da sau trị liệu cần phục hồi" />
+                              <button type="button" onClick={() => setLandWhoFor(landWhoFor.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 transition shrink-0 p-1">
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <button type="button" onClick={() => setLandWhoFor([...landWhoFor, { text: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                          <Plus className="h-3.5 w-3.5" />
+                          Thêm đối tượng
+                        </button>
+                      </div>
+                    </details>
+
+                    {/* 6. How To Use Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                        <span>6. How To Use (Hướng dẫn sử dụng)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white space-y-4">
+                        <div className="space-y-3">
+                          {landHowToUse.map((item: any, idx: number) => (
+                            <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-slate-50/50 space-y-2.5">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                                <span className="text-[10px] font-bold text-slate-400 font-mono">Bước #{idx + 1}</span>
+                                <button type="button" onClick={() => setLandHowToUse(landHowToUse.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 transition">
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Số bước (ví dụ: 01)</label>
+                                  <input type="text" value={item.step || ''} onChange={e => { const l = [...landHowToUse]; l[idx] = { ...l[idx], step: e.target.value }; setLandHowToUse(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Tên bước</label>
+                                  <input type="text" value={item.title || ''} onChange={e => { const l = [...landHowToUse]; l[idx] = { ...l[idx], title: e.target.value }; setLandHowToUse(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Hướng dẫn chi tiết</label>
+                                  <textarea value={item.description || ''} onChange={e => { const l = [...landHowToUse]; l[idx] = { ...l[idx], description: e.target.value }; setLandHowToUse(l); }} rows={2} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <button type="button" onClick={() => setLandHowToUse([...landHowToUse, { step: '', title: '', description: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                          <Plus className="h-3.5 w-3.5" />
+                          Thêm bước hướng dẫn
+                        </button>
+                      </div>
+                    </details>
+
+                    {/* 7. Spa Bridge Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                        <span>7. Spa Bridge (Kết nối Spa)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
+                        <div className="col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Spa Bridge Title)</label>
+                          <input type="text" value={landSpaBridgeTitle} onChange={e => setLandSpaBridgeTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả (Spa Bridge Description)</label>
+                          <textarea value={landSpaBridgeDescription} onChange={e => setLandSpaBridgeDescription(e.target.value)} rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nút Spa CTA</label>
+                          <input type="text" value={landSpaBridgeCtaLabel} onChange={e => setLandSpaBridgeCtaLabel(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Liên kết nút Spa CTA</label>
+                          <input type="text" value={landSpaBridgeCtaHref} onChange={e => setLandSpaBridgeCtaHref(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                      </div>
+                    </details>
+
+                    {/* 8. Product Information Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                        <span>8. Product Information (Thông số chi tiết)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white space-y-4">
+                        <div className="space-y-3">
+                          {landProductInfo.map((item: any, idx: number) => (
+                            <div key={idx} className="flex items-center gap-2 bg-slate-55 p-2.5 rounded-lg border border-slate-200">
+                              <div className="flex-1 grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Thuộc tính (Label)</label>
+                                  <input type="text" value={item.label || ''} onChange={e => { const l = [...landProductInfo]; l[idx] = { ...l[idx], label: e.target.value }; setLandProductInfo(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white font-bold text-[#050A5C]" />
+                                </div>
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Giá trị (Value)</label>
+                                  <input type="text" value={item.value || ''} onChange={e => { const l = [...landProductInfo]; l[idx] = { ...l[idx], value: e.target.value }; setLandProductInfo(l); }} className="w-full text-xs p-1.5 border border-slate-300 rounded bg-white text-slate-700" />
+                                </div>
+                              </div>
+                              <button type="button" onClick={() => setLandProductInfo(landProductInfo.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 transition shrink-0 p-1 mt-3">
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <button type="button" onClick={() => setLandProductInfo([...landProductInfo, { label: '', value: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                          <Plus className="h-3.5 w-3.5" />
+                          Thêm thông số
+                        </button>
+                      </div>
+                    </details>
+
+                    {/* 9. Final CTA Details */}
+                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                      <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                        <span>9. Final CTA (Khung tư vấn cuối trang)</span>
+                        <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
+                        <div className="col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Final CTA Title)</label>
+                          <input type="text" value={landFinalTitle} onChange={e => setLandFinalTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả phụ</label>
+                          <textarea value={landFinalDescription} onChange={e => setLandFinalDescription(e.target.value)} rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nút tư vấn</label>
+                          <input type="text" value={landFinalCtaLabel} onChange={e => setLandFinalCtaLabel(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đường dẫn nút tư vấn</label>
+                          <input type="text" value={landFinalCtaHref} onChange={e => setLandFinalCtaHref(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                      </div>
+                    </details>
+                  </div>
                 )}
 
                 {editingBlock.block_type === 'cosmetic-brand-philosophy' && (
