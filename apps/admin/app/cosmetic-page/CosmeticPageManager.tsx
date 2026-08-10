@@ -935,8 +935,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       )}
 
       {/* Tabs IA */}
-      <div className="w-full overflow-x-auto no-scrollbar">
-        <div className="flex border-b border-slate-200 min-w-max gap-2 px-1">
+      <div className="w-full">
+        <div className="flex flex-wrap border-b border-slate-200 gap-2 px-1 pb-2">
         <button
           onClick={() => setActiveTab('overview')}
           className={`py-3 px-5 text-sm font-semibold border-b-2 whitespace-nowrap flex items-center gap-2 transition ${
