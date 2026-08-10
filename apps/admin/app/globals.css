@@ -90,3 +90,13 @@
     @apply text-xl font-medium tracking-tight;
   }
 }
+
+/* Hide scrollbar for tab navigation while preserving scroll */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
