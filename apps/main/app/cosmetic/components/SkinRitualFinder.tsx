@@ -167,6 +167,7 @@ export function SkinRitualFinder({ dailyRitual, products, cosmeticMedia }: SkinR
   if (selectedConcern) params.append('concern', selectedConcern);
   if (selectedGoal) params.append('goal', selectedGoal);
   if (selectedAge) params.append('ageGroup', selectedAge);
+  params.append('source', 'skin_ritual');
   const finalCtaHref = `${ctaHrefBase.split('?')[0]}?${params.toString()}`;
 
   // Tab views within card
