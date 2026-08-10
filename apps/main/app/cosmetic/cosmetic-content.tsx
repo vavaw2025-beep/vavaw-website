@@ -1432,7 +1432,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
         }
 
         const ctaLabel = content.ctaLabel || 'Start Consultation';
-        const ctaHref = content.ctaHref || '/contact?type=cosmetic_interest&product=luminous_set';
+        const ctaHref = content.ctaHref || '/cosmetic/products/luminous-revitalization-sheer-set';
         
         // selectedView: 'set' | 'cellurevive-ampoule' | 'regenaglow-sheer-cream'
         const cellurevive = setProducts?.find((p: any) => p.id === 'cellurevive-ampoule' || p.mediaSlot?.includes('cellurevive')) || setProducts?.[0];
