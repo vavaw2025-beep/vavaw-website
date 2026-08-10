@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
-const ALLOWED_PATHS = ['/', '/cosmetic', '/cosmetic/products/luminous-revitalization-sheer-set', '/cosmetic/products/cellurevive-ampoule', '/cosmetic/products/regenaglow-nourish-sheer-cream', '/cosmetic/products/calmiance-superior-sheer-gel', '/cosmetic/products/p30-boost-facial-hydrating-toner', '/cosmetic/products/gentle-activation-renew-ampoule', '/cosmetic/products/p30-boost-facial-moisturizer'];
+const ALLOWED_PATHS = ['/', '/cosmetic', '/cosmetic/products/luminous-revitalization-sheer-set', '/cosmetic/products/cellurevive-ampoule', '/cosmetic/products/regenaglow-nourish-sheer-cream', '/cosmetic/products/calmiance-superior-sheer-gel', '/cosmetic/products/p30-boost-facial-hydrating-toner', '/cosmetic/products/gentle-activation-renew-ampoule', '/cosmetic/products/p30-boost-facial-moisturizer', '/cosmetic/products/lumiglow-rosy-sheer-sunscreen'];
 
 export async function POST(req: NextRequest) {
   try {

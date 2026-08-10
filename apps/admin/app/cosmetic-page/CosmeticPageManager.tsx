@@ -2033,6 +2033,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   pagePath: '/cosmetic/products/p30-boost-facial-moisturizer',
                   blockType: 'cosmetic-product-landing-p30-moisturizer',
                   label: 'COSMETIC MOISTURIZER LANDING'
+                },
+                {
+                  title: 'LUMIGLOW ROSY SHEER SUNSCREEN',
+                  pagePath: '/cosmetic/products/lumiglow-rosy-sheer-sunscreen',
+                  blockType: 'cosmetic-product-landing-lumiglow-sunscreen',
+                  label: 'COSMETIC SUNSCREEN LANDING'
                 }
               ];
 
