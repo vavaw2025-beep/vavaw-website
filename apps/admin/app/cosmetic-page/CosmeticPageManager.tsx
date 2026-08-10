@@ -2009,6 +2009,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   pagePath: '/cosmetic/products/regenaglow-nourish-sheer-cream',
                   blockType: 'cosmetic-product-landing-regenaglow-cream',
                   label: 'COSMETIC CREAM LANDING'
+                },
+                {
+                  title: 'Calmiance Superior Sheer Gel',
+                  pagePath: '/cosmetic/products/calmiance-superior-sheer-gel',
+                  blockType: 'cosmetic-product-landing-calmiance-gel',
+                  label: 'COSMETIC GEL LANDING'
                 }
               ];
 

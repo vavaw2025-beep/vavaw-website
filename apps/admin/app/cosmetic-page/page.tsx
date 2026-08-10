@@ -35,7 +35,7 @@ export default async function CosmeticPage() {
   const { data: blocksData, error: blocksError } = await supabase
     .from('content_blocks')
     .select('*')
-    .in('page_path', ['/cosmetic', '/cosmetic/products/luminous-revitalization-sheer-set', '/cosmetic/products/cellurevive-ampoule', '/cosmetic/products/regenaglow-nourish-sheer-cream'])
+    .in('page_path', ['/cosmetic', '/cosmetic/products/luminous-revitalization-sheer-set', '/cosmetic/products/cellurevive-ampoule', '/cosmetic/products/regenaglow-nourish-sheer-cream', '/cosmetic/products/calmiance-superior-sheer-gel'])
     .order('sort_order', { ascending: true });
     
   if (blocksError) {
