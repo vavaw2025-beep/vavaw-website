@@ -2027,6 +2027,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   pagePath: '/cosmetic/products/gentle-activation-renew-ampoule',
                   blockType: 'cosmetic-product-landing-renew-ampoule',
                   label: 'COSMETIC AMPOULE LANDING'
+                },
+                {
+                  title: 'P30 Boost Facial Moisturizer',
+                  pagePath: '/cosmetic/products/p30-boost-facial-moisturizer',
+                  blockType: 'cosmetic-product-landing-p30-moisturizer',
+                  label: 'COSMETIC MOISTURIZER LANDING'
                 }
               ];
 
