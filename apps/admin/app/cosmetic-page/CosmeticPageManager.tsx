@@ -2021,6 +2021,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   pagePath: '/cosmetic/products/p30-boost-facial-hydrating-toner',
                   blockType: 'cosmetic-product-landing-p30-toner',
                   label: 'COSMETIC TONER LANDING'
+                },
+                {
+                  title: 'Gentle Activation Renew Ampoule',
+                  pagePath: '/cosmetic/products/gentle-activation-renew-ampoule',
+                  blockType: 'cosmetic-product-landing-renew-ampoule',
+                  label: 'COSMETIC AMPOULE LANDING'
                 }
               ];
 
