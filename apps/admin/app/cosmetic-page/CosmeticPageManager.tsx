@@ -2000,6 +2000,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   pagePath: '/cosmetic/products/cellurevive-ampoule',
                   blockType: 'cosmetic-product-landing-cellurevive-ampoule',
                   label: 'COSMETIC AMPOULE LANDING'
+                },
+                {
+                  title: 'REGENAGLOW NOURISH SHEER CREAM',
+                  pagePath: '/cosmetic/products/regenaglow-nourish-sheer-cream',
+                  blockType: 'cosmetic-product-landing-regenaglow-cream',
+                  label: 'COSMETIC CREAM LANDING'
                 }
               ];
 
