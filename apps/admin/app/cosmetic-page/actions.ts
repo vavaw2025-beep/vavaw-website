@@ -5,6 +5,7 @@ import { getCurrentAdminProfile } from '../../lib/admin-profile';
 import { canManageContent } from '@vavaw/auth';
 import { revalidatePath } from 'next/cache';
 import { triggerPublicRevalidation } from '../../lib/revalidate-public-apps';
+import { isCosmeticVideoMediaSlot } from './cosmetic-slots';
 
 export async function removeCosmeticMediaSlot(slot: string) {
   const profile = await getCurrentAdminProfile();
@@ -96,9 +97,12 @@ export async function assignMediaAssetToSlot(mediaAssetId: string, slot: string)
       return { success: false, error: selectError?.message || 'Không tìm thấy file phương tiện.' };
     }
 
-    const isVideoSlot = slot.startsWith('cosmetic-video-');
+    const isVideoSlot = isCosmeticVideoMediaSlot(slot);
     if (isVideoSlot) {
       if (asset.type !== 'video' && !asset.mime_type?.startsWith('video')) {
+        if (slot === 'cosmetic-premium-program-spa-video') {
+          return { success: false, error: 'Slot này yêu cầu video, không phải ảnh.' };
+        }
         return { success: false, error: 'Chỉ có thể chọn file video cho slot này.' };
       }
     } else {

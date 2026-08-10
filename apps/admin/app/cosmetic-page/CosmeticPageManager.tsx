@@ -12,6 +12,7 @@ import {
   SIG_MEDIA_SLOT_VALUES,
   normalizeCosmeticMediaSlot,
   getDefaultCosmeticItemMetadata,
+  isCosmeticVideoMediaSlot,
 } from './cosmetic-slots';
 import { 
   Settings, 
@@ -160,8 +161,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const activeCount = blocks.filter(b => b.is_active).length;
   const inactiveCount = totalSections - activeCount;
 
-  const imageSlots = REQUIRED_SLOTS.filter(slot => !slot.id.startsWith('cosmetic-video-'));
-  const videoSlots = REQUIRED_SLOTS.filter(slot => slot.id.startsWith('cosmetic-video-'));
+  const imageSlots = REQUIRED_SLOTS.filter(slot => !isCosmeticVideoMediaSlot(slot.id));
+  const videoSlots = REQUIRED_SLOTS.filter(slot => isCosmeticVideoMediaSlot(slot.id));
 
   const uploadedImagesCount = imageSlots.filter(slot => {
     return mediaAssets.some(m => 
@@ -731,7 +732,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   };
 
   const handleRemoveMediaSlot = async (slot: string) => {
-    const isVideo = slot.startsWith('cosmetic-video-');
+    const isVideo = isCosmeticVideoMediaSlot(slot);
     const label = isVideo ? 'video' : 'ảnh';
     if (!confirm(`Bạn chỉ đang gỡ ${label} khỏi vị trí này. File vẫn còn trong Media Library.`)) return;
 
@@ -765,7 +766,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   };
 
   // Library filtering
-  const isPickerVideoSlot = pickerOpenSlot?.startsWith('cosmetic-video-');
+  const isPickerVideoSlot = pickerOpenSlot ? isCosmeticVideoMediaSlot(pickerOpenSlot) : false;
   const libraryAssets = mediaAssets.filter(m => {
     if (isPickerVideoSlot) {
       return m.type === 'video' || m.mime_type?.startsWith('video');
@@ -1630,14 +1631,14 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
       {/* ─── TAB CONTENT 6: IMAGES (MEDIA SLOTS) ───────────────────────── */}
       {activeTab === 'images' && (() => {
-        const group1Slots = REQUIRED_SLOTS.filter(s => !s.id.startsWith('cosmetic-video-') && !s.id.startsWith('cosmetic-set-') && s.id !== 'cosmetic-product-luminous-set' && s.id !== 'cosmetic-premium-program');
-        const group2Slots = REQUIRED_SLOTS.filter(s => s.id.startsWith('cosmetic-video-') && s.id !== 'cosmetic-premium-program-spa-video');
+        const group1Slots = REQUIRED_SLOTS.filter(s => !isCosmeticVideoMediaSlot(s.id) && !s.id.startsWith('cosmetic-set-') && s.id !== 'cosmetic-product-luminous-set' && s.id !== 'cosmetic-premium-program');
+        const group2Slots = REQUIRED_SLOTS.filter(s => isCosmeticVideoMediaSlot(s.id) && s.id !== 'cosmetic-premium-program-spa-video');
         const group3Slots = REQUIRED_SLOTS.filter(s => s.id.startsWith('cosmetic-set-') || s.id === 'cosmetic-product-luminous-set');
         const group4Slots = REQUIRED_SLOTS.filter(s => s.id === 'cosmetic-premium-program' || s.id === 'cosmetic-premium-program-spa-video');
 
         const renderSlotCard = (slot: typeof REQUIRED_SLOTS[number]) => {
           const asset = mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot);
-          const isVideoSlot = slot.id.startsWith('cosmetic-video-');
+          const isVideoSlot = isCosmeticVideoMediaSlot(slot.id);
           return (
             <div key={slot.id} className={`p-4 rounded-xl border transition-all flex gap-4 ${
               asset 

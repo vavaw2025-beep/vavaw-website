@@ -7,6 +7,7 @@ import { uploadMediaAction, registerUploadedMediaAsset } from './actions';
 import { createBrowserSupabaseClient } from '@vavaw/auth';
 import { Suspense } from 'react';
 import Link from 'next/link';
+import { isCosmeticVideoMediaSlot } from '../cosmetic-page/cosmetic-slots';
 
 const HUMAN_SLOTS: Record<string, { name: string; size: string }> = {
   'cosmetic-product-luminous-set': { name: 'Ảnh bộ sản phẩm Luminous Set', size: '1600x2000 hoặc 1800x2200, dưới 1MB' },
@@ -31,6 +32,7 @@ const HUMAN_SLOTS: Record<string, { name: string; size: string }> = {
   'cosmetic-video-p30-moisturizer': { name: 'Video P30 Boost Facial Moisturizer', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
   'cosmetic-video-p30-toner': { name: 'Video P30 Boost Facial Hydrating Toner', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
   'cosmetic-video-lumiglow-sunscreen': { name: 'Video Lumiglow Rosy Sheer Sunscreen', size: 'Video dọc 9:16, 1080x1920, MP4/WebM, dưới 50MB' },
+  'cosmetic-premium-program-spa-video': { name: 'Video trải nghiệm VAVAW tại spa / clinic', size: 'Video dọc 9:16 hoặc 4:5, MP4/WebM, dưới 50MB' },
 };
 
 function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
@@ -53,7 +55,7 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const isVideoSlot = isCosmeticSlotMode && slotParam?.startsWith('cosmetic-video-');
+  const isVideoSlot = isCosmeticSlotMode && isCosmeticVideoMediaSlot(slotParam);
 
   useEffect(() => {
     if (isCosmeticSlotMode) {
@@ -251,7 +253,7 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
     <div className="bg-white p-6 shadow rounded-lg border border-slate-200 space-y-4">
       <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
         {isVideoSlot ? <Video className="h-5 w-5 text-blue-600" /> : <Upload className="h-5 w-5 text-blue-600" />}
-        <span>{isCosmeticSlotMode ? (isVideoSlot ? 'Tải lên video sản phẩm' : 'Tải lên hình ảnh vị trí Cosmetic') : 'Upload New Asset'}</span>
+        <span>{isCosmeticSlotMode ? (isVideoSlot ? 'Tải lên video vị trí Cosmetic' : 'Tải lên hình ảnh vị trí Cosmetic') : 'Upload New Asset'}</span>
       </h2>
 
       {error && (
@@ -279,7 +281,11 @@ function UploadFormInner({ mediaAssets = [] }: { mediaAssets?: any[] }) {
             <p><strong>Technical Slot:</strong> <code className="bg-blue-100/50 px-1 py-0.5 rounded font-mono text-[10px] text-blue-700">{slotParam}</code></p>
             <p><strong>Khuyên dùng:</strong> {activeSlotInfo.size}</p>
             {isVideoSlot && (
-              <p className="text-blue-700 font-semibold mt-1">Đây là video sản phẩm cho Clinical Formulas. Khuyến nghị: video dọc 9:16, 1080×1920, MP4/WebM, tối đa 50MB.</p>
+              <p className="text-blue-700 font-semibold mt-1">
+                {slotParam === 'cosmetic-premium-program-spa-video'
+                  ? 'Đây là video cho Professional Spa Program. Khuyến nghị: video dọc 9:16 hoặc 4:5, MP4/WebM, dưới 50MB.'
+                  : 'Đây là video sản phẩm cho Clinical Formulas. Khuyến nghị: video dọc 9:16, 1080×1920, MP4/WebM, tối đa 50MB.'}
+              </p>
             )}
           </div>
         </div>

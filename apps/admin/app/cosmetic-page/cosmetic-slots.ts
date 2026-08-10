@@ -12,6 +12,7 @@ export interface CosmeticSlotDef {
   value: string;        // Canonical slot key (always starts with "cosmetic-product-")
   label: string;        // Vietnamese label for Admin UI
   aliases: string[];    // Legacy / short keys that map to this canonical value
+  description?: string; // Optional description/guidelines for upload UI
 }
 
 export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
@@ -98,6 +99,7 @@ export const COSMETIC_VIDEO_MEDIA_SLOTS: CosmeticSlotDef[] = [
     value: 'cosmetic-premium-program-spa-video',
     label: 'Video trải nghiệm VAVAW tại spa / clinic',
     aliases: ['premium-program-spa-video', 'spa-video'],
+    description: 'Video spa/clinic dùng cho Professional Spa Program. Khuyến nghị: video dọc 9:16 hoặc 4:5, MP4/WebM, dưới 50MB.',
   },
 ];
 
@@ -139,6 +141,14 @@ export function normalizeCosmeticMediaSlot(value?: string): string | undefined {
   if (v.startsWith('cosmetic-product-') || v.startsWith('cosmetic-set-') || v.startsWith('cosmetic-video-')) return v;
 
   return undefined;
+}
+
+export function isCosmeticVideoMediaSlot(slot: string | null | undefined): boolean {
+  if (!slot) return false;
+  return (
+    slot.startsWith('cosmetic-video-') ||
+    slot === 'cosmetic-premium-program-spa-video'
+  );
 }
 
 export interface CosmeticItemMetadata {

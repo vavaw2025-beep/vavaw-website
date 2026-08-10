@@ -71,36 +71,25 @@ BEGIN
     RETURN;
   END IF;
 
-  -- Convert old items into pillars if pillars is missing
-  IF (v_content->'pillars') IS NULL THEN
-    v_items := COALESCE(v_content->'items', '[]'::jsonb);
-    IF jsonb_array_length(v_items) > 0 THEN
-      FOR v_i IN 0..jsonb_array_length(v_items) - 1 LOOP
-        v_item := v_items->v_i;
-        v_pillars := v_pillars || jsonb_build_array(
-          jsonb_build_object(
-            'title', COALESCE(v_item->>'icon', 'Program Aspect'),
-            'description', COALESCE(v_item->>'text', '')
-          )
-        );
-      END LOOP;
-    ELSE
-      -- Load standard pillars
-      v_pillars := '[
-        {
-          "title": "Spa-use recovery ritual",
-          "description": "Ứng dụng sản phẩm trong quy trình chăm sóc phục hồi tại spa."
-        },
-        {
-          "title": "Specialist-guided application",
-          "description": "Khách hàng được hướng dẫn cách dùng sản phẩm phù hợp với tình trạng da."
-        },
-        {
-          "title": "Home-care continuity",
-          "description": "Routine tại nhà giúp duy trì hiệu quả chăm sóc sau trải nghiệm spa."
-        }
-      ]'::jsonb;
-    END IF;
+  -- Convert old items into pillars if pillars is missing, not an array, or empty
+  IF (v_content->'pillars') IS NULL 
+     OR jsonb_typeof(v_content->'pillars') <> 'array' 
+     OR jsonb_array_length(v_content->'pillars') = 0 THEN
+    -- Load standard pillars directly
+    v_pillars := '[
+      {
+        "title": "Spa-use recovery ritual",
+        "description": "Ứng dụng sản phẩm trong quy trình chăm sóc phục hồi tại spa."
+      },
+      {
+        "title": "Specialist-guided application",
+        "description": "Khách hàng được hướng dẫn cách dùng sản phẩm phù hợp với tình trạng da."
+      },
+      {
+        "title": "Home-care continuity",
+        "description": "Routine tại nhà giúp duy trì hiệu quả chăm sóc sau trải nghiệm spa."
+      }
+    ]'::jsonb;
     v_content := jsonb_set(v_content, '{pillars}', v_pillars);
   END IF;
 

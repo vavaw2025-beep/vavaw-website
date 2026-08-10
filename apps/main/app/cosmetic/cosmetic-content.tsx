@@ -1821,8 +1821,11 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
               {/* Program Pillars */}
               <motion.div variants={fadeUp} className="space-y-3.5 mb-8">
-                {((premiumProgram.pillars || premiumProgram.items || []).slice(0, 3)).map((pillar: any, i: number) => {
-                  const pTitle = pillar.title || pillar.icon || `Pillar ${i + 1}`;
+                {(Array.isArray(premiumProgram.pillars) && premiumProgram.pillars.length > 0
+                  ? premiumProgram.pillars
+                  : (premiumProgram.items || [])
+                ).slice(0, 3).map((pillar: any, i: number) => {
+                  const pTitle = pillar.title || `Trụ cột ${i + 1}`;
                   const pDesc = pillar.description || pillar.text || '';
                   return (
                     <div key={i} className="flex items-start gap-4 p-3.5 rounded-xl border border-[#E2E8F0]/60 bg-[#F8FAFC]/50 hover:bg-[#F8FAFC] transition-colors">
