@@ -148,6 +148,10 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [premSecondaryCtaLabel, setPremSecondaryCtaLabel] = useState('');
   const [premSecondaryCtaHref, setPremSecondaryCtaHref] = useState('');
   const [premPillars, setPremPillars] = useState<any[]>([]);
+  // Final CTA states
+  const [finalSecondaryCtaLabel, setFinalSecondaryCtaLabel] = useState('');
+  const [finalSecondaryCtaHref, setFinalSecondaryCtaHref] = useState('');
+  const [finalTrustPoints, setFinalTrustPoints] = useState<string[]>([]);
 
   // Sync prop changes
   useEffect(() => {
@@ -318,6 +322,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setPremSecondaryCtaHref(content.secondaryCtaHref || '');
       setPremPillars(content.pillars || content.items || []);
     }
+
+    if (block.block_type === 'cosmetic-final-cta') {
+      setFinalSecondaryCtaLabel(content.secondaryCtaLabel || '');
+      setFinalSecondaryCtaHref(content.secondaryCtaHref || '');
+      setFinalTrustPoints(
+        Array.isArray(content.trustPoints)
+          ? content.trustPoints
+          : ['Clinical Korean cosmetic ritual', 'Spa-use recovery guidance', 'Home-care routine support']
+      );
+    }
   };
 
   const handleSaveSectionEdits = async () => {
@@ -448,6 +462,10 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       } else {
         updatedContent.pillars = premPillars;
       }
+    } else if (editingBlock.block_type === 'cosmetic-final-cta') {
+      updatedContent.secondaryCtaLabel = finalSecondaryCtaLabel;
+      updatedContent.secondaryCtaHref = finalSecondaryCtaHref;
+      updatedContent.trustPoints = finalTrustPoints;
     } else {
       if (isJsonDirty && parsedItems !== undefined) {
         updatedContent.items = parsedItems;
@@ -2951,6 +2969,80 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                       >
                         <Plus className="h-3 w-3" />
                         <span>Thêm trụ cột mới</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {editingBlock.block_type === 'cosmetic-final-cta' && (
+                  <div className="col-span-2 space-y-6 border-t border-slate-100 pt-4 mt-2">
+                    <p className="text-[11px] text-blue-700 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 leading-relaxed">
+                      💡 <strong>Hướng dẫn:</strong> Section này dùng để hiển thị CTA cuối trang (ngay trên footer). CTA này nên ngắn gọn, tập trung vào chuyển đổi.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/50 p-4 rounded-xl border border-slate-200">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nhãn nút phụ (Secondary CTA Label)</label>
+                        <input
+                          type="text"
+                          value={finalSecondaryCtaLabel}
+                          onChange={e => setFinalSecondaryCtaLabel(e.target.value)}
+                          className="w-full text-sm p-2 border border-slate-300 rounded-md bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                          placeholder="Ví dụ: Trải nghiệm tại VAVAW Beauty & Co"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Đường dẫn nút phụ (Secondary CTA Link)</label>
+                        <input
+                          type="text"
+                          value={finalSecondaryCtaHref}
+                          onChange={e => setFinalSecondaryCtaHref(e.target.value)}
+                          className="w-full text-sm p-2 border border-slate-300 rounded-md bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                          placeholder="Ví dụ: /go/beauty"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Trust points list repeater */}
+                    <div className="space-y-4">
+                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
+                        Điểm uy tín (Trust Points)
+                      </h4>
+
+                      <div className="space-y-2">
+                        {finalTrustPoints.map((point, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={point}
+                              onChange={e => {
+                                const l = [...finalTrustPoints];
+                                l[idx] = e.target.value;
+                                setFinalTrustPoints(l);
+                              }}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white"
+                              placeholder={`Điểm uy tín #${idx + 1}`}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setFinalTrustPoints(finalTrustPoints.filter((_, i) => i !== idx))}
+                              className="p-2 text-slate-400 hover:text-red-600 rounded transition shrink-0"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setFinalTrustPoints([...finalTrustPoints, ''])}
+                        className="text-xs text-blue-600 font-bold flex items-center gap-1 hover:underline mt-1 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-lg"
+                      >
+                        <Plus className="h-3 w-3" />
+                        <span>Thêm điểm uy tín mới</span>
                       </button>
                     </div>
                   </div>

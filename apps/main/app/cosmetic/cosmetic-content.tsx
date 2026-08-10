@@ -1934,45 +1934,70 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       )}
 
       {/* ───────────────────────────────────────────────────────────────────────
-          SECTION 10 — FINAL CTA
+          SECTION 10 — FINAL CTA (Compact, Premium Cosmetic CTA above Footer)
       ─────────────────────────────────────────────────────────────────────── */}
       {finalCta && (
-      <section className={`${SECTION_NAVY} py-28 md:py-36 px-6 text-center`}>
+      <section className="bg-[#050A5C] py-20 md:py-24 px-6 text-center border-t border-white/10 relative overflow-hidden">
         <motion.div
-          className="max-w-2xl mx-auto"
+          className="max-w-3xl mx-auto"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
           variants={stagger}
         >
           <motion.div variants={fadeUp}>
-            <SectionLabel>
-              <span className="text-white/40">{finalCta.eyebrow}</span>
-            </SectionLabel>
+            <span className="text-[10px] md:text-[11px] font-bold text-white/50 tracking-[0.25em] uppercase mb-4 block">
+              {finalCta.eyebrow || "VAVAW COSMETIC CONSULTATION"}
+            </span>
           </motion.div>
+          
           <motion.h2
             variants={fadeUp}
-            className="text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-tight leading-tight mb-6 whitespace-pre-wrap"
+            className="text-2xl md:text-3.5xl font-light text-white tracking-tight leading-snug mb-4 whitespace-pre-wrap"
           >
-            {finalCta.title}
+            {finalCta.title || "Begin Your VAVAW Skin Consultation"}
           </motion.h2>
-          <Divider />
-          <motion.p variants={fadeUp} className="text-white/60 font-light text-base leading-relaxed mb-12 whitespace-pre-wrap">
-            {finalCta.description || 'Discover a clinical Korean skincare ritual designed for luminous, balanced, resilient skin.'}
+
+          <motion.p 
+            variants={fadeUp} 
+            className="text-white/70 font-light text-xs md:text-sm leading-relaxed max-w-2xl mx-auto mb-6 whitespace-pre-wrap"
+          >
+            {finalCta.description || "Khám phá routine phục hồi phù hợp với tình trạng da của bạn — từ sản phẩm chăm sóc tại nhà đến trải nghiệm chuyên sâu tại VAVAW Beauty & Co."}
           </motion.p>
+
+          {/* Trust points */}
+          {(() => {
+            const trustList = Array.isArray(finalCta.trustPoints) && finalCta.trustPoints.length > 0
+              ? finalCta.trustPoints
+              : ['Clinical Korean cosmetic ritual', 'Spa-use recovery guidance', 'Home-care routine support'];
+            return (
+              <motion.div 
+                variants={fadeUp} 
+                className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-white/40 text-[11px] font-light"
+              >
+                {trustList.slice(0, 3).map((point: string, i: number) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-white/20" />
+                    <span>{point}</span>
+                  </div>
+                ))}
+              </motion.div>
+            );
+          })()}
+
           <motion.div
             variants={fadeUp}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto"
           >
             <CosmeticCtaTracker
-              label={finalCta.ctaLabel || "START AN INQUIRY"}
-              href={finalCta.ctaHref || "/contact?type=cosmetic_interest"}
-              className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center bg-white text-[#050A5C] text-[12px] tracking-[0.2em] uppercase hover:bg-[#F4F7FB] transition-colors shadow-sm"
+              label={finalCta.ctaLabel || "Nhận tư vấn sản phẩm"}
+              href={finalCta.ctaHref || "/contact?type=cosmetic_interest&source=final_cta"}
+              className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center bg-white text-[#050A5C] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#F4F7FB] transition-colors shadow-sm rounded"
             />
             <CosmeticCtaTracker
-              label="BACK TO ECOSYSTEM"
-              href="/"
-              className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center border border-white/25 text-white text-[12px] tracking-[0.2em] uppercase hover:bg-white/10 transition-colors"
+              label={finalCta.secondaryCtaLabel || "Trải nghiệm tại VAVAW Beauty & Co"}
+              href={finalCta.secondaryCtaHref || "/go/beauty"}
+              className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-white/20 text-white text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-white/10 transition-colors rounded"
             />
           </motion.div>
         </motion.div>
