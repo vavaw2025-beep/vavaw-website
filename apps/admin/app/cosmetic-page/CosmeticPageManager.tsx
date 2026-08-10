@@ -2015,6 +2015,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                   pagePath: '/cosmetic/products/calmiance-superior-sheer-gel',
                   blockType: 'cosmetic-product-landing-calmiance-gel',
                   label: 'COSMETIC GEL LANDING'
+                },
+                {
+                  title: 'P30 Boost Facial Hydrating Toner',
+                  pagePath: '/cosmetic/products/p30-boost-facial-hydrating-toner',
+                  blockType: 'cosmetic-product-landing-p30-toner',
+                  label: 'COSMETIC TONER LANDING'
                 }
               ];
 
