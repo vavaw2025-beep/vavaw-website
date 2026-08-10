@@ -3,11 +3,11 @@ import { Suspense } from 'react';
 import { draftMode } from 'next/headers';
 import { loadPublicCosmeticMedia } from '@/lib/load-public-cosmetic-media';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
-import { CosmeticCtaTracker } from '../../cosmetic-tracker';
-import { SiteFooter } from '@vavaw/ui';
-import { ShieldCheck, ChevronRight } from 'lucide-react';
+import { ProductLandingPage } from '../_components/ProductLandingPage';
+import { mergeProductLandingContent } from '../_lib/merge-product-landing-content';
+import { ProductLandingContent } from '../_components/product-landing-types';
 
-const DEFAULT_CONTENT = {
+const DEFAULT_CONTENT: ProductLandingContent = {
   eyebrow: 'VAVAW COSMETIC',
   title: 'Luminous Revitalization Sheer Set',
   headline: 'Chăm sóc chuyên sâu — củng cố hàng rào bảo vệ và phục hồi làn da rạng rỡ.',
@@ -16,7 +16,8 @@ const DEFAULT_CONTENT = {
   ctaHref: '/contact?type=cosmetic_interest&product=luminous_set&source=product_landing',
   secondaryCtaLabel: 'Trải nghiệm tại VAVAW Beauty & Co',
   secondaryCtaHref: '/go/beauty',
-  setProducts: [
+  heroMediaSlot: 'cosmetic-product-luminous-set',
+  insideSet: [
     {
       name: 'CELLUREVIVE Ampoule',
       size: '7ml × 4ea',
@@ -59,10 +60,12 @@ const DEFAULT_CONTENT = {
     { step: '04', title: 'Giữ ẩm bằng REGENAGLOW NOURISH SHEER CREAM', description: 'Thoa một lớp kem mỏng để giúp duy trì các dưỡng chất từ ampoule.' },
     { step: '05', title: 'Bảo vệ ban ngày', description: 'Luôn kết hợp kem chống nắng có màng lọc bảo vệ phổ rộng khi đi ra ngoài.' }
   ],
-  spaBridgeTitle: 'Có thể trải nghiệm trong quy trình chăm sóc tại VAVAW Beauty & Co',
-  spaBridgeDescription: 'VAVAW Beauty & Co giúp khách hàng hiểu cách kết hợp sản phẩm trong trải nghiệm chăm sóc chuyên nghiệp và routine tại nhà.',
-  spaBridgeCtaLabel: 'Trải nghiệm tại VAVAW Beauty & Co',
-  spaBridgeCtaHref: '/go/beauty',
+  spaBridge: {
+    title: 'Có thể trải nghiệm trong quy trình chăm sóc tại VAVAW Beauty & Co',
+    description: 'VAVAW Beauty & Co giúp khách hàng hiểu cách kết hợp sản phẩm trong trải nghiệm chăm sóc chuyên nghiệp và routine tại nhà.',
+    ctaLabel: 'Trải nghiệm tại VAVAW Beauty & Co',
+    ctaHref: '/go/beauty',
+  },
   productInfo: [
     { label: 'Tên sản phẩm', value: 'Luminous Revitalization Sheer Set' },
     { label: 'Quy cách đóng gói', value: 'CELLUREVIVE Ampoule (7ml × 4 lọ) & REGENAGLOW NOURISH SHEER CREAM (30ml × 1 tuýp)' },
@@ -70,10 +73,12 @@ const DEFAULT_CONTENT = {
     { label: 'Hướng dẫn bảo quản', value: 'Nơi khô ráo thoáng mát, tránh ánh nắng trực tiếp. Nên dùng lọ ampoule trong vòng 7 ngày sau khi mở nắp.' },
     { label: 'Lưu ý khi sử dụng', value: 'Chỉ dùng ngoài da. Tránh tiếp xúc trực tiếp với mắt. Ngưng sử dụng nếu có dấu hiệu kích ứng.' }
   ],
-  finalTitle: 'Bắt đầu tư vấn Luminous Set',
-  finalDescription: 'Nhận gợi ý routine phù hợp với tình trạng da và nhu cầu chăm sóc của bạn.',
-  finalCtaLabel: 'Nhận tư vấn Luminous Set',
-  finalCtaHref: '/contact?type=cosmetic_interest&product=luminous_set&source=product_landing_final'
+  finalCta: {
+    title: 'Bắt đầu tư vấn Luminous Set',
+    description: 'Nhận gợi ý routine phù hợp với tình trạng da và nhu cầu chăm sóc của bạn.',
+    ctaLabel: 'Nhận tư vấn Luminous Set',
+    ctaHref: '/contact?type=cosmetic_interest&product=luminous_set&source=product_landing_final'
+  }
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -111,377 +116,11 @@ export default async function LuminousProductLandingPage() {
   // Load cosmetic media urls
   const cosmeticMedia = await loadPublicCosmeticMedia(isPreview);
 
-  // Helper for rendering slot images safely with a gradient card fallback
-  const renderSlotImage = (srcUrl: string | undefined, altText: string, fallbackGrad: string) => {
-    if (srcUrl && srcUrl.trim() && !srcUrl.includes('PASTE_')) {
-      return (
-        <img
-          src={srcUrl.trim()}
-          alt={altText}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
-      );
-    }
-    return (
-      <div className={`w-full h-full bg-gradient-to-br ${fallbackGrad} flex items-center justify-center p-4 relative`}>
-        <div className="absolute inset-4 border border-white/20" />
-        <span className="text-[10px] text-white/50 tracking-widest font-mono uppercase">{altText}</span>
-      </div>
-    );
-  };
-
   // Merge CMS and Default Fallback content safely
-  const eyebrow = cmsBlock.eyebrow || DEFAULT_CONTENT.eyebrow;
-  const title = cmsBlock.title || DEFAULT_CONTENT.title;
-  const headline = cmsBlock.headline || DEFAULT_CONTENT.headline;
-  const description = cmsBlock.description || DEFAULT_CONTENT.description;
-  const primaryCtaLabel = cmsBlock.primaryCtaLabel || cmsBlock.ctaLabel || DEFAULT_CONTENT.ctaLabel;
-  const primaryCtaHref = cmsBlock.primaryCtaHref || cmsBlock.ctaHref || DEFAULT_CONTENT.ctaHref;
-  const secondaryCtaLabel = cmsBlock.secondaryCtaLabel || DEFAULT_CONTENT.secondaryCtaLabel;
-  const secondaryCtaHref = cmsBlock.secondaryCtaHref || DEFAULT_CONTENT.secondaryCtaHref;
-  const heroMediaSlot = cmsBlock.heroMediaSlot || 'cosmetic-product-luminous-set';
-
-  // insideSet array
-  const insideSetRaw = cmsBlock.insideSet || cmsBlock.setProducts;
-  const setProducts = Array.isArray(insideSetRaw) && insideSetRaw.length > 0
-    ? insideSetRaw.map((p: any) => ({
-        name: p.name || '',
-        size: p.size || '',
-        role: p.role || '',
-        description: p.description || '',
-        mediaSlot: p.mediaSlot || ''
-      }))
-    : DEFAULT_CONTENT.setProducts;
-
-  // recoverySteps array
-  const recoveryStepsRaw = cmsBlock.recoverySteps || cmsBlock.recoveryLogic;
-  const recoveryLogic = Array.isArray(recoveryStepsRaw) && recoveryStepsRaw.length > 0
-    ? recoveryStepsRaw.map((step: any, idx: number) => ({
-        step: step.step || `0${idx + 1}`,
-        title: step.title || '',
-        description: step.description || ''
-      }))
-    : DEFAULT_CONTENT.recoveryLogic;
-
-  // technologies array
-  const technologiesRaw = cmsBlock.technologies || cmsBlock.activeTech;
-  const activeTech = Array.isArray(technologiesRaw) && technologiesRaw.length > 0
-    ? technologiesRaw.map((t: any) => ({
-        name: t.name || '',
-        role: t.role || '',
-        description: t.description || '',
-        product: t.foundIn || t.product || ''
-      }))
-    : DEFAULT_CONTENT.activeTech;
-
-  // whoFor array
-  const whoForRaw = cmsBlock.whoFor || cmsBlock.whoItsFor;
-  const whoItsFor = Array.isArray(whoForRaw) && whoForRaw.length > 0
-    ? whoForRaw.map((item: any) => typeof item === 'string' ? item : (item.text || ''))
-    : DEFAULT_CONTENT.whoItsFor;
-
-  // howToUse array
-  const howToUseRaw = cmsBlock.howToUse;
-  let howToUse = DEFAULT_CONTENT.howToUse;
-  if (Array.isArray(howToUseRaw) && howToUseRaw.length > 0) {
-    howToUse = howToUseRaw.map((item: any, idx: number) => {
-      if (typeof item === 'string') {
-        return {
-          step: `0${idx + 1}`,
-          title: item,
-          description: ''
-        };
-      }
-      return {
-        step: item.step || `0${idx + 1}`,
-        title: item.title || item.text || '',
-        description: item.description || ''
-      };
-    });
-  }
-
-  // spaBridge block
-  const spaBridgeRaw = (cmsBlock.spaBridge || {}) as any;
-  const spaBridgeTitle = spaBridgeRaw.title || cmsBlock.spaBridgeTitle || DEFAULT_CONTENT.spaBridgeTitle;
-  const spaBridgeDescription = spaBridgeRaw.description || cmsBlock.spaBridgeDescription || DEFAULT_CONTENT.spaBridgeDescription;
-  const spaBridgeCtaLabel = spaBridgeRaw.ctaLabel || cmsBlock.spaBridgeCtaLabel || DEFAULT_CONTENT.spaBridgeCtaLabel;
-  const spaBridgeCtaHref = spaBridgeRaw.ctaHref || cmsBlock.spaBridgeCtaHref || DEFAULT_CONTENT.spaBridgeCtaHref;
-
-  // productInfo array
-  const productInfoRaw = cmsBlock.productInfo;
-  const productInfo = Array.isArray(productInfoRaw) && productInfoRaw.length > 0
-    ? productInfoRaw.map((info: any) => ({
-        label: info.label || '',
-        value: info.value || ''
-      }))
-    : DEFAULT_CONTENT.productInfo;
-
-  // finalCta block
-  const finalCtaRaw = (cmsBlock.finalCta || {}) as any;
-  const finalTitle = finalCtaRaw.title || cmsBlock.finalTitle || DEFAULT_CONTENT.finalTitle;
-  const finalDescription = finalCtaRaw.description || cmsBlock.finalDescription || DEFAULT_CONTENT.finalDescription;
-  const finalCtaLabel = finalCtaRaw.ctaLabel || cmsBlock.finalCtaLabel || DEFAULT_CONTENT.finalCtaLabel;
-  const finalCtaHref = finalCtaRaw.ctaHref || cmsBlock.finalCtaHref || DEFAULT_CONTENT.finalCtaHref;
+  const mergedContent = mergeProductLandingContent(DEFAULT_CONTENT, cmsBlock);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#E2E8F0] selection:text-[#050A5C]">
-      
-      {/* ─── BREADCRUMB ────────────────────────────────────────────────────────── */}
-      <div className="pt-24 md:pt-28 pb-4 px-6 bg-white border-b border-slate-100">
-        <div className="max-w-6xl mx-auto flex items-center gap-1.5 text-[10px] md:text-xs text-slate-400 font-medium uppercase tracking-wider">
-          <a href="/cosmetic" className="hover:text-[#050A5C] transition-colors">Cosmetic</a>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-slate-600 font-bold truncate">Luminous Revitalization Sheer Set</span>
-        </div>
-      </div>
-
-      {/* ─── PRODUCT HERO ──────────────────────────────────────────────────────── */}
-      <section className="bg-white py-16 md:py-24 px-6 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
-          
-          {/* Left Column: Visual Media packshot */}
-          <div className="relative aspect-[4/5] bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center p-6 md:p-8">
-            {renderSlotImage(
-              cosmeticMedia[heroMediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.luminousSet,
-              'Luminous Revitalization Sheer Set',
-              'from-[#050A5C]/20 to-[#050A5C]/40'
-            )}
-            <div className="absolute bottom-4 left-4 right-4 flex justify-between text-[9px] font-mono text-slate-400 uppercase tracking-widest pointer-events-none">
-              <span>VAVAW COSMETIC</span>
-              <span>CLINICAL RECOVERY SYSTEM</span>
-            </div>
-          </div>
-
-          {/* Right Column: Hero Content */}
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
-                {eyebrow}
-              </span>
-              <h1 className="text-3xl md:text-4.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
-                {title}
-              </h1>
-              {headline && (
-                <p className="text-sm md:text-base font-light text-[#050A5C]/80 italic leading-relaxed">
-                  {headline}
-                </p>
-              )}
-            </div>
-
-            <hr className="border-slate-100" />
-
-            <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap">
-              {description}
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-              <CosmeticCtaTracker
-                label={primaryCtaLabel}
-                href={primaryCtaHref}
-                className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center bg-[#050A5C] text-white text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm"
-              />
-              <CosmeticCtaTracker
-                label={secondaryCtaLabel}
-                href={secondaryCtaHref}
-                className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-slate-200 text-slate-600 text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-slate-50 transition-colors rounded-[1px]"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── INSIDE THE SET ────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 px-6 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-2">
-            <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">WHAT IS INSIDE</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif">Chi Tiết Bộ Sản Phẩm</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {setProducts.map((p, idx) => {
-              const mediaUrl = idx === 0 ? cosmeticMedia.setCellureviveAmpoule : cosmeticMedia.setRegenaglowSheerCream;
-              return (
-                <div key={idx} className="bg-white border border-slate-200 hover:border-slate-300 transition-colors flex flex-col p-6 space-y-6">
-                  {/* Thumbnail stage */}
-                  <div className="aspect-[4/3] bg-slate-50 border border-slate-100 overflow-hidden flex items-center justify-center p-4">
-                    {renderSlotImage(mediaUrl, p.name, 'from-[#EEF2F8] to-[#DDE3EE]')}
-                  </div>
-
-                  <div className="space-y-3 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-bold text-[#050A5C] text-sm md:text-base leading-tight">{p.name}</h3>
-                        <span className="text-[10px] font-mono text-slate-400 font-semibold shrink-0 uppercase">{p.size}</span>
-                      </div>
-                      <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block mt-1">{p.role}</span>
-                      <p className="text-xs md:text-sm text-slate-500 font-light leading-relaxed mt-3">{p.description}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── RECOVERY LOGIC ────────────────────────────────────────────────────── */}
-      <section className="bg-white py-20 md:py-28 px-6 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-2">
-            <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">RECOVERY CYCLE</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif">Quy Trình Phục Hồi 5 Bước</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-5xl mx-auto">
-            {recoveryLogic.map((logic, idx) => (
-              <div key={idx} className="p-5 border border-slate-100 bg-slate-50/50 flex flex-col justify-between space-y-4">
-                <div>
-                  <span className="block text-[10px] font-mono text-[#050A5C]/50 font-bold uppercase tracking-wider mb-2">{logic.step}</span>
-                  <h3 className="font-bold text-[#050A5C] text-xs uppercase tracking-wide mb-2">{logic.title}</h3>
-                  <p className="text-[11px] text-slate-500 font-light leading-relaxed">{logic.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── ACTIVE TECHNOLOGY ─────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 px-6 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-2">
-            <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">CLINICAL FORMULA</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif">Công Nghệ Hoạt Chất</h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {activeTech.map((tech, idx) => (
-              <div key={idx} className="bg-white p-6 border border-slate-200 flex flex-col justify-between space-y-4 hover:border-slate-300 transition-colors">
-                <div className="space-y-2">
-                  <h3 className="text-base font-bold text-[#050A5C]">{tech.name}</h3>
-                  <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block">{tech.role}</span>
-                  <p className="text-xs text-slate-500 font-light leading-relaxed pt-2">{tech.description}</p>
-                </div>
-                {tech.product && (
-                  <div className="text-[9px] font-semibold text-[#050A5C]/60 uppercase tracking-widest border-t border-slate-50 pt-2.5">
-                    Ứng dụng: {tech.product}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── WHO IT'S FOR ──────────────────────────────────────────────────────── */}
-      <section className="bg-white py-20 md:py-28 px-6 border-b border-slate-100">
-        <div className="max-w-4xl mx-auto space-y-10">
-          
-          <div className="text-center space-y-2">
-            <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">SKIN COMPATIBILITY</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif">Đối Tượng Sử Dụng</h2>
-          </div>
-
-          <div className="bg-slate-50/50 border border-slate-200 p-8 md:p-12 space-y-4 max-w-2xl mx-auto">
-            {whoItsFor.map((item, idx) => (
-              <div key={idx} className="flex items-start gap-4">
-                <ShieldCheck className="h-5 w-5 text-[#050A5C] shrink-0 mt-0.5" />
-                <span className="text-xs md:text-sm text-slate-600 font-light leading-relaxed">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── HOW TO USE ────────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 px-6 border-b border-slate-100">
-        <div className="max-w-5xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-2">
-            <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">APPLICATION RITUAL</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif">Hướng Dẫn Sử Dụng</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-4xl mx-auto">
-            {howToUse.map((step, idx) => (
-              <div key={idx} className="relative space-y-3 p-4">
-                <div className="text-3xl font-extrabold text-[#050A5C]/10 font-mono leading-none">{step.step}</div>
-                <h3 className="font-bold text-[#050A5C] text-xs uppercase tracking-wide leading-tight">{step.title}</h3>
-                <p className="text-[11px] text-slate-500 font-light leading-relaxed">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── SPA BRIDGE ────────────────────────────────────────────────────────── */}
-      <section className="bg-white py-20 md:py-24 px-6 text-center border-b border-slate-100">
-        <div className="max-w-2xl mx-auto space-y-6">
-          <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">PROFESSIONAL PARTNERSHIP</span>
-          <h2 className="text-2xl md:text-3xl font-light text-[#050A5C] font-serif leading-tight">
-            {spaBridgeTitle}
-          </h2>
-          <p className="text-slate-500 font-light text-xs md:text-sm leading-relaxed max-w-xl mx-auto">
-            {spaBridgeDescription}
-          </p>
-          <div className="pt-4">
-            <CosmeticCtaTracker
-              label={spaBridgeCtaLabel}
-              href={spaBridgeCtaHref}
-              className="inline-flex h-[48px] px-8 items-center justify-center bg-[#050A5C] text-white text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px]"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ─── PRODUCT INFORMATION ───────────────────────────────────────────────── */}
-      <section className="py-20 md:py-24 px-6 border-b border-slate-100">
-        <div className="max-w-4xl mx-auto space-y-10">
-          
-          <div className="text-center space-y-2">
-            <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">SPECIFICATIONS</span>
-            <h2 className="text-xl md:text-2xl font-light text-[#050A5C] tracking-tight font-serif">Thông Tin Chi Tiết</h2>
-          </div>
-
-          <div className="bg-white border border-slate-200 overflow-hidden max-w-2xl mx-auto divide-y divide-slate-100">
-            {productInfo.map((info, idx) => (
-              <div key={idx} className="grid grid-cols-1 md:grid-cols-[180px_1fr] p-4 gap-2 text-xs">
-                <span className="font-bold text-[#050A5C] uppercase tracking-wider text-[10px] md:pt-0.5">{info.label}</span>
-                <span className="text-slate-600 font-light leading-relaxed">{info.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── FINAL CTA ─────────────────────────────────────────────────────────── */}
-      <section className="bg-[#050A5C] py-20 md:py-24 px-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.15)_100%)] pointer-events-none" />
-        <div className="max-w-2xl mx-auto space-y-6 relative z-10">
-          <span className="text-[10px] font-bold text-white/50 tracking-[0.25em] uppercase block">VAVAW COSMETIC CONSULTATION</span>
-          <h2 className="text-2xl md:text-3.5xl font-light text-white tracking-tight leading-snug">
-            {finalTitle}
-          </h2>
-          <p className="text-white/70 font-light text-xs md:text-sm leading-relaxed max-w-xl mx-auto">
-            {finalDescription}
-          </p>
-          <div className="pt-4">
-            <CosmeticCtaTracker
-              label={finalCtaLabel}
-              href={finalCtaHref}
-              className="inline-flex h-[48px] px-8 items-center justify-center bg-white text-[#050A5C] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#F4F7FB] transition-colors shadow-sm rounded-[1px]"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ─── SHARED FOOTER ────────────────────────────────────────────────────── */}
-      <SiteFooter variant="cosmetic" />
-    </div>
+    <ProductLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} />
   );
 }
+
