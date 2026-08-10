@@ -118,6 +118,19 @@ const NAME_TO_PRODUCT_ID: Array<{ match: (n: string) => boolean; id: string }> =
   { match: n => n.includes('lumiglow') || n.includes('sunscreen'), id: 'lumiglow-sunscreen' },
 ];
 
+function getProductLandingHref(productName: string): string {
+  const name = productName.toLowerCase();
+  if (name.includes('regenaglow') && (name.includes('cream') || name.includes('nourish'))) return '/cosmetic/products/regenaglow-nourish-sheer-cream';
+  if (name.includes('calmiance')) return '/cosmetic/products/calmiance-superior-sheer-gel';
+  if (name.includes('renew') || (name.includes('gentle') && name.includes('ampoule'))) return '/cosmetic/products/gentle-activation-renew-ampoule';
+  if (name.includes('moisturizer') && name.includes('p30')) return '/cosmetic/products/p30-boost-facial-moisturizer';
+  if (name.includes('toner') && name.includes('p30')) return '/cosmetic/products/p30-boost-facial-hydrating-toner';
+  if (name.includes('lumiglow') || name.includes('sunscreen')) return '/cosmetic/products/lumiglow-rosy-sheer-sunscreen';
+  if (name.includes('cellurevive')) return '/cosmetic/products/cellurevive-ampoule';
+  if (name.includes('luminous') || name.includes('set')) return '/cosmetic/products/luminous-revitalization-sheer-set';
+  return '/cosmetic';
+}
+
 function getProductImage(
   productName: string,
   mediaSlot: string | undefined,
@@ -327,11 +340,18 @@ export function ClinicalFormulaLab({ productCards, cosmeticMedia }: ClinicalForm
                 )}
 
                 {/* CTA */}
-                <CosmeticCtaTracker
-                  label={productCards.ctaLabel || 'Start Consultation'}
-                  href={ctaHref}
-                  className="inline-flex items-center justify-center h-[42px] px-7 bg-white text-[#050A5C] text-[10px] tracking-[0.2em] uppercase font-semibold hover:bg-white/90 transition-colors rounded-[1px]"
-                />
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <CosmeticCtaTracker
+                    label="Xem chi tiết"
+                    href={getProductLandingHref(productName)}
+                    className="inline-flex items-center justify-center h-[42px] px-7 bg-white text-[#050A5C] text-[10px] tracking-[0.2em] uppercase font-semibold hover:bg-white/90 transition-colors rounded-[1px]"
+                  />
+                  <CosmeticCtaTracker
+                    label={productCards.ctaLabel || 'Start Consultation'}
+                    href={ctaHref}
+                    className="inline-flex items-center justify-center h-[42px] px-7 border border-white/40 text-white text-[10px] tracking-[0.2em] uppercase font-semibold hover:bg-white/10 transition-colors rounded-[1px]"
+                  />
+                </div>
               </div>
             )}
           </motion.div>
@@ -434,11 +454,18 @@ export function ClinicalFormulaLab({ productCards, cosmeticMedia }: ClinicalForm
                   ))}
                 </div>
               )}
-              <CosmeticCtaTracker
-                label={productCards.ctaLabel || 'Start Consultation'}
-                href={ctaHref}
-                className="w-full h-10 flex items-center justify-center bg-white text-[#050A5C] text-[9px] tracking-[0.2em] uppercase font-semibold hover:bg-white/90 transition-colors rounded-[1px]"
-              />
+              <div className="flex flex-col gap-2">
+                <CosmeticCtaTracker
+                  label="Xem chi tiết"
+                  href={getProductLandingHref(name)}
+                  className="w-full h-10 flex items-center justify-center bg-white text-[#050A5C] text-[9px] tracking-[0.2em] uppercase font-semibold hover:bg-white/90 transition-colors rounded-[1px]"
+                />
+                <CosmeticCtaTracker
+                  label={productCards.ctaLabel || 'Start Consultation'}
+                  href={ctaHref}
+                  className="w-full h-10 flex items-center justify-center border border-white/40 text-white text-[9px] tracking-[0.2em] uppercase font-semibold hover:bg-white/10 transition-colors rounded-[1px]"
+                />
+              </div>
             </div>
           )}
         </div>

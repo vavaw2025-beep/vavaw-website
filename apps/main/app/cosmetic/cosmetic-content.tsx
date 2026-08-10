@@ -850,7 +850,12 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                   </motion.p>
 
                   {/* Featured set CTA */}
-                  <motion.div variants={fadeUp} className="mt-10">
+                  <motion.div variants={fadeUp} className="mt-10 flex flex-wrap gap-4">
+                    <CosmeticCtaTracker
+                      label="Xem chi tiết"
+                      href="/cosmetic/products/luminous-revitalization-sheer-set"
+                      className="inline-flex h-[46px] px-9 items-center justify-center bg-[#050A5C] text-white text-[11px] tracking-[0.22em] uppercase hover:bg-[#101A8C] transition-colors duration-300"
+                    />
                     <CosmeticCtaTracker
                       label={featCtaLabel}
                       href={featCta}
