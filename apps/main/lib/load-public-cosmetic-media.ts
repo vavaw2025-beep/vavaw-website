@@ -74,10 +74,16 @@ export interface CosmeticPageMedia {
   mg3Plus?: string;
   /** Active Ingredients image for Luminous Set */
   activeIngredients?: string;
+  /** Usage Guide main set image for Luminous Set */
+  usageSet?: string;
+  /** Ampoule Instruction diagram for Luminous Set */
+  usageInstruction?: string;
 }
 
 // Slot name → CosmeticPageMedia key mapping
 const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
+  'cosmetic-luminous-usage-set-image': 'usageSet',
+  'cosmetic-luminous-ampoule-instruction-image': 'usageInstruction',
   'cosmetic-luminous-active-ingredients-image': 'activeIngredients',
   'cosmetic-luminous-skin-barrier-image': 'barrierScience',
   'cosmetic-luminous-mg3-plus-image': 'mg3Plus',

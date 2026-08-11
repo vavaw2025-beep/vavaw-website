@@ -86,6 +86,16 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     label: 'Luminous Set — Active Ingredients Image',
     aliases: ['active-ingredients', 'ingredients-image'],
   },
+  {
+    value: 'cosmetic-luminous-usage-set-image',
+    label: 'Luminous Set — Usage Set Image',
+    aliases: ['usage-set', 'how-to-use-set'],
+  },
+  {
+    value: 'cosmetic-luminous-ampoule-instruction-image',
+    label: 'Luminous Set — Ampoule Instruction Diagram',
+    aliases: ['ampoule-instruction', 'instruction-diagram'],
+  },
 ];
 
 /** Canonical video slot definitions for Clinical Formula Lab product videos */

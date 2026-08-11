@@ -194,6 +194,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landActiveIngredientsMediaSlot, setLandActiveIngredientsMediaSlot] = useState('');
   const [landActiveIngredientsItems, setLandActiveIngredientsItems] = useState<any[]>([]);
 
+  // Usage Guide states
+  const [landUsageGuideEyebrow, setLandUsageGuideEyebrow] = useState('');
+  const [landUsageGuideTitle, setLandUsageGuideTitle] = useState('');
+  const [landUsageGuideDescription, setLandUsageGuideDescription] = useState('');
+  const [landUsageGuideMediaSlot, setLandUsageGuideMediaSlot] = useState('');
+  const [landUsageGuideInstructionMediaSlot, setLandUsageGuideInstructionMediaSlot] = useState('');
+  const [landUsageGuideNote, setLandUsageGuideNote] = useState('');
+  const [landUsageGuideSteps, setLandUsageGuideSteps] = useState<any[]>([]);
+
   const [landInsideSet, setLandInsideSet] = useState<any[]>([]);
   const [landRecoverySteps, setLandRecoverySteps] = useState<any[]>([]);
   const [landTechnologies, setLandTechnologies] = useState<any[]>([]);
@@ -435,6 +444,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandActiveIngredientsMediaSlot(activeIngredients.mediaSlot || 'cosmetic-luminous-active-ingredients-image');
       setLandActiveIngredientsItems(activeIngredients.ingredients || []);
 
+      const usageGuide = content.usageGuide || {};
+      setLandUsageGuideEyebrow(usageGuide.eyebrow || '');
+      setLandUsageGuideTitle(usageGuide.title || '');
+      setLandUsageGuideDescription(usageGuide.description || '');
+      setLandUsageGuideMediaSlot(usageGuide.mediaSlot || 'cosmetic-luminous-usage-set-image');
+      setLandUsageGuideInstructionMediaSlot(usageGuide.instructionMediaSlot || 'cosmetic-luminous-ampoule-instruction-image');
+      setLandUsageGuideNote(usageGuide.note || '');
+      setLandUsageGuideSteps(usageGuide.steps || []);
+
       setLandInsideSet(content.insideSet || content.setProducts || []);
       setLandRecoverySteps(content.recoverySteps || content.recoveryLogic || []);
       setLandTechnologies(content.technologies || content.activeTech || []);
@@ -639,6 +657,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             description: landActiveIngredientsDescription,
             mediaSlot: landActiveIngredientsMediaSlot,
             ingredients: landActiveIngredientsItems
+          };
+          updatedContent.usageGuide = {
+            eyebrow: landUsageGuideEyebrow,
+            title: landUsageGuideTitle,
+            description: landUsageGuideDescription,
+            mediaSlot: landUsageGuideMediaSlot,
+            instructionMediaSlot: landUsageGuideInstructionMediaSlot,
+            note: landUsageGuideNote,
+            steps: landUsageGuideSteps
           };
         }
 
@@ -2636,6 +2663,81 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                               <button type="button" onClick={() => setLandActiveIngredientsItems([...landActiveIngredientsItems, { name: '', subtitle: '', description: '' }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
                                 <Plus className="h-4 w-4" />
                                 Thêm thành phần
+                              </button>
+                            </div>
+                          </div>
+
+                        </div>
+                      </details>
+                    )}
+                    {/* 2.95. How To Use (Only for Luminous Set) */}
+                    {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                      <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                        <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                          <span>2.95. How To Use (Hướng dẫn sử dụng)</span>
+                          <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                        </summary>
+                        <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
+                          
+                          {/* Header section */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Thông tin chung</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="col-span-2 md:col-span-1">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                                <input type="text" value={landUsageGuideEyebrow} onChange={e => setLandUsageGuideEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                              </div>
+                              <div className="col-span-2 md:col-span-1">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
+                                <input type="text" value={landUsageGuideTitle} onChange={e => setLandUsageGuideTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả (Description)</label>
+                                <textarea value={landUsageGuideDescription} onChange={e => setLandUsageGuideDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                              </div>
+                              <div className="col-span-2 md:col-span-1">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh bộ sản phẩm (Media Slot)</label>
+                                <input type="text" value={landUsageGuideMediaSlot} onChange={e => setLandUsageGuideMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
+                              </div>
+                              <div className="col-span-2 md:col-span-1">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình hướng dẫn (Instruction Media)</label>
+                                <input type="text" value={landUsageGuideInstructionMediaSlot} onChange={e => setLandUsageGuideInstructionMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Ghi chú (Note)</label>
+                                <input type="text" value={landUsageGuideNote} onChange={e => setLandUsageGuideNote(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white italic text-slate-500" />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Steps Repeater */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Danh sách các bước</h4>
+                            <div className="space-y-4">
+                              {landUsageGuideSteps.map((item: any, idx: number) => (
+                                <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-white flex items-start gap-3 relative">
+                                  <div className="flex-1 grid grid-cols-2 gap-3">
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Số hiệu bước (Step)</label>
+                                      <input type="text" value={item.step || ''} onChange={e => { const l = [...landUsageGuideSteps]; l[idx] = { ...l[idx], step: e.target.value }; setLandUsageGuideSteps(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-mono font-semibold" />
+                                    </div>
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Tên bước (Title)</label>
+                                      <input type="text" value={item.title || ''} onChange={e => { const l = [...landUsageGuideSteps]; l[idx] = { ...l[idx], title: e.target.value }; setLandUsageGuideSteps(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold text-[#050A5C]" />
+                                    </div>
+                                    <div className="col-span-2">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Mô tả (Description)</label>
+                                      <textarea value={item.description || ''} onChange={e => { const l = [...landUsageGuideSteps]; l[idx] = { ...l[idx], description: e.target.value }; setLandUsageGuideSteps(l); }} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-600" />
+                                    </div>
+                                  </div>
+                                  <button type="button" onClick={() => setLandUsageGuideSteps(landUsageGuideSteps.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-4">
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setLandUsageGuideSteps([...landUsageGuideSteps, { step: `0${landUsageGuideSteps.length + 1}`, title: '', description: '' }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-4 w-4" />
+                                Thêm bước
                               </button>
                             </div>
                           </div>

@@ -340,6 +340,77 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         </section>
       )}
 
+      {/* ─── HOW TO USE SET ────────────────────────────────────────────────────── */}
+      {content.usageGuide && (
+        <section className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100">
+          <div className="max-w-[1200px] mx-auto lg:px-8 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-10 items-center">
+            {/* Left Column: Text & Steps */}
+            <div className="space-y-10">
+              <div className="space-y-4">
+                {content.usageGuide.eyebrow && (
+                  <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
+                    {content.usageGuide.eyebrow}
+                  </span>
+                )}
+                {content.usageGuide.title && (
+                  <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                    {content.usageGuide.title}
+                  </h2>
+                )}
+                {content.usageGuide.description && (
+                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                    {content.usageGuide.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-6">
+                {content.usageGuide.steps && content.usageGuide.steps.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-4">
+                    {item.step && (
+                      <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full border border-[#050A5C]/20 bg-white text-[#050A5C] text-xs font-bold font-mono">
+                        {item.step}
+                      </div>
+                    )}
+                    <div className="space-y-1 pt-1">
+                      <h4 className="text-[14px] font-bold text-[#050A5C]">{item.title}</h4>
+                      <p className="text-[13px] text-slate-500 font-light leading-relaxed">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {content.usageGuide.note && (
+                <div className="bg-white border border-slate-200 p-4 rounded-lg flex gap-3 items-start">
+                  <div className="shrink-0 mt-0.5 w-1.5 h-1.5 rounded-full bg-yellow-500"></div>
+                  <p className="text-xs text-slate-500 font-light italic leading-relaxed">
+                    {content.usageGuide.note}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Right Column: Images */}
+            <div className="space-y-6">
+              <div className="relative aspect-[4/3] w-full bg-white border border-slate-200 rounded-xl overflow-hidden flex items-center justify-center p-4 shadow-sm">
+                {renderSlotImage(
+                  cosmeticMedia[content.usageGuide.mediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.usageSet,
+                  content.usageGuide.title || 'How to use set',
+                  'from-[#EEF2F8] to-[#DDE3EE]'
+                )}
+              </div>
+              <div className="relative aspect-video w-full max-w-[80%] mx-auto bg-white border border-slate-200 rounded-xl overflow-hidden flex items-center justify-center p-4 shadow-sm">
+                {renderSlotImage(
+                  cosmeticMedia[content.usageGuide.instructionMediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.usageInstruction,
+                  'Instruction diagram',
+                  'from-[#EEF2F8] to-[#DDE3EE]'
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ─── INSIDE THE SET ────────────────────────────────────────────────────── */}
       <section className="py-20 md:py-28 px-6 border-b border-slate-100">
         <div className="max-w-6xl mx-auto space-y-12">

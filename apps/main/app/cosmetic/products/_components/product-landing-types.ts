@@ -93,6 +93,19 @@ export interface ProductLandingContent {
       description?: string;
     }>;
   };
+  usageGuide?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    mediaSlot?: string;
+    instructionMediaSlot?: string;
+    note?: string;
+    steps?: Array<{
+      step?: string;
+      title?: string;
+      description?: string;
+    }>;
+  };
   insideSet: ProductLandingInsideSetItem[];
   recoveryLogic: ProductLandingRecoveryStep[];
   activeTech: ProductLandingTechnology[];
