@@ -37,15 +37,6 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#E2E8F0] selection:text-[#050A5C]">
       <ProductJsonLd content={content} canonicalPath={canonicalPath} cosmeticMedia={cosmeticMedia} />
       
-      {/* ─── BREADCRUMB ────────────────────────────────────────────────────────── */}
-      <div className="absolute top-0 left-0 right-0 z-20 pt-24 md:pt-28 pb-4 px-6">
-        <div className="max-w-[1200px] mx-auto flex items-center gap-1.5 text-[10px] md:text-xs text-slate-400 font-medium uppercase tracking-wider">
-          <a href="/cosmetic" className="hover:text-white transition-colors">Cosmetic</a>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-white/80 font-bold truncate">{content.title}</span>
-        </div>
-      </div>
-
       {/* ─── FULL WIDTH PRODUCT HERO ───────────────────────────────────────────── */}
       {(() => {
         const getMediaUrl = (media: unknown): string | null => {
@@ -89,101 +80,91 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         const heroUrl = desktopHeroUrl || mobileHeroUrl;
 
         return (
-          <section 
+          <section
             className="relative w-full overflow-hidden bg-[#050A5C] text-white"
             data-hero-has-url={heroUrl ? "true" : "false"}
             data-hero-desktop-url={desktopHeroUrl || ""}
             data-hero-mobile-url={mobileHeroUrl || ""}
             data-hero-media-keys={Object.keys(cosmeticMedia || {}).join(",")}
           >
-            <div className="relative min-h-[760px] md:min-h-[860px]">
-              {heroUrl ? (
-                <picture className="absolute inset-0 z-0 block h-full w-full">
-                  {mobileHeroUrl && (
-                    <source media="(max-width: 767px)" srcSet={mobileHeroUrl} />
-                  )}
-                  <img
-                    src={heroUrl}
-                    alt={content.title || "Luminous Revitalization Sheer Set"}
-                    className="h-full w-full object-cover object-center opacity-100"
-                    loading="eager"
-                    fetchPriority="high"
+            {/* Background Image */}
+            {heroUrl ? (
+              <picture className="absolute inset-0 z-0 block h-full w-full">
+                {mobileHeroUrl && (
+                  <source media="(max-width: 767px)" srcSet={mobileHeroUrl} />
+                )}
+                <img
+                  src={heroUrl}
+                  alt={content.title || "Luminous Revitalization Sheer Set"}
+                  className="h-full w-full object-cover object-center md:object-[center_right] opacity-100"
+                  loading="eager"
+                  fetchPriority="high"
+                />
+              </picture>
+            ) : (
+              <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#050A5C] via-[#0A1172] to-[#101A8C]" />
+            )}
+
+            {/* Overlay Layer 1: Left-to-right editorial gradient */}
+            <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#050A5C]/[0.78] via-[#050A5C]/[0.42] to-transparent" />
+            {/* Overlay Layer 2: Top-bottom vignette */}
+            <div className="absolute inset-0 z-[2] bg-gradient-to-t from-[#050A5C]/[0.35] via-transparent to-black/[0.35]" />
+            {/* Overlay Layer 3: Subtle cool silver wash */}
+            <div className="absolute inset-0 z-[3] bg-white/5 mix-blend-soft-light" />
+
+            {/* Content */}
+            <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] flex-col justify-end px-5 pb-14 pt-32 md:min-h-[840px] md:flex-row md:items-center md:justify-start md:px-12 md:py-28 lg:px-20">
+              <div className="max-w-[620px] space-y-6">
+                {/* Breadcrumb */}
+                <nav className="flex items-center gap-1.5 text-[9px] md:text-[11px] text-white/50 font-medium uppercase tracking-[0.15em]">
+                  <a href="/cosmetic" className="hover:text-white/80 transition-colors">Cosmetic</a>
+                  <ChevronRight className="h-3 w-3 shrink-0" />
+                  <span className="text-white/70 font-semibold truncate max-w-[180px] md:max-w-none">
+                    <span className="md:hidden">Luminous Set</span>
+                    <span className="hidden md:inline">{content.title}</span>
+                  </span>
+                </nav>
+
+                {/* Eyebrow */}
+                <span className="text-[10px] md:text-xs font-bold text-white/60 tracking-[0.25em] uppercase block">
+                  {content.eyebrow}
+                </span>
+
+                {/* H1 */}
+                <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-light text-white tracking-tight font-serif leading-[0.98] md:leading-[1.02]">
+                  {content.title}
+                </h1>
+
+                {/* Subheadline */}
+                {content.headline && (
+                  <p className="text-base md:text-lg lg:text-xl font-light text-white/80 italic leading-relaxed">
+                    {content.headline}
+                  </p>
+                )}
+
+                {/* Description */}
+                <p className="text-white/[0.68] font-light text-sm md:text-[15px] leading-relaxed whitespace-pre-wrap max-w-[560px]">
+                  {content.description}
+                </p>
+
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4">
+                  <CosmeticCtaTracker
+                    label={content.ctaLabel}
+                    href={content.ctaHref}
+                    className="h-[52px] md:h-[56px] min-w-[220px] px-8 flex items-center justify-center bg-white text-[#050A5C] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#F0F4F8] transition-colors rounded-[2px] shadow-md"
                   />
-                </picture>
-              ) : (
-                <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#050A5C] via-[#0A1172] to-[#101A8C]" />
-              )}
-
-              <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050A5C]/55 via-[#050A5C]/25 to-transparent" />
-              <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050A5C]/30 via-transparent to-[#050A5C]/20" />
-
-              <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] items-center px-6 py-28 md:min-h-[860px] md:px-12 lg:px-20">
-                <div className="grid w-full grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-8 items-center">
-                  
-                  {/* Left Text Column */}
-                  <div className="max-w-xl space-y-6">
-                    <div className="space-y-4">
-                      <span className="text-[10px] md:text-xs font-bold text-white/70 tracking-[0.2em] uppercase block">
-                        {content.eyebrow}
-                      </span>
-                      <h1 className="text-3xl md:text-5xl font-light text-white tracking-tight font-serif leading-tight">
-                        {content.title}
-                      </h1>
-                      {content.headline && (
-                        <p className="text-base md:text-xl font-light text-white/80 italic leading-relaxed">
-                          {content.headline}
-                        </p>
-                      )}
-                    </div>
-
-                    <p className="text-white/70 font-light text-sm md:text-base leading-relaxed whitespace-pre-wrap max-w-2xl">
-                      {content.description}
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
-                      <CosmeticCtaTracker
-                        label={content.ctaLabel}
-                        href={content.ctaHref}
-                        className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center bg-white text-[#050A5C] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-slate-100 transition-colors rounded-[1px] shadow-sm"
-                      />
-                      <CosmeticCtaTracker
-                        label={content.secondaryCtaLabel}
-                        href={content.secondaryCtaHref}
-                        className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-white/30 text-white text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-white/10 transition-colors rounded-[1px]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Right Visible Image Panel (Desktop Only) */}
-                  <div className="hidden lg:block">
-                    {heroUrl ? (
-                      <div className="ml-auto max-w-[520px] border border-white/20 bg-white/5 p-3 shadow-2xl backdrop-blur-sm">
-                        <img
-                          src={heroUrl}
-                          alt={content.title || "Luminous Revitalization Sheer Set"}
-                          className="h-auto w-full object-cover"
-                        />
-                      </div>
-                    ) : null}
-                  </div>
-                  
-                  {/* Mobile Explicit Image */}
-                  <div className="relative z-20 mt-8 block lg:hidden">
-                    {mobileHeroUrl || desktopHeroUrl ? (
-                      <img
-                        src={(mobileHeroUrl || desktopHeroUrl) as string}
-                        alt={content.title || "Luminous Revitalization Sheer Set"}
-                        className="w-full rounded-none object-cover shadow-2xl border border-white/10"
-                        loading="eager"
-                      />
-                    ) : null}
-                  </div>
+                  <CosmeticCtaTracker
+                    label={content.secondaryCtaLabel}
+                    href={content.secondaryCtaHref}
+                    className="h-[52px] md:h-[56px] min-w-[220px] px-8 flex items-center justify-center border border-white/30 text-white text-[11px] font-medium tracking-[0.12em] uppercase hover:bg-white/10 transition-colors rounded-[2px]"
+                  />
                 </div>
               </div>
             </div>
           </section>
-      );
-    })()}
+        );
+      })()}
       {/* ─── ANTI-GRAVITY SOLUTION ───────────────────────────────────────────── */}
       {content.antiGravity && (
         <section className="bg-white py-16 md:py-24 px-6 border-b border-slate-100">

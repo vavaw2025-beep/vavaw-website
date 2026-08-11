@@ -5,10 +5,11 @@ const body = fs.readFileSync(path, 'utf8');
 
 const desktopAttr = body.match(/data-hero-desktop-url=\\?"([^"\\]*)\\?"/);
 const mobileAttr = body.match(/data-hero-mobile-url=\\?"([^"\\]*)\\?"/);
-const fallbackAttr = body.match(/data-hero-fallback-slot=\\?"([^"\\]*)\\?"/);
+const hasUrlAttr = body.match(/data-hero-has-url=\\?"([^"\\]*)\\?"/);
+const keysAttr = body.match(/data-hero-media-keys=\\?"([^"\\]*)\\?"/);
 
-console.log('Desktop URL in DOM:', desktopAttr ? desktopAttr[1] : 'NOT FOUND');
-console.log('Mobile URL in DOM:', mobileAttr ? mobileAttr[1] : 'NOT FOUND');
-console.log('Fallback slot in DOM:', fallbackAttr ? fallbackAttr[1] : 'NOT FOUND');
+console.log('data-hero-has-url:', hasUrlAttr ? hasUrlAttr[1] : 'NOT FOUND');
+console.log('data-hero-desktop-url:', desktopAttr ? desktopAttr[1] : 'NOT FOUND');
+console.log('data-hero-mobile-url:', mobileAttr ? mobileAttr[1] : 'NOT FOUND');
+console.log('data-hero-media-keys:', keysAttr ? keysAttr[1] : 'NOT FOUND');
 console.log('Has <picture>:', body.includes('<picture'));
-console.log('Length:', body.length);
