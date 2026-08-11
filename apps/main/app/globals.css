@@ -190,28 +190,34 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  .cosmetic-typography .cosmetic-heading,
   .cosmetic-heading {
-    font-family: var(--font-cosmetic-serif), Georgia, serif;
-    letter-spacing: -0.025em;
-    line-height: 1.08;
+    font-family: var(--font-cosmetic-serif), Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.06;
     font-feature-settings: "kern";
   }
 
-  .cosmetic-typography .cosmetic-subheading,
-  .cosmetic-subheading {
-    font-family: var(--font-cosmetic-sans), Inter, system-ui, sans-serif;
+  .cosmetic-heading-soft {
+    font-family: var(--font-cosmetic-serif), Georgia, "Times New Roman", serif;
+    font-weight: 500;
     letter-spacing: -0.01em;
-    line-height: 1.55;
+    line-height: 1.12;
   }
 
-  .cosmetic-typography .cosmetic-body,
+  .cosmetic-subheading {
+    font-family: var(--font-cosmetic-sans), Inter, system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    line-height: 1.65;
+  }
+
   .cosmetic-body {
     font-family: var(--font-cosmetic-sans), Inter, system-ui, sans-serif;
+    font-weight: 400;
     line-height: 1.75;
   }
 
-  .cosmetic-typography .cosmetic-kicker,
   .cosmetic-kicker {
     font-family: var(--font-cosmetic-sans), Inter, system-ui, sans-serif;
     letter-spacing: 0.18em;

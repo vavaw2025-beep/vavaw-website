@@ -131,13 +131,13 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 </span>
 
                 {/* H1 */}
-                <h1 className="cosmetic-heading text-3xl md:text-5xl lg:text-[3.5rem] text-white leading-[0.98] md:leading-[1.02]">
+                <h1 className="cosmetic-heading font-semibold text-5xl md:text-6xl lg:text-7xl text-white leading-[1.08] md:leading-[1.02]">
                   {content.title}
                 </h1>
 
                 {/* Subheadline */}
                 {content.headline && (
-                  <p className="cosmetic-subheading text-base md:text-lg lg:text-xl text-white/80">
+                  <p className="cosmetic-subheading text-lg md:text-xl text-white/80">
                     {content.headline}
                   </p>
                 )}
@@ -220,7 +220,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                     <span className="cosmetic-kicker text-white/60 block">
                       {antiGravity.eyebrow}
                     </span>
-                    <h2 className="cosmetic-heading text-lg md:text-2xl lg:text-[1.7rem] text-white leading-[1.15]">
+                    <h2 className="cosmetic-heading font-semibold text-2xl md:text-4xl lg:text-5xl text-white leading-[1.08]">
                       {antiGravity.title}
                     </h2>
                     <p className="cosmetic-subheading text-[11px] md:text-sm text-white/75">
@@ -244,11 +244,11 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                     >
                       <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#F3A712] shadow-sm" />
                       <div className={`flex flex-col ${callout.align === 'right' ? 'items-end text-right' : callout.align === 'center' ? 'items-center text-center' : 'items-start text-left'}`}>
-                        <span className="inline-block rounded-[3px] bg-[#F3A712] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow-sm">
+                        <span className="cosmetic-kicker inline-block rounded-[3px] bg-[#F3A712] px-2 py-0.5 text-white shadow-sm">
                           {callout.label}
                         </span>
                         {callout.value && (
-                          <span className="mt-1 text-[10px] md:text-[11px] font-semibold text-[#050A5C] drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
+                          <span className="cosmetic-body font-medium mt-1 text-[10px] md:text-[11px] text-[#050A5C] drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
                             {callout.value}
                           </span>
                         )}
@@ -272,9 +272,9 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                     <div key={idx} className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
                       <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#F3A712]" />
                       <div>
-                        <span className="block text-[10px] font-bold text-[#050A5C] uppercase tracking-wider">{callout.label}</span>
+                        <span className="cosmetic-kicker block text-[#050A5C]">{callout.label}</span>
                         {callout.value && (
-                          <span className="block text-[10px] font-light text-slate-500 leading-snug mt-0.5">{callout.value}</span>
+                          <span className="cosmetic-body font-medium block text-[10px] text-slate-500 mt-0.5">{callout.value}</span>
                         )}
                       </div>
                     </div>
@@ -458,7 +458,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                     
                     <div className="bg-slate-50/50 border border-slate-100 p-5 rounded-lg space-y-2">
                       <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-1 mb-1">
-                        <h4 className="cosmetic-heading text-[15px] text-[#050A5C]">{item.name}</h4>
+                        <h4 className="cosmetic-heading-soft text-[15px] text-[#050A5C]">{item.name}</h4>
                         {item.subtitle && (
                           <span className="cosmetic-kicker text-yellow-600/80">{item.subtitle}</span>
                         )}
@@ -506,7 +506,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                       </div>
                     )}
                     <div className="space-y-1 pt-1">
-                      <h4 className="cosmetic-heading text-[14px] text-[#050A5C]">{item.title}</h4>
+                      <h4 className="cosmetic-heading-soft text-[14px] text-[#050A5C]">{item.title}</h4>
                       <p className="cosmetic-body text-[13px] text-slate-500">{item.description}</p>
                     </div>
                   </div>

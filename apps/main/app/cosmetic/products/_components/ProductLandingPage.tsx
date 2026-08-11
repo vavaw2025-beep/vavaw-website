@@ -68,7 +68,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
               <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
                 {content.eyebrow}
               </span>
-              <h1 className="text-3xl md:text-4.5xl font-light text-[#050A5C] tracking-tight cosmetic-heading leading-[1.08]">
+              <h1 className="text-3xl md:text-4.5xl text-[#050A5C] cosmetic-heading leading-[1.08]">
                 {content.title}
               </h1>
               {content.headline && (
@@ -106,7 +106,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
           
           <div className="text-center space-y-2">
             <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">WHAT IS INSIDE</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight cosmetic-heading leading-[1.08]">Chi Tiết Bộ Sản Phẩm</h2>
+            <h2 className="text-2xl md:text-3.5xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">Chi Tiết Bộ Sản Phẩm</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -142,7 +142,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
           
           <div className="text-center space-y-2">
             <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">RECOVERY CYCLE</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight cosmetic-heading leading-[1.08]">Quy Trình Phục Hồi 5 Bước</h2>
+            <h2 className="text-2xl md:text-3.5xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">Quy Trình Phục Hồi 5 Bước</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-5xl mx-auto">
@@ -165,7 +165,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
           
           <div className="text-center space-y-2">
             <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">CLINICAL FORMULA</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight cosmetic-heading leading-[1.08]">Công Nghệ Hoạt Chất</h2>
+            <h2 className="text-2xl md:text-3.5xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">Công Nghệ Hoạt Chất</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
@@ -193,7 +193,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
           
           <div className="text-center space-y-2">
             <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">SKIN COMPATIBILITY</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight cosmetic-heading leading-[1.08]">Đối Tượng Sử Dụng</h2>
+            <h2 className="text-2xl md:text-3.5xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">Đối Tượng Sử Dụng</h2>
           </div>
 
           <div className="bg-slate-50/50 border border-slate-200 p-8 md:p-12 space-y-4 max-w-2xl mx-auto">
@@ -213,7 +213,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
           
           <div className="text-center space-y-2">
             <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">APPLICATION RITUAL</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight cosmetic-heading leading-[1.08]">Hướng Dẫn Sử Dụng</h2>
+            <h2 className="text-2xl md:text-3.5xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">Hướng Dẫn Sử Dụng</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-4xl mx-auto">
@@ -232,7 +232,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
       <section className="bg-white py-20 md:py-24 px-6 text-center border-b border-slate-100">
         <div className="max-w-2xl mx-auto space-y-6">
           <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">PROFESSIONAL PARTNERSHIP</span>
-          <h2 className="text-2xl md:text-3xl font-light text-[#050A5C] cosmetic-heading leading-[1.08]">
+          <h2 className="text-2xl md:text-3xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">
             {content.spaBridge.title}
           </h2>
           <p className="text-slate-500 font-light text-xs md:text-sm leading-relaxed max-w-xl mx-auto">
@@ -254,7 +254,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
           
           <div className="text-center space-y-2">
             <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">SPECIFICATIONS</span>
-            <h2 className="text-xl md:text-2xl font-light text-[#050A5C] tracking-tight cosmetic-heading leading-[1.08]">Thông Tin Chi Tiết</h2>
+            <h2 className="text-xl md:text-2xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">Thông Tin Chi Tiết</h2>
           </div>
 
           <div className="bg-white border border-slate-200 overflow-hidden max-w-2xl mx-auto divide-y divide-slate-100">
@@ -273,7 +273,7 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.15)_100%)] pointer-events-none" />
         <div className="max-w-2xl mx-auto space-y-6 relative z-10">
           <span className="text-[10px] font-bold text-white/50 tracking-[0.25em] uppercase block">VAVAW COSMETIC CONSULTATION</span>
-          <h2 className="text-2xl md:text-3.5xl font-light text-white tracking-tight leading-snug">
+          <h2 className="text-2xl md:text-3.5xl text-white cosmetic-heading-soft leading-snug">
             {content.finalCta.title}
           </h2>
           <p className="text-white/70 font-light text-xs md:text-sm leading-relaxed max-w-xl mx-auto">

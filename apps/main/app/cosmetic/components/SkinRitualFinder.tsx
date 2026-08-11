@@ -182,7 +182,7 @@ export function SkinRitualFinder({ dailyRitual, products, cosmeticMedia }: SkinR
           <span className="inline-block text-[10px] tracking-[0.3em] uppercase font-semibold text-[#050A5C] mb-4">
             {content.eyebrow || 'DAILY CLINICAL RITUAL'}
           </span>
-          <h2 className="text-3xl md:text-5xl font-light text-[#050A5C] tracking-tight mb-4">
+          <h2 className="text-3xl md:text-5xl text-[#050A5C] mb-4 cosmetic-heading-soft">
             {content.title || 'Find Your Clinical Ritual'}
           </h2>
           <p className="text-sm md:text-base text-[#6B7280] font-light max-w-2xl mx-auto leading-relaxed">
@@ -308,7 +308,7 @@ export function SkinRitualFinder({ dailyRitual, products, cosmeticMedia }: SkinR
                     <CheckCircle className="h-3 w-3 shrink-0" />
                     Recommended Prescription
                   </span>
-                  <h3 className="text-2xl font-light text-[#050A5C] tracking-wide cosmetic-heading pt-1">
+                  <h3 className="text-2xl text-[#050A5C] tracking-wide cosmetic-heading-soft pt-1">
                     {ritual.title}
                   </h3>
                   <p className="text-xs text-[#6B7280] font-light leading-relaxed">

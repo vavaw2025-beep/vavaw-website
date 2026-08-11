@@ -51,19 +51,19 @@ import { draftMode } from 'next/headers'
 import { PreviewBanner } from '@/components/preview-banner'
 import { SiteHeader } from '@/components/site-header'
 import { loadPublicBrandAssets } from '@/lib/load-public-brand-assets'
-import { Noto_Serif, Be_Vietnam_Pro } from 'next/font/google'
+import { Cormorant_Garamond, Inter } from 'next/font/google'
 
-const cosmeticSerif = Noto_Serif({
+const cosmeticSerif = Cormorant_Garamond({
   subsets: ['latin', 'vietnamese'],
   variable: '--font-cosmetic-serif',
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
 })
 
-const cosmeticSans = Be_Vietnam_Pro({
+const cosmeticSans = Inter({
   subsets: ['latin', 'vietnamese'],
   variable: '--font-cosmetic-sans',
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
 })
 
 export default async function RootLayout({
