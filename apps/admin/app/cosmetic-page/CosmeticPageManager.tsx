@@ -421,7 +421,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
     if (block.block_type.startsWith('cosmetic-product-landing-')) {
       setLandHeadline(content.headline || '');
-      setLandHeroMediaSlot(content.heroMediaSlot || 'cosmetic-product-luminous-set');
+      let fallbackSlot = content.heroMediaSlot || 'cosmetic-product-luminous-set';
+      if (fallbackSlot === 'cosmetic-set-regenaglow-sheer-cream') {
+        fallbackSlot = 'cosmetic-product-luminous-set';
+      }
+      setLandHeroMediaSlot(fallbackSlot);
       setLandHeroMediaDesktop(content.heroMediaDesktop || '');
       setLandHeroMediaMobile(content.heroMediaMobile || '');
       setLandSecondaryCtaLabel(content.secondaryCtaLabel || '');
@@ -1076,6 +1080,133 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     }
     return m.type === 'image' || m.mime_type?.startsWith('image');
   });
+
+  const renderSlotCard = (slot: { id: string, name: string, size: string }) => {
+    const asset = mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot);
+    const isVideoSlot = isCosmeticVideoMediaSlot(slot.id);
+    return (
+      <div key={slot.id} className={`p-4 rounded-xl border transition-all flex gap-4 ${
+        asset 
+          ? 'bg-white border-slate-200 shadow-sm hover:border-slate-300' 
+          : 'bg-slate-50/50 border-dashed border-slate-300'
+      }`}>
+        {/* Thumbnail */}
+        <div className="w-24 h-24 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center relative group">
+          {asset ? (
+            isVideoSlot ? (
+              <>
+                <div className="w-full h-full bg-[#050A5C]/10 flex items-center justify-center">
+                  <Video className="h-8 w-8 text-[#050A5C]/40" />
+                </div>
+                <a 
+                  href={asset.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
+                >
+                  Xem video
+                </a>
+              </>
+            ) : (
+              <>
+                <img src={asset.url} alt={slot.name} className="w-full h-full object-cover" />
+                <a 
+                  href={asset.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
+                >
+                  Xem ảnh
+                </a>
+              </>
+            )
+          ) : (
+            <div className="text-[10px] text-slate-400 font-bold text-center p-2">{isVideoSlot ? 'Chưa có video' : 'Chưa có ảnh'}</div>
+          )}
+        </div>
+
+        {/* Info & Actions */}
+        <div className="flex-1 min-w-0 flex flex-col justify-between">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h4 className="text-xs font-bold text-slate-900 truncate">{slot.name}</h4>
+              <span className={`text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
+                asset ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
+              }`}>
+                {asset ? 'Đã tải lên' : 'Chưa tải'}
+              </span>
+              {!isGallerySectionActive && EXCLUDED_GALLERY_SLOTS.includes(slot.id) && (
+                <span className="text-[9px] font-semibold bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-sm">
+                  Đang ẩn — không tính vào launch checklist
+                </span>
+              )}
+            </div>
+            <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{slot.id}</p>
+            <p className="text-[10px] text-slate-500 mt-1">Khuyên dùng: {slot.size}</p>
+            {asset && (
+              <div className="text-[9px] text-slate-400 mt-1 space-y-0.5">
+                {asset.mime_type && <p>Định dạng: <span className="font-mono">{asset.mime_type}</span></p>}
+                {asset.size_bytes && <p>Dung lượng: <span className="font-mono">{(asset.size_bytes / 1024 / 1024).toFixed(2)} MB</span></p>}
+                {asset.created_at && (
+                  <p>Ngày tải lên: {new Date(asset.created_at).toLocaleDateString('vi-VN')}</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5 mt-2 pt-2 border-t border-slate-100">
+            {/* Upload / Change Image link */}
+            <Link 
+              href={`/media?purpose=cosmetic-page-media&slot=${slot.id}&returnTo=/cosmetic-page`}
+              className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
+                asset 
+                  ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' 
+                  : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
+              }`}
+            >
+              <Upload className="h-3 w-3" />
+              <span>{isVideoSlot ? (asset ? 'Đổi video' : 'Tải video') : (asset ? 'Đổi ảnh' : 'Tải ảnh')}</span>
+            </Link>
+
+            {/* Select from library */}
+            <button
+              onClick={(e) => { e.preventDefault(); setPickerOpenSlot(slot.id); }}
+              className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
+                asset 
+                  ? 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100' 
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm'
+              }`}
+            >
+              <FolderOpen className="h-3 w-3" />
+              <span>Chọn từ thư viện</span>
+            </button>
+
+            {/* View image URL */}
+            {asset && (
+              <a
+                href={asset.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-2 py-1 bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[10px] rounded hover:bg-slate-100 transition inline-flex items-center gap-1"
+              >
+                {isVideoSlot ? 'Xem video' : 'Xem ảnh'}
+              </a>
+            )}
+
+            {/* Remove slot association */}
+            {asset && (
+              <button
+                onClick={(e) => { e.preventDefault(); handleRemoveMediaSlot(slot.id); }}
+                className="px-2 py-1 text-red-600 font-bold text-[10px] rounded hover:bg-red-50 transition ml-auto"
+              >
+                Gỡ khỏi slot
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="w-full overflow-x-hidden space-y-8 bg-slate-50/50 p-6 rounded-2xl border border-slate-100 shadow-sm">
@@ -1957,132 +2088,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         const group3Slots = REQUIRED_SLOTS.filter(s => s.id.startsWith('cosmetic-set-') || s.id === 'cosmetic-product-luminous-set');
         const group4Slots = REQUIRED_SLOTS.filter(s => s.id === 'cosmetic-premium-program' || s.id === 'cosmetic-premium-program-spa-video');
 
-        const renderSlotCard = (slot: typeof REQUIRED_SLOTS[number]) => {
-          const asset = mediaAssets.find(m => m.metadata?.slot === slot.id && !m.metadata?.archivedFromSlot);
-          const isVideoSlot = isCosmeticVideoMediaSlot(slot.id);
-          return (
-            <div key={slot.id} className={`p-4 rounded-xl border transition-all flex gap-4 ${
-              asset 
-                ? 'bg-white border-slate-200 shadow-sm hover:border-slate-300' 
-                : 'bg-slate-50/50 border-dashed border-slate-300'
-            }`}>
-              {/* Thumbnail */}
-              <div className="w-24 h-24 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center relative group">
-                {asset ? (
-                  isVideoSlot ? (
-                    <>
-                      <div className="w-full h-full bg-[#050A5C]/10 flex items-center justify-center">
-                        <Video className="h-8 w-8 text-[#050A5C]/40" />
-                      </div>
-                      <a 
-                        href={asset.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
-                      >
-                        Xem video
-                      </a>
-                    </>
-                  ) : (
-                    <>
-                      <img src={asset.url} alt={slot.name} className="w-full h-full object-cover" />
-                      <a 
-                        href={asset.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold"
-                      >
-                        Xem ảnh
-                      </a>
-                    </>
-                  )
-                ) : (
-                  <div className="text-[10px] text-slate-400 font-bold text-center p-2">{isVideoSlot ? 'Chưa có video' : 'Chưa có ảnh'}</div>
-                )}
-              </div>
 
-              {/* Info & Actions */}
-              <div className="flex-1 min-w-0 flex flex-col justify-between">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h4 className="text-xs font-bold text-slate-900 truncate">{slot.name}</h4>
-                    <span className={`text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
-                      asset ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
-                    }`}>
-                      {asset ? 'Đã tải lên' : 'Chưa tải'}
-                    </span>
-                    {!isGallerySectionActive && EXCLUDED_GALLERY_SLOTS.includes(slot.id) && (
-                      <span className="text-[9px] font-semibold bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-sm">
-                        Đang ẩn — không tính vào launch checklist
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{slot.id}</p>
-                  <p className="text-[10px] text-slate-500 mt-1">Khuyên dùng: {slot.size}</p>
-                  {asset && (
-                    <div className="text-[9px] text-slate-400 mt-1 space-y-0.5">
-                      {asset.mime_type && <p>Định dạng: <span className="font-mono">{asset.mime_type}</span></p>}
-                      {asset.size_bytes && <p>Dung lượng: <span className="font-mono">{(asset.size_bytes / 1024 / 1024).toFixed(2)} MB</span></p>}
-                      {asset.created_at && (
-                        <p>Ngày tải lên: {new Date(asset.created_at).toLocaleDateString('vi-VN')}</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-1.5 mt-2 pt-2 border-t border-slate-100">
-                  {/* Upload / Change Image link */}
-                  <Link 
-                    href={`/media?purpose=cosmetic-page-media&slot=${slot.id}&returnTo=/cosmetic-page`}
-                    className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
-                      asset 
-                        ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' 
-                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
-                    }`}
-                  >
-                    <Upload className="h-3 w-3" />
-                    <span>{isVideoSlot ? (asset ? 'Đổi video' : 'Tải video') : (asset ? 'Đổi ảnh' : 'Tải ảnh')}</span>
-                  </Link>
-
-                  {/* Select from library */}
-                  <button
-                    onClick={() => setPickerOpenSlot(slot.id)}
-                    className={`px-2 py-1 font-bold text-[10px] rounded transition inline-flex items-center gap-1 ${
-                      asset 
-                        ? 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100' 
-                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm'
-                    }`}
-                  >
-                    <FolderOpen className="h-3 w-3" />
-                    <span>Chọn từ thư viện</span>
-                  </button>
-
-                  {/* View image URL */}
-                  {asset && (
-                    <a
-                      href={asset.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2 py-1 bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[10px] rounded hover:bg-slate-100 transition inline-flex items-center gap-1"
-                    >
-                      {isVideoSlot ? 'Xem video' : 'Xem ảnh'}
-                    </a>
-                  )}
-
-                  {/* Remove slot association */}
-                  {asset && (
-                    <button
-                      onClick={() => handleRemoveMediaSlot(slot.id)}
-                      className="px-2 py-1 text-red-600 font-bold text-[10px] rounded hover:bg-red-50 transition ml-auto"
-                    >
-                      Gỡ khỏi slot
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        };
 
         return (
           <div className="space-y-8 animate-fade-in">
@@ -2405,31 +2411,38 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
                           <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Hero Media Settings</h4>
                           
-                          {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
-                            <div className="grid grid-cols-2 gap-4 mb-4">
-                              <div>
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Desktop Campaign Banner (Optional)</label>
-                                <select value={landHeroMediaDesktop} onChange={e => setLandHeroMediaDesktop(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white">
-                                  <option value="">-- Sử dụng Fallback --</option>
-                                  <option value="cosmetic-luminous-hero-desktop">Desktop Banner (cosmetic-luminous-hero-desktop)</option>
-                                </select>
+                          {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? (
+                            <div className="space-y-4 mb-4">
+                              <p className="text-xs text-blue-800 bg-blue-50 p-3 rounded-md border border-blue-100">
+                                <strong>💡 Hướng dẫn:</strong> Chọn slot chỉ là nơi lưu ảnh. Nếu banner chưa hiển thị, hãy tải ảnh vào đúng slot Desktop/Mobile bên dưới.
+                                <br />Desktop banner dùng cho màn hình lớn. Mobile banner dùng cho điện thoại. Nếu chưa có banner, trang sẽ dùng ảnh packshot fallback.
+                              </p>
+                              
+                              <div className="space-y-4">
+                                {renderSlotCard({ id: 'cosmetic-luminous-hero-desktop', name: 'Desktop campaign banner', size: '2400 × 1200 px or 2560 × 1200 px' })}
+                                {renderSlotCard({ id: 'cosmetic-luminous-hero-mobile', name: 'Mobile vertical banner', size: '1080 × 1600 px or 1080 × 1920 px' })}
+                                {renderSlotCard({ id: 'cosmetic-product-luminous-set', name: 'Fallback product packshot', size: '1200 × 1500 px or square/portrait packshot' })}
                               </div>
-                              <div>
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mobile Vertical Banner (Optional)</label>
-                                <select value={landHeroMediaMobile} onChange={e => setLandHeroMediaMobile(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white">
-                                  <option value="">-- Sử dụng Fallback --</option>
-                                  <option value="cosmetic-luminous-hero-mobile">Mobile Banner (cosmetic-luminous-hero-mobile)</option>
-                                </select>
+                              
+                              <div className="p-3 bg-slate-50 border border-slate-200 rounded-md mt-4">
+                                <h5 className="text-[10px] font-bold text-slate-500 uppercase mb-2">Trạng thái Render (Debug)</h5>
+                                <ul className="text-[11px] text-slate-600 space-y-1 font-mono">
+                                  <li>Desktop resolved: <span className="font-semibold text-slate-800 break-all">{mediaAssets.find(m => m.metadata?.slot === 'cosmetic-luminous-hero-desktop' && !m.metadata?.archivedFromSlot)?.url || 'Chưa có ảnh'}</span></li>
+                                  <li>Mobile resolved: <span className="font-semibold text-slate-800 break-all">{mediaAssets.find(m => m.metadata?.slot === 'cosmetic-luminous-hero-mobile' && !m.metadata?.archivedFromSlot)?.url || 'Chưa có ảnh'}</span></li>
+                                  <li>Fallback resolved: <span className="font-semibold text-slate-800 break-all">{mediaAssets.find(m => m.metadata?.slot === 'cosmetic-product-luminous-set' && !m.metadata?.archivedFromSlot)?.url || 'Chưa có ảnh'}</span></li>
+                                </ul>
                               </div>
                             </div>
+                          ) : (
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Hero Image Slot (Main Visual)</label>
+                              <select value={landHeroMediaSlot} onChange={e => setLandHeroMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white">
+                                <option value="cosmetic-product-luminous-set">Luminous Revitalization Sheer Set (cosmetic-product-luminous-set)</option>
+                                <option value="cosmetic-set-cellurevive-ampoule">CELLUREVIVE Ampoule (cosmetic-set-cellurevive-ampoule)</option>
+                                <option value="cosmetic-set-regenaglow-sheer-cream">REGENAGLOW Sheer Cream (cosmetic-set-regenaglow-sheer-cream)</option>
+                              </select>
+                            </div>
                           )}
-
-                          <div>
-                            <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">
-                              {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? 'Hero Product Packshot (Fallback)' : 'Hero Image Slot (Main Visual)'}
-                            </label>
-                            <input type="text" value={landHeroMediaSlot} onChange={e => setLandHeroMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
-                          </div>
                         </div>
                         <div className="col-span-2">
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả sản phẩm (Description)</label>

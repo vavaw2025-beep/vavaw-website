@@ -50,22 +50,51 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       <section className="relative w-full overflow-hidden bg-[#050A5C] min-h-[720px] md:min-h-[860px] flex items-end">
         {/* Background Visual */}
         <div className="absolute inset-0 z-0">
-          {(cosmeticMedia['cosmetic-luminous-hero-desktop'] || cosmeticMedia['cosmetic-luminous-hero-mobile'] || cosmeticMedia['cosmetic-product-luminous-set']) ? (
-            <picture>
-              <source media="(max-width: 767px)" srcSet={cosmeticMedia['cosmetic-luminous-hero-mobile']?.trim() || cosmeticMedia['cosmetic-product-luminous-set']?.trim() || ''} />
-              <img 
-                src={cosmeticMedia['cosmetic-luminous-hero-desktop']?.trim() || cosmeticMedia['cosmetic-product-luminous-set']?.trim() || ''} 
-                alt={content.title}
-                className="w-full h-full object-cover object-center"
-                loading="eager"
-              />
-            </picture>
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#050A5C] to-[#101A8C] flex items-center justify-center relative">
-              <div className="absolute inset-4 border border-white/10" />
-              <span className="text-xs text-white/30 tracking-widest font-mono uppercase">VAVAW CAMPAIGN</span>
-            </div>
-          )}
+          {(() => {
+            const resolveMedia = (candidates: (string | undefined)[]) => {
+              for (const c of candidates) {
+                if (c && c.trim() !== '' && !c.includes('/PASTE')) return c.trim();
+              }
+              return null;
+            };
+
+            const heroDesktopResolved = resolveMedia([
+              cosmeticMedia['cosmetic-luminous-hero-desktop'],
+              content.heroMediaDesktop ? cosmeticMedia[content.heroMediaDesktop as keyof typeof cosmeticMedia] : undefined,
+              cosmeticMedia['cosmetic-product-luminous-set']
+            ]);
+
+            const heroMobileResolved = resolveMedia([
+              cosmeticMedia['cosmetic-luminous-hero-mobile'],
+              content.heroMediaMobile ? cosmeticMedia[content.heroMediaMobile as keyof typeof cosmeticMedia] : undefined,
+              cosmeticMedia['cosmetic-product-luminous-set']
+            ]);
+
+            if (heroDesktopResolved || heroMobileResolved) {
+              return (
+                <picture>
+                  {heroMobileResolved && (
+                    <source media="(max-width: 767px)" srcSet={heroMobileResolved} />
+                  )}
+                  {heroDesktopResolved && (
+                    <img 
+                      src={heroDesktopResolved} 
+                      alt={content.title}
+                      className="w-full h-full object-cover object-center"
+                      loading="eager"
+                    />
+                  )}
+                </picture>
+              );
+            }
+
+            return (
+              <div className="w-full h-full bg-gradient-to-br from-[#050A5C] to-[#101A8C] flex items-center justify-center relative">
+                <div className="absolute inset-4 border border-white/10" />
+                <span className="text-xs text-white/30 tracking-widest font-mono uppercase">VAVAW CAMPAIGN</span>
+              </div>
+            );
+          })()}
           <div className="absolute inset-0 bg-gradient-to-t from-[#050A5C] via-[#050A5C]/40 to-transparent" />
         </div>
 
