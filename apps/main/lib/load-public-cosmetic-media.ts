@@ -70,6 +70,10 @@ export interface CosmeticPageMedia {
   videoLumiglowSunscreen?: string;
   /** Anti-Gravity Technology image for Luminous Set */
   antiGravity?: string;
+  /** Anti-Gravity Technology desktop image for Luminous Set */
+  antiGravityDesktop?: string;
+  /** Anti-Gravity Technology mobile image for Luminous Set */
+  antiGravityMobile?: string;
   /** Who Needs Sheer Set image for Luminous Set */
   whoNeeds?: string;
   /** Skin Barrier Science image for Luminous Set */
@@ -99,6 +103,8 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-luminous-mg3-plus-image': 'mg3Plus',
   'cosmetic-luminous-who-for-image': 'whoNeeds',
   'cosmetic-luminous-anti-gravity-image': 'antiGravity',
+  'cosmetic-luminous-anti-gravity-desktop': 'antiGravityDesktop',
+  'cosmetic-luminous-anti-gravity-mobile': 'antiGravityMobile',
   'cosmetic-product-luminous-set':     'luminousSet',
   'cosmetic-product-regenaglow-cream': 'regenaglow',
   'cosmetic-product-calmiance-gel':    'calmiance',

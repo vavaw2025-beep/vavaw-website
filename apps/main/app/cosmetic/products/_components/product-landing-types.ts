@@ -61,6 +61,12 @@ export interface ProductLandingContent {
     showDescription?: boolean;
     description?: string;
     mediaSlot?: string;
+    desktopMediaSlot?: string;
+    mobileMediaSlot?: string;
+    desktopObjectPosition?: string;
+    mobileObjectPosition?: string;
+    desktopImageMode?: "cover" | "contain-blur";
+    mobileImageMode?: "cover" | "contain";
     caption?: string;
     callouts?: Array<{
       label?: string;

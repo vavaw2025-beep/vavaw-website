@@ -170,6 +170,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landAntiGravityDescription, setLandAntiGravityDescription] = useState('');
   const [landAntiGravityShowDescription, setLandAntiGravityShowDescription] = useState(true);
   const [landAntiGravityMediaSlot, setLandAntiGravityMediaSlot] = useState('');
+  const [landAntiGravityDesktopMediaSlot, setLandAntiGravityDesktopMediaSlot] = useState("cosmetic-luminous-anti-gravity-desktop");
+  const [landAntiGravityMobileMediaSlot, setLandAntiGravityMobileMediaSlot] = useState("cosmetic-luminous-anti-gravity-mobile");
+  const [landAntiGravityDesktopImageMode, setLandAntiGravityDesktopImageMode] = useState("cover");
+  const [landAntiGravityDesktopObjectPosition, setLandAntiGravityDesktopObjectPosition] = useState("center center");
+  const [landAntiGravityMobileObjectPosition, setLandAntiGravityMobileObjectPosition] = useState("center top");
   const [landAntiGravityCaption, setLandAntiGravityCaption] = useState('');
   const [landAntiGravityCallouts, setLandAntiGravityCallouts] = useState<any[]>([]);
 
@@ -442,6 +447,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandAntiGravityDescription(antiGravity.description || 'Công thức tập trung vào phục hồi bề mặt da, hỗ trợ cấp ẩm và truyền tải các hoạt chất quan trọng cho làn da đang cần chăm sóc chuyên sâu.');
       setLandAntiGravityShowDescription(antiGravity.showDescription ?? true);
       setLandAntiGravityMediaSlot(antiGravity.mediaSlot || 'cosmetic-luminous-anti-gravity-image');
+      setLandAntiGravityDesktopMediaSlot(antiGravity.desktopMediaSlot || 'cosmetic-luminous-anti-gravity-desktop');
+      setLandAntiGravityMobileMediaSlot(antiGravity.mobileMediaSlot || 'cosmetic-luminous-anti-gravity-mobile');
+      setLandAntiGravityDesktopImageMode(antiGravity.desktopImageMode || 'cover');
+      setLandAntiGravityDesktopObjectPosition(antiGravity.desktopObjectPosition || 'center center');
+      setLandAntiGravityMobileObjectPosition(antiGravity.mobileObjectPosition || 'center top');
       setLandAntiGravityCaption(antiGravity.caption || 'Focused recovery care for barrier, hydration and radiance.');
       
       const defaultCallouts = [
@@ -690,6 +700,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             description: landAntiGravityDescription,
             showDescription: landAntiGravityShowDescription,
             mediaSlot: landAntiGravityMediaSlot,
+            desktopMediaSlot: landAntiGravityDesktopMediaSlot,
+            mobileMediaSlot: landAntiGravityMobileMediaSlot,
+            desktopImageMode: landAntiGravityDesktopImageMode,
+            desktopObjectPosition: landAntiGravityDesktopObjectPosition,
+            mobileObjectPosition: landAntiGravityMobileObjectPosition,
             caption: landAntiGravityCaption,
             callouts: landAntiGravityCallouts
           };
@@ -2518,7 +2533,50 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           </div>
                           <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
                             <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Anti-Gravity Media</h4>
-                            {renderSlotCard({ id: landAntiGravityMediaSlot || 'cosmetic-luminous-anti-gravity-image', name: 'Anti-Gravity Feature Image', size: '1080 × 1350 px or 1200 × 1500 px' })}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase">Desktop Background</label>
+                                {renderSlotCard({ id: landAntiGravityDesktopMediaSlot || 'cosmetic-luminous-anti-gravity-desktop', name: 'Anti-Gravity Desktop Background', size: '1200x760 or 1600x1000' })}
+                                
+                                <div className="mt-3 grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Image Mode</label>
+                                    <select value={landAntiGravityDesktopImageMode} onChange={e => setLandAntiGravityDesktopImageMode(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-300 rounded bg-white">
+                                      <option value="cover">Cover (Phủ kín)</option>
+                                      <option value="contain-blur">Contain + Blur</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Object Position</label>
+                                    <select value={landAntiGravityDesktopObjectPosition} onChange={e => setLandAntiGravityDesktopObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-300 rounded bg-white">
+                                      <option value="center center">Center Center</option>
+                                      <option value="center right">Center Right</option>
+                                      <option value="center left">Center Left</option>
+                                      <option value="top center">Top Center</option>
+                                      <option value="bottom center">Bottom Center</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <p className="text-[9px] text-slate-500 italic">Nếu chỉ có ảnh dọc nhưng dùng cho desktop ngang, chọn contain-blur để giữ trọn ảnh và tự tạo nền mờ phía sau.</p>
+                              </div>
+                              <div className="space-y-2">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase">Mobile Background</label>
+                                {renderSlotCard({ id: landAntiGravityMobileMediaSlot || 'cosmetic-luminous-anti-gravity-mobile', name: 'Anti-Gravity Mobile Background', size: '1080x1600 or 1080x1920' })}
+                                
+                                <div className="mt-3">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Object Position</label>
+                                  <select value={landAntiGravityMobileObjectPosition} onChange={e => setLandAntiGravityMobileObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-300 rounded bg-white">
+                                    <option value="center top">Center Top</option>
+                                    <option value="center center">Center Center</option>
+                                    <option value="center bottom">Center Bottom</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="space-y-2 md:col-span-2 mt-2 pt-3 border-t border-slate-200">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase">Fallback Feature Image (Cũ)</label>
+                                {renderSlotCard({ id: landAntiGravityMediaSlot || 'cosmetic-luminous-anti-gravity-image', name: 'Anti-Gravity Fallback Image', size: '1200x760' })}
+                              </div>
+                            </div>
                           </div>
                           <div className="col-span-2">
                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề chính (Title)</label>

@@ -67,6 +67,16 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     aliases: ['anti-gravity', 'anti-gravity-image', 'anti-gravity-technology'],
   },
   {
+    value: 'cosmetic-luminous-anti-gravity-desktop',
+    label: 'Luminous Set — Anti-Gravity Desktop Background',
+    aliases: ['anti-gravity-desktop', 'anti-gravity-desktop-bg'],
+  },
+  {
+    value: 'cosmetic-luminous-anti-gravity-mobile',
+    label: 'Luminous Set — Anti-Gravity Mobile Background',
+    aliases: ['anti-gravity-mobile', 'anti-gravity-mobile-bg'],
+  },
+  {
     value: 'cosmetic-luminous-who-for-image',
     label: 'Luminous Set — Who It\'s For Image',
     aliases: ['who-for', 'who-needs', 'who-needs-set'],

@@ -183,7 +183,10 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
           title: content.antiGravity?.title || 'Phục hồi cấu trúc da từ nền tảng hàng rào bảo vệ',
           headline: content.antiGravity?.headline || 'Tập trung cải thiện cảm giác săn chắc, ẩm mượt và độ rạng rỡ',
           description: content.antiGravity?.description || 'Công thức tập trung vào phục hồi bề mặt da, hỗ trợ cấp ẩm và truyền tải các hoạt chất quan trọng cho làn da đang cần chăm sóc chuyên sâu.',
+          desktopImageMode: content.antiGravity?.desktopImageMode || 'contain-blur',
           mediaSlot: content.antiGravity?.mediaSlot || 'cosmetic-luminous-anti-gravity-image',
+          desktopMediaSlot: 'cosmetic-luminous-anti-gravity-desktop',
+          mobileMediaSlot: 'cosmetic-luminous-anti-gravity-mobile',
           caption: content.antiGravity?.caption || 'Focused recovery care for barrier, hydration and radiance.',
           callouts: Array.isArray(content.antiGravity?.callouts) && content.antiGravity.callouts.length > 0 
             ? content.antiGravity.callouts 
@@ -197,31 +200,58 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
           cosmeticMedia["cosmetic-luminous-anti-gravity-image"] ||
           (cosmeticMedia as any).antiGravity ||
           cosmeticMedia.luminousAntiGravityImage;
-
         const agImgSrc = (typeof agImageUrl === 'string' && agImageUrl.trim() && !agImageUrl.includes('/PASTE')) ? agImageUrl.trim() : null;
 
+        const desktopUrl =
+          cosmeticMedia[antiGravity.desktopMediaSlot] ||
+          (cosmeticMedia as any).antiGravityDesktop ||
+          agImgSrc;
+        const mobileUrl =
+          cosmeticMedia[antiGravity.mobileMediaSlot] ||
+          (cosmeticMedia as any).antiGravityMobile ||
+          desktopUrl;
+
+        const finalDesktopUrl = (typeof desktopUrl === 'string' && desktopUrl.trim() && !desktopUrl.includes('/PASTE')) ? desktopUrl.trim() : null;
+        const finalMobileUrl = (typeof mobileUrl === 'string' && mobileUrl.trim() && !mobileUrl.includes('/PASTE')) ? mobileUrl.trim() : null;
+
         return (
-          <section className="bg-white px-5 py-20 md:px-8 md:py-28">
+          <section className="bg-[#F8FAFC] md:bg-white px-0 md:px-8 py-0 md:py-28">
             <div className="mx-auto max-w-[1200px]">
-              <div className="relative overflow-hidden border border-slate-200 bg-[#F5F7FB] shadow-sm" style={{ aspectRatio: '1200 / 760' }}>
+              <div className="relative overflow-hidden md:border md:border-slate-200 md:bg-[#F5F7FB] md:shadow-sm flex flex-col md:block md:aspect-[1200/760]">
+                
+                {/* Mobile Image (rendered as img instead of bg for flow) */}
+                <div className="relative w-full h-[400px] sm:h-[500px] md:hidden block">
+                   {finalMobileUrl ? (
+                     <img src={finalMobileUrl} alt={antiGravity.title} className="w-full h-full object-cover" loading="lazy" />
+                   ) : (
+                     <div className="w-full h-full bg-gradient-to-br from-[#E8ECF4] via-[#F0F2F8] to-[#DDE3EE]" />
+                   )}
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                </div>
 
-                {/* Background Image */}
-                {agImgSrc ? (
-                  <img
-                    src={agImgSrc}
-                    alt={antiGravity.title}
-                    className="absolute inset-0 z-0 h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#E8ECF4] via-[#F0F2F8] to-[#DDE3EE]" />
-                )}
+                {/* Desktop Image with contain-blur */}
+                <div className="absolute inset-0 z-0 hidden md:block">
+                  {finalDesktopUrl ? (
+                    <>
+                      {antiGravity.desktopImageMode === 'contain-blur' ? (
+                        <>
+                          <div className="absolute inset-0 overflow-hidden">
+                            <img src={finalDesktopUrl} alt="" className="w-full h-full object-cover blur-3xl opacity-60 scale-110" aria-hidden="true" />
+                          </div>
+                          <img src={finalDesktopUrl} alt={antiGravity.title} className="absolute inset-0 w-full h-full object-contain" loading="lazy" />
+                        </>
+                      ) : (
+                        <img src={finalDesktopUrl} alt={antiGravity.title} className="w-full h-full object-cover" loading="lazy" />
+                      )}
+                    </>
+                  ) : (
+                    <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#E8ECF4] via-[#F0F2F8] to-[#DDE3EE]" />
+                  )}
+                  <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#050A5C]/[0.06] via-transparent to-transparent" />
+                </div>
 
-                {/* Subtle image overlay for text readability */}
-                <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#050A5C]/[0.06] via-transparent to-transparent" />
-
-                {/* Top-left text band — navy translucent like Korean reference */}
-                <div className={`absolute left-0 top-0 z-20 w-full md:w-[54%] bg-[#050A5C]/[0.72] backdrop-blur-sm px-6 lg:px-12 ${(!antiGravity.showHeadline && !antiGravity.showDescription) ? 'py-4 lg:py-6' : 'py-6 lg:py-10'}`}>
+                {/* Top-left soft glass editorial panel */}
+                <div className="relative md:absolute md:left-0 md:top-0 z-20 w-full md:w-[54%] bg-[#050A5C]/62 backdrop-blur-md md:border-r md:border-white/18 md:border-b md:border-white/12 bg-gradient-to-br from-[#050A5C]/72 via-[#18246F]/58 to-[#050A5C]/38 px-6 lg:px-12 -mt-10 md:mt-0 pt-10 md:pt-6 pb-8 md:pb-10 rounded-t-3xl md:rounded-none border-t border-white/20 md:border-t-0 shadow-[0_-10px_30px_rgba(0,0,0,0.1)] md:shadow-none">
                   <div className="space-y-3">
                     <span className="cosmetic-kicker text-white/60 block">
                       {antiGravity.eyebrow}
@@ -230,12 +260,12 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                       {antiGravity.title}
                     </h2>
                     {antiGravity.showHeadline && (
-                      <p className="cosmetic-subheading text-[11px] md:text-sm text-white/75">
+                      <p className="cosmetic-subheading text-[11px] md:text-sm text-white/82">
                         {antiGravity.headline}
                       </p>
                     )}
                     {antiGravity.showDescription && (
-                      <p className="cosmetic-body text-[10px] md:text-xs text-white/55 max-w-[480px]">
+                      <p className="cosmetic-body text-[10px] md:text-xs text-white/68 max-w-[480px]">
                         {antiGravity.description}
                       </p>
                     )}
@@ -252,13 +282,13 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                       className="absolute z-30 hidden md:flex items-start gap-2"
                       style={{ left: `${cx}%`, top: `${cy}%` }}
                     >
-                      <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#F3A712] shadow-sm" />
+                      <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#D8A13A] shadow-[0_0_8px_rgba(216,161,58,0.6)]" />
                       <div className={`flex flex-col ${callout.align === 'right' ? 'items-end text-right' : callout.align === 'center' ? 'items-center text-center' : 'items-start text-left'}`}>
-                        <span className="cosmetic-kicker inline-block rounded-[3px] bg-[#F3A712] px-2 py-0.5 text-white shadow-sm">
+                        <span className="cosmetic-kicker inline-block rounded-[3px] bg-[#D8A13A] px-2 py-0.5 text-white shadow-sm">
                           {callout.label}
                         </span>
                         {callout.value && (
-                          <span className="cosmetic-body font-medium mt-1 text-[10px] md:text-[11px] text-[#050A5C] drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
+                          <span className="cosmetic-body font-medium mt-1 text-[10px] md:text-[11px] text-[#050A5C] bg-white/60 backdrop-blur-sm px-1.5 py-0.5 rounded shadow-sm">
                             {callout.value}
                           </span>
                         )}
@@ -275,12 +305,12 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 </div>
               </div>
 
-              {/* Mobile Callouts — stacked chips below image */}
+              {/* Mobile Callouts — stacked chips below image/panel */}
               {antiGravity.callouts.length > 0 && (
-                <div className="mt-6 grid grid-cols-2 gap-3 md:hidden">
+                <div className="grid grid-cols-1 gap-3 p-4 bg-transparent md:hidden">
                   {antiGravity.callouts.map((callout: any, idx: number) => (
-                    <div key={idx} className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
-                      <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#F3A712]" />
+                    <div key={idx} className="flex items-start gap-2.5 rounded-xl border border-slate-200/60 bg-white p-3.5 shadow-sm">
+                      <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#D8A13A]" />
                       <div>
                         <span className="cosmetic-kicker block text-[#050A5C]">{callout.label}</span>
                         {callout.value && (
@@ -289,6 +319,13 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                       </div>
                     </div>
                   ))}
+                  
+                  {/* Small caption bottom-right for mobile */}
+                  <div className="mt-2 text-right">
+                    <span className="text-[9px] text-[#050A5C]/40 tracking-wider font-medium italic">
+                      {antiGravity.caption}
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
