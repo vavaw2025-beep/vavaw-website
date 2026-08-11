@@ -101,6 +101,16 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     label: 'Luminous Set — Offline Experience Image',
     aliases: ['offline-experience', 'spa-experience'],
   },
+  {
+    value: 'cosmetic-luminous-hero-desktop',
+    label: 'Luminous Set — Desktop Campaign Banner',
+    aliases: ['luminous-hero-desktop', 'desktop-banner'],
+  },
+  {
+    value: 'cosmetic-luminous-hero-mobile',
+    label: 'Luminous Set — Mobile Vertical Banner',
+    aliases: ['luminous-hero-mobile', 'mobile-banner'],
+  },
 ];
 
 /** Canonical video slot definitions for Clinical Formula Lab product videos */

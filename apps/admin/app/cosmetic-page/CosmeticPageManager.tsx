@@ -2409,11 +2409,17 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             <div className="grid grid-cols-2 gap-4 mb-4">
                               <div>
                                 <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Desktop Campaign Banner (Optional)</label>
-                                <input type="text" value={landHeroMediaDesktop} onChange={e => setLandHeroMediaDesktop(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="media-id-or-path" />
+                                <select value={landHeroMediaDesktop} onChange={e => setLandHeroMediaDesktop(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white">
+                                  <option value="">-- Sử dụng Fallback --</option>
+                                  <option value="cosmetic-luminous-hero-desktop">Desktop Banner (cosmetic-luminous-hero-desktop)</option>
+                                </select>
                               </div>
                               <div>
                                 <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mobile Vertical Banner (Optional)</label>
-                                <input type="text" value={landHeroMediaMobile} onChange={e => setLandHeroMediaMobile(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="media-id-or-path" />
+                                <select value={landHeroMediaMobile} onChange={e => setLandHeroMediaMobile(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white">
+                                  <option value="">-- Sử dụng Fallback --</option>
+                                  <option value="cosmetic-luminous-hero-mobile">Mobile Banner (cosmetic-luminous-hero-mobile)</option>
+                                </select>
                               </div>
                             </div>
                           )}
