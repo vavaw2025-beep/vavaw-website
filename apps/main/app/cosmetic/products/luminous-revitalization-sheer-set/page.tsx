@@ -120,7 +120,7 @@ export default async function LuminousProductLandingPage() {
   const mergedContent = mergeProductLandingContent(DEFAULT_CONTENT, cmsBlock);
 
   return (
-    <ProductLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} />
+    <ProductLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} canonicalPath="/cosmetic/products/${product}" />
   );
 }
 

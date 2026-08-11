@@ -3,12 +3,15 @@ import { CosmeticCtaTracker } from '../../cosmetic-tracker';
 import { SiteFooter } from '@vavaw/ui';
 import { ProductLandingContent } from './product-landing-types';
 
+import { ProductJsonLd } from './ProductJsonLd';
+
 interface ProductLandingPageProps {
   content: ProductLandingContent;
   cosmeticMedia: any;
+  canonicalPath: string;
 }
 
-export function ProductLandingPage({ content, cosmeticMedia }: ProductLandingPageProps) {
+export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: ProductLandingPageProps) {
   // Helper for rendering slot images safely with a gradient card fallback
   const renderSlotImage = (srcUrl: string | undefined, altText: string, fallbackGrad: string) => {
     if (srcUrl && srcUrl.trim() && !srcUrl.includes('PASTE_')) {
@@ -31,6 +34,7 @@ export function ProductLandingPage({ content, cosmeticMedia }: ProductLandingPag
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#E2E8F0] selection:text-[#050A5C]">
+      <ProductJsonLd content={content} canonicalPath={canonicalPath} cosmeticMedia={cosmeticMedia} />
       
       {/* ─── BREADCRUMB ────────────────────────────────────────────────────────── */}
       <div className="pt-24 md:pt-28 pb-4 px-6 bg-white border-b border-slate-100">

@@ -141,5 +141,5 @@ export default async function P30TonerPage() {
   const media = await loadPublicCosmeticMedia();
 
   // 5. Render using the shared template
-  return <ProductLandingPage content={mergedContent} cosmeticMedia={media} />;
+  return <ProductLandingPage content={mergedContent} cosmeticMedia={media}  canonicalPath="/cosmetic/products/${product}" />;
 }
