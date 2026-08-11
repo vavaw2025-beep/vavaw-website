@@ -18,6 +18,10 @@ import { getPublicSupabaseClient } from './supabase-public';
 export interface CosmeticPageMedia {
   /** Hero Product Feature — Luminous Revitalization Sheer Set */
   luminousSet?: string;
+  /** Luminous Set Hero Desktop Banner */
+  luminousHeroDesktop?: string;
+  /** Luminous Set Hero Mobile Banner */
+  luminousHeroMobile?: string;
   /** Regenaglow Nourish Sheer Cream product card */
   regenaglow?: string;
   /** Calmiance Superior Sheer Gel product card */
@@ -82,8 +86,9 @@ export interface CosmeticPageMedia {
   offlineExperience?: string;
 }
 
-// Slot name → CosmeticPageMedia key mapping
 const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
+  'cosmetic-luminous-hero-desktop': 'luminousHeroDesktop',
+  'cosmetic-luminous-hero-mobile': 'luminousHeroMobile',
   'cosmetic-luminous-offline-experience-image': 'offlineExperience',
   'cosmetic-luminous-usage-set-image': 'usageSet',
   'cosmetic-luminous-ampoule-instruction-image': 'usageInstruction',

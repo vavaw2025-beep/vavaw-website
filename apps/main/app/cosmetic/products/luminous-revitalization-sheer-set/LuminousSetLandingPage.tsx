@@ -74,78 +74,109 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         const fallbackHeroSlot = "cosmetic-product-luminous-set";
 
         const heroDesktopResolved = 
-          getMediaUrl(cosmeticMedia[heroDesktopSlot as keyof typeof cosmeticMedia]) ||
-          getMediaUrl(cosmeticMedia['cosmetic-luminous-hero-desktop']) ||
-          getMediaUrl(cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia]);
+          getMediaUrl((cosmeticMedia as any).luminousHeroDesktop) ||
+          getMediaUrl((cosmeticMedia as any).luminousSet);
 
         const heroMobileResolved = 
-          getMediaUrl(cosmeticMedia[heroMobileSlot as keyof typeof cosmeticMedia]) ||
-          getMediaUrl(cosmeticMedia['cosmetic-luminous-hero-mobile']) ||
+          getMediaUrl((cosmeticMedia as any).luminousHeroMobile) ||
           heroDesktopResolved ||
-          getMediaUrl(cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia]);
+          getMediaUrl((cosmeticMedia as any).luminousSet);
 
         const heroUrl = heroDesktopResolved || heroMobileResolved;
 
         return (
           <section 
-            className="relative w-full overflow-hidden bg-[#050A5C] min-h-[720px] md:min-h-[860px] flex items-end"
+            className="relative w-full overflow-hidden bg-[#050A5C] text-white"
+            data-hero-has-url={heroUrl ? "true" : "false"}
             data-hero-desktop-url={heroDesktopResolved || ""}
             data-hero-mobile-url={heroMobileResolved || ""}
-            data-hero-fallback-slot={fallbackHeroSlot}
           >
-            {heroUrl ? (
-              <picture className="absolute inset-0 z-0 block h-full w-full">
-                {heroMobileResolved && (
-                  <source media="(max-width: 767px)" srcSet={heroMobileResolved} />
-                )}
-                <img 
-                  src={heroUrl} 
-                  alt={content.title || "Luminous Revitalization Sheer Set"}
-                  className="h-full w-full object-cover object-center"
-                  loading="eager"
-                />
-              </picture>
-            ) : (
-              <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#050A5C] via-[#050A5C] to-[#101A8C]" />
-            )}
-
-            <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050A5C]/70 via-[#050A5C]/35 to-transparent" />
-
-            <div className="relative z-20 w-full max-w-[1200px] mx-auto px-5 lg:px-8 pb-16 md:pb-24">
-              <div className="max-w-3xl space-y-6">
-                <div className="space-y-4">
-                  <span className="text-[10px] md:text-xs font-bold text-white/70 tracking-[0.2em] uppercase block">
-                    {content.eyebrow}
-                  </span>
-                  <h1 className="text-3xl md:text-5xl font-light text-white tracking-tight font-serif leading-tight">
-                    {content.title}
-                  </h1>
-                  {content.headline && (
-                    <p className="text-base md:text-xl font-light text-white/80 italic leading-relaxed">
-                      {content.headline}
-                    </p>
+            <div className="relative min-h-[760px] md:min-h-[860px]">
+              {heroUrl ? (
+                <picture className="absolute inset-0 z-0 block h-full w-full">
+                  {heroMobileResolved && (
+                    <source media="(max-width: 767px)" srcSet={heroMobileResolved} />
                   )}
+                  <img
+                    src={heroUrl}
+                    alt={content.title || "Luminous Revitalization Sheer Set"}
+                    className="h-full w-full object-cover object-center opacity-100"
+                    loading="eager"
+                    fetchPriority="high"
+                  />
+                </picture>
+              ) : (
+                <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#050A5C] via-[#0A1172] to-[#101A8C]" />
+              )}
+
+              <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050A5C]/55 via-[#050A5C]/25 to-transparent" />
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050A5C]/30 via-transparent to-[#050A5C]/20" />
+
+              <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] items-center px-6 py-28 md:min-h-[860px] md:px-12 lg:px-20">
+                <div className="grid w-full grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-8 items-center">
+                  
+                  {/* Left Text Column */}
+                  <div className="max-w-xl space-y-6">
+                    <div className="space-y-4">
+                      <span className="text-[10px] md:text-xs font-bold text-white/70 tracking-[0.2em] uppercase block">
+                        {content.eyebrow}
+                      </span>
+                      <h1 className="text-3xl md:text-5xl font-light text-white tracking-tight font-serif leading-tight">
+                        {content.title}
+                      </h1>
+                      {content.headline && (
+                        <p className="text-base md:text-xl font-light text-white/80 italic leading-relaxed">
+                          {content.headline}
+                        </p>
+                      )}
+                    </div>
+
+                    <p className="text-white/70 font-light text-sm md:text-base leading-relaxed whitespace-pre-wrap max-w-2xl">
+                      {content.description}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
+                      <CosmeticCtaTracker
+                        label={content.ctaLabel}
+                        href={content.ctaHref}
+                        className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center bg-white text-[#050A5C] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-slate-100 transition-colors rounded-[1px] shadow-sm"
+                      />
+                      <CosmeticCtaTracker
+                        label={content.secondaryCtaLabel}
+                        href={content.secondaryCtaHref}
+                        className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-white/30 text-white text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-white/10 transition-colors rounded-[1px]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right Visible Image Panel (Desktop Only) */}
+                  <div className="hidden lg:block">
+                    {heroUrl ? (
+                      <div className="ml-auto max-w-[520px] border border-white/20 bg-white/5 p-3 shadow-2xl backdrop-blur-sm">
+                        <img
+                          src={heroUrl}
+                          alt={content.title || "Luminous Revitalization Sheer Set"}
+                          className="h-auto w-full object-cover"
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                  
+                  {/* Mobile Explicit Image */}
+                  <div className="relative z-20 mt-8 block lg:hidden">
+                    {heroMobileResolved || heroDesktopResolved ? (
+                      <img
+                        src={(heroMobileResolved || heroDesktopResolved) as string}
+                        alt={content.title || "Luminous Revitalization Sheer Set"}
+                        className="w-full rounded-none object-cover shadow-2xl border border-white/10"
+                        loading="eager"
+                      />
+                    ) : null}
+                  </div>
                 </div>
-
-                <p className="text-white/70 font-light text-sm md:text-base leading-relaxed whitespace-pre-wrap max-w-2xl">
-                  {content.description}
-                </p>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
-              <CosmeticCtaTracker
-                label={content.ctaLabel}
-                href={content.ctaHref}
-                className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center bg-white text-[#050A5C] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-slate-100 transition-colors rounded-[1px] shadow-sm"
-              />
-              <CosmeticCtaTracker
-                label={content.secondaryCtaLabel}
-                href={content.secondaryCtaHref}
-                className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-white/30 text-white text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-white/10 transition-colors rounded-[1px]"
-              />
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
       );
     })()}
       {/* ─── ANTI-GRAVITY SOLUTION ───────────────────────────────────────────── */}
