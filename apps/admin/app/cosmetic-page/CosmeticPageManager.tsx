@@ -2427,11 +2427,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                       </div>
                     </details>
 
-                    {/* 1.5. Anti-Gravity Solution Details (Only for Luminous Set) */}
+                    {/* 2. Anti-Gravity Solution Details (Only for Luminous Set) */}
                     {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
                       <details className="group border border-slate-200 rounded-xl overflow-hidden">
                         <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
-                          <span>1.5. Anti-Gravity Solution (Phục hồi cấu trúc da)</span>
+                          <span>2. Anti-Gravity Solution (Phục hồi cấu trúc da)</span>
                           <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                         </summary>
                         <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
@@ -2487,6 +2487,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </div>
                       </details>
                     )}
+                    {editingBlock.block_type !== 'cosmetic-product-landing-luminous-set' && (
                     <details className="group border border-slate-200 rounded-xl overflow-hidden">
                       <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
                         <span>2. Inside The Set (Thành phần trong bộ)</span>
@@ -2533,11 +2534,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </button>
                       </div>
                     </details>
-                    {/* 2.5. Who Needs Sheer Set Details (Only for Luminous Set) */}
+                    )}
+                    
+                    {/* 3. Who Needs Sheer Set Details (Only for Luminous Set) */}
                     {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
                       <details className="group border border-slate-200 rounded-xl overflow-hidden">
                         <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
-                          <span>2.5. Who Needs Sheer Set (Đối tượng sử dụng)</span>
+                          <span>3. Who Needs Sheer Set (Đối tượng sử dụng)</span>
                           <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                         </summary>
                         <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
@@ -2589,11 +2592,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </div>
                       </details>
                     )}
-                    {/* 2.75. Skin Barrier & MG3-Plus (Only for Luminous Set) */}
+                    {/* 4. Skin Barrier & MG3-Plus (Only for Luminous Set) */}
                     {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
                       <details className="group border border-slate-200 rounded-xl overflow-hidden">
                         <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
-                          <span>2.75. Skin Barrier & MG3-Plus (Khoa học & Công nghệ)</span>
+                          <span>4. Skin Barrier & MG3-Plus (Khoa học & Công nghệ)</span>
                           <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                         </summary>
                         <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
@@ -2642,11 +2645,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </div>
                       </details>
                     )}
-                    {/* 2.85. Active Ingredients (Only for Luminous Set) */}
+                    {/* 5. Active Ingredients (Only for Luminous Set) */}
                     {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
                       <details className="group border border-slate-200 rounded-xl overflow-hidden">
                         <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
-                          <span>2.85. Active Ingredients (Thành phần)</span>
+                          <span>5. Active Ingredients (Thành phần)</span>
                           <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                         </summary>
                         <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
@@ -2709,11 +2712,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </div>
                       </details>
                     )}
-                    {/* 2.95. How To Use (Only for Luminous Set) */}
+                    {/* 6. How To Use (Only for Luminous Set) */}
                     {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
                       <details className="group border border-slate-200 rounded-xl overflow-hidden">
                         <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
-                          <span>2.95. How To Use (Hướng dẫn sử dụng)</span>
+                          <span>6. How To Use (Hướng dẫn sử dụng)</span>
                           <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                         </summary>
                         <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
@@ -2928,9 +2931,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </div>
                       </details>
                     )}
-
-                    {/* 3. Recovery Logic Details */}
-                    <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                    {/* Old Generic Details (Hidden for Luminous Set) */}
+                    {editingBlock.block_type !== 'cosmetic-product-landing-luminous-set' && (
+                      <div className="space-y-4">
+                        {/* 3. Recovery Logic Details */}
+                        <details className="group border border-slate-200 rounded-xl overflow-hidden">
                       <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
                         <span>3. Recovery Logic (Nguyên lý phục hồi 5 bước)</span>
                         <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
@@ -3135,11 +3140,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </button>
                       </div>
                     </details>
+                    </div>
+                    )}
 
-                    {/* 9. Final CTA Details */}
+                    {/* Final CTA Details */}
                     <details className="group border border-slate-200 rounded-xl overflow-hidden">
                       <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
-                        <span>9. Final CTA (Khung tư vấn cuối trang)</span>
+                        <span>{editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? '8' : '9'}. Final CTA (Khung tư vấn cuối trang)</span>
                         <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                       </summary>
                       <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
