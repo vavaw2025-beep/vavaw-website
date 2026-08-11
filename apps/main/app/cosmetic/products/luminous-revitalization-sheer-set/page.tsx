@@ -10,9 +10,9 @@ import { ProductLandingContent } from '../_components/product-landing-types';
 const DEFAULT_CONTENT: ProductLandingContent = {
   eyebrow: 'VAVAW COSMETIC',
   title: 'Luminous Revitalization Sheer Set',
-  headline: 'Chăm sóc chuyên sâu — củng cố hàng rào bảo vệ và phục hồi làn da rạng rỡ.',
-  description: 'Bộ chăm sóc phục hồi chuyên sâu kết hợp ampoule cô đặc và kem dưỡng phục hồi, hỗ trợ làn da cần phục hồi, cấp ẩm và cải thiện vẻ rạng rỡ.',
-  ctaLabel: 'Nhận tư vấn Luminous Set',
+  headline: 'Chăm sóc chuyên sâu giúp tăng cường hàng rào bảo vệ và nuôi dưỡng làn da rạng rỡ.',
+  description: 'Bộ chăm sóc da cao cấp được thiết kế để hỗ trợ đồng thời độ rạng rỡ, khả năng phục hồi tự nhiên và sự ổn định của hàng rào bảo vệ da.',
+  ctaLabel: 'Nhận tư vấn Sheer Set',
   ctaHref: '/contact?type=cosmetic_interest&product=luminous_set&source=product_landing',
   secondaryCtaLabel: 'Trải nghiệm tại VAVAW Beauty & Co',
   secondaryCtaHref: '/go/beauty',
@@ -120,7 +120,7 @@ export default async function LuminousProductLandingPage() {
   const mergedContent = mergeProductLandingContent(DEFAULT_CONTENT, cmsBlock);
 
   return (
-    <ProductLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} canonicalPath="/cosmetic/products/${product}" />
+    <ProductLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} canonicalPath="/cosmetic/products/luminous-revitalization-sheer-set" />
   );
 }
 
