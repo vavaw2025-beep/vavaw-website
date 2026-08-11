@@ -166,58 +166,120 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         );
       })()}
       {/* ─── ANTI-GRAVITY SOLUTION ───────────────────────────────────────────── */}
-      {content.antiGravity && (
-        <section className="bg-white py-16 md:py-24 px-6 border-b border-slate-100">
-          <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
-            {/* Left Column: Text + Callouts */}
-            <div className="space-y-10 order-2 lg:order-1">
-              <div className="space-y-4">
-                {content.antiGravity.eyebrow && (
-                  <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
-                    {content.antiGravity.eyebrow}
+      {(() => {
+        const ag = content.antiGravity;
+        if (!ag) return null;
+
+        const agEyebrow = ag.eyebrow || 'ANTI-GRAVITY SOLUTION';
+        const agTitle = ag.title || 'Phục hồi cấu trúc da từ nền tảng hàng rào bảo vệ';
+        const agHeadline = ag.headline || 'Tập trung cải thiện cảm giác săn chắc, ẩm mượt và độ rạng rỡ';
+        const agDescription = ag.description || 'Công thức tập trung vào phục hồi bề mặt da, hỗ trợ cấp ẩm và truyền tải các hoạt chất quan trọng cho làn da đang cần chăm sóc chuyên sâu.';
+
+        const defaultCallouts = [
+          { label: 'Collagen Water', value: 'Hỗ trợ cấp ẩm', x: 18, y: 42, align: 'left' },
+          { label: 'Exosome', value: 'Hỗ trợ chăm sóc sau treatment', x: 14, y: 60, align: 'left' },
+          { label: 'Peptide Complex', value: 'Hỗ trợ hàng rào bảo vệ', x: 22, y: 76, align: 'left' },
+          { label: 'Complex Berry Extracts', value: 'Hỗ trợ vẻ rạng rỡ', x: 58, y: 76, align: 'left' },
+        ];
+        const callouts = (ag.callouts && ag.callouts.length > 0) ? ag.callouts : defaultCallouts;
+
+        const agImageUrl =
+          cosmeticMedia["cosmetic-luminous-anti-gravity-image"] ||
+          (cosmeticMedia as any).antiGravity ||
+          cosmeticMedia[ag.mediaSlot as keyof typeof cosmeticMedia];
+        const agImgSrc = (typeof agImageUrl === 'string' && agImageUrl.trim() && !agImageUrl.includes('/PASTE')) ? agImageUrl.trim() : null;
+
+        return (
+          <section className="bg-white px-5 py-20 md:px-8 md:py-28">
+            <div className="mx-auto max-w-[1200px]">
+              <div className="relative overflow-hidden border border-slate-200 bg-[#F5F7FB] shadow-sm" style={{ aspectRatio: '1200 / 760' }}>
+
+                {/* Background Image */}
+                {agImgSrc ? (
+                  <img
+                    src={agImgSrc}
+                    alt={agTitle}
+                    className="absolute inset-0 z-0 h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#E8ECF4] via-[#F0F2F8] to-[#DDE3EE]" />
+                )}
+
+                {/* Subtle image overlay for text readability */}
+                <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#050A5C]/[0.06] via-transparent to-transparent" />
+
+                {/* Top-left text band — navy translucent like Korean reference */}
+                <div className="absolute left-0 top-0 z-20 w-full md:w-[54%] bg-[#050A5C]/[0.72] backdrop-blur-sm px-6 py-6 lg:px-12 lg:py-10">
+                  <div className="space-y-3">
+                    <span className="text-[9px] md:text-[10px] font-bold text-white/60 tracking-[0.25em] uppercase block">
+                      {agEyebrow}
+                    </span>
+                    <h2 className="text-lg md:text-2xl lg:text-[1.7rem] font-light text-white tracking-tight font-serif leading-[1.15]">
+                      {agTitle}
+                    </h2>
+                    <p className="text-[11px] md:text-sm font-light text-white/75 italic leading-relaxed">
+                      {agHeadline}
+                    </p>
+                    <p className="text-[10px] md:text-xs font-light text-white/55 leading-relaxed max-w-[480px]">
+                      {agDescription}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Desktop Callouts — positioned over image */}
+                {callouts.map((callout: any, idx: number) => {
+                  const cx = callout.x ?? [18, 14, 22, 58][idx % 4];
+                  const cy = callout.y ?? [42, 60, 76, 76][idx % 4];
+                  return (
+                    <div
+                      key={idx}
+                      className="absolute z-30 hidden md:flex items-start gap-2"
+                      style={{ left: `${cx}%`, top: `${cy}%` }}
+                    >
+                      <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#F3A712] shadow-sm" />
+                      <div className={`flex flex-col ${callout.align === 'right' ? 'items-end text-right' : callout.align === 'center' ? 'items-center text-center' : 'items-start text-left'}`}>
+                        <span className="inline-block rounded-[3px] bg-[#F3A712] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow-sm">
+                          {callout.label}
+                        </span>
+                        {callout.value && (
+                          <span className="mt-1 text-[10px] md:text-[11px] font-semibold text-[#050A5C] drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
+                            {callout.value}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Small caption bottom-right */}
+                <div className="absolute bottom-4 right-5 z-20 hidden md:block">
+                  <span className="text-[9px] text-[#050A5C]/40 tracking-wider font-medium italic">
+                    Focused recovery care for barrier, hydration and radiance.
                   </span>
-                )}
-                {content.antiGravity.title && (
-                  <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
-                    {content.antiGravity.title}
-                  </h2>
-                )}
-                {content.antiGravity.headline && (
-                  <p className="text-sm md:text-base font-light text-[#050A5C]/80 italic leading-relaxed">
-                    {content.antiGravity.headline}
-                  </p>
-                )}
-                {content.antiGravity.description && (
-                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap">
-                    {content.antiGravity.description}
-                  </p>
-                )}
+                </div>
               </div>
 
-              {content.antiGravity.callouts && content.antiGravity.callouts.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {content.antiGravity.callouts.map((callout, idx) => (
-                    <div key={idx} className="p-4 border border-slate-200 bg-slate-50/30 flex flex-col space-y-1">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{callout.label}</span>
-                      {callout.value && <span className="font-bold text-[#050A5C] text-sm">{callout.value}</span>}
-                      {callout.description && <p className="text-[11px] text-slate-500 font-light leading-relaxed pt-1">{callout.description}</p>}
+              {/* Mobile Callouts — stacked chips below image */}
+              {callouts.length > 0 && (
+                <div className="mt-6 grid grid-cols-2 gap-3 md:hidden">
+                  {callouts.map((callout: any, idx: number) => (
+                    <div key={idx} className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+                      <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#F3A712]" />
+                      <div>
+                        <span className="block text-[10px] font-bold text-[#050A5C] uppercase tracking-wider">{callout.label}</span>
+                        {callout.value && (
+                          <span className="block text-[10px] font-light text-slate-500 leading-snug mt-0.5">{callout.value}</span>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
             </div>
-
-            {/* Right Column: Large Image Stage */}
-            <div className="relative aspect-[3/4] md:aspect-square lg:aspect-auto lg:h-[600px] bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center p-4 order-1 lg:order-2">
-              {renderSlotImage(
-                cosmeticMedia[content.antiGravity.mediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.antiGravity,
-                content.antiGravity.title || 'Anti Gravity Solution',
-                'from-[#050A5C]/20 to-[#050A5C]/40'
-              )}
-            </div>
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       {/* ─── WHO NEEDS SHEER SET ──────────────────────────────────────────────── */}
       {content.whoNeedsSet && (

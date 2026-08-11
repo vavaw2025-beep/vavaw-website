@@ -2514,10 +2514,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           </div>
                           
                           <div className="col-span-2 mt-2 pt-2 border-t border-slate-100">
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Các thông số nổi bật (Callouts)</label>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Các thông số nổi bật (Callouts)</label>
+                            <p className="text-[9px] text-slate-400 mb-2">X/Y là vị trí callout trên ảnh desktop (%). Mobile sẽ tự động xếp thành danh sách để dễ đọc.</p>
                             <div className="space-y-3">
                               {landAntiGravityCallouts.map((callout: any, idx: number) => (
-                                <div key={idx} className="p-2 border border-slate-200 rounded-lg bg-slate-50 grid grid-cols-2 gap-2 relative">
+                                <div key={idx} className="p-2.5 border border-slate-200 rounded-lg bg-slate-50 grid grid-cols-2 gap-2 relative">
                                   <div>
                                     <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Nhãn (Label)</label>
                                     <input type="text" value={callout.label || ''} onChange={e => { const l = [...landAntiGravityCallouts]; l[idx] = { ...l[idx], label: e.target.value }; setLandAntiGravityCallouts(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
@@ -2530,12 +2531,30 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                     <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Mô tả (Description)</label>
                                     <input type="text" value={callout.description || ''} onChange={e => { const l = [...landAntiGravityCallouts]; l[idx] = { ...l[idx], description: e.target.value }; setLandAntiGravityCallouts(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
                                   </div>
+                                  <div className="grid grid-cols-3 gap-2 col-span-2">
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Desktop X %</label>
+                                      <input type="number" min={0} max={100} value={callout.x ?? ''} onChange={e => { const l = [...landAntiGravityCallouts]; l[idx] = { ...l[idx], x: e.target.value ? Number(e.target.value) : undefined }; setLandAntiGravityCallouts(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-mono" placeholder="18" />
+                                    </div>
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Desktop Y %</label>
+                                      <input type="number" min={0} max={100} value={callout.y ?? ''} onChange={e => { const l = [...landAntiGravityCallouts]; l[idx] = { ...l[idx], y: e.target.value ? Number(e.target.value) : undefined }; setLandAntiGravityCallouts(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-mono" placeholder="42" />
+                                    </div>
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Align</label>
+                                      <select value={callout.align || 'left'} onChange={e => { const l = [...landAntiGravityCallouts]; l[idx] = { ...l[idx], align: e.target.value }; setLandAntiGravityCallouts(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white">
+                                        <option value="left">Left</option>
+                                        <option value="center">Center</option>
+                                        <option value="right">Right</option>
+                                      </select>
+                                    </div>
+                                  </div>
                                   <button type="button" onClick={() => setLandAntiGravityCallouts(landAntiGravityCallouts.filter((_, i) => i !== idx))} className="absolute top-2 right-2 text-slate-400 hover:text-red-600">
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </button>
                                 </div>
                               ))}
-                              <button type="button" onClick={() => setLandAntiGravityCallouts([...landAntiGravityCallouts, { label: '', value: '', description: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                              <button type="button" onClick={() => setLandAntiGravityCallouts([...landAntiGravityCallouts, { label: '', value: '', description: '', x: undefined, y: undefined, align: 'left' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
                                 <Plus className="h-3.5 w-3.5" />
                                 Thêm Callout
                               </button>
