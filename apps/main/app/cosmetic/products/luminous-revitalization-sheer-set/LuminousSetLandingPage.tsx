@@ -38,63 +38,67 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       <ProductJsonLd content={content} canonicalPath={canonicalPath} cosmeticMedia={cosmeticMedia} />
       
       {/* ─── BREADCRUMB ────────────────────────────────────────────────────────── */}
-      <div className="pt-24 md:pt-28 pb-4 px-6 bg-white border-b border-slate-100">
-        <div className="max-w-6xl mx-auto flex items-center gap-1.5 text-[10px] md:text-xs text-slate-400 font-medium uppercase tracking-wider">
-          <a href="/cosmetic" className="hover:text-[#050A5C] transition-colors">Cosmetic</a>
+      <div className="absolute top-0 left-0 right-0 z-20 pt-24 md:pt-28 pb-4 px-6">
+        <div className="max-w-[1200px] mx-auto flex items-center gap-1.5 text-[10px] md:text-xs text-slate-400 font-medium uppercase tracking-wider">
+          <a href="/cosmetic" className="hover:text-white transition-colors">Cosmetic</a>
           <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-slate-600 font-bold truncate">{content.title}</span>
+          <span className="text-white/80 font-bold truncate">{content.title}</span>
         </div>
       </div>
 
-      {/* ─── PRODUCT HERO ──────────────────────────────────────────────────────── */}
-      <section className="bg-white py-16 md:py-24 px-6 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
-          
-          {/* Left Column: Visual Media packshot */}
-          <div className="relative aspect-[4/5] bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center p-6 md:p-8">
-            {renderSlotImage(
-              cosmeticMedia[content.heroMediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.luminousSet,
-              content.title,
-              'from-[#050A5C]/20 to-[#050A5C]/40'
-            )}
-            <div className="absolute bottom-4 left-4 right-4 flex justify-between text-[9px] font-mono text-slate-400 uppercase tracking-widest pointer-events-none">
-              <span>VAVAW COSMETIC</span>
-              <span>CLINICAL RECOVERY SYSTEM</span>
+      {/* ─── FULL WIDTH PRODUCT HERO ───────────────────────────────────────────── */}
+      <section className="relative w-full overflow-hidden bg-[#050A5C] min-h-[720px] md:min-h-[860px] flex items-end">
+        {/* Background Visual */}
+        <div className="absolute inset-0 z-0">
+          {(cosmeticMedia['cosmetic-luminous-hero-desktop'] || cosmeticMedia['cosmetic-luminous-hero-mobile'] || cosmeticMedia['cosmetic-product-luminous-set']) ? (
+            <picture>
+              <source media="(max-width: 767px)" srcSet={cosmeticMedia['cosmetic-luminous-hero-mobile']?.trim() || cosmeticMedia['cosmetic-product-luminous-set']?.trim() || ''} />
+              <img 
+                src={cosmeticMedia['cosmetic-luminous-hero-desktop']?.trim() || cosmeticMedia['cosmetic-product-luminous-set']?.trim() || ''} 
+                alt={content.title}
+                className="w-full h-full object-cover object-center"
+                loading="eager"
+              />
+            </picture>
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-[#050A5C] to-[#101A8C] flex items-center justify-center relative">
+              <div className="absolute inset-4 border border-white/10" />
+              <span className="text-xs text-white/30 tracking-widest font-mono uppercase">VAVAW CAMPAIGN</span>
             </div>
-          </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050A5C] via-[#050A5C]/40 to-transparent" />
+        </div>
 
-          {/* Right Column: Hero Content */}
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
+        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-5 lg:px-8 pb-16 md:pb-24">
+          <div className="max-w-3xl space-y-6">
+            <div className="space-y-4">
+              <span className="text-[10px] md:text-xs font-bold text-white/70 tracking-[0.2em] uppercase block">
                 {content.eyebrow}
               </span>
-              <h1 className="text-3xl md:text-4.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+              <h1 className="text-3xl md:text-5xl font-light text-white tracking-tight font-serif leading-tight">
                 {content.title}
               </h1>
               {content.headline && (
-                <p className="text-sm md:text-base font-light text-[#050A5C]/80 italic leading-relaxed">
+                <p className="text-base md:text-xl font-light text-white/80 italic leading-relaxed">
                   {content.headline}
                 </p>
               )}
             </div>
 
-            <hr className="border-slate-100" />
-
-            <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap">
+            <p className="text-white/70 font-light text-sm md:text-base leading-relaxed whitespace-pre-wrap max-w-2xl">
               {content.description}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
               <CosmeticCtaTracker
                 label={content.ctaLabel}
                 href={content.ctaHref}
-                className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center bg-[#050A5C] text-white text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#101A8C] transition-colors rounded-[1px] shadow-sm"
+                className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center bg-white text-[#050A5C] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-slate-100 transition-colors rounded-[1px] shadow-sm"
               />
               <CosmeticCtaTracker
                 label={content.secondaryCtaLabel}
                 href={content.secondaryCtaHref}
-                className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-slate-200 text-slate-600 text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-slate-50 transition-colors rounded-[1px]"
+                className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-white/30 text-white text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-white/10 transition-colors rounded-[1px]"
               />
             </div>
           </div>
@@ -416,45 +420,6 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       {content.productDetailForm && (
         <ProductDetailForm productDetailForm={content.productDetailForm} cosmeticMedia={cosmeticMedia} />
       )}
-
-      {/* ─── INSIDE THE SET ────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 px-6 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-2">
-            <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">WHAT IS INSIDE</span>
-            <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif">Chi Tiết Bộ Sản Phẩm</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {content.insideSet.map((p, idx) => {
-              const mediaUrl = idx === 0 ? cosmeticMedia.setCellureviveAmpoule : cosmeticMedia.setRegenaglowSheerCream;
-              return (
-                <div key={idx} className="bg-white border border-slate-200 hover:border-slate-300 transition-colors flex flex-col p-6 space-y-6">
-                  {/* Thumbnail stage */}
-                  <div className="aspect-[4/3] bg-slate-50 border border-slate-100 overflow-hidden flex items-center justify-center p-4">
-                    {renderSlotImage(mediaUrl, p.name, 'from-[#EEF2F8] to-[#DDE3EE]')}
-                  </div>
-
-                  <div className="space-y-3 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-bold text-[#050A5C] text-sm md:text-base leading-tight">{p.name}</h3>
-                        <span className="text-[10px] font-mono text-slate-400 font-semibold shrink-0 uppercase">{p.size}</span>
-                      </div>
-                      <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block mt-1">{p.role}</span>
-                      <p className="text-xs md:text-sm text-slate-500 font-light leading-relaxed mt-3">{p.description}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-
-
 
       {/* ─── FINAL CTA ─────────────────────────────────────────────────────────── */}
       <section className="bg-[#050A5C] py-20 md:py-24 px-6 text-center relative overflow-hidden">

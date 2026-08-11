@@ -157,6 +157,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   // Luminous product landing visual states
   const [landHeadline, setLandHeadline] = useState('');
   const [landHeroMediaSlot, setLandHeroMediaSlot] = useState('');
+  const [landHeroMediaDesktop, setLandHeroMediaDesktop] = useState('');
+  const [landHeroMediaMobile, setLandHeroMediaMobile] = useState('');
   const [landSecondaryCtaLabel, setLandSecondaryCtaLabel] = useState('');
   const [landSecondaryCtaHref, setLandSecondaryCtaHref] = useState('');
   
@@ -420,6 +422,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     if (block.block_type.startsWith('cosmetic-product-landing-')) {
       setLandHeadline(content.headline || '');
       setLandHeroMediaSlot(content.heroMediaSlot || 'cosmetic-product-luminous-set');
+      setLandHeroMediaDesktop(content.heroMediaDesktop || '');
+      setLandHeroMediaMobile(content.heroMediaMobile || '');
       setLandSecondaryCtaLabel(content.secondaryCtaLabel || '');
       setLandSecondaryCtaHref(content.secondaryCtaHref || '');
       
@@ -495,7 +499,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandSpaBridgeTitle(spaBridge.title || content.spaBridgeTitle || '');
       setLandSpaBridgeDescription(spaBridge.description || content.spaBridgeDescription || '');
       setLandSpaBridgeCtaLabel(spaBridge.ctaLabel || content.spaBridgeCtaLabel || '');
-      setLandSpaBridgeCtaHref(spaBridge.ctaHref || content.spaBridgeCtaHref || '');
+      setLandSpaBridgeCtaHref(spaBridge.spaBridgeCtaHref || content.spaBridgeCtaHref || '');
 
       setLandProductInfo(content.productInfo || []);
 
@@ -645,6 +649,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       } else {
         updatedContent.headline = landHeadline;
         updatedContent.heroMediaSlot = landHeroMediaSlot;
+        updatedContent.heroMediaDesktop = landHeroMediaDesktop;
+        updatedContent.heroMediaMobile = landHeroMediaMobile;
         updatedContent.secondaryCtaLabel = landSecondaryCtaLabel;
         updatedContent.secondaryCtaHref = landSecondaryCtaHref;
         
@@ -2395,6 +2401,29 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         <div className="col-span-2">
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Dòng mô tả phụ (Headline)</label>
                           <input type="text" value={landHeadline} onChange={e => setLandHeadline(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        </div>
+                        <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                          <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Hero Media Settings</h4>
+                          
+                          {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Desktop Campaign Banner (Optional)</label>
+                                <input type="text" value={landHeroMediaDesktop} onChange={e => setLandHeroMediaDesktop(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="media-id-or-path" />
+                              </div>
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mobile Vertical Banner (Optional)</label>
+                                <input type="text" value={landHeroMediaMobile} onChange={e => setLandHeroMediaMobile(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" placeholder="media-id-or-path" />
+                              </div>
+                            </div>
+                          )}
+
+                          <div>
+                            <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">
+                              {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? 'Hero Product Packshot (Fallback)' : 'Hero Image Slot (Main Visual)'}
+                            </label>
+                            <input type="text" value={landHeroMediaSlot} onChange={e => setLandHeroMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          </div>
                         </div>
                         <div className="col-span-2">
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả sản phẩm (Description)</label>
