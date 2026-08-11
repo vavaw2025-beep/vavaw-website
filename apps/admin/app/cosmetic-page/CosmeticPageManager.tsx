@@ -203,6 +203,19 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landUsageGuideNote, setLandUsageGuideNote] = useState('');
   const [landUsageGuideSteps, setLandUsageGuideSteps] = useState<any[]>([]);
 
+  // Product Detail Form states
+  const [landProductDetailFormEyebrow, setLandProductDetailFormEyebrow] = useState('');
+  const [landProductDetailFormTitle, setLandProductDetailFormTitle] = useState('');
+  const [landProductDetailFormDescription, setLandProductDetailFormDescription] = useState('');
+  const [landProductDetailFormOfflineTitle, setLandProductDetailFormOfflineTitle] = useState('');
+  const [landProductDetailFormOfflineDescription, setLandProductDetailFormOfflineDescription] = useState('');
+  const [landProductDetailFormOfflineMediaSlot, setLandProductDetailFormOfflineMediaSlot] = useState('');
+  const [landProductDetailFormInfo, setLandProductDetailFormInfo] = useState<any[]>([]);
+  const [landProductDetailFormIngredientGroups, setLandProductDetailFormIngredientGroups] = useState<any[]>([]);
+  const [landProductDetailFormCautions, setLandProductDetailFormCautions] = useState<string[]>([]);
+  const [landProductDetailFormStorage, setLandProductDetailFormStorage] = useState('');
+  const [landProductDetailFormQualityGuarantee, setLandProductDetailFormQualityGuarantee] = useState('');
+
   const [landInsideSet, setLandInsideSet] = useState<any[]>([]);
   const [landRecoverySteps, setLandRecoverySteps] = useState<any[]>([]);
   const [landTechnologies, setLandTechnologies] = useState<any[]>([]);
@@ -453,6 +466,19 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandUsageGuideNote(usageGuide.note || '');
       setLandUsageGuideSteps(usageGuide.steps || []);
 
+      const detailForm = content.productDetailForm || {};
+      setLandProductDetailFormEyebrow(detailForm.eyebrow || '');
+      setLandProductDetailFormTitle(detailForm.title || '');
+      setLandProductDetailFormDescription(detailForm.description || '');
+      setLandProductDetailFormOfflineTitle(detailForm.offlineTitle || '');
+      setLandProductDetailFormOfflineDescription(detailForm.offlineDescription || '');
+      setLandProductDetailFormOfflineMediaSlot(detailForm.offlineMediaSlot || 'cosmetic-luminous-offline-experience-image');
+      setLandProductDetailFormInfo(detailForm.info || []);
+      setLandProductDetailFormIngredientGroups(detailForm.ingredientGroups || []);
+      setLandProductDetailFormCautions(detailForm.cautions || []);
+      setLandProductDetailFormStorage(detailForm.storage || '');
+      setLandProductDetailFormQualityGuarantee(detailForm.qualityGuarantee || '');
+
       setLandInsideSet(content.insideSet || content.setProducts || []);
       setLandRecoverySteps(content.recoverySteps || content.recoveryLogic || []);
       setLandTechnologies(content.technologies || content.activeTech || []);
@@ -666,6 +692,19 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             instructionMediaSlot: landUsageGuideInstructionMediaSlot,
             note: landUsageGuideNote,
             steps: landUsageGuideSteps
+          };
+          updatedContent.productDetailForm = {
+            eyebrow: landProductDetailFormEyebrow,
+            title: landProductDetailFormTitle,
+            description: landProductDetailFormDescription,
+            offlineTitle: landProductDetailFormOfflineTitle,
+            offlineDescription: landProductDetailFormOfflineDescription,
+            offlineMediaSlot: landProductDetailFormOfflineMediaSlot,
+            info: landProductDetailFormInfo,
+            ingredientGroups: landProductDetailFormIngredientGroups,
+            cautions: landProductDetailFormCautions,
+            storage: landProductDetailFormStorage,
+            qualityGuarantee: landProductDetailFormQualityGuarantee
           };
         }
 
@@ -2739,6 +2778,150 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                 <Plus className="h-4 w-4" />
                                 Thêm bước
                               </button>
+                            </div>
+                          </div>
+
+                        </div>
+                      </details>
+                    )}
+                    {/* 2.96. Product Detail Form (Only for Luminous Set) */}
+                    {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                      <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                        <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                          <span>7. Product Detail Form</span>
+                          <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                        </summary>
+                        <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
+                          
+                          {/* Header section */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Thông tin chung</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="col-span-2 md:col-span-1">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                                <input type="text" value={landProductDetailFormEyebrow} onChange={e => setLandProductDetailFormEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                              </div>
+                              <div className="col-span-2 md:col-span-1">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
+                                <input type="text" value={landProductDetailFormTitle} onChange={e => setLandProductDetailFormTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả (Description)</label>
+                                <textarea value={landProductDetailFormDescription} onChange={e => setLandProductDetailFormDescription(e.target.value)} rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Offline Bridge section */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Offline Bridge (Tùy chọn)</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề Offline (Offline Title)</label>
+                                <input type="text" value={landProductDetailFormOfflineTitle} onChange={e => setLandProductDetailFormOfflineTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả Offline (Offline Description)</label>
+                                <textarea value={landProductDetailFormOfflineDescription} onChange={e => setLandProductDetailFormOfflineDescription(e.target.value)} rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh Offline (Offline Media Slot)</label>
+                                <input type="text" value={landProductDetailFormOfflineMediaSlot} onChange={e => setLandProductDetailFormOfflineMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Info Repeater */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Thông tin sản phẩm (Info)</h4>
+                            <div className="space-y-4">
+                              {landProductDetailFormInfo.map((item: any, idx: number) => (
+                                <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-white flex items-start gap-3 relative">
+                                  <div className="flex-1 grid grid-cols-2 gap-3">
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Nhãn (Label)</label>
+                                      <input type="text" value={item.label || ''} onChange={e => { const l = [...landProductDetailFormInfo]; l[idx] = { ...l[idx], label: e.target.value }; setLandProductDetailFormInfo(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold" />
+                                    </div>
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Giá trị (Value)</label>
+                                      <input type="text" value={item.value || ''} onChange={e => { const l = [...landProductDetailFormInfo]; l[idx] = { ...l[idx], value: e.target.value }; setLandProductDetailFormInfo(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                    </div>
+                                  </div>
+                                  <button type="button" onClick={() => setLandProductDetailFormInfo(landProductDetailFormInfo.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-4">
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setLandProductDetailFormInfo([...landProductDetailFormInfo, { label: '', value: '' }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-4 w-4" />
+                                Thêm thông tin
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Ingredient Groups Repeater */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Nhóm thành phần (Ingredient Groups)</h4>
+                            <div className="space-y-4">
+                              {landProductDetailFormIngredientGroups.map((item: any, idx: number) => (
+                                <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-white flex items-start gap-3 relative">
+                                  <div className="flex-1 grid grid-cols-2 gap-3">
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Tiêu đề (Title)</label>
+                                      <input type="text" value={item.title || ''} onChange={e => { const l = [...landProductDetailFormIngredientGroups]; l[idx] = { ...l[idx], title: e.target.value }; setLandProductDetailFormIngredientGroups(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold" />
+                                    </div>
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Phụ đề (Subtitle)</label>
+                                      <input type="text" value={item.subtitle || ''} onChange={e => { const l = [...landProductDetailFormIngredientGroups]; l[idx] = { ...l[idx], subtitle: e.target.value }; setLandProductDetailFormIngredientGroups(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                    </div>
+                                    <div className="col-span-2">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Thành phần (Ingredients)</label>
+                                      <textarea value={item.ingredients || ''} onChange={e => { const l = [...landProductDetailFormIngredientGroups]; l[idx] = { ...l[idx], ingredients: e.target.value }; setLandProductDetailFormIngredientGroups(l); }} rows={3} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                    </div>
+                                  </div>
+                                  <button type="button" onClick={() => setLandProductDetailFormIngredientGroups(landProductDetailFormIngredientGroups.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-4">
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setLandProductDetailFormIngredientGroups([...landProductDetailFormIngredientGroups, { title: '', subtitle: '', ingredients: '' }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-4 w-4" />
+                                Thêm nhóm thành phần
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Cautions Repeater */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Lưu ý khi sử dụng (Cautions)</h4>
+                            <div className="space-y-4">
+                              {landProductDetailFormCautions.map((item: string, idx: number) => (
+                                <div key={idx} className="flex items-center gap-2">
+                                  <input type="text" value={item || ''} onChange={e => { const l = [...landProductDetailFormCautions]; l[idx] = e.target.value; setLandProductDetailFormCautions(l); }} className="flex-1 text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                  <button type="button" onClick={() => setLandProductDetailFormCautions(landProductDetailFormCautions.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600">
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setLandProductDetailFormCautions([...landProductDetailFormCautions, ''])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-4 w-4" />
+                                Thêm lưu ý
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Storage & Quality */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Bảo quản & Bảo đảm</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Bảo quản (Storage)</label>
+                                <textarea value={landProductDetailFormStorage} onChange={e => setLandProductDetailFormStorage(e.target.value)} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Bảo đảm chất lượng (Quality Guarantee)</label>
+                                <textarea value={landProductDetailFormQualityGuarantee} onChange={e => setLandProductDetailFormQualityGuarantee(e.target.value)} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                              </div>
                             </div>
                           </div>
 

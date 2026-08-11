@@ -1,7 +1,8 @@
-import { ShieldCheck, ChevronRight } from 'lucide-react';
+import { ShieldCheck, ChevronRight, ArrowRight, Check, ChevronDown, Droplets, Shield, Sparkles } from 'lucide-react';
 import { CosmeticCtaTracker } from '../../cosmetic-tracker';
 import { SiteFooter } from '@vavaw/ui';
 import { ProductLandingContent } from '../_components/product-landing-types';
+import { ProductDetailForm } from '../_components/ProductDetailForm';
 
 import { ProductJsonLd } from '../_components/ProductJsonLd';
 
@@ -409,6 +410,11 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
             </div>
           </div>
         </section>
+      )}
+
+      {/* ─── PRODUCT DETAIL & COMPLIANCE FORM ─────────────────────────────────── */}
+      {content.productDetailForm && (
+        <ProductDetailForm productDetailForm={content.productDetailForm} cosmeticMedia={cosmeticMedia} />
       )}
 
       {/* ─── INSIDE THE SET ────────────────────────────────────────────────────── */}

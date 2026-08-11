@@ -78,10 +78,13 @@ export interface CosmeticPageMedia {
   usageSet?: string;
   /** Ampoule Instruction diagram for Luminous Set */
   usageInstruction?: string;
+  /** Offline Experience image for Luminous Set */
+  offlineExperience?: string;
 }
 
 // Slot name → CosmeticPageMedia key mapping
 const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
+  'cosmetic-luminous-offline-experience-image': 'offlineExperience',
   'cosmetic-luminous-usage-set-image': 'usageSet',
   'cosmetic-luminous-ampoule-instruction-image': 'usageInstruction',
   'cosmetic-luminous-active-ingredients-image': 'activeIngredients',

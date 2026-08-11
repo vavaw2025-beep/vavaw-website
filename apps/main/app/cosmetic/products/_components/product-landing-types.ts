@@ -106,6 +106,26 @@ export interface ProductLandingContent {
       description?: string;
     }>;
   };
+  productDetailForm?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    offlineTitle?: string;
+    offlineDescription?: string;
+    offlineMediaSlot?: string;
+    info?: Array<{
+      label?: string;
+      value?: string;
+    }>;
+    ingredientGroups?: Array<{
+      title?: string;
+      subtitle?: string;
+      ingredients?: string;
+    }>;
+    cautions?: string[];
+    storage?: string;
+    qualityGuarantee?: string;
+  };
   insideSet: ProductLandingInsideSetItem[];
   recoveryLogic: ProductLandingRecoveryStep[];
   activeTech: ProductLandingTechnology[];
