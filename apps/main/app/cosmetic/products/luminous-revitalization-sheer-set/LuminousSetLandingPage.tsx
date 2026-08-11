@@ -167,26 +167,31 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       })()}
       {/* ─── ANTI-GRAVITY SOLUTION ───────────────────────────────────────────── */}
       {(() => {
-        const ag = content.antiGravity;
-        if (!ag) return null;
-
-        const agEyebrow = ag.eyebrow || 'ANTI-GRAVITY SOLUTION';
-        const agTitle = ag.title || 'Phục hồi cấu trúc da từ nền tảng hàng rào bảo vệ';
-        const agHeadline = ag.headline || 'Tập trung cải thiện cảm giác săn chắc, ẩm mượt và độ rạng rỡ';
-        const agDescription = ag.description || 'Công thức tập trung vào phục hồi bề mặt da, hỗ trợ cấp ẩm và truyền tải các hoạt chất quan trọng cho làn da đang cần chăm sóc chuyên sâu.';
-
         const defaultCallouts = [
           { label: 'Collagen Water', value: 'Hỗ trợ cấp ẩm', x: 18, y: 42, align: 'left' },
           { label: 'Exosome', value: 'Hỗ trợ chăm sóc sau treatment', x: 14, y: 60, align: 'left' },
           { label: 'Peptide Complex', value: 'Hỗ trợ hàng rào bảo vệ', x: 22, y: 76, align: 'left' },
-          { label: 'Complex Berry Extracts', value: 'Hỗ trợ vẻ rạng rỡ', x: 58, y: 76, align: 'left' },
+          { label: 'Complex Berry Extracts', value: 'Hỗ trợ vẻ rạng rỡ', x: 58, y: 76, align: 'center' },
         ];
-        const callouts = (ag.callouts && ag.callouts.length > 0) ? ag.callouts : defaultCallouts;
+
+        const antiGravity = {
+          eyebrow: content.antiGravity?.eyebrow || 'ANTI-GRAVITY SOLUTION',
+          title: content.antiGravity?.title || 'Phục hồi cấu trúc da từ nền tảng hàng rào bảo vệ',
+          headline: content.antiGravity?.headline || 'Tập trung cải thiện cảm giác săn chắc, ẩm mượt và độ rạng rỡ',
+          description: content.antiGravity?.description || 'Công thức tập trung vào phục hồi bề mặt da, hỗ trợ cấp ẩm và truyền tải các hoạt chất quan trọng cho làn da đang cần chăm sóc chuyên sâu.',
+          mediaSlot: content.antiGravity?.mediaSlot || 'cosmetic-luminous-anti-gravity-image',
+          caption: content.antiGravity?.caption || 'Focused recovery care for barrier, hydration and radiance.',
+          callouts: Array.isArray(content.antiGravity?.callouts) && content.antiGravity.callouts.length > 0 
+            ? content.antiGravity.callouts 
+            : defaultCallouts
+        };
 
         const agImageUrl =
+          cosmeticMedia[antiGravity.mediaSlot] ||
           cosmeticMedia["cosmetic-luminous-anti-gravity-image"] ||
           (cosmeticMedia as any).antiGravity ||
-          cosmeticMedia[ag.mediaSlot as keyof typeof cosmeticMedia];
+          cosmeticMedia.luminousAntiGravityImage;
+
         const agImgSrc = (typeof agImageUrl === 'string' && agImageUrl.trim() && !agImageUrl.includes('/PASTE')) ? agImageUrl.trim() : null;
 
         return (
@@ -198,7 +203,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 {agImgSrc ? (
                   <img
                     src={agImgSrc}
-                    alt={agTitle}
+                    alt={antiGravity.title}
                     className="absolute inset-0 z-0 h-full w-full object-cover"
                     loading="lazy"
                   />
@@ -213,22 +218,22 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 <div className="absolute left-0 top-0 z-20 w-full md:w-[54%] bg-[#050A5C]/[0.72] backdrop-blur-sm px-6 py-6 lg:px-12 lg:py-10">
                   <div className="space-y-3">
                     <span className="text-[9px] md:text-[10px] font-bold text-white/60 tracking-[0.25em] uppercase block">
-                      {agEyebrow}
+                      {antiGravity.eyebrow}
                     </span>
                     <h2 className="text-lg md:text-2xl lg:text-[1.7rem] font-light text-white tracking-tight font-serif leading-[1.15]">
-                      {agTitle}
+                      {antiGravity.title}
                     </h2>
                     <p className="text-[11px] md:text-sm font-light text-white/75 italic leading-relaxed">
-                      {agHeadline}
+                      {antiGravity.headline}
                     </p>
                     <p className="text-[10px] md:text-xs font-light text-white/55 leading-relaxed max-w-[480px]">
-                      {agDescription}
+                      {antiGravity.description}
                     </p>
                   </div>
                 </div>
 
                 {/* Desktop Callouts — positioned over image */}
-                {callouts.map((callout: any, idx: number) => {
+                {antiGravity.callouts.map((callout: any, idx: number) => {
                   const cx = callout.x ?? [18, 14, 22, 58][idx % 4];
                   const cy = callout.y ?? [42, 60, 76, 76][idx % 4];
                   return (
@@ -255,15 +260,15 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 {/* Small caption bottom-right */}
                 <div className="absolute bottom-4 right-5 z-20 hidden md:block">
                   <span className="text-[9px] text-[#050A5C]/40 tracking-wider font-medium italic">
-                    Focused recovery care for barrier, hydration and radiance.
+                    {antiGravity.caption}
                   </span>
                 </div>
               </div>
 
               {/* Mobile Callouts — stacked chips below image */}
-              {callouts.length > 0 && (
+              {antiGravity.callouts.length > 0 && (
                 <div className="mt-6 grid grid-cols-2 gap-3 md:hidden">
-                  {callouts.map((callout: any, idx: number) => (
+                  {antiGravity.callouts.map((callout: any, idx: number) => (
                     <div key={idx} className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
                       <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#F3A712]" />
                       <div>

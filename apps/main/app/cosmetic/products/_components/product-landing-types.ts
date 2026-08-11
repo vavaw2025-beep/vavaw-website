@@ -59,10 +59,14 @@ export interface ProductLandingContent {
     headline?: string;
     description?: string;
     mediaSlot?: string;
+    caption?: string;
     callouts?: Array<{
       label?: string;
       value?: string;
       description?: string;
+      x?: number;
+      y?: number;
+      align?: string;
     }>;
   };
   whoNeedsSet?: {

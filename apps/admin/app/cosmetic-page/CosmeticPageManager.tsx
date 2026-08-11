@@ -168,6 +168,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landAntiGravityHeadline, setLandAntiGravityHeadline] = useState('');
   const [landAntiGravityDescription, setLandAntiGravityDescription] = useState('');
   const [landAntiGravityMediaSlot, setLandAntiGravityMediaSlot] = useState('');
+  const [landAntiGravityCaption, setLandAntiGravityCaption] = useState('');
   const [landAntiGravityCallouts, setLandAntiGravityCallouts] = useState<any[]>([]);
 
   // Who Needs Sheer Set states
@@ -432,12 +433,20 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandSecondaryCtaHref(content.secondaryCtaHref || '');
       
       const antiGravity = content.antiGravity || {};
-      setLandAntiGravityEyebrow(antiGravity.eyebrow || '');
-      setLandAntiGravityTitle(antiGravity.title || '');
-      setLandAntiGravityHeadline(antiGravity.headline || '');
-      setLandAntiGravityDescription(antiGravity.description || '');
+      setLandAntiGravityEyebrow(antiGravity.eyebrow || 'ANTI-GRAVITY SOLUTION');
+      setLandAntiGravityTitle(antiGravity.title || 'Phục hồi cấu trúc da từ nền tảng hàng rào bảo vệ');
+      setLandAntiGravityHeadline(antiGravity.headline || 'Tập trung cải thiện cảm giác săn chắc, ẩm mượt và độ rạng rỡ');
+      setLandAntiGravityDescription(antiGravity.description || 'Công thức tập trung vào phục hồi bề mặt da, hỗ trợ cấp ẩm và truyền tải các hoạt chất quan trọng cho làn da đang cần chăm sóc chuyên sâu.');
       setLandAntiGravityMediaSlot(antiGravity.mediaSlot || 'cosmetic-luminous-anti-gravity-image');
-      setLandAntiGravityCallouts(antiGravity.callouts || []);
+      setLandAntiGravityCaption(antiGravity.caption || 'Focused recovery care for barrier, hydration and radiance.');
+      
+      const defaultCallouts = [
+        { label: 'Collagen Water', value: 'Hỗ trợ cấp ẩm', x: 18, y: 42, align: 'left' },
+        { label: 'Exosome', value: 'Hỗ trợ chăm sóc sau treatment', x: 14, y: 60, align: 'left' },
+        { label: 'Peptide Complex', value: 'Hỗ trợ hàng rào bảo vệ', x: 22, y: 76, align: 'left' },
+        { label: 'Complex Berry Extracts', value: 'Hỗ trợ vẻ rạng rỡ', x: 58, y: 76, align: 'center' }
+      ];
+      setLandAntiGravityCallouts(antiGravity.callouts && antiGravity.callouts.length ? antiGravity.callouts : defaultCallouts);
 
       const whoNeedsSet = content.whoNeedsSet || {};
       setLandWhoNeedsEyebrow(whoNeedsSet.eyebrow || '');
@@ -675,6 +684,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             headline: landAntiGravityHeadline,
             description: landAntiGravityDescription,
             mediaSlot: landAntiGravityMediaSlot,
+            caption: landAntiGravityCaption,
             callouts: landAntiGravityCallouts
           };
           updatedContent.whoNeedsSet = {
@@ -2497,8 +2507,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             <input type="text" value={landAntiGravityEyebrow} onChange={e => setLandAntiGravityEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
-                            <input type="text" value={landAntiGravityMediaSlot} onChange={e => setLandAntiGravityMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-500 font-mono" />
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả ảnh (Caption)</label>
+                            <input type="text" value={landAntiGravityCaption} onChange={e => setLandAntiGravityCaption(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          </div>
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Anti-Gravity Media</h4>
+                            {renderSlotCard({ id: landAntiGravityMediaSlot || 'cosmetic-luminous-anti-gravity-image', name: 'Anti-Gravity Feature Image', size: '1080 × 1350 px or 1200 × 1500 px' })}
                           </div>
                           <div className="col-span-2">
                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề chính (Title)</label>
