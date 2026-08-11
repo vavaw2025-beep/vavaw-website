@@ -662,6 +662,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         
         // Only include antiGravity if it's the Luminous Set landing block
         if (editingBlock.block_type === 'cosmetic-product-landing-luminous-set') {
+          // Force luminous set media slots safely to ensure robust rendering
+          updatedContent.heroMediaSlot = 'cosmetic-product-luminous-set';
+          updatedContent.heroDesktopMediaSlot = 'cosmetic-luminous-hero-desktop';
+          updatedContent.heroMobileMediaSlot = 'cosmetic-luminous-hero-mobile';
+          updatedContent.heroMediaDesktop = 'cosmetic-luminous-hero-desktop';
+          updatedContent.heroMediaMobile = 'cosmetic-luminous-hero-mobile';
+
           updatedContent.antiGravity = {
             eyebrow: landAntiGravityEyebrow,
             title: landAntiGravityTitle,

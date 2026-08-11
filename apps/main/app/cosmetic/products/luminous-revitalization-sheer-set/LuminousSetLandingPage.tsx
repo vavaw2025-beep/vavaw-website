@@ -47,97 +47,89 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       </div>
 
       {/* ─── FULL WIDTH PRODUCT HERO ───────────────────────────────────────────── */}
-      <section className="relative w-full overflow-hidden bg-[#050A5C] min-h-[720px] md:min-h-[860px] flex items-end">
-        {/* Background Visual */}
-        <div className="absolute inset-0 z-0">
-          {(() => {
-            const getMediaUrl = (media: unknown): string | null => {
-              if (!media) return null;
+      {(() => {
+        const getMediaUrl = (media: unknown): string | null => {
+          if (!media) return null;
+          if (typeof media === 'string') {
+            if (!media.trim() || media.includes('/PASTE')) return null;
+            return media.trim();
+          }
+          if (typeof media === 'object') {
+            const candidate =
+              (media as any).url ||
+              (media as any).publicUrl ||
+              (media as any).public_url ||
+              (media as any).src ||
+              (media as any).href ||
+              null;
+            if (!candidate || typeof candidate !== 'string') return null;
+            if (!candidate.trim() || candidate.includes('/PASTE')) return null;
+            return candidate.trim();
+          }
+          return null;
+        };
 
-              if (typeof media === 'string') {
-                if (!media || media.includes('/PASTE')) return null;
-                return media.trim();
-              }
+        const heroDesktopSlot = content.heroDesktopMediaSlot || content.heroMediaDesktop || "cosmetic-luminous-hero-desktop";
+        const heroMobileSlot = content.heroMobileMediaSlot || content.heroMediaMobile || "cosmetic-luminous-hero-mobile";
+        const fallbackHeroSlot = "cosmetic-product-luminous-set";
 
-              if (typeof media === 'object') {
-                const candidate =
-                  (media as any).url ||
-                  (media as any).publicUrl ||
-                  (media as any).public_url ||
-                  (media as any).src ||
-                  null;
+        const heroDesktopResolved = 
+          getMediaUrl(cosmeticMedia[heroDesktopSlot as keyof typeof cosmeticMedia]) ||
+          getMediaUrl(cosmeticMedia['cosmetic-luminous-hero-desktop']) ||
+          getMediaUrl(cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia]);
 
-                if (!candidate || typeof candidate !== 'string') return null;
-                if (candidate.includes('/PASTE')) return null;
-                return candidate.trim();
-              }
+        const heroMobileResolved = 
+          getMediaUrl(cosmeticMedia[heroMobileSlot as keyof typeof cosmeticMedia]) ||
+          getMediaUrl(cosmeticMedia['cosmetic-luminous-hero-mobile']) ||
+          heroDesktopResolved ||
+          getMediaUrl(cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia]);
 
-              return null;
-            };
+        const heroUrl = heroDesktopResolved || heroMobileResolved;
 
-            const heroDesktopSlot = content.heroDesktopMediaSlot || content.heroMediaDesktop || "cosmetic-luminous-hero-desktop";
-            const heroMobileSlot = content.heroMobileMediaSlot || content.heroMediaMobile || "cosmetic-luminous-hero-mobile";
-            const fallbackHeroSlot = content.heroMediaSlot || "cosmetic-product-luminous-set";
+        return (
+          <section 
+            className="relative w-full overflow-hidden bg-[#050A5C] min-h-[720px] md:min-h-[860px] flex items-end"
+            data-hero-desktop-url={heroDesktopResolved || ""}
+            data-hero-mobile-url={heroMobileResolved || ""}
+            data-hero-fallback-slot={fallbackHeroSlot}
+          >
+            {heroUrl ? (
+              <picture className="absolute inset-0 z-0 block h-full w-full">
+                {heroMobileResolved && (
+                  <source media="(max-width: 767px)" srcSet={heroMobileResolved} />
+                )}
+                <img 
+                  src={heroUrl} 
+                  alt={content.title || "Luminous Revitalization Sheer Set"}
+                  className="h-full w-full object-cover object-center"
+                  loading="eager"
+                />
+              </picture>
+            ) : (
+              <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#050A5C] via-[#050A5C] to-[#101A8C]" />
+            )}
 
-            const heroDesktopResolved = 
-              getMediaUrl(cosmeticMedia[heroDesktopSlot as keyof typeof cosmeticMedia]) ||
-              getMediaUrl(cosmeticMedia['cosmetic-luminous-hero-desktop']) ||
-              getMediaUrl(cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia]) ||
-              getMediaUrl(cosmeticMedia['cosmetic-product-luminous-set']);
+            <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050A5C]/70 via-[#050A5C]/35 to-transparent" />
 
-            const heroMobileResolved = 
-              getMediaUrl(cosmeticMedia[heroMobileSlot as keyof typeof cosmeticMedia]) ||
-              getMediaUrl(cosmeticMedia['cosmetic-luminous-hero-mobile']) ||
-              getMediaUrl(cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia]) ||
-              getMediaUrl(cosmeticMedia['cosmetic-product-luminous-set']);
-
-            if (heroDesktopResolved || heroMobileResolved) {
-              return (
-                <picture className="absolute inset-0 z-0 block h-full w-full">
-                  {heroMobileResolved && (
-                    <source media="(max-width: 767px)" srcSet={heroMobileResolved} />
+            <div className="relative z-20 w-full max-w-[1200px] mx-auto px-5 lg:px-8 pb-16 md:pb-24">
+              <div className="max-w-3xl space-y-6">
+                <div className="space-y-4">
+                  <span className="text-[10px] md:text-xs font-bold text-white/70 tracking-[0.2em] uppercase block">
+                    {content.eyebrow}
+                  </span>
+                  <h1 className="text-3xl md:text-5xl font-light text-white tracking-tight font-serif leading-tight">
+                    {content.title}
+                  </h1>
+                  {content.headline && (
+                    <p className="text-base md:text-xl font-light text-white/80 italic leading-relaxed">
+                      {content.headline}
+                    </p>
                   )}
-                  <img 
-                    src={heroDesktopResolved || heroMobileResolved!} 
-                    alt={content.title || "Luminous Revitalization Sheer Set"}
-                    className="h-full w-full object-cover object-center"
-                    loading="eager"
-                  />
-                </picture>
-              );
-            }
-
-            return (
-              <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#050A5C] via-[#050A5C]/80 to-[#101A8C]">
-                <div className="absolute inset-4 border border-white/10" />
-                <div className="flex h-full items-center justify-center">
-                  <span className="text-xs text-white/30 tracking-widest font-mono uppercase">VAVAW CAMPAIGN</span>
                 </div>
-              </div>
-            );
-          })()}
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050A5C] via-[#050A5C]/40 to-transparent" />
-        </div>
 
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-5 lg:px-8 pb-16 md:pb-24">
-          <div className="max-w-3xl space-y-6">
-            <div className="space-y-4">
-              <span className="text-[10px] md:text-xs font-bold text-white/70 tracking-[0.2em] uppercase block">
-                {content.eyebrow}
-              </span>
-              <h1 className="text-3xl md:text-5xl font-light text-white tracking-tight font-serif leading-tight">
-                {content.title}
-              </h1>
-              {content.headline && (
-                <p className="text-base md:text-xl font-light text-white/80 italic leading-relaxed">
-                  {content.headline}
+                <p className="text-white/70 font-light text-sm md:text-base leading-relaxed whitespace-pre-wrap max-w-2xl">
+                  {content.description}
                 </p>
-              )}
-            </div>
-
-            <p className="text-white/70 font-light text-sm md:text-base leading-relaxed whitespace-pre-wrap max-w-2xl">
-              {content.description}
-            </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
               <CosmeticCtaTracker
@@ -154,6 +146,8 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
           </div>
         </div>
       </section>
+      );
+    })()}
       {/* ─── ANTI-GRAVITY SOLUTION ───────────────────────────────────────────── */}
       {content.antiGravity && (
         <section className="bg-white py-16 md:py-24 px-6 border-b border-slate-100">
