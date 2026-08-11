@@ -40,7 +40,7 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
             )}
             
             <div className="p-8 md:p-12 space-y-4 w-full md:w-1/2">
-              <h3 className="text-xl md:text-2xl font-light text-[#050A5C] font-serif leading-tight">
+              <h3 className="text-xl md:text-2xl font-light text-[#050A5C] cosmetic-heading leading-[1.08]">
                 {productDetailForm.offlineTitle}
               </h3>
               {productDetailForm.offlineDescription && (
@@ -63,7 +63,7 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
               </span>
             )}
             {productDetailForm.title && (
-              <h2 className="text-2xl md:text-3xl font-light text-[#050A5C] tracking-tight font-serif">
+              <h2 className="text-2xl md:text-3xl font-light text-[#050A5C] tracking-tight cosmetic-heading leading-[1.08]">
                 {productDetailForm.title}
               </h2>
             )}

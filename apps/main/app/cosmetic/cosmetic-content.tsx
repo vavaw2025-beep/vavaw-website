@@ -558,7 +558,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
   const hasValidHeroImage = heroMedia?.backgroundImageUrl && isValidHeroImageUrl(heroMedia.backgroundImageUrl);
 
   return (
-    <div className="min-h-screen bg-white text-[#1F2933] font-sans selection:bg-[#D9DEE8] selection:text-[#050A5C] overflow-hidden">
+    <div className="min-h-screen bg-white text-[#1F2933] cosmetic-typography cosmetic-body selection:bg-[#D9DEE8] selection:text-[#050A5C] overflow-hidden">
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 1 — HERO (preserved exactly, do not modify)
@@ -829,7 +829,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
                   <motion.h2
                     variants={fadeUp}
-                    className="font-serif font-light leading-[0.92] text-[#050A5C] mb-8"
+                    className="cosmetic-heading font-light leading-[1.08] text-[#050A5C] mb-8"
                     style={{
                       fontSize: 'clamp(3rem, 8vw, 6rem)',
                       letterSpacing: '-0.02em',
@@ -976,7 +976,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                             {/* Step number */}
                             <div className="flex items-end justify-between mb-3">
                               <span
-                                className="font-serif font-light leading-none select-none transition-opacity duration-300"
+                                className="cosmetic-heading font-light leading-tight select-none transition-opacity duration-300"
                                 style={{
                                   fontSize: 'clamp(3rem, 5vw, 5rem)',
                                   lineHeight: 1,
@@ -1075,7 +1075,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                       {/* Left — Step + Role */}
                       <div className="col-span-2 flex flex-col justify-center border-r border-[#E8EDF6] pr-8">
                         <span
-                          className="font-serif font-light leading-none text-[#050A5C]/12 select-none block mb-2"
+                          className="cosmetic-heading font-light leading-tight text-[#050A5C]/12 select-none block mb-2"
                           style={{ fontSize: 'clamp(3rem, 4vw, 4.5rem)', lineHeight: 1 }}
                           aria-hidden="true"
                         >
@@ -1204,7 +1204,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                             {/* Text */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-0.5">
-                                <span className="font-serif font-light text-[#050A5C]/15 text-xl leading-none">{station._step}</span>
+                                <span className="cosmetic-heading font-light text-[#050A5C]/15 text-xl leading-tight">{station._step}</span>
                                 <span className="text-[8px] tracking-[0.26em] uppercase text-[#050A5C]/45 font-semibold">{station._role}</span>
                                 {station._isCore && (
                                   <span className="text-[6px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1 py-0.5">CORE</span>
@@ -1597,7 +1597,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                       >
                         <div className="space-y-2">
                           <SectionLabel>{eyebrow || 'FEATURED SET'}</SectionLabel>
-                          <h2 className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight font-serif">
+                          <h2 className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight cosmetic-heading">
                             {title}
                           </h2>
                           {headline && (
@@ -1658,7 +1658,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                           >
                             <div className="space-y-2">
                               <SectionLabel>PRODUCT IN THE SET</SectionLabel>
-                              <h2 className="text-3xl font-light text-[#050A5C] tracking-tight font-serif">
+                              <h2 className="text-3xl font-light text-[#050A5C] tracking-tight cosmetic-heading">
                                 {activeP.name}
                               </h2>
                               <div className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider">

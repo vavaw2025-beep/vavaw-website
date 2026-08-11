@@ -51,6 +51,20 @@ import { draftMode } from 'next/headers'
 import { PreviewBanner } from '@/components/preview-banner'
 import { SiteHeader } from '@/components/site-header'
 import { loadPublicBrandAssets } from '@/lib/load-public-brand-assets'
+import { Noto_Serif, Be_Vietnam_Pro } from 'next/font/google'
+
+const cosmeticSerif = Noto_Serif({
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-cosmetic-serif',
+  display: 'swap',
+})
+
+const cosmeticSans = Be_Vietnam_Pro({
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-cosmetic-sans',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+})
 
 export default async function RootLayout({
   children,
@@ -72,7 +86,7 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="vi" className="bg-background" suppressHydrationWarning>
+    <html lang="vi" className={`bg-background ${cosmeticSerif.variable} ${cosmeticSans.variable}`} suppressHydrationWarning>
       <body className="antialiased min-h-screen flex flex-col">
         {isPreview && <PreviewBanner />}
         <script

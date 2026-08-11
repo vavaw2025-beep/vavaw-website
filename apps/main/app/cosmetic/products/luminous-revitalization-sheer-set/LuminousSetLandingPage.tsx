@@ -34,7 +34,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#E2E8F0] selection:text-[#050A5C]">
+    <div className="cosmetic-typography min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#E2E8F0] selection:text-[#050A5C]">
       <ProductJsonLd content={content} canonicalPath={canonicalPath} cosmeticMedia={cosmeticMedia} />
       
       {/* ─── FULL WIDTH PRODUCT HERO ───────────────────────────────────────────── */}
@@ -126,24 +126,24 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 </nav>
 
                 {/* Eyebrow */}
-                <span className="text-[10px] md:text-xs font-bold text-white/60 tracking-[0.25em] uppercase block">
+                <span className="cosmetic-kicker text-white/60 block">
                   {content.eyebrow}
                 </span>
 
                 {/* H1 */}
-                <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-light text-white tracking-tight font-serif leading-[0.98] md:leading-[1.02]">
+                <h1 className="cosmetic-heading text-3xl md:text-5xl lg:text-[3.5rem] text-white leading-[0.98] md:leading-[1.02]">
                   {content.title}
                 </h1>
 
                 {/* Subheadline */}
                 {content.headline && (
-                  <p className="text-base md:text-lg lg:text-xl font-light text-white/80 italic leading-relaxed">
+                  <p className="cosmetic-subheading text-base md:text-lg lg:text-xl text-white/80">
                     {content.headline}
                   </p>
                 )}
 
                 {/* Description */}
-                <p className="text-white/[0.68] font-light text-sm md:text-[15px] leading-relaxed whitespace-pre-wrap max-w-[560px]">
+                <p className="cosmetic-body text-white/[0.68] text-sm md:text-[15px] whitespace-pre-wrap max-w-[560px]">
                   {content.description}
                 </p>
 
@@ -217,16 +217,16 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 {/* Top-left text band — navy translucent like Korean reference */}
                 <div className="absolute left-0 top-0 z-20 w-full md:w-[54%] bg-[#050A5C]/[0.72] backdrop-blur-sm px-6 py-6 lg:px-12 lg:py-10">
                   <div className="space-y-3">
-                    <span className="text-[9px] md:text-[10px] font-bold text-white/60 tracking-[0.25em] uppercase block">
+                    <span className="cosmetic-kicker text-white/60 block">
                       {antiGravity.eyebrow}
                     </span>
-                    <h2 className="text-lg md:text-2xl lg:text-[1.7rem] font-light text-white tracking-tight font-serif leading-[1.15]">
+                    <h2 className="cosmetic-heading text-lg md:text-2xl lg:text-[1.7rem] text-white leading-[1.15]">
                       {antiGravity.title}
                     </h2>
-                    <p className="text-[11px] md:text-sm font-light text-white/75 italic leading-relaxed">
+                    <p className="cosmetic-subheading text-[11px] md:text-sm text-white/75">
                       {antiGravity.headline}
                     </p>
-                    <p className="text-[10px] md:text-xs font-light text-white/55 leading-relaxed max-w-[480px]">
+                    <p className="cosmetic-body text-[10px] md:text-xs text-white/55 max-w-[480px]">
                       {antiGravity.description}
                     </p>
                   </div>
@@ -294,22 +294,22 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
             <div className="space-y-10">
               <div className="space-y-4">
                 {content.whoNeedsSet.eyebrow && (
-                  <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
+                  <span className="cosmetic-kicker text-[#050A5C]/60 block">
                     {content.whoNeedsSet.eyebrow}
                   </span>
                 )}
                 {content.whoNeedsSet.title && (
-                  <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                  <h2 className="cosmetic-heading text-2xl md:text-3.5xl text-[#050A5C] leading-tight">
                     {content.whoNeedsSet.title}
                   </h2>
                 )}
                 {content.whoNeedsSet.note && (
-                  <p className="text-xs md:text-sm font-light text-[#050A5C]/80 italic leading-relaxed bg-slate-50 border-l-2 border-[#050A5C]/20 p-3">
+                  <p className="cosmetic-subheading text-xs md:text-sm text-[#050A5C]/80 bg-slate-50 border-l-2 border-[#050A5C]/20 p-3">
                     {content.whoNeedsSet.note}
                   </p>
                 )}
                 {content.whoNeedsSet.description && (
-                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
                     {content.whoNeedsSet.description}
                   </p>
                 )}
@@ -320,7 +320,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                   {content.whoNeedsSet.items.map((item, idx) => (
                     <div key={idx} className="flex items-start gap-4">
                       <ShieldCheck className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
-                      <span className="text-xs md:text-sm text-slate-600 font-light leading-relaxed">{item.text}</span>
+                      <span className="cosmetic-body text-xs md:text-sm text-slate-600">{item.text}</span>
                     </div>
                   ))}
                 </div>
@@ -352,17 +352,17 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col">
               <div className="p-8 md:p-10 space-y-4 flex-1">
                 {content.barrierScience.eyebrow && (
-                  <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
+                  <span className="cosmetic-kicker text-[#050A5C]/60 block">
                     {content.barrierScience.eyebrow}
                   </span>
                 )}
                 {content.barrierScience.title && (
-                  <h3 className="text-xl md:text-2xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                  <h3 className="cosmetic-heading text-xl md:text-2xl text-[#050A5C] leading-tight">
                     {content.barrierScience.title}
                   </h3>
                 )}
                 {content.barrierScience.description && (
-                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
                     {content.barrierScience.description}
                   </p>
                 )}
@@ -381,7 +381,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
               <div className="p-8 md:p-10 space-y-4 flex-1">
                 {content.barrierScience.mg3Eyebrow && (
                   <div className="inline-flex items-center gap-2">
-                    <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C] tracking-[0.2em] uppercase block">
+                    <span className="cosmetic-kicker text-[#050A5C] block">
                       {content.barrierScience.mg3Eyebrow}
                     </span>
                     <span className="bg-yellow-100 text-yellow-800 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
@@ -390,12 +390,12 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                   </div>
                 )}
                 {content.barrierScience.mg3Title && (
-                  <h3 className="text-xl md:text-2xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                  <h3 className="cosmetic-heading text-xl md:text-2xl text-[#050A5C] leading-tight">
                     {content.barrierScience.mg3Title}
                   </h3>
                 )}
                 {content.barrierScience.mg3Description && (
-                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
                     {content.barrierScience.mg3Description}
                   </p>
                 )}
@@ -420,17 +420,17 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
             <div className="space-y-8 flex flex-col h-full">
               <div className="space-y-4">
                 {content.activeIngredients.eyebrow && (
-                  <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
+                  <span className="cosmetic-kicker text-[#050A5C]/60 block">
                     {content.activeIngredients.eyebrow}
                   </span>
                 )}
                 {content.activeIngredients.title && (
-                  <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                  <h2 className="cosmetic-heading text-2xl md:text-3.5xl text-[#050A5C] leading-tight">
                     {content.activeIngredients.title}
                   </h2>
                 )}
                 {content.activeIngredients.description && (
-                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
                     {content.activeIngredients.description}
                   </p>
                 )}
@@ -458,12 +458,12 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                     
                     <div className="bg-slate-50/50 border border-slate-100 p-5 rounded-lg space-y-2">
                       <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-1 mb-1">
-                        <h4 className="text-[15px] font-semibold text-[#050A5C] font-serif">{item.name}</h4>
+                        <h4 className="cosmetic-heading text-[15px] text-[#050A5C]">{item.name}</h4>
                         {item.subtitle && (
-                          <span className="text-[9px] font-bold text-yellow-600/80 uppercase tracking-widest">{item.subtitle}</span>
+                          <span className="cosmetic-kicker text-yellow-600/80">{item.subtitle}</span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-500 font-light leading-relaxed">{item.description}</p>
+                      <p className="cosmetic-body text-xs text-slate-500">{item.description}</p>
                     </div>
                   </div>
                 ))}
@@ -481,17 +481,17 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
             <div className="space-y-10">
               <div className="space-y-4">
                 {content.usageGuide.eyebrow && (
-                  <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
+                  <span className="cosmetic-kicker text-[#050A5C]/60 block">
                     {content.usageGuide.eyebrow}
                   </span>
                 )}
                 {content.usageGuide.title && (
-                  <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                  <h2 className="cosmetic-heading text-2xl md:text-3.5xl text-[#050A5C] leading-tight">
                     {content.usageGuide.title}
                   </h2>
                 )}
                 {content.usageGuide.description && (
-                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
                     {content.usageGuide.description}
                   </p>
                 )}
@@ -506,8 +506,8 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                       </div>
                     )}
                     <div className="space-y-1 pt-1">
-                      <h4 className="text-[14px] font-bold text-[#050A5C]">{item.title}</h4>
-                      <p className="text-[13px] text-slate-500 font-light leading-relaxed">{item.description}</p>
+                      <h4 className="cosmetic-heading text-[14px] text-[#050A5C]">{item.title}</h4>
+                      <p className="cosmetic-body text-[13px] text-slate-500">{item.description}</p>
                     </div>
                   </div>
                 ))}
@@ -516,7 +516,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
               {content.usageGuide.note && (
                 <div className="bg-white border border-slate-200 p-4 rounded-lg flex gap-3 items-start">
                   <div className="shrink-0 mt-0.5 w-1.5 h-1.5 rounded-full bg-yellow-500"></div>
-                  <p className="text-xs text-slate-500 font-light italic leading-relaxed">
+                  <p className="cosmetic-subheading text-xs text-slate-500">
                     {content.usageGuide.note}
                   </p>
                 </div>
@@ -553,11 +553,11 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       <section className="bg-[#050A5C] py-20 md:py-24 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.15)_100%)] pointer-events-none" />
         <div className="max-w-2xl mx-auto space-y-6 relative z-10">
-          <span className="text-[10px] font-bold text-white/50 tracking-[0.25em] uppercase block">VAVAW COSMETIC CONSULTATION</span>
-          <h2 className="text-2xl md:text-3.5xl font-light text-white tracking-tight leading-snug">
+          <span className="cosmetic-kicker text-white/50 block">VAVAW COSMETIC CONSULTATION</span>
+          <h2 className="cosmetic-heading text-2xl md:text-3.5xl text-white leading-snug">
             {content.finalCta.title}
           </h2>
-          <p className="text-white/70 font-light text-xs md:text-sm leading-relaxed max-w-xl mx-auto">
+          <p className="cosmetic-body text-white/70 text-xs md:text-sm max-w-xl mx-auto">
             {content.finalCta.description}
           </p>
           <div className="pt-4">

@@ -182,3 +182,40 @@
     scroll-behavior: smooth;
   }
 }
+
+@layer utilities {
+  .cosmetic-typography {
+    font-family: var(--font-cosmetic-sans), Inter, system-ui, sans-serif;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .cosmetic-typography .cosmetic-heading,
+  .cosmetic-heading {
+    font-family: var(--font-cosmetic-serif), Georgia, serif;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    font-feature-settings: "kern";
+  }
+
+  .cosmetic-typography .cosmetic-subheading,
+  .cosmetic-subheading {
+    font-family: var(--font-cosmetic-sans), Inter, system-ui, sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.55;
+  }
+
+  .cosmetic-typography .cosmetic-body,
+  .cosmetic-body {
+    font-family: var(--font-cosmetic-sans), Inter, system-ui, sans-serif;
+    line-height: 1.75;
+  }
+
+  .cosmetic-typography .cosmetic-kicker,
+  .cosmetic-kicker {
+    font-family: var(--font-cosmetic-sans), Inter, system-ui, sans-serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+}

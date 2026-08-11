@@ -308,7 +308,7 @@ export function SkinRitualFinder({ dailyRitual, products, cosmeticMedia }: SkinR
                     <CheckCircle className="h-3 w-3 shrink-0" />
                     Recommended Prescription
                   </span>
-                  <h3 className="text-2xl font-light text-[#050A5C] tracking-wide font-serif pt-1">
+                  <h3 className="text-2xl font-light text-[#050A5C] tracking-wide cosmetic-heading pt-1">
                     {ritual.title}
                   </h3>
                   <p className="text-xs text-[#6B7280] font-light leading-relaxed">
