@@ -81,6 +81,11 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     label: 'Luminous Set — MG3-Plus Technology Diagram',
     aliases: ['mg3-plus', 'mg3-technology', 'mg3-diagram'],
   },
+  {
+    value: 'cosmetic-luminous-active-ingredients-image',
+    label: 'Luminous Set — Active Ingredients Image',
+    aliases: ['active-ingredients', 'ingredients-image'],
+  },
 ];
 
 /** Canonical video slot definitions for Clinical Formula Lab product videos */

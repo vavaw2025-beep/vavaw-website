@@ -55,6 +55,19 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     mg3Description: 'MG3-Plus được phát triển để hỗ trợ tối ưu hóa cách các thành phần chăm sóc da hoạt động trong routine, giúp làn da có cảm giác ẩm mượt, ổn định và được nuôi dưỡng tốt hơn.',
     mg3MediaSlot: 'cosmetic-luminous-mg3-plus-image'
   },
+  activeIngredients: {
+    eyebrow: 'ACTIVE INGREDIENTS',
+    title: 'Các thành phần hỗ trợ làn da rạng rỡ hơn',
+    description: 'Luminous Revitalization Sheer Set kết hợp các thành phần chăm sóc da được chọn lọc để hỗ trợ độ ẩm, hàng rào bảo vệ, vẻ mịn màng và cảm giác tươi sáng của làn da.',
+    mediaSlot: 'cosmetic-luminous-active-ingredients-image',
+    ingredients: [
+      { name: 'Exosome', subtitle: 'Renewal Appearance Support', description: 'Hỗ trợ vẻ ngoài mịn màng, rạng rỡ và làn da trông có sức sống hơn.' },
+      { name: 'Collagen Water', subtitle: 'Hydration & Elasticity Support', description: 'Giúp duy trì cảm giác ẩm mượt, mềm mại và hỗ trợ độ đàn hồi bề mặt da.' },
+      { name: 'Complex Berry Extracts', subtitle: 'Antioxidant Care', description: 'Hỗ trợ chăm sóc làn da trước tác động môi trường và giúp da trông tươi sáng hơn.' },
+      { name: 'Complex Peptides', subtitle: 'Barrier & Firmness Support', description: 'Hỗ trợ hàng rào bảo vệ và giúp bề mặt da trông săn mịn hơn.' },
+      { name: 'Hydrolyzed Hyaluronic Acid', subtitle: 'Moisture Retention', description: 'Giúp bổ sung cảm giác ẩm mượt, hỗ trợ duy trì độ ẩm và tạo cảm giác da mềm mại hơn.' }
+    ]
+  },
   insideSet: [
     {
       name: 'CELLUREVIVE Ampoule',

@@ -82,6 +82,17 @@ export interface ProductLandingContent {
     mg3Description?: string;
     mg3MediaSlot?: string;
   };
+  activeIngredients?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    mediaSlot?: string;
+    ingredients?: Array<{
+      name?: string;
+      subtitle?: string;
+      description?: string;
+    }>;
+  };
   insideSet: ProductLandingInsideSetItem[];
   recoveryLogic: ProductLandingRecoveryStep[];
   activeTech: ProductLandingTechnology[];

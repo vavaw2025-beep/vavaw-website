@@ -279,6 +279,67 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         </section>
       )}
 
+      {/* ─── ACTIVE INGREDIENTS ────────────────────────────────────────────────── */}
+      {content.activeIngredients && (
+        <section className="bg-white py-16 md:py-24 px-6 border-b border-slate-100">
+          <div className="max-w-[1200px] mx-auto lg:px-8 grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
+            {/* Left Column: Text + Image */}
+            <div className="space-y-8 flex flex-col h-full">
+              <div className="space-y-4">
+                {content.activeIngredients.eyebrow && (
+                  <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
+                    {content.activeIngredients.eyebrow}
+                  </span>
+                )}
+                {content.activeIngredients.title && (
+                  <h2 className="text-2xl md:text-3.5xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                    {content.activeIngredients.title}
+                  </h2>
+                )}
+                {content.activeIngredients.description && (
+                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                    {content.activeIngredients.description}
+                  </p>
+                )}
+              </div>
+              
+              <div className="relative flex-1 min-h-[300px] md:min-h-[400px] w-full bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center p-4">
+                {renderSlotImage(
+                  cosmeticMedia[content.activeIngredients.mediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.activeIngredients,
+                  content.activeIngredients.title || 'Active Ingredients',
+                  'from-[#EEF2F8] to-[#DDE3EE]'
+                )}
+              </div>
+            </div>
+
+            {/* Right Column: Ingredient List with Accent Line */}
+            <div className="relative">
+              {/* Vertical Accent Line */}
+              <div className="absolute left-[3px] top-4 bottom-4 w-px bg-gradient-to-b from-transparent via-[#050A5C]/15 to-transparent hidden md:block"></div>
+              
+              <div className="space-y-6 md:pl-8">
+                {content.activeIngredients.ingredients && content.activeIngredients.ingredients.map((item, idx) => (
+                  <div key={idx} className="relative">
+                    {/* Tick mark on accent line */}
+                    <div className="absolute -left-[30px] top-2.5 w-1.5 h-1.5 rounded-full bg-[#050A5C]/30 hidden md:block"></div>
+                    
+                    <div className="bg-slate-50/50 border border-slate-100 p-5 rounded-lg space-y-2">
+                      <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-1 mb-1">
+                        <h4 className="text-[15px] font-semibold text-[#050A5C] font-serif">{item.name}</h4>
+                        {item.subtitle && (
+                          <span className="text-[9px] font-bold text-yellow-600/80 uppercase tracking-widest">{item.subtitle}</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500 font-light leading-relaxed">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ─── INSIDE THE SET ────────────────────────────────────────────────────── */}
       <section className="py-20 md:py-28 px-6 border-b border-slate-100">
         <div className="max-w-6xl mx-auto space-y-12">
