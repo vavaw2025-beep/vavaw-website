@@ -60,13 +60,13 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
 
             const heroDesktopResolved = resolveMedia([
               cosmeticMedia['cosmetic-luminous-hero-desktop'],
-              content.heroMediaDesktop ? cosmeticMedia[content.heroMediaDesktop as keyof typeof cosmeticMedia] : undefined,
+              (content as any).heroMediaDesktop ? cosmeticMedia[(content as any).heroMediaDesktop as keyof typeof cosmeticMedia] : undefined,
               cosmeticMedia['cosmetic-product-luminous-set']
             ]);
 
             const heroMobileResolved = resolveMedia([
               cosmeticMedia['cosmetic-luminous-hero-mobile'],
-              content.heroMediaMobile ? cosmeticMedia[content.heroMediaMobile as keyof typeof cosmeticMedia] : undefined,
+              (content as any).heroMediaMobile ? cosmeticMedia[(content as any).heroMediaMobile as keyof typeof cosmeticMedia] : undefined,
               cosmeticMedia['cosmetic-product-luminous-set']
             ]);
 
