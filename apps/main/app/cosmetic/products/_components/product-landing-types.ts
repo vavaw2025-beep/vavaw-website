@@ -72,6 +72,16 @@ export interface ProductLandingContent {
       text?: string;
     }>;
   };
+  barrierScience?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    mediaSlot?: string;
+    mg3Eyebrow?: string;
+    mg3Title?: string;
+    mg3Description?: string;
+    mg3MediaSlot?: string;
+  };
   insideSet: ProductLandingInsideSetItem[];
   recoveryLogic: ProductLandingRecoveryStep[];
   activeTech: ProductLandingTechnology[];

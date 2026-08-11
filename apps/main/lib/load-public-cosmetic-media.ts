@@ -68,10 +68,16 @@ export interface CosmeticPageMedia {
   antiGravity?: string;
   /** Who Needs Sheer Set image for Luminous Set */
   whoNeeds?: string;
+  /** Skin Barrier Science image for Luminous Set */
+  barrierScience?: string;
+  /** MG3-Plus Technology image for Luminous Set */
+  mg3Plus?: string;
 }
 
 // Slot name → CosmeticPageMedia key mapping
 const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
+  'cosmetic-luminous-skin-barrier-image': 'barrierScience',
+  'cosmetic-luminous-mg3-plus-image': 'mg3Plus',
   'cosmetic-luminous-who-for-image': 'whoNeeds',
   'cosmetic-luminous-anti-gravity-image': 'antiGravity',
   'cosmetic-product-luminous-set':     'luminousSet',

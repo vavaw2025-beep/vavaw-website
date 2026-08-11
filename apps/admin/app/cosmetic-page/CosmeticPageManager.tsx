@@ -177,6 +177,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landWhoNeedsImageCaption, setLandWhoNeedsImageCaption] = useState('');
   const [landWhoNeedsItems, setLandWhoNeedsItems] = useState<any[]>([]);
 
+  // Skin Barrier & MG3-Plus states
+  const [landBarrierEyebrow, setLandBarrierEyebrow] = useState('');
+  const [landBarrierTitle, setLandBarrierTitle] = useState('');
+  const [landBarrierDescription, setLandBarrierDescription] = useState('');
+  const [landBarrierMediaSlot, setLandBarrierMediaSlot] = useState('');
+  const [landBarrierMg3Eyebrow, setLandBarrierMg3Eyebrow] = useState('');
+  const [landBarrierMg3Title, setLandBarrierMg3Title] = useState('');
+  const [landBarrierMg3Description, setLandBarrierMg3Description] = useState('');
+  const [landBarrierMg3MediaSlot, setLandBarrierMg3MediaSlot] = useState('');
+
   const [landInsideSet, setLandInsideSet] = useState<any[]>([]);
   const [landRecoverySteps, setLandRecoverySteps] = useState<any[]>([]);
   const [landTechnologies, setLandTechnologies] = useState<any[]>([]);
@@ -401,6 +411,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandWhoNeedsImageCaption(whoNeedsSet.imageCaption || '');
       setLandWhoNeedsItems(whoNeedsSet.items || []);
 
+      const barrierScience = content.barrierScience || {};
+      setLandBarrierEyebrow(barrierScience.eyebrow || '');
+      setLandBarrierTitle(barrierScience.title || '');
+      setLandBarrierDescription(barrierScience.description || '');
+      setLandBarrierMediaSlot(barrierScience.mediaSlot || 'cosmetic-luminous-skin-barrier-image');
+      setLandBarrierMg3Eyebrow(barrierScience.mg3Eyebrow || '');
+      setLandBarrierMg3Title(barrierScience.mg3Title || '');
+      setLandBarrierMg3Description(barrierScience.mg3Description || '');
+      setLandBarrierMg3MediaSlot(barrierScience.mg3MediaSlot || 'cosmetic-luminous-mg3-plus-image');
+
       setLandInsideSet(content.insideSet || content.setProducts || []);
       setLandRecoverySteps(content.recoverySteps || content.recoveryLogic || []);
       setLandTechnologies(content.technologies || content.activeTech || []);
@@ -588,6 +608,16 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             mediaSlot: landWhoNeedsMediaSlot,
             imageCaption: landWhoNeedsImageCaption,
             items: landWhoNeedsItems
+          };
+          updatedContent.barrierScience = {
+            eyebrow: landBarrierEyebrow,
+            title: landBarrierTitle,
+            description: landBarrierDescription,
+            mediaSlot: landBarrierMediaSlot,
+            mg3Eyebrow: landBarrierMg3Eyebrow,
+            mg3Title: landBarrierMg3Title,
+            mg3Description: landBarrierMg3Description,
+            mg3MediaSlot: landBarrierMg3MediaSlot
           };
         }
 
@@ -2467,6 +2497,59 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                 <Plus className="h-3.5 w-3.5" />
                                 Thêm mục checklist
                               </button>
+                            </div>
+                          </div>
+                        </div>
+                      </details>
+                    )}
+                    {/* 2.75. Skin Barrier & MG3-Plus (Only for Luminous Set) */}
+                    {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                      <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                        <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                          <span>2.75. Skin Barrier & MG3-Plus (Khoa học & Công nghệ)</span>
+                          <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                        </summary>
+                        <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
+                          
+                          {/* Skin Barrier */}
+                          <div className="col-span-2 md:col-span-1 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Skin Barrier</h4>
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                              <input type="text" value={landBarrierEyebrow} onChange={e => setLandBarrierEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
+                              <input type="text" value={landBarrierMediaSlot} onChange={e => setLandBarrierMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
+                              <input type="text" value={landBarrierTitle} onChange={e => setLandBarrierTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả (Description)</label>
+                              <textarea value={landBarrierDescription} onChange={e => setLandBarrierDescription(e.target.value)} rows={4} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            </div>
+                          </div>
+
+                          {/* MG3-Plus */}
+                          <div className="col-span-2 md:col-span-1 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">MG3-Plus Method</h4>
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                              <input type="text" value={landBarrierMg3Eyebrow} onChange={e => setLandBarrierMg3Eyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
+                              <input type="text" value={landBarrierMg3MediaSlot} onChange={e => setLandBarrierMg3MediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
+                              <input type="text" value={landBarrierMg3Title} onChange={e => setLandBarrierMg3Title(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả (Description)</label>
+                              <textarea value={landBarrierMg3Description} onChange={e => setLandBarrierMg3Description(e.target.value)} rows={4} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
                             </div>
                           </div>
                         </div>

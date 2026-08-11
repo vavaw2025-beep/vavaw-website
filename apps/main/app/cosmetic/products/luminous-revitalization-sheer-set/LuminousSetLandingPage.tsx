@@ -211,6 +211,74 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         </section>
       )}
 
+      {/* ─── SKIN BARRIER & MG3-PLUS TECHNOLOGY ───────────────────────────────── */}
+      {content.barrierScience && (
+        <section className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100">
+          <div className="max-w-[1200px] mx-auto lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            {/* Left Card: Skin Barrier Science */}
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col">
+              <div className="p-8 md:p-10 space-y-4 flex-1">
+                {content.barrierScience.eyebrow && (
+                  <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block">
+                    {content.barrierScience.eyebrow}
+                  </span>
+                )}
+                {content.barrierScience.title && (
+                  <h3 className="text-xl md:text-2xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                    {content.barrierScience.title}
+                  </h3>
+                )}
+                {content.barrierScience.description && (
+                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                    {content.barrierScience.description}
+                  </p>
+                )}
+              </div>
+              <div className="relative aspect-[4/3] bg-slate-50 border-t border-slate-100 p-6 flex items-center justify-center">
+                {renderSlotImage(
+                  cosmeticMedia[content.barrierScience.mediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.barrierScience,
+                  content.barrierScience.title || 'Skin Barrier Science',
+                  'from-[#EEF2F8] to-[#DDE3EE]'
+                )}
+              </div>
+            </div>
+
+            {/* Right Card: MG3-Plus Method */}
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col">
+              <div className="p-8 md:p-10 space-y-4 flex-1">
+                {content.barrierScience.mg3Eyebrow && (
+                  <div className="inline-flex items-center gap-2">
+                    <span className="text-[10px] md:text-[11px] font-bold text-[#050A5C] tracking-[0.2em] uppercase block">
+                      {content.barrierScience.mg3Eyebrow}
+                    </span>
+                    <span className="bg-yellow-100 text-yellow-800 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      Exclusive
+                    </span>
+                  </div>
+                )}
+                {content.barrierScience.mg3Title && (
+                  <h3 className="text-xl md:text-2xl font-light text-[#050A5C] tracking-tight font-serif leading-tight">
+                    {content.barrierScience.mg3Title}
+                  </h3>
+                )}
+                {content.barrierScience.mg3Description && (
+                  <p className="text-slate-500 font-light text-sm leading-relaxed whitespace-pre-wrap pt-2">
+                    {content.barrierScience.mg3Description}
+                  </p>
+                )}
+              </div>
+              <div className="relative aspect-[4/3] bg-slate-50 border-t border-slate-100 p-6 flex items-center justify-center">
+                {renderSlotImage(
+                  cosmeticMedia[content.barrierScience.mg3MediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.mg3Plus,
+                  content.barrierScience.mg3Title || 'MG3-Plus Method',
+                  'from-[#EEF2F8] to-[#DDE3EE]'
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ─── INSIDE THE SET ────────────────────────────────────────────────────── */}
       <section className="py-20 md:py-28 px-6 border-b border-slate-100">
         <div className="max-w-6xl mx-auto space-y-12">

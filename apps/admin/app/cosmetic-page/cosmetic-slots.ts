@@ -71,6 +71,16 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     label: 'Luminous Set — Who It\'s For Image',
     aliases: ['who-for', 'who-needs', 'who-needs-set'],
   },
+  {
+    value: 'cosmetic-luminous-skin-barrier-image',
+    label: 'Luminous Set — Skin Barrier Diagram',
+    aliases: ['skin-barrier', 'barrier-diagram', 'skin-barrier-science'],
+  },
+  {
+    value: 'cosmetic-luminous-mg3-plus-image',
+    label: 'Luminous Set — MG3-Plus Technology Diagram',
+    aliases: ['mg3-plus', 'mg3-technology', 'mg3-diagram'],
+  },
 ];
 
 /** Canonical video slot definitions for Clinical Formula Lab product videos */
