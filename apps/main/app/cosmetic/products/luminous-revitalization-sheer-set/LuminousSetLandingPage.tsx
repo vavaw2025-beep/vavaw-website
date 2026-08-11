@@ -69,33 +69,38 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
           return null;
         };
 
-        const heroDesktopSlot = content.heroDesktopMediaSlot || content.heroMediaDesktop || "cosmetic-luminous-hero-desktop";
-        const heroMobileSlot = content.heroMobileMediaSlot || content.heroMediaMobile || "cosmetic-luminous-hero-mobile";
-        const fallbackHeroSlot = "cosmetic-product-luminous-set";
-
-        const heroDesktopResolved = 
+        const desktopHeroUrl =
+          getMediaUrl(cosmeticMedia["cosmetic-luminous-hero-desktop"]) ||
           getMediaUrl((cosmeticMedia as any).luminousHeroDesktop) ||
+          getMediaUrl(cosmeticMedia[content.heroDesktopMediaSlot || ""]) ||
+          getMediaUrl(cosmeticMedia[content.heroMediaDesktop || ""]) ||
+          getMediaUrl(cosmeticMedia["cosmetic-product-luminous-set"]) ||
           getMediaUrl((cosmeticMedia as any).luminousSet);
 
-        const heroMobileResolved = 
+        const mobileHeroUrl =
+          getMediaUrl(cosmeticMedia["cosmetic-luminous-hero-mobile"]) ||
           getMediaUrl((cosmeticMedia as any).luminousHeroMobile) ||
-          heroDesktopResolved ||
+          getMediaUrl(cosmeticMedia[content.heroMobileMediaSlot || ""]) ||
+          getMediaUrl(cosmeticMedia[content.heroMediaMobile || ""]) ||
+          desktopHeroUrl ||
+          getMediaUrl(cosmeticMedia["cosmetic-product-luminous-set"]) ||
           getMediaUrl((cosmeticMedia as any).luminousSet);
 
-        const heroUrl = heroDesktopResolved || heroMobileResolved;
+        const heroUrl = desktopHeroUrl || mobileHeroUrl;
 
         return (
           <section 
             className="relative w-full overflow-hidden bg-[#050A5C] text-white"
             data-hero-has-url={heroUrl ? "true" : "false"}
-            data-hero-desktop-url={heroDesktopResolved || ""}
-            data-hero-mobile-url={heroMobileResolved || ""}
+            data-hero-desktop-url={desktopHeroUrl || ""}
+            data-hero-mobile-url={mobileHeroUrl || ""}
+            data-hero-media-keys={Object.keys(cosmeticMedia || {}).join(",")}
           >
             <div className="relative min-h-[760px] md:min-h-[860px]">
               {heroUrl ? (
                 <picture className="absolute inset-0 z-0 block h-full w-full">
-                  {heroMobileResolved && (
-                    <source media="(max-width: 767px)" srcSet={heroMobileResolved} />
+                  {mobileHeroUrl && (
+                    <source media="(max-width: 767px)" srcSet={mobileHeroUrl} />
                   )}
                   <img
                     src={heroUrl}
@@ -164,9 +169,9 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                   
                   {/* Mobile Explicit Image */}
                   <div className="relative z-20 mt-8 block lg:hidden">
-                    {heroMobileResolved || heroDesktopResolved ? (
+                    {mobileHeroUrl || desktopHeroUrl ? (
                       <img
-                        src={(heroMobileResolved || heroDesktopResolved) as string}
+                        src={(mobileHeroUrl || desktopHeroUrl) as string}
                         alt={content.title || "Luminous Revitalization Sheer Set"}
                         className="w-full rounded-none object-cover shadow-2xl border border-white/10"
                         loading="eager"

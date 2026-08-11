@@ -84,6 +84,8 @@ export interface CosmeticPageMedia {
   usageInstruction?: string;
   /** Offline Experience image for Luminous Set */
   offlineExperience?: string;
+  /** Allow raw DB slot keys */
+  [key: string]: string | undefined;
 }
 
 const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
@@ -185,6 +187,8 @@ export async function loadPublicCosmeticMedia(
 
       if (isValidUrl(asset.url)) {
         result[key] = asset.url;
+        // Expose raw slot key as well for bulletproof lookup
+        result[slot] = asset.url;
       }
     }
 
