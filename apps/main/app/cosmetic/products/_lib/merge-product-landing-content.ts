@@ -103,6 +103,14 @@ export function mergeProductLandingContent(
     ctaHref: finalCtaRaw.ctaHref || block.finalCtaHref || fallback.finalCta.ctaHref,
   };
 
+  // Luminous Set custom blocks
+  const antiGravity = block.antiGravity || fallback.antiGravity;
+  const whoNeedsSet = block.whoNeedsSet || fallback.whoNeedsSet;
+  const barrierScience = block.barrierScience || fallback.barrierScience;
+  const activeIngredients = block.activeIngredients || fallback.activeIngredients;
+  const usageGuide = block.usageGuide || fallback.usageGuide;
+  const productDetailForm = block.productDetailForm || fallback.productDetailForm;
+
   return {
     eyebrow,
     title,
@@ -120,6 +128,12 @@ export function mergeProductLandingContent(
     howToUse,
     spaBridge,
     productInfo,
-    finalCta
+    finalCta,
+    antiGravity,
+    whoNeedsSet,
+    barrierScience,
+    activeIngredients,
+    usageGuide,
+    productDetailForm
   };
 }
