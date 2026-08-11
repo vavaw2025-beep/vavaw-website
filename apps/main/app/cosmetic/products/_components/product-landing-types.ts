@@ -49,6 +49,29 @@ export interface ProductLandingContent {
   secondaryCtaHref: string;
   heroMediaSlot: string;
   
+  antiGravity?: {
+    eyebrow?: string;
+    title?: string;
+    headline?: string;
+    description?: string;
+    mediaSlot?: string;
+    callouts?: Array<{
+      label?: string;
+      value?: string;
+      description?: string;
+    }>;
+  };
+  whoNeedsSet?: {
+    eyebrow?: string;
+    title?: string;
+    note?: string;
+    description?: string;
+    mediaSlot?: string;
+    imageCaption?: string;
+    items?: Array<{
+      text?: string;
+    }>;
+  };
   insideSet: ProductLandingInsideSetItem[];
   recoveryLogic: ProductLandingRecoveryStep[];
   activeTech: ProductLandingTechnology[];

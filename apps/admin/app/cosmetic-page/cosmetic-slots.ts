@@ -61,6 +61,16 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     label: 'Ảnh chi tiết REGENAGLOW NOURISH SHEER CREAM trong set',
     aliases: ['regenaglow-sheer-cream', 'regenaglow-set-cream'],
   },
+  {
+    value: 'cosmetic-luminous-anti-gravity-image',
+    label: 'Luminous Set — Anti-Gravity Technology Image',
+    aliases: ['anti-gravity', 'anti-gravity-image', 'anti-gravity-technology'],
+  },
+  {
+    value: 'cosmetic-luminous-who-for-image',
+    label: 'Luminous Set — Who It\'s For Image',
+    aliases: ['who-for', 'who-needs', 'who-needs-set'],
+  },
 ];
 
 /** Canonical video slot definitions for Clinical Formula Lab product videos */

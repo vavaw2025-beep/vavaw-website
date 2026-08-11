@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { draftMode } from 'next/headers';
 import { loadPublicCosmeticMedia } from '@/lib/load-public-cosmetic-media';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
-import { ProductLandingPage } from '../_components/ProductLandingPage';
+import { LuminousSetLandingPage } from './LuminousSetLandingPage';
 import { mergeProductLandingContent } from '../_lib/merge-product-landing-content';
 import { ProductLandingContent } from '../_components/product-landing-types';
 
@@ -17,6 +17,34 @@ const DEFAULT_CONTENT: ProductLandingContent = {
   secondaryCtaLabel: 'Trải nghiệm tại VAVAW Beauty & Co',
   secondaryCtaHref: '/go/beauty',
   heroMediaSlot: 'cosmetic-product-luminous-set',
+  antiGravity: {
+    eyebrow: 'ANTI-GRAVITY SOLUTION',
+    title: 'Tập trung chăm sóc hàng rào bảo vệ da',
+    headline: 'Công nghệ phục hồi giúp hỗ trợ làn da ổn định, ẩm mượt và rạng rỡ hơn.',
+    description: 'Luminous Revitalization Sheer Set kết hợp các hoạt chất chăm sóc chuyên sâu nhằm hỗ trợ hàng rào bảo vệ da, bổ sung độ ẩm và giúp làn da trông mềm mại, mịn màng hơn sau routine phục hồi.',
+    mediaSlot: 'cosmetic-luminous-anti-gravity-image',
+    callouts: [
+      { label: 'Collagen Support', value: '830,000ppm', description: 'Hỗ trợ cảm giác săn mịn và giúp da trông mềm mại hơn.' },
+      { label: 'Exosome', value: '10,000ppm', description: 'Hỗ trợ vẻ ngoài rạng rỡ và bề mặt da trông mịn màng hơn.' },
+      { label: 'Peptide Complex', value: 'Barrier Support', description: 'Hỗ trợ hàng rào bảo vệ và độ đàn hồi bề mặt da.' },
+      { label: 'Berry Complex Extract', value: 'Antioxidant Care', description: 'Hỗ trợ chăm sóc làn da trước các tác động môi trường hằng ngày.' }
+    ]
+  },
+  whoNeedsSet: {
+    eyebrow: 'WHO NEEDS SHEER SET',
+    title: 'Sheer Set dành cho làn da cần phục hồi chuyên sâu',
+    note: 'Hiệu quả cảm nhận có thể khác nhau tùy tình trạng da và cách sử dụng của từng người.',
+    description: 'Luminous Revitalization Sheer Set phù hợp với làn da cần routine phục hồi tại nhà sau chăm sóc chuyên sâu, giúp hỗ trợ cảm giác ẩm mượt, mềm mại và rạng rỡ hơn.',
+    mediaSlot: 'cosmetic-luminous-who-for-image',
+    imageCaption: 'Chăm sóc tại nhà tiện lợi hơn',
+    items: [
+      { text: 'Da bị kích ứng sau peel hoặc các liệu trình thẩm mỹ.' },
+      { text: 'Da cần được bổ sung dưỡng chất và độ ẩm chuyên sâu.' },
+      { text: 'Da khô ráp, sần sùi hoặc thiếu sức sống.' },
+      { text: 'Da cần routine chăm sóc tập trung cho dấu hiệu lão hóa.' },
+      { text: 'Người muốn duy trì chăm sóc phục hồi tại nhà một cách tiện lợi.' }
+    ]
+  },
   insideSet: [
     {
       name: 'CELLUREVIVE Ampoule',
@@ -120,7 +148,7 @@ export default async function LuminousProductLandingPage() {
   const mergedContent = mergeProductLandingContent(DEFAULT_CONTENT, cmsBlock);
 
   return (
-    <ProductLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} canonicalPath="/cosmetic/products/luminous-revitalization-sheer-set" />
+    <LuminousSetLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} canonicalPath="/cosmetic/products/luminous-revitalization-sheer-set" />
   );
 }
 

@@ -64,10 +64,16 @@ export interface CosmeticPageMedia {
   videoP30Toner?: string;
   /** Video: Lumiglow Rosy Sheer Sunscreen */
   videoLumiglowSunscreen?: string;
+  /** Anti-Gravity Technology image for Luminous Set */
+  antiGravity?: string;
+  /** Who Needs Sheer Set image for Luminous Set */
+  whoNeeds?: string;
 }
 
 // Slot name → CosmeticPageMedia key mapping
 const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
+  'cosmetic-luminous-who-for-image': 'whoNeeds',
+  'cosmetic-luminous-anti-gravity-image': 'antiGravity',
   'cosmetic-product-luminous-set':     'luminousSet',
   'cosmetic-product-regenaglow-cream': 'regenaglow',
   'cosmetic-product-calmiance-gel':    'calmiance',

@@ -159,6 +159,24 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landHeroMediaSlot, setLandHeroMediaSlot] = useState('');
   const [landSecondaryCtaLabel, setLandSecondaryCtaLabel] = useState('');
   const [landSecondaryCtaHref, setLandSecondaryCtaHref] = useState('');
+  
+  // Anti-Gravity Solution states
+  const [landAntiGravityEyebrow, setLandAntiGravityEyebrow] = useState('');
+  const [landAntiGravityTitle, setLandAntiGravityTitle] = useState('');
+  const [landAntiGravityHeadline, setLandAntiGravityHeadline] = useState('');
+  const [landAntiGravityDescription, setLandAntiGravityDescription] = useState('');
+  const [landAntiGravityMediaSlot, setLandAntiGravityMediaSlot] = useState('');
+  const [landAntiGravityCallouts, setLandAntiGravityCallouts] = useState<any[]>([]);
+
+  // Who Needs Sheer Set states
+  const [landWhoNeedsEyebrow, setLandWhoNeedsEyebrow] = useState('');
+  const [landWhoNeedsTitle, setLandWhoNeedsTitle] = useState('');
+  const [landWhoNeedsNote, setLandWhoNeedsNote] = useState('');
+  const [landWhoNeedsDescription, setLandWhoNeedsDescription] = useState('');
+  const [landWhoNeedsMediaSlot, setLandWhoNeedsMediaSlot] = useState('');
+  const [landWhoNeedsImageCaption, setLandWhoNeedsImageCaption] = useState('');
+  const [landWhoNeedsItems, setLandWhoNeedsItems] = useState<any[]>([]);
+
   const [landInsideSet, setLandInsideSet] = useState<any[]>([]);
   const [landRecoverySteps, setLandRecoverySteps] = useState<any[]>([]);
   const [landTechnologies, setLandTechnologies] = useState<any[]>([]);
@@ -365,6 +383,24 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandHeroMediaSlot(content.heroMediaSlot || 'cosmetic-product-luminous-set');
       setLandSecondaryCtaLabel(content.secondaryCtaLabel || '');
       setLandSecondaryCtaHref(content.secondaryCtaHref || '');
+      
+      const antiGravity = content.antiGravity || {};
+      setLandAntiGravityEyebrow(antiGravity.eyebrow || '');
+      setLandAntiGravityTitle(antiGravity.title || '');
+      setLandAntiGravityHeadline(antiGravity.headline || '');
+      setLandAntiGravityDescription(antiGravity.description || '');
+      setLandAntiGravityMediaSlot(antiGravity.mediaSlot || 'cosmetic-luminous-anti-gravity-image');
+      setLandAntiGravityCallouts(antiGravity.callouts || []);
+
+      const whoNeedsSet = content.whoNeedsSet || {};
+      setLandWhoNeedsEyebrow(whoNeedsSet.eyebrow || '');
+      setLandWhoNeedsTitle(whoNeedsSet.title || '');
+      setLandWhoNeedsNote(whoNeedsSet.note || '');
+      setLandWhoNeedsDescription(whoNeedsSet.description || '');
+      setLandWhoNeedsMediaSlot(whoNeedsSet.mediaSlot || 'cosmetic-luminous-who-for-image');
+      setLandWhoNeedsImageCaption(whoNeedsSet.imageCaption || '');
+      setLandWhoNeedsItems(whoNeedsSet.items || []);
+
       setLandInsideSet(content.insideSet || content.setProducts || []);
       setLandRecoverySteps(content.recoverySteps || content.recoveryLogic || []);
       setLandTechnologies(content.technologies || content.activeTech || []);
@@ -533,6 +569,28 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         updatedContent.heroMediaSlot = landHeroMediaSlot;
         updatedContent.secondaryCtaLabel = landSecondaryCtaLabel;
         updatedContent.secondaryCtaHref = landSecondaryCtaHref;
+        
+        // Only include antiGravity if it's the Luminous Set landing block
+        if (editingBlock.block_type === 'cosmetic-product-landing-luminous-set') {
+          updatedContent.antiGravity = {
+            eyebrow: landAntiGravityEyebrow,
+            title: landAntiGravityTitle,
+            headline: landAntiGravityHeadline,
+            description: landAntiGravityDescription,
+            mediaSlot: landAntiGravityMediaSlot,
+            callouts: landAntiGravityCallouts
+          };
+          updatedContent.whoNeedsSet = {
+            eyebrow: landWhoNeedsEyebrow,
+            title: landWhoNeedsTitle,
+            note: landWhoNeedsNote,
+            description: landWhoNeedsDescription,
+            mediaSlot: landWhoNeedsMediaSlot,
+            imageCaption: landWhoNeedsImageCaption,
+            items: landWhoNeedsItems
+          };
+        }
+
         updatedContent.insideSet = landInsideSet;
         updatedContent.recoverySteps = landRecoverySteps;
         updatedContent.technologies = landTechnologies;
@@ -2252,7 +2310,66 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                       </div>
                     </details>
 
-                    {/* 2. Inside The Set Details */}
+                    {/* 1.5. Anti-Gravity Solution Details (Only for Luminous Set) */}
+                    {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                      <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                        <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                          <span>1.5. Anti-Gravity Solution (Phục hồi cấu trúc da)</span>
+                          <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                        </summary>
+                        <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                            <input type="text" value={landAntiGravityEyebrow} onChange={e => setLandAntiGravityEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
+                            <input type="text" value={landAntiGravityMediaSlot} onChange={e => setLandAntiGravityMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-500 font-mono" />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề chính (Title)</label>
+                            <input type="text" value={landAntiGravityTitle} onChange={e => setLandAntiGravityTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả phụ (Headline)</label>
+                            <input type="text" value={landAntiGravityHeadline} onChange={e => setLandAntiGravityHeadline(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đoạn văn giới thiệu (Description)</label>
+                            <textarea value={landAntiGravityDescription} onChange={e => setLandAntiGravityDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          </div>
+                          
+                          <div className="col-span-2 mt-2 pt-2 border-t border-slate-100">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Các thông số nổi bật (Callouts)</label>
+                            <div className="space-y-3">
+                              {landAntiGravityCallouts.map((callout: any, idx: number) => (
+                                <div key={idx} className="p-2 border border-slate-200 rounded-lg bg-slate-50 grid grid-cols-2 gap-2 relative">
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Nhãn (Label)</label>
+                                    <input type="text" value={callout.label || ''} onChange={e => { const l = [...landAntiGravityCallouts]; l[idx] = { ...l[idx], label: e.target.value }; setLandAntiGravityCallouts(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Giá trị (Value)</label>
+                                    <input type="text" value={callout.value || ''} onChange={e => { const l = [...landAntiGravityCallouts]; l[idx] = { ...l[idx], value: e.target.value }; setLandAntiGravityCallouts(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-bold text-[#050A5C]" />
+                                  </div>
+                                  <div className="col-span-2">
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Mô tả (Description)</label>
+                                    <input type="text" value={callout.description || ''} onChange={e => { const l = [...landAntiGravityCallouts]; l[idx] = { ...l[idx], description: e.target.value }; setLandAntiGravityCallouts(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                  </div>
+                                  <button type="button" onClick={() => setLandAntiGravityCallouts(landAntiGravityCallouts.filter((_, i) => i !== idx))} className="absolute top-2 right-2 text-slate-400 hover:text-red-600">
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setLandAntiGravityCallouts([...landAntiGravityCallouts, { label: '', value: '', description: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-3.5 w-3.5" />
+                                Thêm Callout
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </details>
+                    )}
                     <details className="group border border-slate-200 rounded-xl overflow-hidden">
                       <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
                         <span>2. Inside The Set (Thành phần trong bộ)</span>
@@ -2299,6 +2416,62 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         </button>
                       </div>
                     </details>
+                    {/* 2.5. Who Needs Sheer Set Details (Only for Luminous Set) */}
+                    {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                      <details className="group border border-slate-200 rounded-xl overflow-hidden">
+                        <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
+                          <span>2.5. Who Needs Sheer Set (Đối tượng sử dụng)</span>
+                          <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                        </summary>
+                        <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                            <input type="text" value={landWhoNeedsEyebrow} onChange={e => setLandWhoNeedsEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
+                            <input type="text" value={landWhoNeedsMediaSlot} onChange={e => setLandWhoNeedsMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-500 font-mono" />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề chính (Title)</label>
+                            <input type="text" value={landWhoNeedsTitle} onChange={e => setLandWhoNeedsTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ghi chú (Note)</label>
+                            <input type="text" value={landWhoNeedsNote} onChange={e => setLandWhoNeedsNote(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white italic" />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đoạn văn mô tả (Description)</label>
+                            <textarea value={landWhoNeedsDescription} onChange={e => setLandWhoNeedsDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ghi chú trên ảnh (Image Caption)</label>
+                            <input type="text" value={landWhoNeedsImageCaption} onChange={e => setLandWhoNeedsImageCaption(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          </div>
+                          
+                          <div className="col-span-2 mt-2 pt-2 border-t border-slate-100">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Checklist (Items)</label>
+                            <div className="space-y-3">
+                              {landWhoNeedsItems.map((item: any, idx: number) => (
+                                <div key={idx} className="p-2 border border-slate-200 rounded-lg bg-slate-50 flex items-start gap-2 relative">
+                                  <div className="flex-1">
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Nội dung</label>
+                                    <input type="text" value={item.text || ''} onChange={e => { const l = [...landWhoNeedsItems]; l[idx] = { ...l[idx], text: e.target.value }; setLandWhoNeedsItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                  </div>
+                                  <button type="button" onClick={() => setLandWhoNeedsItems(landWhoNeedsItems.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-4">
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setLandWhoNeedsItems([...landWhoNeedsItems, { text: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-3.5 w-3.5" />
+                                Thêm mục checklist
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </details>
+                    )}
 
                     {/* 3. Recovery Logic Details */}
                     <details className="group border border-slate-200 rounded-xl overflow-hidden">
