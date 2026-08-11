@@ -51,10 +51,27 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         {/* Background Visual */}
         <div className="absolute inset-0 z-0">
           {(() => {
-            const resolveMedia = (candidates: (string | undefined)[]) => {
-              for (const c of candidates) {
-                if (c && c.trim() !== '' && !c.includes('/PASTE')) return c.trim();
+            const getMediaUrl = (media: unknown): string | null => {
+              if (!media) return null;
+
+              if (typeof media === 'string') {
+                if (!media || media.includes('/PASTE')) return null;
+                return media.trim();
               }
+
+              if (typeof media === 'object') {
+                const candidate =
+                  (media as any).url ||
+                  (media as any).publicUrl ||
+                  (media as any).public_url ||
+                  (media as any).src ||
+                  null;
+
+                if (!candidate || typeof candidate !== 'string') return null;
+                if (candidate.includes('/PASTE')) return null;
+                return candidate.trim();
+              }
+
               return null;
             };
 
@@ -62,46 +79,44 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
             const heroMobileSlot = content.heroMobileMediaSlot || content.heroMediaMobile || "cosmetic-luminous-hero-mobile";
             const fallbackHeroSlot = content.heroMediaSlot || "cosmetic-product-luminous-set";
 
-            const heroDesktopResolved = resolveMedia([
-              cosmeticMedia[heroDesktopSlot as keyof typeof cosmeticMedia],
-              cosmeticMedia['cosmetic-luminous-hero-desktop'],
-              cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia],
-              cosmeticMedia['cosmetic-product-luminous-set']
-            ]);
+            const heroDesktopResolved = 
+              getMediaUrl(cosmeticMedia[heroDesktopSlot as keyof typeof cosmeticMedia]) ||
+              getMediaUrl(cosmeticMedia['cosmetic-luminous-hero-desktop']) ||
+              getMediaUrl(cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia]) ||
+              getMediaUrl(cosmeticMedia['cosmetic-product-luminous-set']);
 
-            const heroMobileResolved = resolveMedia([
-              cosmeticMedia[heroMobileSlot as keyof typeof cosmeticMedia],
-              cosmeticMedia['cosmetic-luminous-hero-mobile'],
-              cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia],
-              cosmeticMedia['cosmetic-product-luminous-set']
-            ]);
+            const heroMobileResolved = 
+              getMediaUrl(cosmeticMedia[heroMobileSlot as keyof typeof cosmeticMedia]) ||
+              getMediaUrl(cosmeticMedia['cosmetic-luminous-hero-mobile']) ||
+              getMediaUrl(cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia]) ||
+              getMediaUrl(cosmeticMedia['cosmetic-product-luminous-set']);
 
             if (heroDesktopResolved || heroMobileResolved) {
               return (
-                <picture>
+                <picture className="absolute inset-0 z-0 block h-full w-full">
                   {heroMobileResolved && (
                     <source media="(max-width: 767px)" srcSet={heroMobileResolved} />
                   )}
-                  {heroDesktopResolved && (
-                    <img 
-                      src={heroDesktopResolved} 
-                      alt={content.title}
-                      className="w-full h-full object-cover object-center"
-                      loading="eager"
-                    />
-                  )}
+                  <img 
+                    src={heroDesktopResolved || heroMobileResolved!} 
+                    alt={content.title || "Luminous Revitalization Sheer Set"}
+                    className="h-full w-full object-cover object-center"
+                    loading="eager"
+                  />
                 </picture>
               );
             }
 
             return (
-              <div className="w-full h-full bg-gradient-to-br from-[#050A5C] to-[#101A8C] flex items-center justify-center relative">
+              <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#050A5C] via-[#050A5C]/80 to-[#101A8C]">
                 <div className="absolute inset-4 border border-white/10" />
-                <span className="text-xs text-white/30 tracking-widest font-mono uppercase">VAVAW CAMPAIGN</span>
+                <div className="flex h-full items-center justify-center">
+                  <span className="text-xs text-white/30 tracking-widest font-mono uppercase">VAVAW CAMPAIGN</span>
+                </div>
               </div>
             );
           })()}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050A5C] via-[#050A5C]/40 to-transparent" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050A5C] via-[#050A5C]/40 to-transparent" />
         </div>
 
         <div className="relative z-10 w-full max-w-[1200px] mx-auto px-5 lg:px-8 pb-16 md:pb-24">
