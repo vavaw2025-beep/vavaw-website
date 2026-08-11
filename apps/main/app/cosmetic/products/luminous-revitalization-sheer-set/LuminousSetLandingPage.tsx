@@ -167,8 +167,12 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       })()}
       {/* ─── ANTI-GRAVITY SOLUTION ───────────────────────────────────────────── */}
       {(() => {
+        const showHeadline = content.antiGravity?.showHeadline !== false;
+        const showDescription = content.antiGravity?.showDescription !== false;
+        const firstCalloutY = (showHeadline && showDescription) ? 48 : 42;
+
         const defaultCallouts = [
-          { label: 'Collagen Water', value: 'Hỗ trợ cấp ẩm', x: 18, y: 42, align: 'left' },
+          { label: 'Collagen Water', value: 'Hỗ trợ cấp ẩm', x: 18, y: firstCalloutY, align: 'left' },
           { label: 'Exosome', value: 'Hỗ trợ chăm sóc sau treatment', x: 14, y: 60, align: 'left' },
           { label: 'Peptide Complex', value: 'Hỗ trợ hàng rào bảo vệ', x: 22, y: 76, align: 'left' },
           { label: 'Complex Berry Extracts', value: 'Hỗ trợ vẻ rạng rỡ', x: 58, y: 76, align: 'center' },
@@ -183,7 +187,9 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
           caption: content.antiGravity?.caption || 'Focused recovery care for barrier, hydration and radiance.',
           callouts: Array.isArray(content.antiGravity?.callouts) && content.antiGravity.callouts.length > 0 
             ? content.antiGravity.callouts 
-            : defaultCallouts
+            : defaultCallouts,
+          showHeadline,
+          showDescription
         };
 
         const agImageUrl =
@@ -215,7 +221,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#050A5C]/[0.06] via-transparent to-transparent" />
 
                 {/* Top-left text band — navy translucent like Korean reference */}
-                <div className="absolute left-0 top-0 z-20 w-full md:w-[54%] bg-[#050A5C]/[0.72] backdrop-blur-sm px-6 py-6 lg:px-12 lg:py-10">
+                <div className={`absolute left-0 top-0 z-20 w-full md:w-[54%] bg-[#050A5C]/[0.72] backdrop-blur-sm px-6 lg:px-12 ${(!antiGravity.showHeadline && !antiGravity.showDescription) ? 'py-4 lg:py-6' : 'py-6 lg:py-10'}`}>
                   <div className="space-y-3">
                     <span className="cosmetic-kicker text-white/60 block">
                       {antiGravity.eyebrow}
@@ -223,19 +229,23 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                     <h2 className="cosmetic-heading font-semibold text-2xl md:text-4xl lg:text-5xl text-white leading-[1.08]">
                       {antiGravity.title}
                     </h2>
-                    <p className="cosmetic-subheading text-[11px] md:text-sm text-white/75">
-                      {antiGravity.headline}
-                    </p>
-                    <p className="cosmetic-body text-[10px] md:text-xs text-white/55 max-w-[480px]">
-                      {antiGravity.description}
-                    </p>
+                    {antiGravity.showHeadline && (
+                      <p className="cosmetic-subheading text-[11px] md:text-sm text-white/75">
+                        {antiGravity.headline}
+                      </p>
+                    )}
+                    {antiGravity.showDescription && (
+                      <p className="cosmetic-body text-[10px] md:text-xs text-white/55 max-w-[480px]">
+                        {antiGravity.description}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 {/* Desktop Callouts — positioned over image */}
                 {antiGravity.callouts.map((callout: any, idx: number) => {
                   const cx = callout.x ?? [18, 14, 22, 58][idx % 4];
-                  const cy = callout.y ?? [42, 60, 76, 76][idx % 4];
+                  const cy = callout.y ?? [firstCalloutY, 60, 76, 76][idx % 4];
                   return (
                     <div
                       key={idx}

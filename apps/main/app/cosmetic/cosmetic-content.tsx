@@ -622,7 +622,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
             </span>
           </motion.div>
 
-          <motion.h1 variants={heroFadeUp} className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-[#050A5C] mb-6 drop-shadow-sm">
+          <motion.h1 variants={heroFadeUp} className="text-5xl sm:text-6xl md:text-7xl text-[#050A5C] mb-6 drop-shadow-sm cosmetic-heading">
             VAVAW Cosmetic
           </motion.h1>
 
@@ -670,7 +670,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
             </motion.div>
             <motion.h2
               variants={fadeUp}
-              className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-[#050A5C] mb-4 leading-tight"
+              className="text-3xl md:text-4xl lg:text-5xl text-[#050A5C] mb-4 leading-tight cosmetic-heading-soft"
             >
               {brandPhilosophy.title}
             </motion.h2>
@@ -829,7 +829,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
                   <motion.h2
                     variants={fadeUp}
-                    className="cosmetic-heading font-light leading-[1.08] text-[#050A5C] mb-8"
+                    className="cosmetic-heading leading-[1.08] text-[#050A5C] mb-8"
                     style={{
                       fontSize: 'clamp(3rem, 8vw, 6rem)',
                       letterSpacing: '-0.02em',
@@ -976,7 +976,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                             {/* Step number */}
                             <div className="flex items-end justify-between mb-3">
                               <span
-                                className="cosmetic-heading font-light leading-tight select-none transition-opacity duration-300"
+                                className="cosmetic-heading leading-tight select-none transition-opacity duration-300"
                                 style={{
                                   fontSize: 'clamp(3rem, 5vw, 5rem)',
                                   lineHeight: 1,
@@ -1075,7 +1075,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                       {/* Left — Step + Role */}
                       <div className="col-span-2 flex flex-col justify-center border-r border-[#E8EDF6] pr-8">
                         <span
-                          className="cosmetic-heading font-light leading-tight text-[#050A5C]/12 select-none block mb-2"
+                          className="cosmetic-heading leading-tight text-[#050A5C]/12 select-none block mb-2"
                           style={{ fontSize: 'clamp(3rem, 4vw, 4.5rem)', lineHeight: 1 }}
                           aria-hidden="true"
                         >
@@ -1204,7 +1204,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                             {/* Text */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-0.5">
-                                <span className="cosmetic-heading font-light text-[#050A5C]/15 text-xl leading-tight">{station._step}</span>
+                                <span className="cosmetic-heading text-[#050A5C]/15 text-xl leading-tight">{station._step}</span>
                                 <span className="text-[8px] tracking-[0.26em] uppercase text-[#050A5C]/45 font-semibold">{station._role}</span>
                                 {station._isCore && (
                                   <span className="text-[6px] tracking-[0.2em] uppercase text-white bg-[#050A5C]/70 px-1 py-0.5">CORE</span>
@@ -1380,7 +1380,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                 id: 'regenaglow-sheer-cream',
                 name: regenaglowLegacy.name || 'REGENAGLOW NOURISH SHEER CREAM',
                 size: regenaglowLegacy.size || '30ml × 1ea',
-                role: regenaglowLegacy.role || 'Kem dưỡng phục hồi',
+                role: 'Kem dưỡng phục hồi',
                 description: regenaglowLegacy.description || regenaglowLegacy.desc || 'Giúp khóa ẩm, làm mềm da và củng cố hàng rào bảo vệ để duy trì làn da ổn định hơn.',
                 detailTitle: "Kem dưỡng khóa ẩm và phục hồi hàng rào da",
                 detailDescription: "Kem dưỡng trong bộ Luminous Set giúp hoàn thiện routine phục hồi bằng cách khóa ẩm, hỗ trợ hàng rào bảo vệ và duy trì làn da mềm mượt, ổn định hơn.",
@@ -1597,8 +1597,8 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                       >
                         <div className="space-y-2">
                           <SectionLabel>{eyebrow || 'FEATURED SET'}</SectionLabel>
-                          <h2 className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight cosmetic-heading">
-                            {title}
+                          <h2 className="text-3xl md:text-4xl text-[#050A5C] cosmetic-heading-soft">
+                            {heroProduct.title}
                           </h2>
                           {headline && (
                             <p className="text-sm md:text-base font-light text-[#050A5C]/80 leading-relaxed italic">
@@ -1658,7 +1658,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                           >
                             <div className="space-y-2">
                               <SectionLabel>PRODUCT IN THE SET</SectionLabel>
-                              <h2 className="text-3xl font-light text-[#050A5C] tracking-tight cosmetic-heading">
+                              <h2 className="text-3xl text-[#050A5C] cosmetic-heading-soft">
                                 {activeP.name}
                               </h2>
                               <div className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider">
@@ -1810,7 +1810,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
               <motion.div variants={fadeUp}><SectionLabel>{premiumProgram.eyebrow || 'PROFESSIONAL SPA PROGRAM'}</SectionLabel></motion.div>
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl md:text-4xl font-light text-[#050A5C] tracking-tight leading-snug mb-4 whitespace-pre-wrap"
+                className="text-3xl md:text-4xl text-[#050A5C] leading-snug mb-4 whitespace-pre-wrap cosmetic-heading-soft"
               >
                 {premiumProgram.title}
               </motion.h2>
@@ -1881,8 +1881,8 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
             variants={stagger}
           >
             <motion.div variants={fadeUp}><SectionLabel>{editorialGallery.eyebrow}</SectionLabel></motion.div>
-            <motion.h2 variants={fadeUp} className="text-2xl md:text-3xl font-light text-[#050A5C] tracking-tight">
-              {editorialGallery.title}
+            <motion.h2 variants={fadeUp} className="text-2xl md:text-3xl text-[#050A5C] cosmetic-heading-soft">
+              {editorialGallery.title || 'The Ritual Aesthetic'}
             </motion.h2>
           </motion.div>
 
@@ -1958,7 +1958,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
           
           <motion.h2
             variants={fadeUp}
-            className="text-2xl md:text-3.5xl font-light text-white tracking-tight leading-snug mb-4 whitespace-pre-wrap"
+            className="text-2xl md:text-3.5xl text-white leading-snug mb-4 whitespace-pre-wrap cosmetic-heading-soft"
           >
             {finalCta.title || "Begin Your VAVAW Skin Consultation"}
           </motion.h2>

@@ -166,7 +166,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landAntiGravityEyebrow, setLandAntiGravityEyebrow] = useState('');
   const [landAntiGravityTitle, setLandAntiGravityTitle] = useState('');
   const [landAntiGravityHeadline, setLandAntiGravityHeadline] = useState('');
+  const [landAntiGravityShowHeadline, setLandAntiGravityShowHeadline] = useState(true);
   const [landAntiGravityDescription, setLandAntiGravityDescription] = useState('');
+  const [landAntiGravityShowDescription, setLandAntiGravityShowDescription] = useState(true);
   const [landAntiGravityMediaSlot, setLandAntiGravityMediaSlot] = useState('');
   const [landAntiGravityCaption, setLandAntiGravityCaption] = useState('');
   const [landAntiGravityCallouts, setLandAntiGravityCallouts] = useState<any[]>([]);
@@ -436,7 +438,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandAntiGravityEyebrow(antiGravity.eyebrow || 'ANTI-GRAVITY SOLUTION');
       setLandAntiGravityTitle(antiGravity.title || 'Phục hồi cấu trúc da từ nền tảng hàng rào bảo vệ');
       setLandAntiGravityHeadline(antiGravity.headline || 'Tập trung cải thiện cảm giác săn chắc, ẩm mượt và độ rạng rỡ');
+      setLandAntiGravityShowHeadline(antiGravity.showHeadline ?? true);
       setLandAntiGravityDescription(antiGravity.description || 'Công thức tập trung vào phục hồi bề mặt da, hỗ trợ cấp ẩm và truyền tải các hoạt chất quan trọng cho làn da đang cần chăm sóc chuyên sâu.');
+      setLandAntiGravityShowDescription(antiGravity.showDescription ?? true);
       setLandAntiGravityMediaSlot(antiGravity.mediaSlot || 'cosmetic-luminous-anti-gravity-image');
       setLandAntiGravityCaption(antiGravity.caption || 'Focused recovery care for barrier, hydration and radiance.');
       
@@ -682,7 +686,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             eyebrow: landAntiGravityEyebrow,
             title: landAntiGravityTitle,
             headline: landAntiGravityHeadline,
+            showHeadline: landAntiGravityShowHeadline,
             description: landAntiGravityDescription,
+            showDescription: landAntiGravityShowDescription,
             mediaSlot: landAntiGravityMediaSlot,
             caption: landAntiGravityCaption,
             callouts: landAntiGravityCallouts
@@ -2519,12 +2525,26 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             <input type="text" value={landAntiGravityTitle} onChange={e => setLandAntiGravityTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
                           </div>
                           <div className="col-span-2">
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả phụ (Headline)</label>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase">Mô tả phụ (Headline)</label>
+                              <div className="flex items-center space-x-2">
+                                <input type="checkbox" id="show-headline" checked={landAntiGravityShowHeadline} onChange={(e) => setLandAntiGravityShowHeadline(e.target.checked)} className="w-3 h-3 text-[#050A5C] border-slate-300 rounded focus:ring-[#050A5C]" />
+                                <label htmlFor="show-headline" className="text-[10px] text-slate-600 font-medium cursor-pointer">Hiển thị</label>
+                              </div>
+                            </div>
                             <input type="text" value={landAntiGravityHeadline} onChange={e => setLandAntiGravityHeadline(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            <p className="text-[10px] text-slate-500 mt-1">Khi tắt, nội dung vẫn được lưu trong CMS nhưng không hiển thị trên public.</p>
                           </div>
                           <div className="col-span-2">
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đoạn văn giới thiệu (Description)</label>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase">Đoạn văn giới thiệu (Description)</label>
+                              <div className="flex items-center space-x-2">
+                                <input type="checkbox" id="show-description" checked={landAntiGravityShowDescription} onChange={(e) => setLandAntiGravityShowDescription(e.target.checked)} className="w-3 h-3 text-[#050A5C] border-slate-300 rounded focus:ring-[#050A5C]" />
+                                <label htmlFor="show-description" className="text-[10px] text-slate-600 font-medium cursor-pointer">Hiển thị</label>
+                              </div>
+                            </div>
                             <textarea value={landAntiGravityDescription} onChange={e => setLandAntiGravityDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            <p className="text-[10px] text-slate-500 mt-1">Khi tắt, nội dung vẫn được lưu trong CMS nhưng không hiển thị trên public.</p>
                           </div>
                           
                           <div className="col-span-2 mt-2 pt-2 border-t border-slate-100">

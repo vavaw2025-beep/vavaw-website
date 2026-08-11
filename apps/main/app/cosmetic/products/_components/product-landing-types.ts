@@ -56,7 +56,9 @@ export interface ProductLandingContent {
   antiGravity?: {
     eyebrow?: string;
     title?: string;
+    showHeadline?: boolean;
     headline?: string;
+    showDescription?: boolean;
     description?: string;
     mediaSlot?: string;
     caption?: string;
