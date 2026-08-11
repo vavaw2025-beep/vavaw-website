@@ -11,7 +11,24 @@ export const metadata: Metadata = {
   title: 'P30 Boost Facial Moisturizer | VAVAW Cosmetic',
   description: 'Kem dưỡng cấp ẩm trong routine VAVAW, giúp duy trì độ ẩm, hỗ trợ hàng rào bảo vệ và hoàn thiện routine phục hồi hằng ngày.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/cosmetic/products/p30-boost-facial-moisturizer`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/p30-boost-facial-moisturizer`,
+  },
+  openGraph: {
+    title: 'P30 Boost Facial Moisturizer | VAVAW Cosmetic',
+    description: 'Kem dưỡng cấp ẩm trong routine VAVAW, giúp duy trì độ ẩm, hỗ trợ hàng rào bảo vệ và hoàn thiện routine phục hồi hằng ngày.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/p30-boost-facial-moisturizer`,
+    siteName: 'VAVAW Ecosystem',
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'P30 Boost Facial Moisturizer | VAVAW Cosmetic',
+    description: 'Kem dưỡng cấp ẩm trong routine VAVAW, giúp duy trì độ ẩm, hỗ trợ hàng rào bảo vệ và hoàn thiện routine phục hồi hằng ngày.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

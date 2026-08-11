@@ -11,7 +11,24 @@ export const metadata: Metadata = {
   title: 'Gentle Activation Renew Ampoule | VAVAW Cosmetic',
   description: 'Ampoule treatment dịu nhẹ trong routine VAVAW, hỗ trợ vẻ ngoài rạng rỡ, mịn màng và phục hồi sau chăm sóc chuyên sâu.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/cosmetic/products/gentle-activation-renew-ampoule`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/gentle-activation-renew-ampoule`,
+  },
+  openGraph: {
+    title: 'Gentle Activation Renew Ampoule | VAVAW Cosmetic',
+    description: 'Ampoule treatment dịu nhẹ trong routine VAVAW, hỗ trợ vẻ ngoài rạng rỡ, mịn màng và phục hồi sau chăm sóc chuyên sâu.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/gentle-activation-renew-ampoule`,
+    siteName: 'VAVAW Ecosystem',
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gentle Activation Renew Ampoule | VAVAW Cosmetic',
+    description: 'Ampoule treatment dịu nhẹ trong routine VAVAW, hỗ trợ vẻ ngoài rạng rỡ, mịn màng và phục hồi sau chăm sóc chuyên sâu.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

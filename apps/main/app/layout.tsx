@@ -5,39 +5,35 @@ import './globals.css'
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://vavaw.vn'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'),
   title: {
-    default: 'VAVAW | Brand Ecosystem',
+    default: 'VAVAW | Korean Beauty, Cosmetic & Franchise Ecosystem',
     template: '%s | VAVAW'
   },
-  description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
+  description: 'VAVAW is a premium Korean beauty ecosystem connecting cosmetic rituals, spa experiences, and franchise growth.',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'VAVAW | Brand Ecosystem',
-    description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
-    url: 'https://vavaw.vn',
+    title: 'VAVAW | Korean Beauty, Cosmetic & Franchise Ecosystem',
+    description: 'VAVAW is a premium Korean beauty ecosystem connecting cosmetic rituals, spa experiences, and franchise growth.',
+    url: '/',
     siteName: 'VAVAW Ecosystem',
     locale: 'vi_VN',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VAVAW | Brand Ecosystem',
-    description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
+    title: 'VAVAW | Korean Beauty, Cosmetic & Franchise Ecosystem',
+    description: 'VAVAW is a premium Korean beauty ecosystem connecting cosmetic rituals, spa experiences, and franchise growth.',
   },
   icons: {
+    // TODO: Ensure favicon.ico and icon assets are manually uploaded to public/
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/favicon.ico', type: 'image/x-icon' },
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
     apple: '/apple-icon.png',
   },

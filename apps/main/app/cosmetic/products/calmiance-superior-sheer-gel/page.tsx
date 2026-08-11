@@ -11,7 +11,24 @@ export const metadata: Metadata = {
   title: 'Calmiance Superior Sheer Gel | VAVAW Cosmetic',
   description: 'Gel phục hồi mỏng nhẹ trong routine VAVAW, giúp cấp ẩm nhẹ, hỗ trợ cảm giác dễ chịu và duy trì hàng rào bảo vệ da ổn định hơn.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/cosmetic/products/calmiance-superior-sheer-gel`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/calmiance-superior-sheer-gel`,
+  },
+  openGraph: {
+    title: 'Calmiance Superior Sheer Gel | VAVAW Cosmetic',
+    description: 'Gel phục hồi mỏng nhẹ trong routine VAVAW, giúp cấp ẩm nhẹ, hỗ trợ cảm giác dễ chịu và duy trì hàng rào bảo vệ da ổn định hơn.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/calmiance-superior-sheer-gel`,
+    siteName: 'VAVAW Ecosystem',
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Calmiance Superior Sheer Gel | VAVAW Cosmetic',
+    description: 'Gel phục hồi mỏng nhẹ trong routine VAVAW, giúp cấp ẩm nhẹ, hỗ trợ cảm giác dễ chịu và duy trì hàng rào bảo vệ da ổn định hơn.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

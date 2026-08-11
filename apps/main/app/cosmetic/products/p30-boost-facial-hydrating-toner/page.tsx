@@ -11,7 +11,24 @@ export const metadata: Metadata = {
   title: 'P30 Boost Facial Hydrating Toner | VAVAW Cosmetic',
   description: 'Toner cấp ẩm trong routine VAVAW, hỗ trợ cân bằng làn da sau làm sạch và chuẩn bị da cho các bước phục hồi tiếp theo.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/cosmetic/products/p30-boost-facial-hydrating-toner`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/p30-boost-facial-hydrating-toner`,
+  },
+  openGraph: {
+    title: 'P30 Boost Facial Hydrating Toner | VAVAW Cosmetic',
+    description: 'Toner cấp ẩm trong routine VAVAW, hỗ trợ cân bằng làn da sau làm sạch và chuẩn bị da cho các bước phục hồi tiếp theo.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/p30-boost-facial-hydrating-toner`,
+    siteName: 'VAVAW Ecosystem',
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'P30 Boost Facial Hydrating Toner | VAVAW Cosmetic',
+    description: 'Toner cấp ẩm trong routine VAVAW, hỗ trợ cân bằng làn da sau làm sạch và chuẩn bị da cho các bước phục hồi tiếp theo.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

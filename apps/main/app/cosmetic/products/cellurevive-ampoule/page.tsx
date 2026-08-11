@@ -11,7 +11,24 @@ export const metadata: Metadata = {
   title: 'CELLUREVIVE Ampoule | VAVAW Cosmetic',
   description: 'Ampoule cô đặc trong routine phục hồi VAVAW, hỗ trợ làn da cần cấp ẩm, làm dịu và cải thiện vẻ rạng rỡ sau chăm sóc chuyên sâu.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/cosmetic/products/cellurevive-ampoule`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/cellurevive-ampoule`,
+  },
+  openGraph: {
+    title: 'CELLUREVIVE Ampoule | VAVAW Cosmetic',
+    description: 'Ampoule cô đặc trong routine phục hồi VAVAW, hỗ trợ làn da cần cấp ẩm, làm dịu và cải thiện vẻ rạng rỡ sau chăm sóc chuyên sâu.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/cellurevive-ampoule`,
+    siteName: 'VAVAW Ecosystem',
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CELLUREVIVE Ampoule | VAVAW Cosmetic',
+    description: 'Ampoule cô đặc trong routine phục hồi VAVAW, hỗ trợ làn da cần cấp ẩm, làm dịu và cải thiện vẻ rạng rỡ sau chăm sóc chuyên sâu.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

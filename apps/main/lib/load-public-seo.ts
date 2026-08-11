@@ -60,8 +60,8 @@ function loadStaticSeo(path: string): PublicSeoData {
   const allEntries = getSortedBusinessEntries();
   const firstEntry = allEntries[0];
   return {
-    title: 'VAVAW | Brand Ecosystem',
-    description: 'VAVAW is a premium multi-brand ecosystem spanning cosmetics, beauty & care, and franchise opportunities.',
+    title: 'VAVAW | Korean Beauty, Cosmetic & Franchise Ecosystem',
+    description: 'VAVAW is a premium Korean beauty ecosystem connecting cosmetic rituals, spa experiences, and franchise growth.',
     keywords: firstEntry?.seo?.keywords,
     robotsIndex: true,
     robotsFollow: true,

@@ -9,17 +9,17 @@ const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif'
 const franchiseEntry = getBusinessBySlug('franchise');
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://franchise.vavaw.vn'),
-  title: franchiseEntry?.seo.title || 'VAVAW Franchise',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_FRANCHISE_URL || 'https://franchise.vavaw.vn'),
+  title: franchiseEntry?.seo.title || 'VAVAW Franchise | Korean Beauty Business Opportunity',
   description: franchiseEntry?.seo.description || 'Learn about business partnership and franchise opportunities with VAVAW.',
   keywords: franchiseEntry?.seo.keywords,
   alternates: {
-    canonical: franchiseEntry?.seo.canonicalUrl || 'https://franchise.vavaw.vn',
+    canonical: '/',
   },
   openGraph: {
-    title: franchiseEntry?.seo.title || 'VAVAW Franchise',
+    title: franchiseEntry?.seo.title || 'VAVAW Franchise | Korean Beauty Business Opportunity',
     description: franchiseEntry?.seo.description || franchiseEntry?.description,
-    url: franchiseEntry?.seo.canonicalUrl || 'https://franchise.vavaw.vn',
+    url: '/',
     siteName: 'VAVAW Franchise',
     locale: 'vi_VN',
     type: 'website',
@@ -27,8 +27,18 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: franchiseEntry?.seo.title || 'VAVAW Franchise',
+    title: franchiseEntry?.seo.title || 'VAVAW Franchise | Korean Beauty Business Opportunity',
     description: franchiseEntry?.seo.description || franchiseEntry?.description,
+  },
+  icons: {
+    // TODO: Ensure favicon.ico and icon assets are manually uploaded to public/
+    icon: [
+      { url: '/favicon.ico', type: 'image/x-icon' },
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-icon.png',
   },
 };
 

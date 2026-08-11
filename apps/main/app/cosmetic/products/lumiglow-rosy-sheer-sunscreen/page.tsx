@@ -11,7 +11,24 @@ export const metadata: Metadata = {
   title: 'LUMIGLOW ROSY SHEER SUNSCREEN | VAVAW Cosmetic',
   description: 'Kem chống nắng nâng tông hồng nhẹ trong routine VAVAW, hỗ trợ bảo vệ da ban ngày và hoàn thiện routine phục hồi với hiệu ứng da sáng khỏe tự nhiên.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/cosmetic/products/lumiglow-rosy-sheer-sunscreen`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/lumiglow-rosy-sheer-sunscreen`,
+  },
+  openGraph: {
+    title: 'LUMIGLOW ROSY SHEER SUNSCREEN | VAVAW Cosmetic',
+    description: 'Kem chống nắng nâng tông hồng nhẹ trong routine VAVAW, hỗ trợ bảo vệ da ban ngày và hoàn thiện routine phục hồi với hiệu ứng da sáng khỏe tự nhiên.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/lumiglow-rosy-sheer-sunscreen`,
+    siteName: 'VAVAW Ecosystem',
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LUMIGLOW ROSY SHEER SUNSCREEN | VAVAW Cosmetic',
+    description: 'Kem chống nắng nâng tông hồng nhẹ trong routine VAVAW, hỗ trợ bảo vệ da ban ngày và hoàn thiện routine phục hồi với hiệu ứng da sáng khỏe tự nhiên.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

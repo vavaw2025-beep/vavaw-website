@@ -11,7 +11,24 @@ export const metadata: Metadata = {
   title: 'REGENAGLOW NOURISH SHEER CREAM | VAVAW Cosmetic',
   description: 'Kem dưỡng phục hồi trong routine VAVAW, giúp duy trì độ ẩm, làm mềm da và hỗ trợ hàng rào bảo vệ sau bước treatment.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/cosmetic/products/regenaglow-nourish-sheer-cream`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/regenaglow-nourish-sheer-cream`,
+  },
+  openGraph: {
+    title: 'REGENAGLOW NOURISH SHEER CREAM | VAVAW Cosmetic',
+    description: 'Kem dưỡng phục hồi trong routine VAVAW, giúp duy trì độ ẩm, làm mềm da và hỗ trợ hàng rào bảo vệ sau bước treatment.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/cosmetic/products/regenaglow-nourish-sheer-cream`,
+    siteName: 'VAVAW Ecosystem',
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'REGENAGLOW NOURISH SHEER CREAM | VAVAW Cosmetic',
+    description: 'Kem dưỡng phục hồi trong routine VAVAW, giúp duy trì độ ẩm, làm mềm da và hỗ trợ hàng rào bảo vệ sau bước treatment.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

@@ -12,17 +12,17 @@ const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif'
 const beautyEntry = getBusinessBySlug('beauty');
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://beauty.vavaw.vn'),
-  title: beautyEntry?.seo.title || 'VAVAW Beauty & Co',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BEAUTY_URL || 'https://beauty.vavaw.vn'),
+  title: beautyEntry?.seo.title || 'VAVAW Beauty & Co | Premium Korean Beauty Spa',
   description: beautyEntry?.seo.description || 'A dedicated beauty brand experience within the VAVAW ecosystem.',
   keywords: beautyEntry?.seo.keywords,
   alternates: {
-    canonical: beautyEntry?.seo.canonicalUrl || 'https://beauty.vavaw.vn',
+    canonical: '/',
   },
   openGraph: {
-    title: beautyEntry?.seo.title || 'VAVAW Beauty & Co',
+    title: beautyEntry?.seo.title || 'VAVAW Beauty & Co | Premium Korean Beauty Spa',
     description: beautyEntry?.seo.description || beautyEntry?.description,
-    url: beautyEntry?.seo.canonicalUrl || 'https://beauty.vavaw.vn',
+    url: '/',
     siteName: 'VAVAW Beauty & Co',
     locale: 'vi_VN',
     type: 'website',
@@ -30,8 +30,18 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: beautyEntry?.seo.title || 'VAVAW Beauty & Co',
+    title: beautyEntry?.seo.title || 'VAVAW Beauty & Co | Premium Korean Beauty Spa',
     description: beautyEntry?.seo.description || beautyEntry?.description,
+  },
+  icons: {
+    // TODO: Ensure favicon.ico and icon assets are manually uploaded to public/
+    icon: [
+      { url: '/favicon.ico', type: 'image/x-icon' },
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-icon.png',
   },
 };
 
