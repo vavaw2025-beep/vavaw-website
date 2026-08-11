@@ -48,6 +48,10 @@ export interface ProductLandingContent {
   secondaryCtaLabel: string;
   secondaryCtaHref: string;
   heroMediaSlot: string;
+  heroDesktopMediaSlot?: string;
+  heroMobileMediaSlot?: string;
+  heroMediaDesktop?: string;
+  heroMediaMobile?: string;
   
   antiGravity?: {
     eyebrow?: string;

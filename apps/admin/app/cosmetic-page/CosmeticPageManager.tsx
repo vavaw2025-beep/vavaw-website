@@ -426,8 +426,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         fallbackSlot = 'cosmetic-product-luminous-set';
       }
       setLandHeroMediaSlot(fallbackSlot);
-      setLandHeroMediaDesktop(content.heroMediaDesktop || '');
-      setLandHeroMediaMobile(content.heroMediaMobile || '');
+      setLandHeroMediaDesktop(content.heroDesktopMediaSlot || content.heroMediaDesktop || '');
+      setLandHeroMediaMobile(content.heroMobileMediaSlot || content.heroMediaMobile || '');
       setLandSecondaryCtaLabel(content.secondaryCtaLabel || '');
       setLandSecondaryCtaHref(content.secondaryCtaHref || '');
       
@@ -653,6 +653,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       } else {
         updatedContent.headline = landHeadline;
         updatedContent.heroMediaSlot = landHeroMediaSlot;
+        updatedContent.heroDesktopMediaSlot = landHeroMediaDesktop;
+        updatedContent.heroMobileMediaSlot = landHeroMediaMobile;
         updatedContent.heroMediaDesktop = landHeroMediaDesktop;
         updatedContent.heroMediaMobile = landHeroMediaMobile;
         updatedContent.secondaryCtaLabel = landSecondaryCtaLabel;

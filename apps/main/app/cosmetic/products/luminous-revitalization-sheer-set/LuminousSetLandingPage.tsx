@@ -58,15 +58,21 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
               return null;
             };
 
+            const heroDesktopSlot = content.heroDesktopMediaSlot || content.heroMediaDesktop || "cosmetic-luminous-hero-desktop";
+            const heroMobileSlot = content.heroMobileMediaSlot || content.heroMediaMobile || "cosmetic-luminous-hero-mobile";
+            const fallbackHeroSlot = content.heroMediaSlot || "cosmetic-product-luminous-set";
+
             const heroDesktopResolved = resolveMedia([
+              cosmeticMedia[heroDesktopSlot as keyof typeof cosmeticMedia],
               cosmeticMedia['cosmetic-luminous-hero-desktop'],
-              (content as any).heroMediaDesktop ? cosmeticMedia[(content as any).heroMediaDesktop as keyof typeof cosmeticMedia] : undefined,
+              cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia],
               cosmeticMedia['cosmetic-product-luminous-set']
             ]);
 
             const heroMobileResolved = resolveMedia([
+              cosmeticMedia[heroMobileSlot as keyof typeof cosmeticMedia],
               cosmeticMedia['cosmetic-luminous-hero-mobile'],
-              (content as any).heroMediaMobile ? cosmeticMedia[(content as any).heroMediaMobile as keyof typeof cosmeticMedia] : undefined,
+              cosmeticMedia[fallbackHeroSlot as keyof typeof cosmeticMedia],
               cosmeticMedia['cosmetic-product-luminous-set']
             ]);
 

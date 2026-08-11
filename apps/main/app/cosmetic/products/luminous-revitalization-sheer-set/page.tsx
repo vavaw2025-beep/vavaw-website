@@ -17,6 +17,8 @@ const DEFAULT_CONTENT: ProductLandingContent = {
   secondaryCtaLabel: 'Trải nghiệm tại VAVAW Beauty & Co',
   secondaryCtaHref: '/go/beauty',
   heroMediaSlot: 'cosmetic-product-luminous-set',
+  heroDesktopMediaSlot: 'cosmetic-luminous-hero-desktop',
+  heroMobileMediaSlot: 'cosmetic-luminous-hero-mobile',
   antiGravity: {
     eyebrow: 'ANTI-GRAVITY SOLUTION',
     title: 'Tập trung chăm sóc hàng rào bảo vệ da',
