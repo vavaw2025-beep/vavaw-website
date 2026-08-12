@@ -802,7 +802,7 @@ const DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL = {
   showQualityGuarantee: true
 };
 
-function normalizeLuminousProductDetailForm(form) {
+function normalizeLuminousProductDetailForm(form: any) {
   if (!form) return DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL;
   const defaults = DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL;
   
