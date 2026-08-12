@@ -81,7 +81,7 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
               {legalInfoRows.map((item, idx) => {
                 if (isMfdsRow(item)) {
                   return (
-                    <div key={idx} className="bg-[#F7F8FC] border-y border-[#D8DEEA] px-6 md:px-8 py-6 my-1">
+                    <div key={idx} className="bg-[#F7F8FC] border-y border-[#D8DEEA] border-l-4 border-l-[#050A5C] px-6 md:px-8 py-6 my-1">
                       <span className="text-xs font-bold text-[#050A5C] uppercase tracking-[0.08em] block mb-2">
                         {item.label}
                       </span>
@@ -95,11 +95,14 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
                 return (
                   <div 
                     key={idx} 
-                    className={`grid grid-cols-1 md:grid-cols-[0.32fr_0.68fr] border-b border-slate-100 px-6 md:px-8 py-4 md:py-5 transition-colors ${
-                      item.highlight ? 'bg-[#F8FAFC] border-l-4 border-l-[#D8A13A]' : ''
+                    className={`grid grid-cols-1 md:grid-cols-[0.32fr_0.68fr] border-b border-slate-100 px-6 md:px-8 py-4 md:py-5 transition-colors border-l-4 ${
+                      item.highlight ? 'bg-[#F8FAFC] border-l-[#D8A13A]' : 'bg-white border-l-transparent'
                     }`}
                   >
-                    <div className="flex items-center py-1 md:py-0">
+                    <div className="flex items-center py-1 md:py-0 gap-2">
+                      {item.highlight && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#D8A13A] inline-block shrink-0" title="Thông tin trọng tâm" />
+                      )}
                       <span className="text-[11px] md:text-xs font-bold uppercase tracking-[0.08em] text-[#050A5C]">
                         {item.label}
                       </span>
