@@ -11,7 +11,7 @@ interface ScienceMediaBoxProps {
   alt: string;
   caption?: string;
   showCaption?: boolean;
-  mediaRenderType?: 'diagram' | 'photo';
+  mediaRenderType?: 'diagram' | 'photo' | 'full-bleed-artwork';
   imageMode?: 'cover' | 'contain-blur';
   objectPosition?: string;
   placeholderLabel: string;
@@ -51,6 +51,14 @@ function ScienceMediaBox({
           <div className="absolute inset-0 z-0" style={{ background: 'radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, transparent 70%)' }} />
           <img src={url} alt={alt} className="relative z-10 object-contain max-h-[78%] max-w-[82%]" style={objectPosition ? { objectPosition } : undefined} loading="lazy" />
         </>
+      ) : mediaRenderType === 'full-bleed-artwork' ? (
+        <img
+          src={url}
+          alt={alt}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={objectPosition ? { objectPosition } : undefined}
+          loading="lazy"
+        />
       ) : (
         <>
           {imageMode === 'contain-blur' ? (
@@ -113,7 +121,7 @@ const DEFAULT_SKIN_BARRIER = {
   desktopMediaSlot: "cosmetic-luminous-skin-barrier-desktop",
   mobileMediaSlot: "cosmetic-luminous-skin-barrier-mobile",
   desktopImageMode: "cover",
-  mediaRenderType: "diagram"
+  mediaRenderType: "full-bleed-artwork"
 };
 
 const DEFAULT_MG3_PLUS = {
@@ -125,7 +133,7 @@ const DEFAULT_MG3_PLUS = {
   desktopMediaSlot: "cosmetic-luminous-mg3-plus-desktop",
   mobileMediaSlot: "cosmetic-luminous-mg3-plus-mobile",
   desktopImageMode: "contain-blur",
-  mediaRenderType: "diagram"
+  mediaRenderType: "full-bleed-artwork"
 };
 
 export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }: ProductLandingPageProps) {
@@ -622,7 +630,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                   </div>
                 </div>
                 {/* Image */}
-                <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-l border-[#D9DEEA]/50">
+                <div className="relative aspect-[4/5] md:aspect-auto md:h-full md:min-h-[420px] bg-slate-50 border-t md:border-t-0 md:border-l border-[#D9DEEA]/50">
                   {/* Mobile Image */}
                   <ScienceMediaBox
                     className="absolute inset-0 block md:hidden"
@@ -653,7 +661,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
               {/* Panel 2: MG3-Plus (Image Left, Text Right) md:grid-cols-[0.56fr_0.44fr] */}
               <div className="flex flex-col-reverse md:grid md:grid-cols-[0.56fr_0.44fr] overflow-hidden border border-[#D9DEEA] bg-[#F7F8FC] rounded-2xl shadow-[0_24px_80px_rgba(5,10,92,0.06)]">
                 {/* Image */}
-                <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-r border-[#D9DEEA]/50">
+                <div className="relative aspect-[4/5] md:aspect-auto md:h-full md:min-h-[420px] bg-slate-50 border-t md:border-t-0 md:border-r border-[#D9DEEA]/50">
                   {/* Mobile Image */}
                   <ScienceMediaBox
                     className="absolute inset-0 block md:hidden"

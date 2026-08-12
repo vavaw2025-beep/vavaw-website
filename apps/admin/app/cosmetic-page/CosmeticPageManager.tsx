@@ -207,7 +207,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landBarrierDesktopImageMode, setLandBarrierDesktopImageMode] = useState('cover');
   const [landBarrierDesktopObjectPosition, setLandBarrierDesktopObjectPosition] = useState('center center');
   const [landBarrierMobileObjectPosition, setLandBarrierMobileObjectPosition] = useState('center top');
-  const [landSkinBarrierMediaRenderType, setLandSkinBarrierMediaRenderType] = useState('diagram');
+  const [landSkinBarrierMediaRenderType, setLandSkinBarrierMediaRenderType] = useState('full-bleed-artwork');
 
   const [landBarrierMg3Eyebrow, setLandBarrierMg3Eyebrow] = useState('');
   const [landBarrierMg3Title, setLandBarrierMg3Title] = useState('');
@@ -220,7 +220,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landBarrierMg3DesktopImageMode, setLandBarrierMg3DesktopImageMode] = useState('cover');
   const [landBarrierMg3DesktopObjectPosition, setLandBarrierMg3DesktopObjectPosition] = useState('center center');
   const [landBarrierMg3MobileObjectPosition, setLandBarrierMg3MobileObjectPosition] = useState('center top');
-  const [landMg3PlusMediaRenderType, setLandMg3PlusMediaRenderType] = useState('diagram');
+  const [landMg3PlusMediaRenderType, setLandMg3PlusMediaRenderType] = useState('full-bleed-artwork');
 
   // Active Ingredients states
   const [landActiveIngredientsEyebrow, setLandActiveIngredientsEyebrow] = useState('');
@@ -2985,14 +2985,23 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                 <div className="mt-4 border-t border-slate-200 pt-4">
                                   <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Dạng hiển thị ảnh</label>
                                   <select value={landSkinBarrierMediaRenderType} onChange={e => setLandSkinBarrierMediaRenderType(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-700 font-semibold mb-2">
-                                    <option value="diagram">Sơ đồ / hình khoa học</option>
+                                    <option value="full-bleed-artwork">Artwork full khung / banner thiết kế sẵn</option>
+                                    <option value="diagram">Sơ đồ / hình khoa học nhỏ</option>
                                     <option value="photo">Ảnh sản phẩm / lifestyle</option>
                                   </select>
-                                  <p className="text-[11px] text-slate-500 mb-4">Sơ đồ / hình khoa học sẽ hiển thị theo object-contain trên nền sạch, không dùng blur để tránh bị lẫn hình.</p>
-                                  
+                                  {landSkinBarrierMediaRenderType === 'full-bleed-artwork' && (
+                                    <p className="text-[11px] text-slate-500 mb-4">Ảnh sẽ phủ kín vùng hiển thị, phù hợp banner/graphic đã thiết kế sẵn.</p>
+                                  )}
                                   {landSkinBarrierMediaRenderType === 'diagram' && (
+                                    <p className="text-[11px] text-slate-500 mb-4">Ảnh được giữ nguyên, không crop. Phù hợp icon/diagram nhỏ.</p>
+                                  )}
+                                  {landSkinBarrierMediaRenderType === 'photo' && (
+                                    <p className="text-[11px] text-slate-500 mb-4">Hỗ trợ cover hoặc contain-blur. Phù hợp ảnh sản phẩm/lifestyle.</p>
+                                  )}
+                                  
+                                  {(landSkinBarrierMediaRenderType === 'diagram' || landSkinBarrierMediaRenderType === 'full-bleed-artwork') && (
                                     <p className="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100 mb-4">
-                                      Lưu ý: Các thiết lập Image Mode bên dưới sẽ bị bỏ qua khi render ở dạng Sơ đồ.
+                                      Lưu ý: Các thiết lập Image Mode bên dưới sẽ bị bỏ qua.
                                     </p>
                                   )}
                                 </div>
@@ -3089,14 +3098,23 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                 <div className="mt-4 border-t border-slate-200 pt-4">
                                   <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Dạng hiển thị ảnh</label>
                                   <select value={landMg3PlusMediaRenderType} onChange={e => setLandMg3PlusMediaRenderType(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-700 font-semibold mb-2">
-                                    <option value="diagram">Sơ đồ / hình khoa học</option>
+                                    <option value="full-bleed-artwork">Artwork full khung / banner thiết kế sẵn</option>
+                                    <option value="diagram">Sơ đồ / hình khoa học nhỏ</option>
                                     <option value="photo">Ảnh sản phẩm / lifestyle</option>
                                   </select>
-                                  <p className="text-[11px] text-slate-500 mb-4">Sơ đồ / hình khoa học sẽ hiển thị theo object-contain trên nền sạch, không dùng blur để tránh bị lẫn hình.</p>
-                                  
+                                  {landMg3PlusMediaRenderType === 'full-bleed-artwork' && (
+                                    <p className="text-[11px] text-slate-500 mb-4">Ảnh sẽ phủ kín vùng hiển thị, phù hợp banner/graphic đã thiết kế sẵn.</p>
+                                  )}
                                   {landMg3PlusMediaRenderType === 'diagram' && (
+                                    <p className="text-[11px] text-slate-500 mb-4">Ảnh được giữ nguyên, không crop. Phù hợp icon/diagram nhỏ.</p>
+                                  )}
+                                  {landMg3PlusMediaRenderType === 'photo' && (
+                                    <p className="text-[11px] text-slate-500 mb-4">Hỗ trợ cover hoặc contain-blur. Phù hợp ảnh sản phẩm/lifestyle.</p>
+                                  )}
+                                  
+                                  {(landMg3PlusMediaRenderType === 'diagram' || landMg3PlusMediaRenderType === 'full-bleed-artwork') && (
                                     <p className="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100 mb-4">
-                                      Lưu ý: Các thiết lập Image Mode bên dưới sẽ bị bỏ qua khi render ở dạng Sơ đồ.
+                                      Lưu ý: Các thiết lập Image Mode bên dưới sẽ bị bỏ qua.
                                     </p>
                                   )}
                                 </div>

@@ -54,7 +54,7 @@ export interface LuminousSciencePanel {
   mediaSlot?: string;
   desktopMediaSlot?: string;
   mobileMediaSlot?: string;
-  mediaRenderType?: "diagram" | "photo";
+  mediaRenderType?: "full-bleed-artwork" | "diagram" | "photo";
   desktopImageMode?: "cover" | "contain-blur";
   mobileImageMode?: "cover" | "contain-blur" | "contain";
   desktopObjectPosition?: string;
