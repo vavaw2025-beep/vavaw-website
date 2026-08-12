@@ -3693,6 +3693,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                 Hiển thị Offline Bridge
                               </label>
                             </div>
+                            <p className="text-[10px] text-slate-500 mb-3 bg-white p-2 rounded border border-slate-200">
+                              <span className="font-bold">Ghi chú:</span> Khối này dùng ảnh làm background toàn bộ banner. Với ảnh desktop dạng collage ngang như hiện tại, nên dùng tỷ lệ 16:9 hoặc 1200×680 / 1600×900. Không dùng banner quá thấp vì sẽ bị crop mạnh.
+                            </p>
                             
                             {landDetailOfflineShow && (
                               <div className="grid grid-cols-2 gap-4">

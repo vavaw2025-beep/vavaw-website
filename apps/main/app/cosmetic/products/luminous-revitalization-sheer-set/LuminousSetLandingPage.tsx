@@ -1365,47 +1365,59 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
 
         return offlineSettings.show && offlineSettings.title && (
           <section 
-            className="mt-16 mb-24 px-5 md:px-8"
+            className="px-5 py-16 md:px-8 md:py-24"
             data-offline-bridge-has-image={!!(offlineDesktopUrl || offlineMobileUrl)}
-            data-offline-bridge-desktop-url={offlineDesktopUrl || ""}
-            data-offline-bridge-mobile-url={offlineMobileUrl || ""}
             data-offline-bridge-slot={offlineSettings.desktopMediaSlot}
           >
-            <div className="relative mx-auto max-w-[1200px] overflow-hidden rounded-[24px] md:rounded-[28px] border border-[#D9DEEA] shadow-[0_30px_90px_rgba(5,10,92,0.14)] min-h-[460px] md:min-h-[440px] aspect-[4/5] md:aspect-auto bg-slate-50">
-              {/* Background Image Layer */}
-              {offlineDesktopUrl ? (
-                <img
-                  src={offlineDesktopUrl}
-                  alt={offlineSettings.title}
-                  className="absolute inset-0 z-0 hidden md:block h-full w-full object-cover"
-                  style={{ objectPosition: offlineSettings.desktopObjectPosition }}
-                />
-              ) : (
-                <div className="absolute inset-0 z-0 hidden md:block bg-gradient-to-br from-[#E2E8F0] to-[#F8FAFC]" />
-              )}
-              
-              {offlineMobileUrl ? (
-                <img
-                  src={offlineMobileUrl}
-                  alt={offlineSettings.title}
-                  className="absolute inset-0 z-0 block md:hidden h-full w-full object-cover"
-                  style={{ objectPosition: offlineSettings.mobileObjectPosition }}
-                />
-              ) : (
-                <div className="absolute inset-0 z-0 block md:hidden bg-gradient-to-br from-[#E2E8F0] to-[#F8FAFC]" />
-              )}
-
-              {/* Overlay Layer */}
-              <div className={`absolute inset-0 z-10 bg-gradient-to-r from-black/60 to-transparent ${offlineSettings.overlayStrength === 'light' ? 'opacity-50' : offlineSettings.overlayStrength === 'heavy' ? 'opacity-90' : 'opacity-75'}`} />
-
-              {/* Text Content Layer */}
-              <div className="relative z-20 flex min-h-[460px] md:min-h-[440px] flex-col justify-start p-8 md:p-14 lg:p-16">
-                <div className={`max-w-[100%] md:max-w-[520px] ${offlineSettings.textAlign === 'center' ? 'mx-auto text-center' : 'text-left'}`}>
-                  <h3 className="text-white text-[28px] md:text-4xl leading-snug mb-5" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontWeight: 600 }}>
+            {/* Desktop Banner */}
+            <div
+              className="relative mx-auto w-full max-w-[1200px] overflow-hidden rounded-[28px] border border-[#D9DEEA] shadow-[0_30px_90px_rgba(5,10,92,0.14)] hidden md:block"
+              data-offline-bridge-desktop-url={offlineDesktopUrl || ""}
+              style={{
+                minHeight: "680px",
+                backgroundImage: offlineDesktopUrl
+                  ? `linear-gradient(180deg, rgba(5,10,92,0.58) 0%, rgba(5,10,92,0.32) 34%, rgba(5,10,92,0.08) 68%), url(${offlineDesktopUrl})`
+                  : "linear-gradient(135deg, #050A5C 0%, #8E97B8 100%)",
+                backgroundSize: "cover",
+                backgroundPosition: offlineSettings.desktopObjectPosition || "center center",
+                backgroundRepeat: "no-repeat"
+              }}
+            >
+              <div className="relative z-10 flex min-h-[680px] items-start px-10 py-12 md:px-14 md:py-14">
+                <div className={`max-w-[560px] ${offlineSettings.textAlign === 'center' ? 'mx-auto text-center' : 'text-left'}`}>
+                  <h3 className="text-3xl md:text-4xl font-serif leading-tight text-white drop-shadow-sm mb-5" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontWeight: 600 }}>
                     {offlineSettings.title}
                   </h3>
                   {offlineSettings.description && (
-                    <p className="text-white/90 text-[15px] md:text-base leading-relaxed font-light">
+                    <p className="mt-4 text-sm md:text-base leading-7 text-white/85 drop-shadow-sm">
+                      {offlineSettings.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Banner */}
+            <div
+              className="relative mx-auto w-full overflow-hidden rounded-[24px] border border-[#D9DEEA] block md:hidden"
+              data-offline-bridge-mobile-url={offlineMobileUrl || ""}
+              style={{
+                minHeight: "620px",
+                backgroundImage: offlineMobileUrl
+                  ? `linear-gradient(180deg, rgba(5,10,92,0.68) 0%, rgba(5,10,92,0.28) 42%, rgba(5,10,92,0.08) 100%), url(${offlineMobileUrl})`
+                  : "linear-gradient(135deg, #050A5C 0%, #8E97B8 100%)",
+                backgroundSize: "cover",
+                backgroundPosition: offlineSettings.mobileObjectPosition || "center top",
+                backgroundRepeat: "no-repeat"
+              }}
+            >
+              <div className="relative z-10 px-6 py-8">
+                <div className={`max-w-[100%] ${offlineSettings.textAlign === 'center' ? 'mx-auto text-center' : 'text-left'}`}>
+                  <h3 className="text-3xl font-serif leading-tight text-white drop-shadow-sm mb-4" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontWeight: 600 }}>
+                    {offlineSettings.title}
+                  </h3>
+                  {offlineSettings.description && (
+                    <p className="text-sm leading-6 text-white/85 drop-shadow-sm">
                       {offlineSettings.description}
                     </p>
                   )}
