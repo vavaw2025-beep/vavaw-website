@@ -4,11 +4,71 @@ import { SiteFooter } from '@vavaw/ui';
 import { ProductLandingContent } from './product-landing-types';
 
 import { ProductJsonLd } from './ProductJsonLd';
+import { ProductDetailForm } from './ProductDetailForm';
 
 interface ProductLandingPageProps {
   content: ProductLandingContent;
   cosmeticMedia: any;
   canonicalPath: string;
+}
+
+function normalizeGenericProductDetailForm(content: ProductLandingContent) {
+  const form = content.productDetailForm;
+  
+  if (form && (
+    (Array.isArray(form.legalInfo) && form.legalInfo.length > 0) ||
+    (Array.isArray(form.productItems) && form.productItems.length > 0) ||
+    (Array.isArray(form.info) && form.info.length > 0) ||
+    (Array.isArray(form.cautions) && form.cautions.length > 0)
+  )) {
+    return {
+      eyebrow: form.eyebrow || "PRODUCT INFORMATION",
+      title: form.title || content.title || "THÔNG TIN SẢN PHẨM",
+      description: form.description || "Thông tin sản phẩm sẽ được cập nhật chi tiết theo hồ sơ sản phẩm chính thức.",
+      legalInfo: form.legalInfo,
+      productItems: form.productItems,
+      info: form.info,
+      ingredientGroups: form.ingredientGroups,
+      cautions: form.cautions,
+      storage: form.storage,
+      qualityGuarantee: form.qualityGuarantee,
+      showDescription: form.showDescription ?? true,
+      showLegalInfo: form.showLegalInfo ?? true,
+      showProductItems: form.showProductItems ?? (Array.isArray(form.productItems) && form.productItems.length > 0),
+      showIngredients: form.showIngredients ?? false,
+      showCautions: form.showCautions ?? true,
+      showStorage: form.showStorage ?? true,
+      showQualityGuarantee: form.showQualityGuarantee ?? true,
+    };
+  }
+
+  const productName = content.title || "Sản phẩm";
+  const legacyInfo = Array.isArray(content.productInfo) && content.productInfo.length > 0
+    ? content.productInfo.map(i => ({ label: i.label || '', value: i.value || '', highlight: false }))
+    : [
+        { label: "Tên sản phẩm", value: productName },
+        { label: "Trạng thái nội dung", value: "Đang cập nhật thông tin chi tiết" }
+      ];
+
+  return {
+    eyebrow: form?.eyebrow || "PRODUCT INFORMATION",
+    title: form?.title || productName,
+    description: form?.description || "Thông tin sản phẩm sẽ được cập nhật chi tiết theo hồ sơ sản phẩm chính thức.",
+    legalInfo: form?.legalInfo || legacyInfo,
+    productItems: form?.productItems || [],
+    cautions: form?.cautions || [
+      "Thông tin lưu ý sử dụng sẽ được cập nhật theo hồ sơ sản phẩm chính thức."
+    ],
+    storage: form?.storage || "Thông tin bảo quản sẽ được cập nhật.",
+    qualityGuarantee: form?.qualityGuarantee || "Thông tin đảm bảo chất lượng sẽ được cập nhật.",
+    showDescription: form?.showDescription ?? true,
+    showLegalInfo: form?.showLegalInfo ?? true,
+    showProductItems: form?.showProductItems ?? false,
+    showIngredients: form?.showIngredients ?? false,
+    showCautions: form?.showCautions ?? true,
+    showStorage: form?.showStorage ?? true,
+    showQualityGuarantee: form?.showQualityGuarantee ?? true,
+  };
 }
 
 export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: ProductLandingPageProps) {
@@ -248,25 +308,11 @@ export function ProductLandingPage({ content, cosmeticMedia, canonicalPath }: Pr
         </div>
       </section>
 
-      {/* ─── PRODUCT INFORMATION ───────────────────────────────────────────────── */}
-      <section className="py-20 md:py-24 px-6 border-b border-slate-100">
-        <div className="max-w-4xl mx-auto space-y-10">
-          
-          <div className="text-center space-y-2">
-            <span className="text-[10px] font-bold text-[#050A5C]/50 tracking-[0.2em] uppercase block">SPECIFICATIONS</span>
-            <h2 className="text-xl md:text-2xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">Thông Tin Chi Tiết</h2>
-          </div>
-
-          <div className="bg-white border border-slate-200 overflow-hidden max-w-2xl mx-auto divide-y divide-slate-100">
-            {content.productInfo.map((info, idx) => (
-              <div key={idx} className="grid grid-cols-1 md:grid-cols-[180px_1fr] p-4 gap-2 text-xs">
-                <span className="font-bold text-[#050A5C] uppercase tracking-wider text-[10px] md:pt-0.5">{info.label}</span>
-                <span className="text-slate-600 font-light leading-relaxed">{info.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ─── PRODUCT DETAIL FORM ────────────────────────────────────────────── */}
+      <ProductDetailForm
+        productDetailForm={normalizeGenericProductDetailForm(content)}
+        cosmeticMedia={cosmeticMedia}
+      />
 
       {/* ─── FINAL CTA ─────────────────────────────────────────────────────────── */}
       <section className="bg-[#050A5C] py-20 md:py-24 px-6 text-center relative overflow-hidden">

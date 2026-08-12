@@ -679,9 +679,10 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandUsageSteps(usageGuide.steps && usageGuide.steps.length > 0 ? usageGuide.steps : DEFAULT_USAGE_STEPS);
 
       const detailForm = content.productDetailForm || {};
-      setLandProductDetailFormEyebrow(detailForm.eyebrow || '');
-      setLandProductDetailFormTitle(detailForm.title || '');
-      setLandProductDetailFormDescription(detailForm.description || '');
+      const isLuminousBlock = block.block_type === 'cosmetic-product-landing-luminous-set';
+      setLandProductDetailFormEyebrow(detailForm.eyebrow || 'PRODUCT INFORMATION');
+      setLandProductDetailFormTitle(detailForm.title || content.title || '');
+      setLandProductDetailFormDescription(detailForm.description || (isLuminousBlock ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.description : 'Thông tin sản phẩm sẽ được cập nhật chi tiết theo hồ sơ sản phẩm chính thức.'));
       setLandProductDetailFormOfflineTitle(detailForm.offlineTitle || '');
       setLandProductDetailFormOfflineDescription(detailForm.offlineDescription || '');
       setLandProductDetailFormOfflineMediaSlot(detailForm.offlineMediaSlot || 'cosmetic-luminous-offline-experience-image');
@@ -694,18 +695,38 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandDetailOfflineOverlayStrength(detailForm.offlineOverlayStrength || 'medium');
       setLandDetailShowDescription(detailForm.showDescription ?? true);
       setLandDetailShowLegalInfo(detailForm.showLegalInfo ?? true);
-      setLandDetailShowProductItems(detailForm.showProductItems ?? true);
-      setLandDetailShowIngredients(detailForm.showIngredients ?? true);
+      setLandDetailShowProductItems(detailForm.showProductItems ?? (isLuminousBlock ? true : false));
+      setLandDetailShowIngredients(detailForm.showIngredients ?? (isLuminousBlock ? true : false));
       setLandDetailShowCautions(detailForm.showCautions ?? true);
       setLandDetailShowStorage(detailForm.showStorage ?? true);
       setLandDetailShowQualityGuarantee(detailForm.showQualityGuarantee ?? true);
-      setLandProductDetailFormLegalInfo(detailForm.legalInfo && detailForm.legalInfo.length > 0 ? detailForm.legalInfo : (block.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.legalInfo : []));
-      setLandProductDetailFormProductItems(detailForm.productItems && detailForm.productItems.length > 0 ? detailForm.productItems : (block.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.productItems : []));
+
+      const defaultLegalInfo = isLuminousBlock
+        ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.legalInfo
+        : [
+            { label: "Tên sản phẩm", value: content.title || "Sản phẩm", highlight: false },
+            { label: "Trạng thái nội dung", value: "Đang cập nhật thông tin chi tiết", highlight: false }
+          ];
+
+      const defaultCautions = isLuminousBlock
+        ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.cautions
+        : ["Thông tin lưu ý sử dụng sẽ được cập nhật theo hồ sơ sản phẩm chính thức."];
+
+      const defaultStorage = isLuminousBlock
+        ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.storage
+        : "Thông tin bảo quản sẽ được cập nhật.";
+
+      const defaultQualityGuarantee = isLuminousBlock
+        ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.qualityGuarantee
+        : "Thông tin đảm bảo chất lượng sẽ được cập nhật.";
+
+      setLandProductDetailFormLegalInfo(detailForm.legalInfo && detailForm.legalInfo.length > 0 ? detailForm.legalInfo : defaultLegalInfo);
+      setLandProductDetailFormProductItems(detailForm.productItems && detailForm.productItems.length > 0 ? detailForm.productItems : (isLuminousBlock ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.productItems : []));
       setLandProductDetailFormInfo(detailForm.info || []);
       setLandProductDetailFormIngredientGroups(detailForm.ingredientGroups || []);
-      setLandProductDetailFormCautions(detailForm.cautions || []);
-      setLandProductDetailFormStorage(detailForm.storage || '');
-      setLandProductDetailFormQualityGuarantee(detailForm.qualityGuarantee || '');
+      setLandProductDetailFormCautions(detailForm.cautions && detailForm.cautions.length > 0 ? detailForm.cautions : defaultCautions);
+      setLandProductDetailFormStorage(detailForm.storage || defaultStorage);
+      setLandProductDetailFormQualityGuarantee(detailForm.qualityGuarantee || defaultQualityGuarantee);
 
       setLandInsideSet(content.insideSet || content.setProducts || []);
       setLandRecoverySteps(content.recoverySteps || content.recoveryLogic || []);
@@ -1017,13 +1038,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             showCautions: landDetailShowCautions,
             showStorage: landDetailShowStorage,
             showQualityGuarantee: landDetailShowQualityGuarantee,
-            legalInfo: landProductDetailFormLegalInfo.length > 0 ? landProductDetailFormLegalInfo : (editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.legalInfo : []),
+            legalInfo: landProductDetailFormLegalInfo.length > 0 ? landProductDetailFormLegalInfo : (editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.legalInfo : [{ label: "Tên sản phẩm", value: landProductDetailFormTitle || editingBlock.content?.title || "Sản phẩm", highlight: false }, { label: "Trạng thái nội dung", value: "Đang cập nhật thông tin chi tiết", highlight: false }]),
             productItems: landProductDetailFormProductItems.length > 0 ? landProductDetailFormProductItems : (editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.productItems : []),
             info: landProductDetailFormInfo,
             ingredientGroups: landProductDetailFormIngredientGroups,
-            cautions: landProductDetailFormCautions,
-            storage: landProductDetailFormStorage,
-            qualityGuarantee: landProductDetailFormQualityGuarantee
+            cautions: landProductDetailFormCautions.length > 0 ? landProductDetailFormCautions : (editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.cautions : ["Thông tin lưu ý sử dụng sẽ được cập nhật theo hồ sơ sản phẩm chính thức."]),
+            storage: landProductDetailFormStorage || (editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.storage : "Thông tin bảo quản sẽ được cập nhật."),
+            qualityGuarantee: landProductDetailFormQualityGuarantee || (editingBlock.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.qualityGuarantee : "Thông tin đảm bảo chất lượng sẽ được cập nhật.")
           };
         }
 
@@ -3740,13 +3761,17 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                       </details>
                     )}
                     {/* 2.96. Product Detail Form (Only for Luminous Set) */}
-                    {editingBlock.block_type === 'cosmetic-product-landing-luminous-set' && (
+                    {editingBlock.block_type.startsWith('cosmetic-product-landing-') && (
                       <details className="group border border-slate-200 rounded-xl overflow-hidden">
                         <summary className="px-4 py-3 bg-slate-50 hover:bg-slate-100 cursor-pointer font-bold text-xs text-slate-700 select-none transition flex items-center justify-between">
                           <span>7. Product Detail Form</span>
                           <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                         </summary>
                         <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
+                          
+                          <div className="col-span-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-[11px] font-medium leading-relaxed">
+                            <span className="font-bold text-amber-950">Lưu ý:</span> Form này dùng chung ADN thiết kế legal/product information. Nội dung pháp lý chi tiết cần nhập theo hồ sơ từng sản phẩm, không dùng dữ liệu mẫu làm thông tin cuối cùng.
+                          </div>
                           
                           {/* Header section */}
                           <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
