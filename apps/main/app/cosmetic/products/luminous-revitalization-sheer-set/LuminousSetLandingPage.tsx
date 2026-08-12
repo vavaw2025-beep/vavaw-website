@@ -496,23 +496,31 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         const showSbDesc = rawSkinBarrier.showDescription !== false;
         const showSbCaption = rawSkinBarrier.showCaption !== false;
 
-        const sbDesktopUrl = cosmeticMedia[skinBarrier.desktopMediaSlot as string] || cosmeticMedia[skinBarrier.mediaSlot as string] || cosmeticMedia['cosmetic-luminous-skin-barrier-image'];
-        const sbMobileUrl = cosmeticMedia[skinBarrier.mobileMediaSlot as string] || sbDesktopUrl;
-        const sbFinalDesktopUrl = (typeof sbDesktopUrl === 'string' && sbDesktopUrl.trim() && !sbDesktopUrl.includes('/PASTE')) ? sbDesktopUrl.trim() : null;
-        const sbFinalMobileUrl = (typeof sbMobileUrl === 'string' && sbMobileUrl.trim() && !sbMobileUrl.includes('/PASTE')) ? sbMobileUrl.trim() : null;
+        const sbDesktopRaw = cosmeticMedia[skinBarrier.desktopMediaSlot as string] || cosmeticMedia['cosmetic-luminous-skin-barrier-desktop'] || cosmeticMedia[skinBarrier.mediaSlot as string] || cosmeticMedia['cosmetic-luminous-skin-barrier-image'] || null;
+        const sbFinalDesktopUrl = (typeof sbDesktopRaw === 'string' && sbDesktopRaw.trim() && !sbDesktopRaw.includes('/PASTE')) ? sbDesktopRaw.trim() : null;
+
+        const sbMobileRaw = cosmeticMedia[skinBarrier.mobileMediaSlot as string] || cosmeticMedia['cosmetic-luminous-skin-barrier-mobile'] || cosmeticMedia[skinBarrier.mediaSlot as string] || cosmeticMedia['cosmetic-luminous-skin-barrier-image'] || sbFinalDesktopUrl || null;
+        const sbFinalMobileUrl = (typeof sbMobileRaw === 'string' && sbMobileRaw.trim() && !sbMobileRaw.includes('/PASTE')) ? sbMobileRaw.trim() : null;
 
         const rawMg3 = content.mg3Plus || {};
         const mg3 = { ...DEFAULT_MG3_PLUS, ...rawMg3 };
         const showMg3Desc = rawMg3.showDescription !== false;
         const showMg3Caption = rawMg3.showCaption !== false;
 
-        const mg3DesktopUrl = cosmeticMedia[mg3.desktopMediaSlot as string] || cosmeticMedia[mg3.mediaSlot as string] || cosmeticMedia['cosmetic-luminous-mg3-plus-image'];
-        const mg3MobileUrl = cosmeticMedia[mg3.mobileMediaSlot as string] || mg3DesktopUrl;
-        const mg3FinalDesktopUrl = (typeof mg3DesktopUrl === 'string' && mg3DesktopUrl.trim() && !mg3DesktopUrl.includes('/PASTE')) ? mg3DesktopUrl.trim() : null;
-        const mg3FinalMobileUrl = (typeof mg3MobileUrl === 'string' && mg3MobileUrl.trim() && !mg3MobileUrl.includes('/PASTE')) ? mg3MobileUrl.trim() : null;
+        const mg3DesktopRaw = cosmeticMedia[mg3.desktopMediaSlot as string] || cosmeticMedia['cosmetic-luminous-mg3-plus-desktop'] || cosmeticMedia[mg3.mediaSlot as string] || cosmeticMedia['cosmetic-luminous-mg3-plus-image'] || null;
+        const mg3FinalDesktopUrl = (typeof mg3DesktopRaw === 'string' && mg3DesktopRaw.trim() && !mg3DesktopRaw.includes('/PASTE')) ? mg3DesktopRaw.trim() : null;
+
+        const mg3MobileRaw = cosmeticMedia[mg3.mobileMediaSlot as string] || cosmeticMedia['cosmetic-luminous-mg3-plus-mobile'] || cosmeticMedia[mg3.mediaSlot as string] || cosmeticMedia['cosmetic-luminous-mg3-plus-image'] || mg3FinalDesktopUrl || null;
+        const mg3FinalMobileUrl = (typeof mg3MobileRaw === 'string' && mg3MobileRaw.trim() && !mg3MobileRaw.includes('/PASTE')) ? mg3MobileRaw.trim() : null;
 
         return (
-          <section className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100">
+          <section 
+            className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100"
+            data-skin-barrier-desktop-url={sbFinalDesktopUrl || ""}
+            data-skin-barrier-mobile-url={sbFinalMobileUrl || ""}
+            data-mg3-plus-desktop-url={mg3FinalDesktopUrl || ""}
+            data-mg3-plus-mobile-url={mg3FinalMobileUrl || ""}
+          >
             <div className="max-w-[1200px] mx-auto space-y-12 md:space-y-20">
               
               {/* Panel 1: Skin Barrier (Text Left, Image Right) md:grid-cols-[0.46fr_0.54fr] */}
@@ -544,7 +552,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                   <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(5,10,92,0.03)] z-10" />
                   
                   {/* Mobile Image */}
-                  <div className="absolute inset-0 w-full h-full md:hidden">
+                  <div className="absolute inset-0 w-full h-full block md:hidden">
                     {sbFinalMobileUrl ? (
                       <img src={sbFinalMobileUrl} alt={skinBarrier.title} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
@@ -596,7 +604,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                   <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(5,10,92,0.03)] z-10" />
 
                   {/* Mobile Image */}
-                  <div className="absolute inset-0 w-full h-full md:hidden">
+                  <div className="absolute inset-0 w-full h-full block md:hidden">
                     {mg3FinalMobileUrl ? (
                       <img src={mg3FinalMobileUrl} alt={mg3.title} className="w-full h-full object-cover" loading="lazy" />
                     ) : (

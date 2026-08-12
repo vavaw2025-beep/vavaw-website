@@ -785,9 +785,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               showTitle: landBarrierShowTitle,
               description: landBarrierDescription,
               showDescription: landBarrierShowDescription,
-              mediaSlot: landBarrierMediaSlot,
-              desktopMediaSlot: landBarrierDesktopMediaSlot,
-              mobileMediaSlot: landBarrierMobileMediaSlot,
+              mediaSlot: 'cosmetic-luminous-skin-barrier-image',
+              desktopMediaSlot: 'cosmetic-luminous-skin-barrier-desktop',
+              mobileMediaSlot: 'cosmetic-luminous-skin-barrier-mobile',
               desktopImageMode: landBarrierDesktopImageMode,
               desktopObjectPosition: landBarrierDesktopObjectPosition,
               mobileObjectPosition: landBarrierMobileObjectPosition
@@ -798,9 +798,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               showTitle: landBarrierMg3ShowTitle,
               description: landBarrierMg3Description,
               showDescription: landBarrierMg3ShowDescription,
-              mediaSlot: landBarrierMg3MediaSlot,
-              desktopMediaSlot: landBarrierMg3DesktopMediaSlot,
-              mobileMediaSlot: landBarrierMg3MobileMediaSlot,
+              mediaSlot: 'cosmetic-luminous-mg3-plus-image',
+              desktopMediaSlot: 'cosmetic-luminous-mg3-plus-desktop',
+              mobileMediaSlot: 'cosmetic-luminous-mg3-plus-mobile',
               desktopImageMode: landBarrierMg3DesktopImageMode,
               desktopObjectPosition: landBarrierMg3DesktopObjectPosition,
               mobileObjectPosition: landBarrierMg3MobileObjectPosition
@@ -2952,22 +2952,25 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                               </div>
                               
                               <div className="col-span-2 md:col-span-1 space-y-4">
+                                <p className="text-[11px] text-amber-600 font-medium bg-amber-50 p-2 rounded-md border border-amber-100">
+                                  Desktop và mobile là 2 slot độc lập. Hệ thống không tự đảo ảnh theo kích thước.
+                                </p>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Desktop (Bắt buộc)</label>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh desktop ngang — Skin Barrier</label>
                                   <div className="flex gap-2 mb-2">
                                     <input type="text" value={landBarrierDesktopMediaSlot} onChange={e => setLandBarrierDesktopMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-skin-barrier-desktop" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
                                   </div>
-                                  {renderSlotCard({ id: landBarrierDesktopMediaSlot || 'cosmetic-luminous-skin-barrier-desktop', name: 'Ảnh Skin Barrier (Desktop)', size: '1600x1200' })}
+                                  {renderSlotCard({ id: landBarrierDesktopMediaSlot || 'cosmetic-luminous-skin-barrier-desktop', name: 'Ảnh desktop ngang — Skin Barrier', size: '1600x1000 hoặc 1200x760' })}
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Mobile (Bắt buộc)</label>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh mobile dọc — Skin Barrier</label>
                                   <div className="flex gap-2 mb-2">
                                     <input type="text" value={landBarrierMobileMediaSlot} onChange={e => setLandBarrierMobileMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-skin-barrier-mobile" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
                                   </div>
-                                  {renderSlotCard({ id: landBarrierMobileMediaSlot || 'cosmetic-luminous-skin-barrier-mobile', name: 'Ảnh Skin Barrier (Mobile)', size: '800x1000' })}
+                                  {renderSlotCard({ id: landBarrierMobileMediaSlot || 'cosmetic-luminous-skin-barrier-mobile', name: 'Ảnh mobile dọc — Skin Barrier', size: '800x1000' })}
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Fallback</label>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh fallback — Skin Barrier</label>
                                   <div className="flex gap-2 mb-2">
                                     <input type="text" value={landBarrierMediaSlot} onChange={e => setLandBarrierMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-skin-barrier-image" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
                                   </div>
@@ -3038,22 +3041,25 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                               </div>
                               
                               <div className="col-span-2 md:col-span-1 space-y-4">
+                                <p className="text-[11px] text-amber-600 font-medium bg-amber-50 p-2 rounded-md border border-amber-100">
+                                  Desktop và mobile là 2 slot độc lập. Hệ thống không tự đảo ảnh theo kích thước.
+                                </p>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Desktop (Bắt buộc)</label>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh desktop ngang — MG3-Plus</label>
                                   <div className="flex gap-2 mb-2">
                                     <input type="text" value={landBarrierMg3DesktopMediaSlot} onChange={e => setLandBarrierMg3DesktopMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-mg3-plus-desktop" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
                                   </div>
-                                  {renderSlotCard({ id: landBarrierMg3DesktopMediaSlot || 'cosmetic-luminous-mg3-plus-desktop', name: 'Ảnh MG3-Plus (Desktop)', size: '1600x1200' })}
+                                  {renderSlotCard({ id: landBarrierMg3DesktopMediaSlot || 'cosmetic-luminous-mg3-plus-desktop', name: 'Ảnh desktop ngang — MG3-Plus', size: '1600x1000 hoặc 1200x760' })}
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Mobile (Bắt buộc)</label>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh mobile dọc — MG3-Plus</label>
                                   <div className="flex gap-2 mb-2">
                                     <input type="text" value={landBarrierMg3MobileMediaSlot} onChange={e => setLandBarrierMg3MobileMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-mg3-plus-mobile" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
                                   </div>
-                                  {renderSlotCard({ id: landBarrierMg3MobileMediaSlot || 'cosmetic-luminous-mg3-plus-mobile', name: 'Ảnh MG3-Plus (Mobile)', size: '800x1000' })}
+                                  {renderSlotCard({ id: landBarrierMg3MobileMediaSlot || 'cosmetic-luminous-mg3-plus-mobile', name: 'Ảnh mobile dọc — MG3-Plus', size: '800x1000' })}
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Fallback</label>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh fallback — MG3-Plus</label>
                                   <div className="flex gap-2 mb-2">
                                     <input type="text" value={landBarrierMg3MediaSlot} onChange={e => setLandBarrierMg3MediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-mg3-plus-image" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
                                   </div>
