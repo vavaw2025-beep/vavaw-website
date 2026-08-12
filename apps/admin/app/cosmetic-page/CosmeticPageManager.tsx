@@ -234,6 +234,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landAiMobileImageMode, setLandAiMobileImageMode] = useState('cover');
   const [landAiDesktopObjectPosition, setLandAiDesktopObjectPosition] = useState('center center');
   const [landAiMobileObjectPosition, setLandAiMobileObjectPosition] = useState('center top');
+  const [landAiEnableMotion, setLandAiEnableMotion] = useState(true);
+  const [landAiMotionStyle, setLandAiMotionStyle] = useState('elegant-science');
+  const [landAiAutoRotate, setLandAiAutoRotate] = useState(true);
+  const [landAiShowIcons, setLandAiShowIcons] = useState(true);
+  const [landAiHighlightActive, setLandAiHighlightActive] = useState(true);
   const DEFAULT_AI_ITEMS = [
     { name: 'Exosome', englishName: 'Exosome Technology', role: 'Tín hiệu tế bào', description: 'Truyền tín hiệu sinh học giúp tế bào da nhận ra và phản ứng với quá trình tái tạo.', benefit: 'Phục hồi tế bào', highlight: true },
     { name: 'Peptide Complex', englishName: 'Multi-Peptide Complex', role: 'Nâng đỡ cấu trúc', description: 'Kích hoạt tổng hợp collagen và elastin, cải thiện độ săn chắc từ nền tảng.', benefit: 'Săn chắc da', highlight: true },
@@ -565,6 +570,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandAiDesktopObjectPosition(aiMap.desktopObjectPosition || 'center center');
       setLandAiMobileObjectPosition(aiMap.mobileObjectPosition || 'center top');
       setLandAiItems(aiMap.items && aiMap.items.length ? aiMap.items : DEFAULT_AI_ITEMS);
+      setLandAiEnableMotion(aiMap.enableMotion ?? true);
+      setLandAiMotionStyle(aiMap.motionStyle || 'elegant-science');
+      setLandAiAutoRotate(aiMap.autoRotateIngredients ?? true);
+      setLandAiShowIcons(aiMap.showIngredientIcons ?? true);
+      setLandAiHighlightActive(aiMap.highlightActiveIngredient ?? true);
 
       const usageGuide = content.usageGuide || {};
       setLandUsageGuideEyebrow(usageGuide.eyebrow || '');
@@ -848,7 +858,12 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             mobileImageMode: landAiMobileImageMode,
             desktopObjectPosition: landAiDesktopObjectPosition,
             mobileObjectPosition: landAiMobileObjectPosition,
-            items: landAiItems
+            items: landAiItems,
+            enableMotion: landAiEnableMotion,
+            motionStyle: landAiMotionStyle,
+            autoRotateIngredients: landAiAutoRotate,
+            showIngredientIcons: landAiShowIcons,
+            highlightActiveIngredient: landAiHighlightActive,
           };
           updatedContent.usageGuide = {
             eyebrow: landUsageGuideEyebrow,
@@ -3319,6 +3334,57 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             </div>
                           </div>
 
+                          {/* Motion & Science Panel */}
+                          <details className="group border border-indigo-100 rounded-xl overflow-hidden">
+                            <summary className="px-4 py-3 bg-indigo-50 hover:bg-indigo-100 cursor-pointer font-bold text-xs text-indigo-800 select-none transition flex items-center justify-between">
+                              <span>✨ Motion & Khoa học</span>
+                              <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
+                            </summary>
+                            <div className="p-4 border-t border-indigo-100 bg-white space-y-4">
+                              {/* Enable motion toggle */}
+                              <div className="flex items-center justify-between">
+                                <label className="text-[11px] font-semibold text-slate-700">Bật hiệu ứng chuyển động</label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={landAiEnableMotion} onChange={e => setLandAiEnableMotion(e.target.checked)} className="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+                                  <span className="text-[10px] text-slate-500 font-medium">{landAiEnableMotion ? 'Bật' : 'Tắt'}</span>
+                                </label>
+                              </div>
+                              {/* Motion style select */}
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Phong cách khoa học</label>
+                                <select value={landAiMotionStyle} onChange={e => setLandAiMotionStyle(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700" disabled={!landAiEnableMotion}>
+                                  <option value="elegant-science">Khoa học tinh tế</option>
+                                  <option value="clinical-diagram">Sơ đồ lâm sàng</option>
+                                  <option value="editorial-luxury">Editorial cao cấp</option>
+                                </select>
+                              </div>
+                              {/* Auto rotate toggle */}
+                              <div className="flex items-center justify-between">
+                                <label className="text-[11px] font-semibold text-slate-700">Tự động xoay thành phần</label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={landAiAutoRotate} onChange={e => setLandAiAutoRotate(e.target.checked)} className="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500" disabled={!landAiEnableMotion} />
+                                  <span className="text-[10px] text-slate-500 font-medium">{landAiAutoRotate ? 'Bật' : 'Tắt'}</span>
+                                </label>
+                              </div>
+                              {/* Show icons toggle */}
+                              <div className="flex items-center justify-between">
+                                <label className="text-[11px] font-semibold text-slate-700">Hiển thị icon thành phần</label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={landAiShowIcons} onChange={e => setLandAiShowIcons(e.target.checked)} className="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+                                  <span className="text-[10px] text-slate-500 font-medium">{landAiShowIcons ? 'Bật' : 'Tắt'}</span>
+                                </label>
+                              </div>
+                              {/* Highlight active toggle */}
+                              <div className="flex items-center justify-between">
+                                <label className="text-[11px] font-semibold text-slate-700">Nổi bật thành phần đang chọn</label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={landAiHighlightActive} onChange={e => setLandAiHighlightActive(e.target.checked)} className="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+                                  <span className="text-[10px] text-slate-500 font-medium">{landAiHighlightActive ? 'Bật' : 'Tắt'}</span>
+                                </label>
+                              </div>
+                            </div>
+                          </details>
+
                           {/* Ingredients Repeater */}
                           <div className="space-y-3 p-5 border border-slate-100 rounded-xl bg-slate-50/50">
                             <h4 className="text-[13px] font-bold text-[#050A5C] uppercase tracking-wider border-b border-slate-200 pb-2">Danh sách thành phần hoạt chất</h4>
@@ -3346,7 +3412,19 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                       <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Mô tả (Description)</label>
                                       <textarea value={item.description || ''} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], description: e.target.value }; setLandAiItems(l); }} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-600" />
                                     </div>
-                                    <div className="col-span-2 flex items-center gap-2">
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Loại icon (Icon Type)</label>
+                                      <select value={item.iconType || ''} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], iconType: e.target.value || undefined }; setLandAiItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                        <option value="">— Không chọn —</option>
+                                        <option value="exosome">Exosome</option>
+                                        <option value="collagen">Collagen</option>
+                                        <option value="berry">Berry Antioxidant</option>
+                                        <option value="peptide">Peptide Chain</option>
+                                        <option value="hyaluronic">Hyaluronic Hydration</option>
+                                        <option value="custom">Tùy chỉnh</option>
+                                      </select>
+                                    </div>
+                                    <div className="flex items-center gap-2 pt-4">
                                       <input type="checkbox" id={`ai-highlight-${idx}`} checked={item.highlight || false} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], highlight: e.target.checked }; setLandAiItems(l); }} className="w-3 h-3 text-[#050A5C] border-slate-300 rounded focus:ring-[#050A5C]" />
                                       <label htmlFor={`ai-highlight-${idx}`} className="text-[10px] text-slate-600 font-medium cursor-pointer">Nổi bật (Highlight)</label>
                                     </div>

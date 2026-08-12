@@ -91,6 +91,7 @@ export interface LuminousActiveIngredientItem {
   description?: string;
   benefit?: string;
   highlight?: boolean;
+  iconType?: 'exosome' | 'collagen' | 'berry' | 'peptide' | 'hyaluronic' | 'custom';
 }
 
 export interface LuminousActiveIngredientsMap {
@@ -109,6 +110,11 @@ export interface LuminousActiveIngredientsMap {
   desktopObjectPosition?: string;
   mobileObjectPosition?: string;
   items?: LuminousActiveIngredientItem[];
+  enableMotion?: boolean;
+  motionStyle?: 'elegant-science' | 'clinical-diagram' | 'editorial-luxury';
+  autoRotateIngredients?: boolean;
+  showIngredientIcons?: boolean;
+  highlightActiveIngredient?: boolean;
 }
 
 export interface ProductLandingContent {

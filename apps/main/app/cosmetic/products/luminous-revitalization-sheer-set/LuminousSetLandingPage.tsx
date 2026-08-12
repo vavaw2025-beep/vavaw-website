@@ -1,3 +1,5 @@
+'use client';
+import React from 'react';
 import { ShieldCheck, ChevronRight, ArrowRight, Check, ChevronDown, Droplets, Shield, Sparkles } from 'lucide-react';
 import { CosmeticCtaTracker } from '../../cosmetic-tracker';
 import { SiteFooter } from '@vavaw/ui';
@@ -83,6 +85,156 @@ function ScienceMediaBox({
   );
 }
 
+// ─── INGREDIENT ICON COMPONENTS ──────────────────────────────────────────────
+
+function ExosomeIcon({ active, className = '' }: { active?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 28 28" className={`w-7 h-7 ${className}`} aria-hidden="true">
+      {/* Outer pulse ring */}
+      <circle cx="14" cy="14" r="12" fill="none" stroke="#D9DEEA" strokeWidth="1" />
+      {/* Inner ring */}
+      <circle cx="14" cy="14" r="7" fill="none" stroke={active ? '#C8AB6E' : '#050A5C'} strokeWidth="1.2"
+        style={{ opacity: active ? 1 : 0.4, transition: 'all 0.4s ease' }} />
+      {/* Center dot */}
+      <circle cx="14" cy="14" r="2.5" fill={active ? '#C8AB6E' : '#050A5C'}
+        style={{ opacity: active ? 1 : 0.5, transition: 'all 0.4s ease' }} />
+      {/* Orbit dots */}
+      {[0, 60, 120, 180, 240, 300].map((deg, i) => {
+        const rad = (deg * Math.PI) / 180;
+        const x = 14 + 10 * Math.cos(rad);
+        const y = 14 + 10 * Math.sin(rad);
+        return <circle key={i} cx={x} cy={y} r="1" fill={active ? '#C8AB6E' : '#050A5C'} opacity={active ? 0.7 : 0.25} />;
+      })}
+    </svg>
+  );
+}
+
+function CollagenIcon({ active, className = '' }: { active?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 28 28" className={`w-7 h-7 ${className}`} aria-hidden="true">
+      {/* Wave lines */}
+      <path d="M4 14 Q8 10 12 14 Q16 18 20 14 Q22 11 24 14" fill="none"
+        stroke={active ? '#C8AB6E' : '#050A5C'} strokeWidth="1.5" strokeLinecap="round"
+        style={{ opacity: active ? 1 : 0.5, transition: 'all 0.4s ease' }} />
+      {/* Moisture dots */}
+      {[7, 14, 21].map((x, i) => (
+        <ellipse key={i} cx={x} cy="20" rx="1.5" ry="2"
+          fill={active ? '#C8AB6E' : '#D9DEEA'}
+          style={{ opacity: active ? 0.8 : 0.4, transition: 'all 0.4s ease' }} />
+      ))}
+    </svg>
+  );
+}
+
+function BerryAntioxidantIcon({ active, className = '' }: { active?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 28 28" className={`w-7 h-7 ${className}`} aria-hidden="true">
+      {/* Central berry */}
+      <circle cx="14" cy="14" r="4" fill={active ? '#C8AB6E' : '#050A5C'}
+        style={{ opacity: active ? 1 : 0.5, transition: 'all 0.4s ease' }} />
+      {/* Orbit ring */}
+      <circle cx="14" cy="14" r="9" fill="none" stroke="#D9DEEA" strokeWidth="0.8" strokeDasharray="2 3" />
+      {/* Orbiting dots */}
+      {[45, 135, 225, 315].map((deg, i) => {
+        const rad = (deg * Math.PI) / 180;
+        const x = 14 + 9 * Math.cos(rad);
+        const y = 14 + 9 * Math.sin(rad);
+        return <circle key={i} cx={x} cy={y} r="2" fill={active ? '#C8AB6E' : '#050A5C'}
+          style={{ opacity: active ? 0.8 : 0.35, transition: 'all 0.4s ease' }} />;
+      })}
+    </svg>
+  );
+}
+
+function PeptideChainIcon({ active, className = '' }: { active?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 28 28" className={`w-7 h-7 ${className}`} aria-hidden="true">
+      {/* Chain links */}
+      {[4, 10, 16, 22].map((x, i) => (
+        <circle key={i} cx={x} cy="14" r="2.5" fill="none"
+          stroke={active ? '#C8AB6E' : '#050A5C'} strokeWidth="1.2"
+          style={{ opacity: active ? 1 : 0.5, transition: 'all 0.4s ease' }} />
+      ))}
+      {/* Chain connectors */}
+      {[7, 13, 19].map((x, i) => (
+        <line key={i} x1={x} y1="14" x2={x + 3} y2="14"
+          stroke={active ? '#C8AB6E' : '#D9DEEA'} strokeWidth="1"
+          style={{ opacity: active ? 0.8 : 0.5 }} />
+      ))}
+      {/* Signal dot moving along chain */}
+      <circle cx="4" cy="14" r="1.5" fill={active ? '#C8AB6E' : '#050A5C'}
+        style={{ opacity: active ? 1 : 0.6, transition: 'all 0.4s ease' }} />
+    </svg>
+  );
+}
+
+function HyaluronicHydrationIcon({ active, className = '' }: { active?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 28 28" className={`w-7 h-7 ${className}`} aria-hidden="true">
+      {/* Large water drop */}
+      <path d="M14 4 C14 4 7 13 7 17 a7 7 0 0 0 14 0 C21 13 14 4 14 4Z" fill="none"
+        stroke={active ? '#C8AB6E' : '#050A5C'} strokeWidth="1.3"
+        style={{ opacity: active ? 1 : 0.5, transition: 'all 0.4s ease' }} />
+      {/* Inner glow dot */}
+      <circle cx="14" cy="18" r="2.5" fill={active ? '#C8AB6E' : '#D9DEEA'}
+        style={{ opacity: active ? 0.9 : 0.5, transition: 'all 0.4s ease' }} />
+      {/* Small satellite drops */}
+      <circle cx="8" cy="9" r="1.5" fill={active ? '#C8AB6E' : '#050A5C'}
+        style={{ opacity: active ? 0.6 : 0.25 }} />
+      <circle cx="20" cy="9" r="1" fill={active ? '#C8AB6E' : '#050A5C'}
+        style={{ opacity: active ? 0.5 : 0.2 }} />
+    </svg>
+  );
+}
+
+// ─── INGREDIENT AMBIENT LAYER ─────────────────────────────────────────────────
+
+function IngredientAmbientLayer({ motionStyle = 'elegant-science', reduced = false }: { motionStyle?: string; reduced?: boolean }) {
+  if (reduced) return null;
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-10" aria-hidden="true">
+      {/* Slow outer ring */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-[90%] h-[90%] rounded-full border border-[#050A5C]/5"
+          style={{ animation: 'luminous-orbit-slow 24s linear infinite' }} />
+      </div>
+      {/* Medium ring */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-[60%] h-[60%] rounded-full border border-[#C8AB6E]/10"
+          style={{ animation: 'luminous-orbit-slow 16s linear infinite reverse' }} />
+      </div>
+      {/* Radial halo */}
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 60% 40%, rgba(200,171,110,0.06) 0%, transparent 65%)' }} />
+      {/* Floating dots */}
+      {[...Array(7)].map((_, i) => (
+        <div key={i} className="absolute rounded-full bg-[#C8AB6E]"
+          style={{
+            width: `${3 + (i % 3)}px`,
+            height: `${3 + (i % 3)}px`,
+            top: `${15 + i * 11}%`,
+            left: `${10 + i * 12}%`,
+            opacity: 0.15 + (i % 3) * 0.07,
+            animation: `luminous-float-${(i % 3) + 1} ${8 + i * 1.5}s ease-in-out infinite`,
+            animationDelay: `${i * 0.8}s`
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─── AUTO-DETECT ICON TYPE ────────────────────────────────────────────────────
+
+function autoDetectIconType(name: string): string {
+  const n = name.toLowerCase();
+  if (n.includes('exosome')) return 'exosome';
+  if (n.includes('collagen')) return 'collagen';
+  if (n.includes('berry')) return 'berry';
+  if (n.includes('peptide')) return 'peptide';
+  if (n.includes('hyaluron')) return 'hyaluronic';
+  return 'exosome';
+}
+
 interface ProductLandingPageProps {
   content: ProductLandingContent;
   cosmeticMedia: any;
@@ -159,6 +311,300 @@ const DEFAULT_ACTIVE_INGREDIENTS_MAP = {
     { name: "Hydrolyzed Hyaluronic Acid", englishName: "Hydrolyzed Hyaluronic Acid", role: "Moisture Retention", description: "Giúp bổ sung cảm giác ẩm mượt, hỗ trợ duy trì độ ẩm và tạo cảm giác da mềm mại hơn.", benefit: "Giữ ẩm và làm mềm da" }
   ]
 };
+
+// ─── BLOCK 5: ACTIVE INGREDIENTS (COMPONENT WITH HOOKS) ──────────────────────
+
+function LuminousActiveIngredientsBlock({
+  content,
+  cosmeticMedia
+}: {
+  content: ProductLandingContent;
+  cosmeticMedia: any;
+}) {
+  const rawActiveIng = (content as any).activeIngredientsMap || {};
+  const activeIngredients = {
+    ...DEFAULT_ACTIVE_INGREDIENTS_MAP,
+    ...rawActiveIng,
+    showDescription: rawActiveIng.showDescription !== false,
+    showCaption: rawActiveIng.showCaption !== false,
+    items: Array.isArray(rawActiveIng.items) && rawActiveIng.items.length > 0
+      ? rawActiveIng.items
+      : DEFAULT_ACTIVE_INGREDIENTS_MAP.items
+  };
+
+  const aiDesktopRaw = cosmeticMedia['cosmetic-luminous-active-ingredients-desktop'] || cosmeticMedia[activeIngredients.desktopMediaSlot as string] || cosmeticMedia['cosmetic-luminous-active-ingredients-image'] || cosmeticMedia[activeIngredients.mediaSlot as string] || null;
+  const aiDesktopUrl = (typeof aiDesktopRaw === 'string' && aiDesktopRaw.trim() && !aiDesktopRaw.includes('/PASTE')) ? aiDesktopRaw.trim() : null;
+
+  const aiMobileRaw = cosmeticMedia['cosmetic-luminous-active-ingredients-mobile'] || cosmeticMedia[activeIngredients.mobileMediaSlot as string] || cosmeticMedia['cosmetic-luminous-active-ingredients-image'] || cosmeticMedia[activeIngredients.mediaSlot as string] || aiDesktopUrl || null;
+  const aiMobileUrl = (typeof aiMobileRaw === 'string' && aiMobileRaw.trim() && !aiMobileRaw.includes('/PASTE')) ? aiMobileRaw.trim() : null;
+
+  // Motion state
+  const [activeIdx, setActiveIdx] = React.useState(0);
+  const [isPaused, setIsPaused] = React.useState(false);
+  const [reducedMotion, setReducedMotion] = React.useState(false);
+
+  const enableMotion = (activeIngredients as any).enableMotion !== false;
+  const autoRotate = (activeIngredients as any).autoRotateIngredients !== false;
+  const showIcons = (activeIngredients as any).showIngredientIcons !== false;
+
+  // Check prefers-reduced-motion on mount
+  React.useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // Auto-rotate
+  React.useEffect(() => {
+    if (!enableMotion || !autoRotate || isPaused || reducedMotion) return;
+    const timer = setInterval(() => {
+      setActiveIdx(prev => (prev + 1) % activeIngredients.items.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [enableMotion, autoRotate, isPaused, reducedMotion, activeIngredients.items.length]);
+
+  // Icon resolver
+  const resolveIcon = (item: any, isActive: boolean) => {
+    const iconType = (item as any).iconType || autoDetectIconType(item.name);
+    const props = { active: isActive };
+    switch (iconType) {
+      case 'exosome': return <ExosomeIcon {...props} />;
+      case 'collagen': return <CollagenIcon {...props} />;
+      case 'berry': return <BerryAntioxidantIcon {...props} />;
+      case 'peptide': return <PeptideChainIcon {...props} />;
+      case 'hyaluronic': return <HyaluronicHydrationIcon {...props} />;
+      default: return <ExosomeIcon {...props} />;
+    }
+  };
+
+  return (
+    <section
+      className="bg-white py-20 md:py-28 px-5 md:px-8 border-b border-slate-100"
+      data-active-ingredients-desktop-url={aiDesktopUrl || ""}
+      data-active-ingredients-mobile-url={aiMobileUrl || ""}
+    >
+      <style>{`
+        @keyframes luminous-orbit-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes luminous-float-1 {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes luminous-float-2 {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-12px); }
+        }
+        @keyframes luminous-float-3 {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-6px); }
+        }
+        @keyframes luminous-pulse-dot {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.9; transform: scale(1.3); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [style*='luminous-orbit-slow'],
+          [style*='luminous-float'] {
+            animation: none !important;
+          }
+        }
+      `}</style>
+      <div className="max-w-[1200px] mx-auto">
+        {/* Outer card */}
+        <div className="border border-[#D9DEEA] bg-[#F7F8FC] shadow-[0_24px_80px_rgba(5,10,92,0.08)] overflow-hidden rounded-2xl">
+
+          {/* DESKTOP LAYOUT */}
+          <div className="hidden md:grid md:grid-cols-[0.46fr_0.54fr]">
+            {/* Left: header text + image */}
+            <div className="flex flex-col border-r border-[#D9DEEA]">
+              {/* Header text */}
+              <div className="px-10 pt-12 pb-8">
+                {activeIngredients.eyebrow && (
+                  <p className="text-[9px] tracking-[0.22em] uppercase font-semibold text-[#050A5C]/50 mb-3">
+                    {activeIngredients.eyebrow}
+                  </p>
+                )}
+                {activeIngredients.title && (
+                  <h2
+                    className="text-[#050A5C] leading-snug mb-3"
+                    style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontSize: "clamp(1.35rem, 2vw, 1.875rem)", fontWeight: 600 }}
+                  >
+                    {activeIngredients.title}
+                  </h2>
+                )}
+                {activeIngredients.showDescription && activeIngredients.description && (
+                  <p className="text-sm text-slate-500 leading-relaxed">
+                    {activeIngredients.description}
+                  </p>
+                )}
+              </div>
+              {/* Image area fills remaining space */}
+              <div className="flex-1 relative min-h-[280px]">
+                <ScienceMediaBox
+                  className="absolute inset-0 hidden md:block"
+                  url={aiDesktopUrl}
+                  alt={activeIngredients.title || 'Active Ingredients Visual'}
+                  caption={activeIngredients.caption}
+                  showCaption={false}
+                  mediaRenderType={activeIngredients.mediaRenderType}
+                  imageMode={activeIngredients.desktopImageMode}
+                  objectPosition={activeIngredients.desktopObjectPosition}
+                  placeholderLabel="Active Ingredients Visual"
+                  captionPosition="bottom-left"
+                />
+                {/* Ambient overlay on top of image */}
+                <IngredientAmbientLayer motionStyle={(activeIngredients as any).motionStyle} reduced={reducedMotion} />
+              </div>
+              {/* Caption at bottom */}
+              {activeIngredients.showCaption && activeIngredients.caption && (
+                <div className="px-10 py-4 border-t border-[#D9DEEA]">
+                  <p className="text-[9px] tracking-widest uppercase text-[#050A5C]/40 italic">
+                    {activeIngredients.caption}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Right: ingredient list */}
+            <div className="px-10 py-12">
+              {/* Lab ruler line */}
+              <div className="flex items-center gap-3 mb-8">
+                <div className="flex-1 h-px bg-[#050A5C]/10" />
+                <span className="w-2 h-2 rounded-full bg-[#C8AB6E] shrink-0" />
+                <div className="flex-1 h-px bg-[#050A5C]/10" />
+              </div>
+              {activeIngredients.items.map((item: any, i: number) => {
+                const isActive = i === activeIdx;
+                return (
+                  <div
+                    key={i}
+                    className={`relative pl-6 mb-6 border-l-2 last:mb-0 cursor-pointer transition-all duration-300 ${
+                      isActive ? 'border-[#C8AB6E]' : 'border-[#D9DEEA]'
+                    }`}
+                    onMouseEnter={() => { setActiveIdx(i); setIsPaused(true); }}
+                    onMouseLeave={() => setIsPaused(false)}
+                  >
+                    {/* dot */}
+                    <div className={`absolute left-[-5px] top-1 w-2 h-2 rounded-full bg-[#C8AB6E] transition-all duration-300 ${isActive ? 'animate-pulse' : ''}`} />
+                    {/* Icon + role label row */}
+                    <div className="flex items-center gap-2 mb-1">
+                      {showIcons && (
+                        <span className="shrink-0">{resolveIcon(item, isActive)}</span>
+                      )}
+                      <p className={`text-[9px] tracking-[0.2em] uppercase font-medium transition-colors duration-300 ${
+                        isActive ? 'text-[#C8AB6E]' : 'text-[#C8AB6E]'
+                      }`}>{item.role}</p>
+                    </div>
+                    {/* name */}
+                    <h4 className={`text-sm font-semibold mb-1 transition-colors duration-300 ${
+                      isActive ? 'text-[#050A5C]' : 'text-[#050A5C]'
+                    }`}>{item.name}</h4>
+                    {/* description */}
+                    <p className="text-xs text-slate-500 leading-relaxed">{item.description}</p>
+                    {/* benefit tag */}
+                    {item.benefit && (
+                      <span className={`inline-block mt-2 text-[9px] tracking-widest uppercase px-2 py-0.5 rounded-sm border transition-all duration-300 ${
+                        isActive
+                          ? 'bg-[#C8AB6E]/10 text-[#050A5C]/80 border-[#C8AB6E]/30'
+                          : 'bg-[#050A5C]/5 text-[#050A5C]/60 border-[#050A5C]/10'
+                      }`}>{item.benefit}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* MOBILE LAYOUT */}
+          <div className="flex flex-col md:hidden">
+            {/* Header */}
+            <div className="px-5 pt-10 pb-6">
+              {activeIngredients.eyebrow && (
+                <p className="text-[9px] tracking-[0.22em] uppercase font-semibold text-[#050A5C]/50 mb-3">
+                  {activeIngredients.eyebrow}
+                </p>
+              )}
+              {activeIngredients.title && (
+                <h2
+                  className="text-[#050A5C] leading-snug mb-3"
+                  style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontSize: "1.5rem", fontWeight: 600 }}
+                >
+                  {activeIngredients.title}
+                </h2>
+              )}
+              {activeIngredients.showDescription && activeIngredients.description && (
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  {activeIngredients.description}
+                </p>
+              )}
+            </div>
+            {/* Mobile image full width */}
+            <div className="relative w-full" style={{ aspectRatio: '4/5' }}>
+              <ScienceMediaBox
+                className="absolute inset-0 block md:hidden"
+                url={aiMobileUrl}
+                alt={activeIngredients.title || 'Active Ingredients Visual'}
+                caption={undefined}
+                showCaption={false}
+                mediaRenderType={activeIngredients.mediaRenderType}
+                imageMode={activeIngredients.mobileImageMode}
+                objectPosition={activeIngredients.mobileObjectPosition}
+                placeholderLabel="Active Ingredients Visual"
+                captionPosition="bottom-right"
+              />
+            </div>
+            {/* Ingredient list */}
+            <div className="px-5 py-8 space-y-5">
+              {activeIngredients.items.map((item: any, i: number) => {
+                const isActive = i === activeIdx;
+                return (
+                  <div
+                    key={i}
+                    className={`relative pl-6 border-l-2 transition-all duration-300 ${
+                      isActive ? 'border-[#C8AB6E]' : 'border-[#D9DEEA]'
+                    }`}
+                    onTouchStart={() => { setActiveIdx(i); setIsPaused(true); }}
+                  >
+                    <div className={`absolute left-[-5px] top-1 w-2 h-2 rounded-full bg-[#C8AB6E] transition-all duration-300 ${isActive ? 'animate-pulse' : ''}`} />
+                    {/* Icon + role row */}
+                    <div className="flex items-center gap-2 mb-1">
+                      {showIcons && (
+                        <span className="shrink-0">{resolveIcon(item, isActive)}</span>
+                      )}
+                      <p className="text-[9px] tracking-[0.2em] uppercase text-[#C8AB6E] font-medium">{item.role}</p>
+                    </div>
+                    <h4 className="text-sm font-semibold text-[#050A5C] mb-1">{item.name}</h4>
+                    <p className="text-xs text-slate-500 leading-relaxed">{item.description}</p>
+                    {item.benefit && (
+                      <span className={`inline-block mt-2 text-[9px] tracking-widest uppercase px-2 py-0.5 rounded-sm border transition-all duration-300 ${
+                        isActive
+                          ? 'bg-[#C8AB6E]/10 text-[#050A5C]/80 border-[#C8AB6E]/30'
+                          : 'bg-[#050A5C]/5 text-[#050A5C]/60 border-[#050A5C]/10'
+                      }`}>{item.benefit}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {/* Caption */}
+            {activeIngredients.showCaption && activeIngredients.caption && (
+              <div className="px-5 pb-8">
+                <p className="text-[9px] tracking-widest uppercase text-[#050A5C]/40 italic">
+                  {activeIngredients.caption}
+                </p>
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }: ProductLandingPageProps) {
   // Helper for rendering slot images safely with a gradient card fallback
@@ -745,179 +1191,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       })()}
 
       {/* ─── BLOCK 5: ACTIVE INGREDIENTS ───────────────────────────────────────── */}
-      {(() => {
-        // Block 5: Active Ingredients
-        const rawActiveIng = (content as any).activeIngredientsMap || {};
-        const activeIngredients = {
-          ...DEFAULT_ACTIVE_INGREDIENTS_MAP,
-          ...rawActiveIng,
-          showDescription: rawActiveIng.showDescription !== false,
-          showCaption: rawActiveIng.showCaption !== false,
-          items: Array.isArray(rawActiveIng.items) && rawActiveIng.items.length > 0
-            ? rawActiveIng.items
-            : DEFAULT_ACTIVE_INGREDIENTS_MAP.items
-        };
-
-        const aiDesktopRaw = cosmeticMedia['cosmetic-luminous-active-ingredients-desktop'] || cosmeticMedia[activeIngredients.desktopMediaSlot as string] || cosmeticMedia['cosmetic-luminous-active-ingredients-image'] || cosmeticMedia[activeIngredients.mediaSlot as string] || null;
-        const aiDesktopUrl = (typeof aiDesktopRaw === 'string' && aiDesktopRaw.trim() && !aiDesktopRaw.includes('/PASTE')) ? aiDesktopRaw.trim() : null;
-
-        const aiMobileRaw = cosmeticMedia['cosmetic-luminous-active-ingredients-mobile'] || cosmeticMedia[activeIngredients.mobileMediaSlot as string] || cosmeticMedia['cosmetic-luminous-active-ingredients-image'] || cosmeticMedia[activeIngredients.mediaSlot as string] || aiDesktopUrl || null;
-        const aiMobileUrl = (typeof aiMobileRaw === 'string' && aiMobileRaw.trim() && !aiMobileRaw.includes('/PASTE')) ? aiMobileRaw.trim() : null;
-
-        return (
-          <section
-            className="bg-white py-20 md:py-28 px-5 md:px-8 border-b border-slate-100"
-            data-active-ingredients-desktop-url={aiDesktopUrl || ""}
-            data-active-ingredients-mobile-url={aiMobileUrl || ""}
-          >
-            <div className="max-w-[1200px] mx-auto">
-              {/* Outer card */}
-              <div className="border border-[#D9DEEA] bg-[#F7F8FC] shadow-[0_24px_80px_rgba(5,10,92,0.08)] overflow-hidden rounded-2xl">
-
-                {/* DESKTOP LAYOUT */}
-                <div className="hidden md:grid md:grid-cols-[0.46fr_0.54fr]">
-                  {/* Left: header text + image */}
-                  <div className="flex flex-col border-r border-[#D9DEEA]">
-                    {/* Header text */}
-                    <div className="px-10 pt-12 pb-8">
-                      {activeIngredients.eyebrow && (
-                        <p className="text-[9px] tracking-[0.22em] uppercase font-semibold text-[#050A5C]/50 mb-3">
-                          {activeIngredients.eyebrow}
-                        </p>
-                      )}
-                      {activeIngredients.title && (
-                        <h2
-                          className="text-[#050A5C] leading-snug mb-3"
-                          style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontSize: "clamp(1.35rem, 2vw, 1.875rem)", fontWeight: 600 }}
-                        >
-                          {activeIngredients.title}
-                        </h2>
-                      )}
-                      {activeIngredients.showDescription && activeIngredients.description && (
-                        <p className="text-sm text-slate-500 leading-relaxed">
-                          {activeIngredients.description}
-                        </p>
-                      )}
-                    </div>
-                    {/* Image area fills remaining space */}
-                    <div className="flex-1 relative min-h-[280px]">
-                      <ScienceMediaBox
-                        className="absolute inset-0 hidden md:block"
-                        url={aiDesktopUrl}
-                        alt={activeIngredients.title || 'Active Ingredients Visual'}
-                        caption={activeIngredients.caption}
-                        showCaption={false}
-                        mediaRenderType={activeIngredients.mediaRenderType}
-                        imageMode={activeIngredients.desktopImageMode}
-                        objectPosition={activeIngredients.desktopObjectPosition}
-                        placeholderLabel="Active Ingredients Visual"
-                        captionPosition="bottom-left"
-                      />
-                    </div>
-                    {/* Caption at bottom */}
-                    {activeIngredients.showCaption && activeIngredients.caption && (
-                      <div className="px-10 py-4 border-t border-[#D9DEEA]">
-                        <p className="text-[9px] tracking-widest uppercase text-[#050A5C]/40 italic">
-                          {activeIngredients.caption}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right: ingredient list */}
-                  <div className="px-10 py-12">
-                    {/* Lab ruler line */}
-                    <div className="flex items-center gap-3 mb-8">
-                      <div className="flex-1 h-px bg-[#050A5C]/10" />
-                      <span className="w-2 h-2 rounded-full bg-[#C8AB6E] shrink-0" />
-                      <div className="flex-1 h-px bg-[#050A5C]/10" />
-                    </div>
-                    {activeIngredients.items.map((item: any, i: number) => (
-                      <div key={i} className="relative pl-6 mb-6 border-l-2 border-[#D9DEEA] last:mb-0">
-                        {/* dot */}
-                        <div className="absolute left-[-5px] top-1 w-2 h-2 rounded-full bg-[#C8AB6E]" />
-                        {/* role label */}
-                        <p className="text-[9px] tracking-[0.2em] uppercase text-[#C8AB6E] font-medium mb-1">{item.role}</p>
-                        {/* name */}
-                        <h4 className="text-sm font-semibold text-[#050A5C] mb-1">{item.name}</h4>
-                        {/* description */}
-                        <p className="text-xs text-slate-500 leading-relaxed">{item.description}</p>
-                        {/* benefit tag */}
-                        {item.benefit && (
-                          <span className="inline-block mt-2 text-[9px] tracking-widest uppercase bg-[#050A5C]/5 text-[#050A5C]/60 px-2 py-0.5 rounded-sm border border-[#050A5C]/10">{item.benefit}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* MOBILE LAYOUT */}
-                <div className="flex flex-col md:hidden">
-                  {/* Header */}
-                  <div className="px-5 pt-10 pb-6">
-                    {activeIngredients.eyebrow && (
-                      <p className="text-[9px] tracking-[0.22em] uppercase font-semibold text-[#050A5C]/50 mb-3">
-                        {activeIngredients.eyebrow}
-                      </p>
-                    )}
-                    {activeIngredients.title && (
-                      <h2
-                        className="text-[#050A5C] leading-snug mb-3"
-                        style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontSize: "1.5rem", fontWeight: 600 }}
-                      >
-                        {activeIngredients.title}
-                      </h2>
-                    )}
-                    {activeIngredients.showDescription && activeIngredients.description && (
-                      <p className="text-sm text-slate-500 leading-relaxed">
-                        {activeIngredients.description}
-                      </p>
-                    )}
-                  </div>
-                  {/* Mobile image full width */}
-                  <div className="relative w-full" style={{ aspectRatio: '4/5' }}>
-                    <ScienceMediaBox
-                      className="absolute inset-0 block md:hidden"
-                      url={aiMobileUrl}
-                      alt={activeIngredients.title || 'Active Ingredients Visual'}
-                      caption={undefined}
-                      showCaption={false}
-                      mediaRenderType={activeIngredients.mediaRenderType}
-                      imageMode={activeIngredients.mobileImageMode}
-                      objectPosition={activeIngredients.mobileObjectPosition}
-                      placeholderLabel="Active Ingredients Visual"
-                      captionPosition="bottom-right"
-                    />
-                  </div>
-                  {/* Ingredient list */}
-                  <div className="px-5 py-8 space-y-5">
-                    {activeIngredients.items.map((item: any, i: number) => (
-                      <div key={i} className="relative pl-6 border-l-2 border-[#D9DEEA]">
-                        <div className="absolute left-[-5px] top-1 w-2 h-2 rounded-full bg-[#C8AB6E]" />
-                        <p className="text-[9px] tracking-[0.2em] uppercase text-[#C8AB6E] font-medium mb-1">{item.role}</p>
-                        <h4 className="text-sm font-semibold text-[#050A5C] mb-1">{item.name}</h4>
-                        <p className="text-xs text-slate-500 leading-relaxed">{item.description}</p>
-                        {item.benefit && (
-                          <span className="inline-block mt-2 text-[9px] tracking-widest uppercase bg-[#050A5C]/5 text-[#050A5C]/60 px-2 py-0.5 rounded-sm border border-[#050A5C]/10">{item.benefit}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  {/* Caption */}
-                  {activeIngredients.showCaption && activeIngredients.caption && (
-                    <div className="px-5 pb-8">
-                      <p className="text-[9px] tracking-widest uppercase text-[#050A5C]/40 italic">
-                        {activeIngredients.caption}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-              </div>
-            </div>
-          </section>
-        );
-      })()}
+      <LuminousActiveIngredientsBlock content={content} cosmeticMedia={cosmeticMedia} />
 
       {/* ─── HOW TO USE SET ────────────────────────────────────────────────────── */}
       {content.usageGuide && (
