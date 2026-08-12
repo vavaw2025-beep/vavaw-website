@@ -278,6 +278,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landProductDetailFormOfflineTitle, setLandProductDetailFormOfflineTitle] = useState('');
   const [landProductDetailFormOfflineDescription, setLandProductDetailFormOfflineDescription] = useState('');
   const [landProductDetailFormOfflineMediaSlot, setLandProductDetailFormOfflineMediaSlot] = useState('');
+  const [landDetailOfflineShow, setLandDetailOfflineShow] = useState(true);
+  const [landDetailOfflineDesktopImageMode, setLandDetailOfflineDesktopImageMode] = useState('cover');
+  const [landDetailOfflineMobileImageMode, setLandDetailOfflineMobileImageMode] = useState('cover');
+  const [landDetailOfflineDesktopObjectPosition, setLandDetailOfflineDesktopObjectPosition] = useState('center center');
+  const [landDetailOfflineMobileObjectPosition, setLandDetailOfflineMobileObjectPosition] = useState('center center');
+  const [landDetailOfflineTextAlign, setLandDetailOfflineTextAlign] = useState('left');
+  const [landDetailOfflineOverlayStrength, setLandDetailOfflineOverlayStrength] = useState('medium');
   const [landProductDetailFormInfo, setLandProductDetailFormInfo] = useState<any[]>([]);
   const [landProductDetailFormIngredientGroups, setLandProductDetailFormIngredientGroups] = useState<any[]>([]);
   const [landProductDetailFormCautions, setLandProductDetailFormCautions] = useState<string[]>([]);
@@ -613,6 +620,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandProductDetailFormOfflineTitle(detailForm.offlineTitle || '');
       setLandProductDetailFormOfflineDescription(detailForm.offlineDescription || '');
       setLandProductDetailFormOfflineMediaSlot(detailForm.offlineMediaSlot || 'cosmetic-luminous-offline-experience-image');
+      setLandDetailOfflineShow(detailForm.offlineShow ?? true);
+      setLandDetailOfflineDesktopImageMode(detailForm.offlineDesktopImageMode || 'cover');
+      setLandDetailOfflineMobileImageMode(detailForm.offlineMobileImageMode || 'cover');
+      setLandDetailOfflineDesktopObjectPosition(detailForm.offlineDesktopObjectPosition || 'center center');
+      setLandDetailOfflineMobileObjectPosition(detailForm.offlineMobileObjectPosition || 'center center');
+      setLandDetailOfflineTextAlign(detailForm.offlineTextAlign || 'left');
+      setLandDetailOfflineOverlayStrength(detailForm.offlineOverlayStrength || 'medium');
       setLandProductDetailFormInfo(detailForm.info || []);
       setLandProductDetailFormIngredientGroups(detailForm.ingredientGroups || []);
       setLandProductDetailFormCautions(detailForm.cautions || []);
@@ -913,7 +927,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             description: landProductDetailFormDescription,
             offlineTitle: landProductDetailFormOfflineTitle,
             offlineDescription: landProductDetailFormOfflineDescription,
-            offlineMediaSlot: landProductDetailFormOfflineMediaSlot,
+            offlineDesktopMediaSlot: 'cosmetic-luminous-offline-experience-image',
+            offlineMobileMediaSlot: 'cosmetic-luminous-offline-experience-mobile',
+            offlineShow: landDetailOfflineShow,
+            offlineDesktopImageMode: landDetailOfflineDesktopImageMode,
+            offlineMobileImageMode: landDetailOfflineMobileImageMode,
+            offlineDesktopObjectPosition: landDetailOfflineDesktopObjectPosition,
+            offlineMobileObjectPosition: landDetailOfflineMobileObjectPosition,
+            offlineTextAlign: landDetailOfflineTextAlign,
+            offlineOverlayStrength: landDetailOfflineOverlayStrength,
             info: landProductDetailFormInfo,
             ingredientGroups: landProductDetailFormIngredientGroups,
             cautions: landProductDetailFormCautions,
@@ -3664,21 +3686,89 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
 
                           {/* Offline Bridge section */}
                           <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
-                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Offline Bridge (Tùy chọn)</h4>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="col-span-2">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề Offline (Offline Title)</label>
-                                <input type="text" value={landProductDetailFormOfflineTitle} onChange={e => setLandProductDetailFormOfflineTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
-                              </div>
-                              <div className="col-span-2">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả Offline (Offline Description)</label>
-                                <textarea value={landProductDetailFormOfflineDescription} onChange={e => setLandProductDetailFormOfflineDescription(e.target.value)} rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
-                              </div>
-                              <div className="col-span-2">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh Offline (Offline Media Slot)</label>
-                                <input type="text" value={landProductDetailFormOfflineMediaSlot} onChange={e => setLandProductDetailFormOfflineMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
-                              </div>
+                            <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-2">
+                              <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider">Offline Bridge (Tùy chọn)</h4>
+                              <label className="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                                <input type="checkbox" checked={landDetailOfflineShow} onChange={e => setLandDetailOfflineShow(e.target.checked)} className="rounded border-slate-300 text-[#050A5C] focus:ring-[#050A5C]" />
+                                Hiển thị Offline Bridge
+                              </label>
                             </div>
+                            
+                            {landDetailOfflineShow && (
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề Offline (Offline Title)</label>
+                                  <input type="text" value={landProductDetailFormOfflineTitle} onChange={e => setLandProductDetailFormOfflineTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả Offline (Offline Description)</label>
+                                  <textarea value={landProductDetailFormOfflineDescription} onChange={e => setLandProductDetailFormOfflineDescription(e.target.value)} rows={2} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div className="col-span-1">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Căn lề chữ (Text Align)</label>
+                                  <select value={landDetailOfflineTextAlign} onChange={e => setLandDetailOfflineTextAlign(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white">
+                                    <option value="left">Trái</option>
+                                    <option value="center">Giữa</option>
+                                  </select>
+                                </div>
+                                <div className="col-span-1">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Độ đậm Overlay (Overlay Strength)</label>
+                                  <select value={landDetailOfflineOverlayStrength} onChange={e => setLandDetailOfflineOverlayStrength(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white">
+                                    <option value="light">Nhẹ</option>
+                                    <option value="medium">Vừa</option>
+                                    <option value="dark">Đậm</option>
+                                  </select>
+                                </div>
+
+                                <div className="col-span-2 md:col-span-1 space-y-3 p-3 bg-white border border-slate-200 rounded-lg">
+                                  <h5 className="text-[10px] font-bold text-slate-600 uppercase mb-2">Ảnh desktop ngang (Banner)</h5>
+                                  {renderSlotCard({ id: 'cosmetic-luminous-offline-experience-image', name: 'Ảnh desktop ngang (Banner)', size: '2400 × 1200 px' })}
+                                  <div className="grid grid-cols-2 gap-2 mt-2">
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Image Mode</label>
+                                      <select value={landDetailOfflineDesktopImageMode} onChange={e => setLandDetailOfflineDesktopImageMode(e.target.value)} className="w-full text-[10px] p-1.5 border border-slate-300 rounded-md bg-white">
+                                        <option value="cover">Cover</option>
+                                        <option value="contain">Contain</option>
+                                      </select>
+                                    </div>
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Object Pos</label>
+                                      <select value={landDetailOfflineDesktopObjectPosition} onChange={e => setLandDetailOfflineDesktopObjectPosition(e.target.value)} className="w-full text-[10px] p-1.5 border border-slate-300 rounded-md bg-white">
+                                        <option value="center center">Center Center</option>
+                                        <option value="center top">Center Top</option>
+                                        <option value="center bottom">Center Bottom</option>
+                                        <option value="left center">Left Center</option>
+                                        <option value="right center">Right Center</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="col-span-2 md:col-span-1 space-y-3 p-3 bg-white border border-slate-200 rounded-lg">
+                                  <h5 className="text-[10px] font-bold text-slate-600 uppercase mb-2">Ảnh mobile dọc (Banner)</h5>
+                                  {renderSlotCard({ id: 'cosmetic-luminous-offline-experience-mobile', name: 'Ảnh mobile dọc (Banner)', size: '1080 × 1600 px' })}
+                                  <div className="grid grid-cols-2 gap-2 mt-2">
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Image Mode</label>
+                                      <select value={landDetailOfflineMobileImageMode} onChange={e => setLandDetailOfflineMobileImageMode(e.target.value)} className="w-full text-[10px] p-1.5 border border-slate-300 rounded-md bg-white">
+                                        <option value="cover">Cover</option>
+                                        <option value="contain">Contain</option>
+                                      </select>
+                                    </div>
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Object Pos</label>
+                                      <select value={landDetailOfflineMobileObjectPosition} onChange={e => setLandDetailOfflineMobileObjectPosition(e.target.value)} className="w-full text-[10px] p-1.5 border border-slate-300 rounded-md bg-white">
+                                        <option value="center center">Center Center</option>
+                                        <option value="center top">Center Top</option>
+                                        <option value="center bottom">Center Bottom</option>
+                                        <option value="left center">Left Center</option>
+                                        <option value="right center">Right Center</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
 
                           {/* Info Repeater */}

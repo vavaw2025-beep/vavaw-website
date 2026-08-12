@@ -175,6 +175,12 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     aliases: ['offline-experience', 'spa-experience'],
   },
   {
+    value: 'cosmetic-luminous-offline-experience-mobile',
+    label: 'Luminous Set — Offline Experience Mobile',
+    aliases: ['offline-experience-mobile'],
+    description: 'Recommended: 1080×1600 or 1080×1920',
+  },
+  {
     value: 'cosmetic-luminous-hero-desktop',
     label: 'Luminous Set — Desktop Campaign Banner',
     aliases: ['luminous-hero-desktop', 'desktop-banner'],

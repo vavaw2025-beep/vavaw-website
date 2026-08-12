@@ -253,6 +253,15 @@ export interface ProductLandingContent {
     offlineTitle?: string;
     offlineDescription?: string;
     offlineMediaSlot?: string;
+    offlineShow?: boolean;
+    offlineDesktopMediaSlot?: string;
+    offlineMobileMediaSlot?: string;
+    offlineDesktopImageMode?: 'cover' | 'contain-blur';
+    offlineMobileImageMode?: 'cover' | 'contain-blur';
+    offlineDesktopObjectPosition?: string;
+    offlineMobileObjectPosition?: string;
+    offlineTextAlign?: 'left' | 'center';
+    offlineOverlayStrength?: 'light' | 'medium' | 'heavy';
     info?: Array<{
       label?: string;
       value?: string;

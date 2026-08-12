@@ -13,44 +13,7 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
     <section className="bg-slate-50 py-16 md:py-24 px-4 sm:px-6">
       <div className="max-w-[1200px] mx-auto">
         
-        {/* Optional Offline Experience Bridge */}
-        {(productDetailForm.offlineTitle || productDetailForm.offlineMediaSlot) && (
-          <div className="mb-16 md:mb-24 flex flex-col md:flex-row gap-8 items-center bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-            {productDetailForm.offlineMediaSlot && (
-              <div className="w-full md:w-1/2 aspect-[4/3] md:aspect-auto md:h-[400px] relative bg-slate-100 flex items-center justify-center shrink-0">
-                {cosmeticMedia[productDetailForm.offlineMediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.offlineExperience ? (
-                  <img
-                    src={cosmeticMedia[productDetailForm.offlineMediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.offlineExperience}
-                    alt={productDetailForm.offlineTitle || 'Offline Experience'}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="text-center text-slate-400 p-6 flex flex-col items-center justify-center">
-                    <div className="w-12 h-12 mb-3 bg-slate-200 rounded-lg flex items-center justify-center">
-                      <svg className="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <span className="text-xs uppercase tracking-wider font-semibold">Media Unassigned</span>
-                    <span className="text-[10px] mt-1 break-all px-4">{productDetailForm.offlineMediaSlot}</span>
-                  </div>
-                )}
-              </div>
-            )}
-            
-            <div className="p-8 md:p-12 space-y-4 w-full md:w-1/2">
-              <h3 className="text-xl md:text-2xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">
-                {productDetailForm.offlineTitle}
-              </h3>
-              {productDetailForm.offlineDescription && (
-                <p className="text-sm text-slate-500 font-light leading-relaxed">
-                  {productDetailForm.offlineDescription}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
+        {/* Optional Offline Experience Bridge - Moved to LuminousSetLandingPage */}
 
         {/* Product Detail Main Block */}
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">

@@ -110,6 +110,8 @@ export interface CosmeticPageMedia {
   usageCreamInstruction?: string;
   /** Offline Experience image for Luminous Set */
   offlineExperience?: string;
+  /** Offline Experience mobile banner for Luminous Set */
+  offlineExperienceMobile?: string;
   /** Allow raw DB slot keys */
   [key: string]: string | undefined;
 }
@@ -118,6 +120,7 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-luminous-hero-desktop': 'luminousHeroDesktop',
   'cosmetic-luminous-hero-mobile': 'luminousHeroMobile',
   'cosmetic-luminous-offline-experience-image': 'offlineExperience',
+  'cosmetic-luminous-offline-experience-mobile': 'offlineExperienceMobile',
   'cosmetic-luminous-usage-desktop': 'usageDesktop',
   'cosmetic-luminous-usage-mobile': 'usageMobile',
   'cosmetic-luminous-usage-set-image': 'usageSet',

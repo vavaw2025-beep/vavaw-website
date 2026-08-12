@@ -1341,6 +1341,81 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         <ProductDetailForm productDetailForm={content.productDetailForm} cosmeticMedia={cosmeticMedia} />
       )}
 
+      {/* ─── OFFLINE BRIDGE BANNER ────────────────────────────────────────────── */}
+      {(() => {
+        const offlineSettings = {
+          show: content.productDetailForm?.offlineShow !== false,
+          desktopMediaSlot: content.productDetailForm?.offlineDesktopMediaSlot || "cosmetic-luminous-offline-experience-image",
+          mobileMediaSlot: content.productDetailForm?.offlineMobileMediaSlot || "cosmetic-luminous-offline-experience-mobile",
+          desktopImageMode: content.productDetailForm?.offlineDesktopImageMode || "cover",
+          mobileImageMode: content.productDetailForm?.offlineMobileImageMode || "cover",
+          desktopObjectPosition: content.productDetailForm?.offlineDesktopObjectPosition || "center center",
+          mobileObjectPosition: content.productDetailForm?.offlineMobileObjectPosition || "center center",
+          textAlign: content.productDetailForm?.offlineTextAlign || "left",
+          overlayStrength: content.productDetailForm?.offlineOverlayStrength || "medium",
+          title: content.productDetailForm?.offlineTitle,
+          description: content.productDetailForm?.offlineDescription
+        };
+
+        const offlineDesktopRaw = cosmeticMedia["cosmetic-luminous-offline-experience-image"] || cosmeticMedia["cosmetic-luminous-offline-experience-desktop"] || cosmeticMedia[offlineSettings.desktopMediaSlot] || cosmeticMedia[content.productDetailForm?.offlineMediaSlot as string] || null;
+        const offlineDesktopUrl = (typeof offlineDesktopRaw === 'string' && offlineDesktopRaw.trim() && !offlineDesktopRaw.includes('/PASTE')) ? offlineDesktopRaw.trim() : null;
+
+        const offlineMobileRaw = cosmeticMedia["cosmetic-luminous-offline-experience-mobile"] || cosmeticMedia[offlineSettings.mobileMediaSlot] || cosmeticMedia["cosmetic-luminous-offline-experience-image"] || cosmeticMedia[content.productDetailForm?.offlineMediaSlot as string] || offlineDesktopUrl || null;
+        const offlineMobileUrl = (typeof offlineMobileRaw === 'string' && offlineMobileRaw.trim() && !offlineMobileRaw.includes('/PASTE')) ? offlineMobileRaw.trim() : null;
+
+        return offlineSettings.show && offlineSettings.title && (
+          <div className="mt-16 mb-24 w-full max-w-[1200px] mx-auto px-5 md:px-8">
+            <div className="relative overflow-hidden rounded-[24px] md:rounded-[28px] shadow-[0_10px_40px_rgba(5,10,92,0.06)] min-h-[460px] md:min-h-[420px] aspect-[4/5] md:aspect-[21/8] bg-slate-50 border border-slate-200/50">
+              {/* Background Image Layer */}
+              {offlineDesktopUrl ? (
+                <ScienceMediaBox
+                  className="absolute inset-0 hidden md:block"
+                  url={offlineDesktopUrl}
+                  alt={offlineSettings.title}
+                  mediaRenderType="full-bleed-artwork"
+                  imageMode={offlineSettings.desktopImageMode as any}
+                  objectPosition={offlineSettings.desktopObjectPosition}
+                  placeholderLabel="Offline Visual"
+                />
+              ) : (
+                <div className="absolute inset-0 hidden md:block bg-gradient-to-br from-slate-200 to-slate-100" />
+              )}
+              
+              {offlineMobileUrl ? (
+                <ScienceMediaBox
+                  className="absolute inset-0 block md:hidden"
+                  url={offlineMobileUrl}
+                  alt={offlineSettings.title}
+                  mediaRenderType="full-bleed-artwork"
+                  imageMode={offlineSettings.mobileImageMode as any}
+                  objectPosition={offlineSettings.mobileObjectPosition}
+                  placeholderLabel="Offline Visual"
+                />
+              ) : (
+                <div className="absolute inset-0 block md:hidden bg-gradient-to-br from-slate-200 to-slate-100" />
+              )}
+
+              {/* Overlay Layer */}
+              <div className={`absolute inset-0 bg-gradient-to-r from-black/60 to-transparent ${offlineSettings.overlayStrength === 'light' ? 'opacity-50' : offlineSettings.overlayStrength === 'heavy' ? 'opacity-90' : 'opacity-75'}`} />
+
+              {/* Text Content Layer */}
+              <div className="absolute inset-0 flex flex-col justify-start p-8 md:p-14 lg:p-16 z-10">
+                <div className={`max-w-[90%] md:max-w-[45%] ${offlineSettings.textAlign === 'center' ? 'mx-auto text-center' : 'text-left'}`}>
+                  <h3 className="text-white text-[28px] md:text-4xl leading-snug mb-5" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontWeight: 600 }}>
+                    {offlineSettings.title}
+                  </h3>
+                  {offlineSettings.description && (
+                    <p className="text-white/90 text-[15px] md:text-base leading-relaxed font-light">
+                      {offlineSettings.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* ─── FINAL CTA ─────────────────────────────────────────────────────────── */}
       <section className="bg-[#050A5C] py-20 md:py-24 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,10,92,0.15)_100%)] pointer-events-none" />
