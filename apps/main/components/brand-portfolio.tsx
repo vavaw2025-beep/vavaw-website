@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import type { Brand } from '@/lib/data';
+import { resolveUnfinishedHref } from '@/lib/unfinished-links';
 
 interface BrandPortfolioProps {
   brands: Brand[];
@@ -96,7 +97,7 @@ export function BrandPortfolio({ brands }: BrandPortfolioProps) {
 
                 {/* Link */}
                 <Link
-                  href={brand.link}
+                  href={resolveUnfinishedHref(brand.link, '/brand-portfolio')}
                   className="mt-4 inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
                 >
                   Explore

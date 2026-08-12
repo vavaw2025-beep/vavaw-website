@@ -246,9 +246,9 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-xs tracking-widest uppercase text-gray-500 font-semibold">
           <div>&copy; {new Date().getFullYear()} VAVAW Franchise.</div>
           <div className="flex gap-8">
-            <Link href="#" className="hover:text-gray-900 transition-colors">Terms</Link>
-            <Link href="#" className="hover:text-gray-900 transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-gray-900 transition-colors">Contact</Link>
+            <a href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/system-update?reason=coming-soon&from=%2Ffranchise%2Fterms`} className="hover:text-gray-900 transition-colors">Terms</a>
+            <a href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/system-update?reason=coming-soon&from=%2Ffranchise%2Fprivacy`} className="hover:text-gray-900 transition-colors">Privacy</a>
+            <a href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/contact`} className="hover:text-gray-900 transition-colors">Contact</a>
           </div>
         </div>
       </footer>

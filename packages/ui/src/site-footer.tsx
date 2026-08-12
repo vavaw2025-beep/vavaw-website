@@ -91,8 +91,8 @@ export function SiteFooter({ variant = 'main', className = '', links = {} }: Sit
             &copy; {new Date().getFullYear()} VAVAW. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className={`text-xs ${textStyle} hover:underline`}>Privacy Policy</a>
-            <a href="#" className={`text-xs ${textStyle} hover:underline`}>Terms of Service</a>
+            <a href="/system-update?reason=coming-soon&from=%2Fprivacy-policy" className={`text-xs ${textStyle} hover:underline`}>Privacy Policy</a>
+            <a href="/system-update?reason=coming-soon&from=%2Fterms-of-service" className={`text-xs ${textStyle} hover:underline`}>Terms of Service</a>
           </div>
         </div>
       </div>

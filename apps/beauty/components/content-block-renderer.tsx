@@ -221,8 +221,8 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
       <footer className="py-8 px-6 md:px-12 bg-[#FDFBF7] border-t border-[#EAE4D9] flex flex-col md:flex-row justify-between items-center gap-4 text-xs tracking-wider uppercase text-[#A89F91]">
         <div>&copy; {new Date().getFullYear()} VAVAW Beauty & Co.</div>
         <div className="flex gap-6">
-          <Link href="#" className="hover:text-[#2C2A29] transition-colors">Instagram</Link>
-          <Link href="#" className="hover:text-[#2C2A29] transition-colors">Contact</Link>
+          <a href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/system-update?reason=coming-soon&from=%2Fbeauty%2Finstagram`} className="hover:text-[#2C2A29] transition-colors">Instagram</a>
+          <a href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw.vn'}/contact`} className="hover:text-[#2C2A29] transition-colors">Contact</a>
         </div>
       </footer>
     </div>

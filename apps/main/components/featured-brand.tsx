@@ -85,7 +85,7 @@ export function FeaturedBrand() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               viewport={{ once: true }}
-              href="#"
+              href="/system-update?reason=coming-soon&from=%2Fcosmetic%2Ffeatured-collection"
               className="mt-10 inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-all hover:scale-105"
             >
               Explore Collection

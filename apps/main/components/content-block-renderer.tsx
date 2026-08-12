@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
 import type { NormalizedContentBlock } from '../lib/public-cms-types';
 import { ReactNode } from 'react';
+import { resolveUnfinishedHref } from '../lib/unfinished-links';
 
 // Safety helpers
 function getString(value: unknown, fallback = ''): string {
@@ -224,7 +225,7 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
                 <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
                   {getString(content.buttonHref) ? (
                     <Link 
-                      href={getString(content.buttonHref)}
+                      href={resolveUnfinishedHref(getString(content.buttonHref), '/button')}
                       className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
                     >
                       {getString(content.buttonLabel, 'Learn More')}
@@ -239,7 +240,7 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
                   )}
                   {getString(content.secondaryButtonHref) && (
                     <Link 
-                      href={getString(content.secondaryButtonHref)}
+                      href={resolveUnfinishedHref(getString(content.secondaryButtonHref), '/secondary-button')}
                       className="group flex items-center text-sm tracking-widest uppercase text-white/70 hover:text-white transition-colors"
                     >
                       {getString(content.secondaryButtonLabel)}
