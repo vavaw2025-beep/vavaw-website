@@ -182,7 +182,9 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landWhoNeedsEyebrow, setLandWhoNeedsEyebrow] = useState('');
   const [landWhoNeedsTitle, setLandWhoNeedsTitle] = useState('');
   const [landWhoNeedsNote, setLandWhoNeedsNote] = useState('');
+  const [landWhoNeedsShowNote, setLandWhoNeedsShowNote] = useState(true);
   const [landWhoNeedsDescription, setLandWhoNeedsDescription] = useState('');
+  const [landWhoNeedsShowDescription, setLandWhoNeedsShowDescription] = useState(true);
   const [landWhoNeedsMediaSlot, setLandWhoNeedsMediaSlot] = useState('');
   const [landWhoNeedsDesktopMediaSlot, setLandWhoNeedsDesktopMediaSlot] = useState('');
   const [landWhoNeedsMobileMediaSlot, setLandWhoNeedsMobileMediaSlot] = useState('');
@@ -190,6 +192,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landWhoNeedsDesktopObjectPosition, setLandWhoNeedsDesktopObjectPosition] = useState('center center');
   const [landWhoNeedsMobileObjectPosition, setLandWhoNeedsMobileObjectPosition] = useState('center top');
   const [landWhoNeedsImageCaption, setLandWhoNeedsImageCaption] = useState('');
+  const [landWhoNeedsShowImageCaption, setLandWhoNeedsShowImageCaption] = useState(true);
   const [landWhoNeedsItems, setLandWhoNeedsItems] = useState<any[]>([]);
 
   // Skin Barrier & MG3-Plus states
@@ -467,19 +470,26 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       ];
       setLandAntiGravityCallouts(antiGravity.callouts && antiGravity.callouts.length ? antiGravity.callouts : defaultCallouts);
 
-      const whoNeedsSet = content.whoNeedsSet || {};
-      setLandWhoNeedsEyebrow(whoNeedsSet.eyebrow || '');
-      setLandWhoNeedsTitle(whoNeedsSet.title || '');
-      setLandWhoNeedsNote(whoNeedsSet.note || '');
-      setLandWhoNeedsDescription(whoNeedsSet.description || '');
+      const whoNeedsSet = content.whoNeedsSheerSet || content.whoNeedsSet || {};
+      setLandWhoNeedsEyebrow(whoNeedsSet.eyebrow || 'LÀN DA NÀO CẦN');
+      setLandWhoNeedsTitle(whoNeedsSet.title || 'Luminous Revitalization Sheer Set?');
+      setLandWhoNeedsNote(whoNeedsSet.note || 'Lý tưởng cho da mỏng yếu, nhạy cảm hoặc đang trong quá trình phục hồi sau các liệu trình công nghệ cao.');
+      setLandWhoNeedsShowNote(whoNeedsSet.showNote ?? true);
+      setLandWhoNeedsDescription(whoNeedsSet.description || 'Bộ sản phẩm không chứa các thành phần dễ gây kích ứng, tối ưu hóa khả năng thẩm thấu qua các lớp biểu bì. Khi được sử dụng theo quy trình chuẩn, các dưỡng chất từ phức hợp Cellurevive và Mg3+ sẽ tạo ra môi trường lý tưởng để tế bào da tự sửa chữa và tái tạo, trả lại bề mặt da căng mướt và sáng khỏe.');
+      setLandWhoNeedsShowDescription(whoNeedsSet.showDescription ?? true);
       setLandWhoNeedsMediaSlot(whoNeedsSet.mediaSlot || 'cosmetic-luminous-who-for-image');
       setLandWhoNeedsDesktopMediaSlot(whoNeedsSet.desktopMediaSlot || 'cosmetic-luminous-who-for-desktop');
       setLandWhoNeedsMobileMediaSlot(whoNeedsSet.mobileMediaSlot || 'cosmetic-luminous-who-for-mobile');
       setLandWhoNeedsDesktopImageMode(whoNeedsSet.desktopImageMode || 'cover');
       setLandWhoNeedsDesktopObjectPosition(whoNeedsSet.desktopObjectPosition || 'center center');
       setLandWhoNeedsMobileObjectPosition(whoNeedsSet.mobileObjectPosition || 'center top');
-      setLandWhoNeedsImageCaption(whoNeedsSet.imageCaption || '');
-      setLandWhoNeedsItems(whoNeedsSet.items || []);
+      setLandWhoNeedsImageCaption(whoNeedsSet.imageCaption || 'Ảnh: Người dùng sau 4 tuần trải nghiệm Luminous Revitalization Sheer Set.');
+      setLandWhoNeedsShowImageCaption(whoNeedsSet.showImageCaption ?? true);
+      setLandWhoNeedsItems(whoNeedsSet.items || [
+        { text: 'Da mỏng yếu, tổn thương', description: 'Hàng rào bảo vệ suy giảm, dễ kích ứng với các sản phẩm thông thường.' },
+        { text: 'Da sau xâm lấn, treatment', description: 'Cần một quy trình phục hồi an toàn, chuyên sâu, không bào mòn.' },
+        { text: 'Da khô ráp, thiếu ẩm', description: 'Bề mặt da sần sùi, mất nước qua biểu bì (TEWL) cao.' }
+      ]);
 
       const barrierScience = content.barrierScience || {};
       setLandBarrierEyebrow(barrierScience.eyebrow || '');
@@ -718,11 +728,13 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             caption: landAntiGravityCaption,
             callouts: landAntiGravityCallouts
           };
-          updatedContent.whoNeedsSet = {
+          updatedContent.whoNeedsSheerSet = {
             eyebrow: landWhoNeedsEyebrow,
             title: landWhoNeedsTitle,
             note: landWhoNeedsNote,
+            showNote: landWhoNeedsShowNote,
             description: landWhoNeedsDescription,
+            showDescription: landWhoNeedsShowDescription,
             mediaSlot: landWhoNeedsMediaSlot,
             desktopMediaSlot: landWhoNeedsDesktopMediaSlot,
             mobileMediaSlot: landWhoNeedsMobileMediaSlot,
@@ -730,6 +742,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             desktopObjectPosition: landWhoNeedsDesktopObjectPosition,
             mobileObjectPosition: landWhoNeedsMobileObjectPosition,
             imageCaption: landWhoNeedsImageCaption,
+            showImageCaption: landWhoNeedsShowImageCaption,
             items: landWhoNeedsItems
           };
           updatedContent.barrierScience = {
@@ -2775,6 +2788,22 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             </div>
                           </div>
                           <div className="col-span-2 md:col-span-1 space-y-3">
+                            <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                              <label className="block text-[10px] font-bold text-slate-700 uppercase mb-2">Tùy chọn hiển thị</label>
+                              <div className="flex items-center gap-2">
+                                <input type="checkbox" id="show-who-needs-note" checked={landWhoNeedsShowNote} onChange={e => setLandWhoNeedsShowNote(e.target.checked)} className="w-3.5 h-3.5 text-[#050A5C] border-slate-300 rounded focus:ring-[#050A5C]" />
+                                <label htmlFor="show-who-needs-note" className="text-[11px] text-slate-600 cursor-pointer">Hiển thị ghi chú</label>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <input type="checkbox" id="show-who-needs-desc" checked={landWhoNeedsShowDescription} onChange={e => setLandWhoNeedsShowDescription(e.target.checked)} className="w-3.5 h-3.5 text-[#050A5C] border-slate-300 rounded focus:ring-[#050A5C]" />
+                                <label htmlFor="show-who-needs-desc" className="text-[11px] text-slate-600 cursor-pointer">Hiển thị đoạn mô tả</label>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <input type="checkbox" id="show-who-needs-cap" checked={landWhoNeedsShowImageCaption} onChange={e => setLandWhoNeedsShowImageCaption(e.target.checked)} className="w-3.5 h-3.5 text-[#050A5C] border-slate-300 rounded focus:ring-[#050A5C]" />
+                                <label htmlFor="show-who-needs-cap" className="text-[11px] text-slate-600 cursor-pointer">Hiển thị caption trên ảnh</label>
+                              </div>
+                              <p className="text-[9px] text-slate-500 italic mt-1 pt-1 border-t border-slate-200">Khi tắt, nội dung vẫn được lưu trong CMS nhưng không hiển thị trên public.</p>
+                            </div>
                             <div>
                               <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
                               <input type="text" value={landWhoNeedsEyebrow} onChange={e => setLandWhoNeedsEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />

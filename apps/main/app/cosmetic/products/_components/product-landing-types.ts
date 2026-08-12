@@ -45,6 +45,9 @@ export interface LuminousWhoNeedsItem {
 }
 
 export interface LuminousWhoNeedsSheerSet {
+  showNote?: boolean;
+  showDescription?: boolean;
+  showImageCaption?: boolean;
   eyebrow?: string;
   title?: string;
   note?: string;

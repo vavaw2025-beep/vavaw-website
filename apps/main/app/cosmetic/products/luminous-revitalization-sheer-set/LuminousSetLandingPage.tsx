@@ -12,6 +12,27 @@ interface ProductLandingPageProps {
   canonicalPath: string;
 }
 
+const DEFAULT_WHO_NEEDS_SHEER_SET = {
+  eyebrow: "WHO NEEDS SHEER SET",
+  title: "Ai nên dùng Luminous Sheer Set?",
+  note: "* Hiệu quả cảm nhận có thể khác nhau tùy theo tình trạng da và cách sử dụng.",
+  description: "Routine phục hồi phù hợp cho làn da cần được chăm sóc dịu nhẹ, bổ sung độ ẩm và hỗ trợ hàng rào bảo vệ sau các bước chăm sóc chuyên sâu.",
+  imageCaption: "Dễ dàng duy trì routine phục hồi tại nhà.",
+  mediaSlot: "cosmetic-luminous-who-for-image",
+  desktopMediaSlot: "cosmetic-luminous-who-for-desktop",
+  mobileMediaSlot: "cosmetic-luminous-who-for-mobile",
+  desktopImageMode: "cover",
+  desktopObjectPosition: "center center",
+  mobileObjectPosition: "center top",
+  items: [
+    { text: "Da bị tác động sau treatment hoặc chăm sóc chuyên sâu", description: "Phù hợp khi da cần routine dịu nhẹ để ổn định lại cảm giác bề mặt." },
+    { text: "Da cần bổ sung độ ẩm và cảm giác dễ chịu", description: "Hỗ trợ cảm giác da mềm, ẩm và ít khô căng hơn." },
+    { text: "Da khô, thô ráp, cần chăm sóc phục hồi", description: "Giúp routine dưỡng da tại nhà trở nên gọn gàng và dễ duy trì." },
+    { text: "Da cần hỗ trợ hàng rào bảo vệ", description: "Tập trung vào cảm giác cân bằng, mềm mại và ổn định hơn." },
+    { text: "Người muốn routine phục hồi tại nhà sau spa", description: "Kết nối trải nghiệm chăm sóc chuyên sâu với home-care hằng ngày." }
+  ]
+};
+
 export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }: ProductLandingPageProps) {
   // Helper for rendering slot images safely with a gradient card fallback
   const renderSlotImage = (srcUrl: string | undefined, altText: string, fallbackGrad: string) => {
@@ -335,28 +356,13 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
 
       {/* ─── WHO NEEDS SHEER SET ──────────────────────────────────────────────── */}
       {(() => {
-        const whoNeeds = {
-          eyebrow: content.whoNeedsSheerSet?.eyebrow || 'WHO NEEDS SHEER SET',
-          title: content.whoNeedsSheerSet?.title || 'Ai nên dùng Luminous Sheer Set?',
-          note: content.whoNeedsSheerSet?.note || '* Hiệu quả cảm nhận có thể khác nhau tùy theo tình trạng da và cách sử dụng.',
-          description: content.whoNeedsSheerSet?.description || 'Routine phục hồi phù hợp cho làn da cần được chăm sóc dịu nhẹ, bổ sung độ ẩm và hỗ trợ hàng rào bảo vệ sau các bước chăm sóc chuyên sâu.',
-          items: Array.isArray(content.whoNeedsSheerSet?.items) && content.whoNeedsSheerSet.items.length > 0 
-            ? content.whoNeedsSheerSet.items 
-            : [
-                { text: 'Da bị tác động sau treatment hoặc chăm sóc chuyên sâu', description: 'Phù hợp khi da cần routine dịu nhẹ để ổn định lại cảm giác bề mặt.' },
-                { text: 'Da cần bổ sung độ ẩm và cảm giác dễ chịu', description: 'Hỗ trợ cảm giác da mềm, ẩm và ít khô căng hơn.' },
-                { text: 'Da khô, thô ráp, cần chăm sóc phục hồi', description: 'Giúp routine dưỡng da tại nhà trở nên gọn gàng và dễ duy trì.' },
-                { text: 'Da cần hỗ trợ hàng rào bảo vệ', description: 'Tập trung vào cảm giác cân bằng, mềm mại và ổn định hơn.' },
-                { text: 'Người muốn routine phục hồi tại nhà sau spa', description: 'Kết nối trải nghiệm chăm sóc chuyên sâu với home-care hằng ngày.' }
-              ],
-          mediaSlot: content.whoNeedsSheerSet?.mediaSlot || 'cosmetic-luminous-who-for-image',
-          desktopMediaSlot: content.whoNeedsSheerSet?.desktopMediaSlot || 'cosmetic-luminous-who-for-desktop',
-          mobileMediaSlot: content.whoNeedsSheerSet?.mobileMediaSlot || 'cosmetic-luminous-who-for-mobile',
-          imageCaption: content.whoNeedsSheerSet?.imageCaption || 'Dễ dàng duy trì routine phục hồi tại nhà.',
-          desktopImageMode: content.whoNeedsSheerSet?.desktopImageMode || 'cover',
-          desktopObjectPosition: content.whoNeedsSheerSet?.desktopObjectPosition || 'center center',
-          mobileObjectPosition: content.whoNeedsSheerSet?.mobileObjectPosition || 'center top',
-        };
+        const rawWhoNeeds = content.whoNeedsSheerSet || {};
+        const whoNeeds = { ...DEFAULT_WHO_NEEDS_SHEER_SET, ...rawWhoNeeds };
+        whoNeeds.items = Array.isArray(rawWhoNeeds.items) && rawWhoNeeds.items.length > 0 ? rawWhoNeeds.items : DEFAULT_WHO_NEEDS_SHEER_SET.items;
+
+        const showNote = rawWhoNeeds.showNote !== false;
+        const showDescription = rawWhoNeeds.showDescription !== false;
+        const showImageCaption = rawWhoNeeds.showImageCaption !== false;
 
         const desktopUrl =
           cosmeticMedia[whoNeeds.desktopMediaSlot] ||
@@ -387,12 +393,12 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                           {whoNeeds.title}
                         </h2>
                       )}
-                      {whoNeeds.note && (
+                      {showNote && whoNeeds.note && (
                         <p className="cosmetic-subheading text-sm md:text-[15px] text-[#050A5C]/80 border-l-2 border-[#D8A13A] pl-4 py-1 mt-6">
                           {whoNeeds.note}
                         </p>
                       )}
-                      {whoNeeds.description && (
+                      {showDescription && whoNeeds.description && (
                         <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
                           {whoNeeds.description}
                         </p>
@@ -402,7 +408,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                     {whoNeeds.items && whoNeeds.items.length > 0 && (
                       <div className="flex flex-col gap-4">
                         {whoNeeds.items.map((item: any, idx: number) => (
-                          <div key={idx} className="flex items-start gap-4 bg-white p-4 md:p-5 border border-slate-200/60 shadow-sm">
+                          <div key={idx} className="flex items-start gap-4 bg-white p-4 md:p-5 border border-slate-200/60 shadow-[0_4px_20px_rgba(5,10,92,0.04)]">
                             <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center border border-[#D8A13A]/60 bg-white text-[#D8A13A] text-xs">✓</span>
                             <div>
                               <p className="cosmetic-body text-sm text-[#050A5C]">{item.text}</p>
@@ -447,7 +453,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                   </div>
 
                   {/* Image Caption */}
-                  {whoNeeds.imageCaption && (
+                  {showImageCaption && whoNeeds.imageCaption && (
                     <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 z-10 max-w-[80%]">
                       <div className="bg-white/90 backdrop-blur-md border border-white/20 px-4 py-2.5 shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
                         <span className="text-[#050A5C] text-[9px] md:text-[10px] tracking-widest font-semibold uppercase">{whoNeeds.imageCaption}</span>
