@@ -334,62 +334,132 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       })()}
 
       {/* ─── WHO NEEDS SHEER SET ──────────────────────────────────────────────── */}
-      {content.whoNeedsSet && (
-        <section className="bg-white py-16 md:py-24 px-6 border-b border-slate-100">
-          <div className="max-w-[1200px] mx-auto lg:px-8 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-10 items-center">
-            {/* Left Column: Text + Checklist */}
-            <div className="space-y-10">
-              <div className="space-y-4">
-                {content.whoNeedsSet.eyebrow && (
-                  <span className="cosmetic-kicker text-[#050A5C]/60 block">
-                    {content.whoNeedsSet.eyebrow}
-                  </span>
-                )}
-                {content.whoNeedsSet.title && (
-                  <h2 className="cosmetic-heading text-2xl md:text-3.5xl text-[#050A5C] leading-tight">
-                    {content.whoNeedsSet.title}
-                  </h2>
-                )}
-                {content.whoNeedsSet.note && (
-                  <p className="cosmetic-subheading text-xs md:text-sm text-[#050A5C]/80 bg-slate-50 border-l-2 border-[#050A5C]/20 p-3">
-                    {content.whoNeedsSet.note}
-                  </p>
-                )}
-                {content.whoNeedsSet.description && (
-                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
-                    {content.whoNeedsSet.description}
-                  </p>
-                )}
-              </div>
+      {(() => {
+        const whoNeeds = {
+          eyebrow: content.whoNeedsSheerSet?.eyebrow || 'WHO NEEDS SHEER SET',
+          title: content.whoNeedsSheerSet?.title || 'Ai nên dùng Luminous Sheer Set?',
+          note: content.whoNeedsSheerSet?.note || '* Hiệu quả cảm nhận có thể khác nhau tùy theo tình trạng da và cách sử dụng.',
+          description: content.whoNeedsSheerSet?.description || 'Routine phục hồi phù hợp cho làn da cần được chăm sóc dịu nhẹ, bổ sung độ ẩm và hỗ trợ hàng rào bảo vệ sau các bước chăm sóc chuyên sâu.',
+          items: Array.isArray(content.whoNeedsSheerSet?.items) && content.whoNeedsSheerSet.items.length > 0 
+            ? content.whoNeedsSheerSet.items 
+            : [
+                { text: 'Da bị tác động sau treatment hoặc chăm sóc chuyên sâu', description: 'Phù hợp khi da cần routine dịu nhẹ để ổn định lại cảm giác bề mặt.' },
+                { text: 'Da cần bổ sung độ ẩm và cảm giác dễ chịu', description: 'Hỗ trợ cảm giác da mềm, ẩm và ít khô căng hơn.' },
+                { text: 'Da khô, thô ráp, cần chăm sóc phục hồi', description: 'Giúp routine dưỡng da tại nhà trở nên gọn gàng và dễ duy trì.' },
+                { text: 'Da cần hỗ trợ hàng rào bảo vệ', description: 'Tập trung vào cảm giác cân bằng, mềm mại và ổn định hơn.' },
+                { text: 'Người muốn routine phục hồi tại nhà sau spa', description: 'Kết nối trải nghiệm chăm sóc chuyên sâu với home-care hằng ngày.' }
+              ],
+          mediaSlot: content.whoNeedsSheerSet?.mediaSlot || 'cosmetic-luminous-who-for-image',
+          desktopMediaSlot: content.whoNeedsSheerSet?.desktopMediaSlot || 'cosmetic-luminous-who-for-desktop',
+          mobileMediaSlot: content.whoNeedsSheerSet?.mobileMediaSlot || 'cosmetic-luminous-who-for-mobile',
+          imageCaption: content.whoNeedsSheerSet?.imageCaption || 'Dễ dàng duy trì routine phục hồi tại nhà.',
+          desktopImageMode: content.whoNeedsSheerSet?.desktopImageMode || 'cover',
+          desktopObjectPosition: content.whoNeedsSheerSet?.desktopObjectPosition || 'center center',
+          mobileObjectPosition: content.whoNeedsSheerSet?.mobileObjectPosition || 'center top',
+        };
 
-              {content.whoNeedsSet.items && content.whoNeedsSet.items.length > 0 && (
-                <div className="space-y-4 pt-2">
-                  {content.whoNeedsSet.items.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-4">
-                      <ShieldCheck className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
-                      <span className="cosmetic-body text-xs md:text-sm text-slate-600">{item.text}</span>
+        const desktopUrl =
+          cosmeticMedia[whoNeeds.desktopMediaSlot] ||
+          cosmeticMedia[whoNeeds.mediaSlot] ||
+          cosmeticMedia['cosmetic-luminous-who-for-image'];
+        const mobileUrl =
+          cosmeticMedia[whoNeeds.mobileMediaSlot] ||
+          desktopUrl;
+
+        const finalDesktopUrl = (typeof desktopUrl === 'string' && desktopUrl.trim() && !desktopUrl.includes('/PASTE')) ? desktopUrl.trim() : null;
+        const finalMobileUrl = (typeof mobileUrl === 'string' && mobileUrl.trim() && !mobileUrl.includes('/PASTE')) ? mobileUrl.trim() : null;
+
+        return (
+          <section className="bg-white px-4 py-14 md:px-8 md:py-28">
+            <div className="mx-auto max-w-[1200px]">
+              <div className="flex flex-col md:grid md:min-h-[760px] md:grid-cols-[0.48fr_0.52fr] overflow-hidden border border-[#D9DEEA] bg-[#F7F8FC] shadow-[0_24px_80px_rgba(5,10,92,0.08)]">
+                {/* Left Panel: Text + Checklist */}
+                <div className="flex flex-col justify-center px-6 py-12 md:px-14 lg:px-20 md:py-20">
+                  <div className="space-y-10">
+                    <div className="space-y-4">
+                      {whoNeeds.eyebrow && (
+                        <span className="cosmetic-kicker text-[#050A5C]/60 block">
+                          {whoNeeds.eyebrow}
+                        </span>
+                      )}
+                      {whoNeeds.title && (
+                        <h2 className="cosmetic-heading text-3xl md:text-4xl text-[#050A5C] leading-[1.15]">
+                          {whoNeeds.title}
+                        </h2>
+                      )}
+                      {whoNeeds.note && (
+                        <p className="cosmetic-subheading text-sm md:text-[15px] text-[#050A5C]/80 border-l-2 border-[#D8A13A] pl-4 py-1 mt-6">
+                          {whoNeeds.note}
+                        </p>
+                      )}
+                      {whoNeeds.description && (
+                        <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
+                          {whoNeeds.description}
+                        </p>
+                      )}
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            {/* Right Column: Large Image Stage */}
-            <div className="relative aspect-[4/3] md:aspect-[3/2] lg:aspect-auto lg:h-[550px] bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center p-4">
-              {renderSlotImage(
-                cosmeticMedia[content.whoNeedsSet.mediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.whoNeeds,
-                content.whoNeedsSet.title || 'Who Needs Sheer Set',
-                'from-[#EEF2F8] to-[#DDE3EE]'
-              )}
-              {content.whoNeedsSet.imageCaption && (
-                <div className="absolute bottom-6 left-6 right-6 bg-[#050A5C]/90 backdrop-blur-sm p-4 text-center border border-white/10">
-                  <span className="text-white text-xs tracking-widest font-semibold uppercase">{content.whoNeedsSet.imageCaption}</span>
+                    {whoNeeds.items && whoNeeds.items.length > 0 && (
+                      <div className="flex flex-col gap-4">
+                        {whoNeeds.items.map((item: any, idx: number) => (
+                          <div key={idx} className="flex items-start gap-4 bg-white p-4 md:p-5 border border-slate-200/60 shadow-sm">
+                            <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center border border-[#D8A13A]/60 bg-white text-[#D8A13A] text-xs">✓</span>
+                            <div>
+                              <p className="cosmetic-body text-sm text-[#050A5C]">{item.text}</p>
+                              {item.description && <p className="cosmetic-body text-xs text-slate-500 mt-1">{item.description}</p>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
+
+                {/* Right Panel: Image */}
+                <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-full bg-[#E8ECF4]">
+                  {/* Mobile Image */}
+                  <div className="absolute inset-0 w-full h-full md:hidden">
+                    {finalMobileUrl ? (
+                      <img src={finalMobileUrl} alt={whoNeeds.title} className="w-full h-full object-cover" loading="lazy" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#E8ECF4] via-[#F0F2F8] to-[#DDE3EE]" />
+                    )}
+                  </div>
+
+                  {/* Desktop Image */}
+                  <div className="absolute inset-0 w-full h-full hidden md:block">
+                    {finalDesktopUrl ? (
+                      <>
+                        {whoNeeds.desktopImageMode === 'contain-blur' ? (
+                          <>
+                            <div className="absolute inset-0 overflow-hidden">
+                              <img src={finalDesktopUrl} alt="" className="w-full h-full object-cover blur-3xl opacity-60 scale-110" aria-hidden="true" />
+                            </div>
+                            <img src={finalDesktopUrl} alt={whoNeeds.title} className="absolute inset-0 w-full h-full object-contain" loading="lazy" />
+                          </>
+                        ) : (
+                          <img src={finalDesktopUrl} alt={whoNeeds.title} className="w-full h-full object-cover" loading="lazy" />
+                        )}
+                      </>
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#E8ECF4] via-[#F0F2F8] to-[#DDE3EE]" />
+                    )}
+                  </div>
+
+                  {/* Image Caption */}
+                  {whoNeeds.imageCaption && (
+                    <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 z-10 max-w-[80%]">
+                      <div className="bg-white/90 backdrop-blur-md border border-white/20 px-4 py-2.5 shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
+                        <span className="text-[#050A5C] text-[9px] md:text-[10px] tracking-widest font-semibold uppercase">{whoNeeds.imageCaption}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       {/* ─── SKIN BARRIER & MG3-PLUS TECHNOLOGY ───────────────────────────────── */}
       {content.barrierScience && (

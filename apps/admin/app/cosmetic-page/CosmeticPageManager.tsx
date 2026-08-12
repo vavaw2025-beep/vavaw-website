@@ -184,6 +184,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landWhoNeedsNote, setLandWhoNeedsNote] = useState('');
   const [landWhoNeedsDescription, setLandWhoNeedsDescription] = useState('');
   const [landWhoNeedsMediaSlot, setLandWhoNeedsMediaSlot] = useState('');
+  const [landWhoNeedsDesktopMediaSlot, setLandWhoNeedsDesktopMediaSlot] = useState('');
+  const [landWhoNeedsMobileMediaSlot, setLandWhoNeedsMobileMediaSlot] = useState('');
+  const [landWhoNeedsDesktopImageMode, setLandWhoNeedsDesktopImageMode] = useState('cover');
+  const [landWhoNeedsDesktopObjectPosition, setLandWhoNeedsDesktopObjectPosition] = useState('center center');
+  const [landWhoNeedsMobileObjectPosition, setLandWhoNeedsMobileObjectPosition] = useState('center top');
   const [landWhoNeedsImageCaption, setLandWhoNeedsImageCaption] = useState('');
   const [landWhoNeedsItems, setLandWhoNeedsItems] = useState<any[]>([]);
 
@@ -468,6 +473,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandWhoNeedsNote(whoNeedsSet.note || '');
       setLandWhoNeedsDescription(whoNeedsSet.description || '');
       setLandWhoNeedsMediaSlot(whoNeedsSet.mediaSlot || 'cosmetic-luminous-who-for-image');
+      setLandWhoNeedsDesktopMediaSlot(whoNeedsSet.desktopMediaSlot || 'cosmetic-luminous-who-for-desktop');
+      setLandWhoNeedsMobileMediaSlot(whoNeedsSet.mobileMediaSlot || 'cosmetic-luminous-who-for-mobile');
+      setLandWhoNeedsDesktopImageMode(whoNeedsSet.desktopImageMode || 'cover');
+      setLandWhoNeedsDesktopObjectPosition(whoNeedsSet.desktopObjectPosition || 'center center');
+      setLandWhoNeedsMobileObjectPosition(whoNeedsSet.mobileObjectPosition || 'center top');
       setLandWhoNeedsImageCaption(whoNeedsSet.imageCaption || '');
       setLandWhoNeedsItems(whoNeedsSet.items || []);
 
@@ -714,6 +724,11 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             note: landWhoNeedsNote,
             description: landWhoNeedsDescription,
             mediaSlot: landWhoNeedsMediaSlot,
+            desktopMediaSlot: landWhoNeedsDesktopMediaSlot,
+            mobileMediaSlot: landWhoNeedsMobileMediaSlot,
+            desktopImageMode: landWhoNeedsDesktopImageMode,
+            desktopObjectPosition: landWhoNeedsDesktopObjectPosition,
+            mobileObjectPosition: landWhoNeedsMobileObjectPosition,
             imageCaption: landWhoNeedsImageCaption,
             items: landWhoNeedsItems
           };
@@ -2711,47 +2726,103 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           <span>3. Who Needs Sheer Set (Đối tượng sử dụng)</span>
                           <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                         </summary>
-                        <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
-                            <input type="text" value={landWhoNeedsEyebrow} onChange={e => setLandWhoNeedsEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
+                          <div className="col-span-2 md:col-span-1 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Hình ảnh & Hiển thị</h4>
+                            <div className="space-y-4">
+                              <div className="space-y-2">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase">Desktop Background</label>
+                                {renderSlotCard({ id: landWhoNeedsDesktopMediaSlot || 'cosmetic-luminous-who-for-desktop', name: 'Who Needs Desktop Background', size: '2560x1080 or 1920x1080' })}
+                                
+                                <div className="grid grid-cols-2 gap-2 mt-3">
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Chế độ hiển thị</label>
+                                    <select value={landWhoNeedsDesktopImageMode} onChange={e => setLandWhoNeedsDesktopImageMode(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-300 rounded bg-white">
+                                      <option value="cover">Phủ kín (Cover)</option>
+                                      <option value="contain-blur">Giữ trọn ảnh & Nền mờ</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Object Position</label>
+                                    <select value={landWhoNeedsDesktopObjectPosition} onChange={e => setLandWhoNeedsDesktopObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-300 rounded bg-white">
+                                      <option value="center center">Center Center</option>
+                                      <option value="center right">Center Right</option>
+                                      <option value="center left">Center Left</option>
+                                      <option value="top center">Top Center</option>
+                                      <option value="bottom center">Bottom Center</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <p className="text-[9px] text-slate-500 italic">Nếu chỉ có ảnh dọc nhưng dùng cho desktop ngang, chọn contain-blur để giữ trọn ảnh và tự tạo nền mờ phía sau.</p>
+                              </div>
+                              <div className="space-y-2">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase">Mobile Background</label>
+                                {renderSlotCard({ id: landWhoNeedsMobileMediaSlot || 'cosmetic-luminous-who-for-mobile', name: 'Who Needs Mobile Background', size: '1080x1600 or 1080x1920' })}
+                                
+                                <div className="mt-3">
+                                  <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Object Position</label>
+                                  <select value={landWhoNeedsMobileObjectPosition} onChange={e => setLandWhoNeedsMobileObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-300 rounded bg-white">
+                                    <option value="center top">Center Top</option>
+                                    <option value="center center">Center Center</option>
+                                    <option value="center bottom">Center Bottom</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="space-y-2 md:col-span-2 mt-2 pt-3 border-t border-slate-200">
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase">Fallback Feature Image (Cũ)</label>
+                                {renderSlotCard({ id: landWhoNeedsMediaSlot || 'cosmetic-luminous-who-for-image', name: 'Who Needs Fallback Image', size: '1200x760' })}
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
-                            <input type="text" value={landWhoNeedsMediaSlot} onChange={e => setLandWhoNeedsMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-500 font-mono" />
-                          </div>
-                          <div className="col-span-2">
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề chính (Title)</label>
-                            <input type="text" value={landWhoNeedsTitle} onChange={e => setLandWhoNeedsTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
-                          </div>
-                          <div className="col-span-2">
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ghi chú (Note)</label>
-                            <input type="text" value={landWhoNeedsNote} onChange={e => setLandWhoNeedsNote(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white italic" />
-                          </div>
-                          <div className="col-span-2">
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đoạn văn mô tả (Description)</label>
-                            <textarea value={landWhoNeedsDescription} onChange={e => setLandWhoNeedsDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
-                          </div>
-                          <div className="col-span-2">
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ghi chú trên ảnh (Image Caption)</label>
-                            <input type="text" value={landWhoNeedsImageCaption} onChange={e => setLandWhoNeedsImageCaption(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          <div className="col-span-2 md:col-span-1 space-y-3">
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                              <input type="text" value={landWhoNeedsEyebrow} onChange={e => setLandWhoNeedsEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề chính (Title)</label>
+                              <input type="text" value={landWhoNeedsTitle} onChange={e => setLandWhoNeedsTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ghi chú (Note)</label>
+                              <input type="text" value={landWhoNeedsNote} onChange={e => setLandWhoNeedsNote(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white italic" />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đoạn văn mô tả (Description)</label>
+                              <textarea value={landWhoNeedsDescription} onChange={e => setLandWhoNeedsDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ghi chú trên ảnh (Image Caption)</label>
+                              <input type="text" value={landWhoNeedsImageCaption} onChange={e => setLandWhoNeedsImageCaption(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            </div>
                           </div>
                           
                           <div className="col-span-2 mt-2 pt-2 border-t border-slate-100">
                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Checklist (Items)</label>
+                            <p className="text-[10px] text-slate-500 italic mb-3">Checklist sẽ hiển thị dạng hàng có icon check trên desktop và dạng card dọc trên mobile.</p>
                             <div className="space-y-3">
                               {landWhoNeedsItems.map((item: any, idx: number) => (
-                                <div key={idx} className="p-2 border border-slate-200 rounded-lg bg-slate-50 flex items-start gap-2 relative">
-                                  <div className="flex-1">
-                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Nội dung</label>
-                                    <input type="text" value={item.text || ''} onChange={e => { const l = [...landWhoNeedsItems]; l[idx] = { ...l[idx], text: e.target.value }; setLandWhoNeedsItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
-                                  </div>
-                                  <button type="button" onClick={() => setLandWhoNeedsItems(landWhoNeedsItems.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-4">
+                                <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-slate-50 relative">
+                                  <button type="button" onClick={() => setLandWhoNeedsItems(landWhoNeedsItems.filter((_, i) => i !== idx))} className="absolute top-3 right-3 text-slate-400 hover:text-red-600">
                                     <Trash2 className="h-4 w-4" />
                                   </button>
+                                  <div className="grid grid-cols-2 gap-3 mt-2 pr-6">
+                                    <div className="col-span-2">
+                                      <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Tiêu đề (Text)</label>
+                                      <input type="text" value={item.text || ''} onChange={e => { const l = [...landWhoNeedsItems]; l[idx] = { ...l[idx], text: e.target.value }; setLandWhoNeedsItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                    </div>
+                                    <div className="col-span-2">
+                                      <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Mô tả chi tiết (Description)</label>
+                                      <textarea value={item.description || ''} onChange={e => { const l = [...landWhoNeedsItems]; l[idx] = { ...l[idx], description: e.target.value }; setLandWhoNeedsItems(l); }} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                    </div>
+                                    <div className="col-span-2 flex items-center gap-2">
+                                      <input type="checkbox" id={`highlight-${idx}`} checked={item.highlight || false} onChange={e => { const l = [...landWhoNeedsItems]; l[idx] = { ...l[idx], highlight: e.target.checked }; setLandWhoNeedsItems(l); }} className="w-3 h-3 text-[#050A5C] border-slate-300 rounded focus:ring-[#050A5C]" />
+                                      <label htmlFor={`highlight-${idx}`} className="text-[10px] text-slate-600 font-medium cursor-pointer">Nổi bật (Highlight)</label>
+                                    </div>
+                                  </div>
                                 </div>
                               ))}
-                              <button type="button" onClick={() => setLandWhoNeedsItems([...landWhoNeedsItems, { text: '' }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                              <button type="button" onClick={() => setLandWhoNeedsItems([...landWhoNeedsItems, { text: '', description: '', highlight: false }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
                                 <Plus className="h-3.5 w-3.5" />
                                 Thêm mục checklist
                               </button>

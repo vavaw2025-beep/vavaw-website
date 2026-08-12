@@ -75,7 +75,11 @@ export interface CosmeticPageMedia {
   /** Anti-Gravity Technology mobile image for Luminous Set */
   antiGravityMobile?: string;
   /** Who Needs Sheer Set image for Luminous Set */
-  whoNeeds?: string;
+  whoForImage?: string;
+  /** Who Needs Sheer Set desktop background for Luminous Set */
+  whoForDesktop?: string;
+  /** Who Needs Sheer Set mobile background for Luminous Set */
+  whoForMobile?: string;
   /** Skin Barrier Science image for Luminous Set */
   barrierScience?: string;
   /** MG3-Plus Technology image for Luminous Set */
@@ -101,7 +105,9 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-luminous-active-ingredients-image': 'activeIngredients',
   'cosmetic-luminous-skin-barrier-image': 'barrierScience',
   'cosmetic-luminous-mg3-plus-image': 'mg3Plus',
-  'cosmetic-luminous-who-for-image': 'whoNeeds',
+  'cosmetic-luminous-who-for-image': 'whoForImage',
+  'cosmetic-luminous-who-for-desktop': 'whoForDesktop',
+  'cosmetic-luminous-who-for-mobile': 'whoForMobile',
   'cosmetic-luminous-anti-gravity-image': 'antiGravity',
   'cosmetic-luminous-anti-gravity-desktop': 'antiGravityDesktop',
   'cosmetic-luminous-anti-gravity-mobile': 'antiGravityMobile',

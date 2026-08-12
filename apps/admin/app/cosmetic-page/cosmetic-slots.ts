@@ -82,6 +82,16 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     aliases: ['who-for', 'who-needs', 'who-needs-set'],
   },
   {
+    value: 'cosmetic-luminous-who-for-desktop',
+    label: 'Luminous Set — Who Needs desktop background',
+    aliases: ['who-for-desktop'],
+  },
+  {
+    value: 'cosmetic-luminous-who-for-mobile',
+    label: 'Luminous Set — Who Needs mobile background',
+    aliases: ['who-for-mobile'],
+  },
+  {
     value: 'cosmetic-luminous-skin-barrier-image',
     label: 'Luminous Set — Skin Barrier Diagram',
     aliases: ['skin-barrier', 'barrier-diagram', 'skin-barrier-science'],

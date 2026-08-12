@@ -38,6 +38,27 @@ export interface ProductLandingCta {
   ctaHref: string;
 }
 
+export interface LuminousWhoNeedsItem {
+  text: string;
+  description?: string;
+  highlight?: boolean;
+}
+
+export interface LuminousWhoNeedsSheerSet {
+  eyebrow?: string;
+  title?: string;
+  note?: string;
+  description?: string;
+  imageCaption?: string;
+  mediaSlot?: string;
+  desktopMediaSlot?: string;
+  mobileMediaSlot?: string;
+  desktopImageMode?: "cover" | "contain-blur";
+  desktopObjectPosition?: string;
+  mobileObjectPosition?: string;
+  items?: LuminousWhoNeedsItem[];
+}
+
 export interface ProductLandingContent {
   eyebrow: string;
   title: string;
@@ -88,6 +109,7 @@ export interface ProductLandingContent {
       text?: string;
     }>;
   };
+  whoNeedsSheerSet?: LuminousWhoNeedsSheerSet;
   barrierScience?: {
     eyebrow?: string;
     title?: string;
