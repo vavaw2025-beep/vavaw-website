@@ -123,8 +123,21 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
   },
   {
     value: 'cosmetic-luminous-active-ingredients-image',
-    label: 'Luminous Set — Active Ingredients Image',
+    label: 'Active Ingredients fallback artwork',
     aliases: ['active-ingredients', 'ingredients-image'],
+    description: 'Recommended: 1200×1500',
+  },
+  {
+    value: 'cosmetic-luminous-active-ingredients-desktop',
+    label: 'Active Ingredients desktop artwork',
+    aliases: ['active-ingredients-desktop'],
+    description: 'Recommended: 1600×1000 or 1440×900',
+  },
+  {
+    value: 'cosmetic-luminous-active-ingredients-mobile',
+    label: 'Active Ingredients mobile artwork',
+    aliases: ['active-ingredients-mobile'],
+    description: 'Recommended: 1080×1600 or 1080×1920',
   },
   {
     value: 'cosmetic-luminous-usage-set-image',

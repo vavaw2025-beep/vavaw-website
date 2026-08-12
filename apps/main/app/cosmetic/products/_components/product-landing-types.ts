@@ -84,6 +84,33 @@ export interface LuminousWhoNeedsSheerSet {
   items?: LuminousWhoNeedsItem[];
 }
 
+export interface LuminousActiveIngredientItem {
+  name: string;
+  englishName?: string;
+  role?: string;
+  description?: string;
+  benefit?: string;
+  highlight?: boolean;
+}
+
+export interface LuminousActiveIngredientsMap {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  caption?: string;
+  showDescription?: boolean;
+  showCaption?: boolean;
+  mediaSlot?: string;
+  desktopMediaSlot?: string;
+  mobileMediaSlot?: string;
+  mediaRenderType?: 'full-bleed-artwork' | 'diagram' | 'photo';
+  desktopImageMode?: 'cover' | 'contain-blur';
+  mobileImageMode?: 'cover' | 'contain-blur';
+  desktopObjectPosition?: string;
+  mobileObjectPosition?: string;
+  items?: LuminousActiveIngredientItem[];
+}
+
 export interface ProductLandingContent {
   eyebrow: string;
   title: string;
@@ -136,6 +163,7 @@ export interface ProductLandingContent {
   };
   whoNeedsSheerSet?: LuminousWhoNeedsSheerSet;
   skinBarrierMg3Plus?: LuminousSkinBarrierMg3Plus;
+  activeIngredientsMap?: LuminousActiveIngredientsMap;
   barrierScience?: {
     eyebrow?: string;
     title?: string;

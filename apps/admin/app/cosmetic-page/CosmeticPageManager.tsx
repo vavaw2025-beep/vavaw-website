@@ -222,12 +222,26 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landBarrierMg3MobileObjectPosition, setLandBarrierMg3MobileObjectPosition] = useState('center top');
   const [landMg3PlusMediaRenderType, setLandMg3PlusMediaRenderType] = useState('full-bleed-artwork');
 
-  // Active Ingredients states
-  const [landActiveIngredientsEyebrow, setLandActiveIngredientsEyebrow] = useState('');
-  const [landActiveIngredientsTitle, setLandActiveIngredientsTitle] = useState('');
-  const [landActiveIngredientsDescription, setLandActiveIngredientsDescription] = useState('');
-  const [landActiveIngredientsMediaSlot, setLandActiveIngredientsMediaSlot] = useState('');
-  const [landActiveIngredientsItems, setLandActiveIngredientsItems] = useState<any[]>([]);
+  // Active Ingredients (Block 5) states
+  const [landAiEyebrow, setLandAiEyebrow] = useState('');
+  const [landAiTitle, setLandAiTitle] = useState('');
+  const [landAiDescription, setLandAiDescription] = useState('');
+  const [landAiCaption, setLandAiCaption] = useState('');
+  const [landAiShowDescription, setLandAiShowDescription] = useState(true);
+  const [landAiShowCaption, setLandAiShowCaption] = useState(true);
+  const [landAiMediaRenderType, setLandAiMediaRenderType] = useState('full-bleed-artwork');
+  const [landAiDesktopImageMode, setLandAiDesktopImageMode] = useState('cover');
+  const [landAiMobileImageMode, setLandAiMobileImageMode] = useState('cover');
+  const [landAiDesktopObjectPosition, setLandAiDesktopObjectPosition] = useState('center center');
+  const [landAiMobileObjectPosition, setLandAiMobileObjectPosition] = useState('center top');
+  const DEFAULT_AI_ITEMS = [
+    { name: 'Exosome', englishName: 'Exosome Technology', role: 'Tín hiệu tế bào', description: 'Truyền tín hiệu sinh học giúp tế bào da nhận ra và phản ứng với quá trình tái tạo.', benefit: 'Phục hồi tế bào', highlight: true },
+    { name: 'Peptide Complex', englishName: 'Multi-Peptide Complex', role: 'Nâng đỡ cấu trúc', description: 'Kích hoạt tổng hợp collagen và elastin, cải thiện độ săn chắc từ nền tảng.', benefit: 'Săn chắc da', highlight: true },
+    { name: 'Mg3+', englishName: 'Magnesium Ion Complex', role: 'Dẫn truyền hoạt chất', description: 'Phức hợp ion Magie giúp mở kênh thẩm thấu, đưa dưỡng chất vào sâu hơn.', benefit: 'Thẩm thấu sâu', highlight: true },
+    { name: 'Centella Asiatica', englishName: 'Cica Extract', role: 'Làm dịu & phục hồi', description: 'Chiết xuất rau má giúp giảm viêm, dịu kích ứng và hỗ trợ liền da nhanh.', benefit: 'Làm dịu da', highlight: false },
+    { name: 'Hyaluronic Acid', englishName: 'Sodium Hyaluronate', role: 'Cấp ẩm đa tầng', description: 'Phân tử HA đa kích thước cấp ẩm từ bề mặt đến các lớp biểu bì sâu.', benefit: 'Cấp ẩm sâu', highlight: false },
+  ];
+  const [landAiItems, setLandAiItems] = useState<any[]>(DEFAULT_AI_ITEMS);
 
   // Usage Guide states
   const [landUsageGuideEyebrow, setLandUsageGuideEyebrow] = useState('');
@@ -538,12 +552,19 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandBarrierMg3MobileObjectPosition(mg3Plus.mobileObjectPosition || 'center top');
       setLandMg3PlusMediaRenderType(mg3Plus.mediaRenderType || 'diagram');
 
-      const activeIngredients = content.activeIngredients || {};
-      setLandActiveIngredientsEyebrow(activeIngredients.eyebrow || '');
-      setLandActiveIngredientsTitle(activeIngredients.title || '');
-      setLandActiveIngredientsDescription(activeIngredients.description || '');
-      setLandActiveIngredientsMediaSlot(activeIngredients.mediaSlot || 'cosmetic-luminous-active-ingredients-image');
-      setLandActiveIngredientsItems(activeIngredients.ingredients || []);
+      const aiMap = content.activeIngredientsMap || content.activeIngredients || {};
+      setLandAiEyebrow(aiMap.eyebrow || '');
+      setLandAiTitle(aiMap.title || '');
+      setLandAiDescription(aiMap.description || '');
+      setLandAiCaption(aiMap.caption || '');
+      setLandAiShowDescription(aiMap.showDescription ?? true);
+      setLandAiShowCaption(aiMap.showCaption ?? true);
+      setLandAiMediaRenderType(aiMap.mediaRenderType || 'full-bleed-artwork');
+      setLandAiDesktopImageMode(aiMap.desktopImageMode || 'cover');
+      setLandAiMobileImageMode(aiMap.mobileImageMode || 'cover');
+      setLandAiDesktopObjectPosition(aiMap.desktopObjectPosition || 'center center');
+      setLandAiMobileObjectPosition(aiMap.mobileObjectPosition || 'center top');
+      setLandAiItems(aiMap.items && aiMap.items.length ? aiMap.items : DEFAULT_AI_ITEMS);
 
       const usageGuide = content.usageGuide || {};
       setLandUsageGuideEyebrow(usageGuide.eyebrow || '');
@@ -812,12 +833,22 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               mediaRenderType: landMg3PlusMediaRenderType
             }
           };
-          updatedContent.activeIngredients = {
-            eyebrow: landActiveIngredientsEyebrow,
-            title: landActiveIngredientsTitle,
-            description: landActiveIngredientsDescription,
-            mediaSlot: landActiveIngredientsMediaSlot,
-            ingredients: landActiveIngredientsItems
+          updatedContent.activeIngredientsMap = {
+            eyebrow: landAiEyebrow,
+            title: landAiTitle,
+            description: landAiDescription,
+            caption: landAiCaption,
+            showDescription: landAiShowDescription,
+            showCaption: landAiShowCaption,
+            mediaRenderType: landAiMediaRenderType,
+            mediaSlot: 'cosmetic-luminous-active-ingredients-image',
+            desktopMediaSlot: 'cosmetic-luminous-active-ingredients-desktop',
+            mobileMediaSlot: 'cosmetic-luminous-active-ingredients-mobile',
+            desktopImageMode: landAiDesktopImageMode,
+            mobileImageMode: landAiMobileImageMode,
+            desktopObjectPosition: landAiDesktopObjectPosition,
+            mobileObjectPosition: landAiMobileObjectPosition,
+            items: landAiItems
           };
           updatedContent.usageGuide = {
             eyebrow: landUsageGuideEyebrow,
@@ -3161,59 +3192,173 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           <span>5. Active Ingredients (Thành phần)</span>
                           <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform" />
                         </summary>
-                        <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
-                          
-                          {/* Header section */}
-                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
-                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Thông tin chung</h4>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="col-span-2 md:col-span-1">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
-                                <input type="text" value={landActiveIngredientsEyebrow} onChange={e => setLandActiveIngredientsEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                        <div className="p-4 border-t border-slate-200 bg-white space-y-6">
+
+                          {/* Text fields */}
+                          <div className="grid grid-cols-2 gap-6 p-5 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="col-span-2 text-[13px] font-bold text-[#050A5C] uppercase tracking-wider border-b border-slate-200 pb-2">Nội dung văn bản</h4>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                              <input type="text" value={landAiEyebrow} onChange={e => setLandAiEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            </div>
+                            <div className="col-span-2">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
+                              <input type="text" value={landAiTitle} onChange={e => setLandAiTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                            </div>
+                            <div className="col-span-2">
+                              <div className="flex items-center justify-between mb-1">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase">Mô tả (Description)</label>
+                                <label className="flex items-center gap-1 cursor-pointer">
+                                  <input type="checkbox" checked={landAiShowDescription} onChange={e => setLandAiShowDescription(e.target.checked)} className="rounded text-blue-600 focus:ring-blue-500 bg-white" />
+                                  <span className="text-[10px] text-slate-500 font-semibold">Hiển thị</span>
+                                </label>
                               </div>
-                              <div className="col-span-2 md:col-span-1">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
-                                <input type="text" value={landActiveIngredientsMediaSlot} onChange={e => setLandActiveIngredientsMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
+                              <textarea value={landAiDescription} onChange={e => setLandAiDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                            </div>
+                            <div className="col-span-2">
+                              <div className="flex items-center justify-between mb-1">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase">Caption</label>
+                                <label className="flex items-center gap-1 cursor-pointer">
+                                  <input type="checkbox" checked={landAiShowCaption} onChange={e => setLandAiShowCaption(e.target.checked)} className="rounded text-blue-600 focus:ring-blue-500 bg-white" />
+                                  <span className="text-[10px] text-slate-500 font-semibold">Hiển thị</span>
+                                </label>
                               </div>
-                              <div className="col-span-2">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
-                                <input type="text" value={landActiveIngredientsTitle} onChange={e => setLandActiveIngredientsTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                              <input type="text" value={landAiCaption} onChange={e => setLandAiCaption(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white italic text-slate-500" />
+                            </div>
+                          </div>
+
+                          {/* Media Render Type + Upload Cards */}
+                          <div className="grid grid-cols-2 gap-6 p-5 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="col-span-2 text-[13px] font-bold text-[#050A5C] uppercase tracking-wider border-b border-slate-200 pb-2">Hình ảnh</h4>
+
+                            {/* Render type select */}
+                            <div className="col-span-2">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Dạng hiển thị ảnh</label>
+                              <select value={landAiMediaRenderType} onChange={e => setLandAiMediaRenderType(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-700 font-semibold mb-2">
+                                <option value="full-bleed-artwork">Artwork full khung / banner thiết kế sẵn</option>
+                                <option value="diagram">Sơ đồ / hình khoa học nhỏ</option>
+                                <option value="photo">Ảnh sản phẩm / lifestyle</option>
+                              </select>
+                              {landAiMediaRenderType === 'full-bleed-artwork' && (
+                                <p className="text-[11px] text-slate-500 mb-2">Ảnh sẽ phủ kín vùng hiển thị, phù hợp banner/graphic đã thiết kế sẵn.</p>
+                              )}
+                              {landAiMediaRenderType === 'diagram' && (
+                                <p className="text-[11px] text-slate-500 mb-2">Ảnh được giữ nguyên, không crop. Phù hợp icon/diagram nhỏ.</p>
+                              )}
+                              {landAiMediaRenderType === 'photo' && (
+                                <p className="text-[11px] text-slate-500 mb-2">Hỗ trợ cover hoặc contain-blur. Phù hợp ảnh sản phẩm/lifestyle.</p>
+                              )}
+                              {(landAiMediaRenderType === 'diagram' || landAiMediaRenderType === 'full-bleed-artwork') && (
+                                <p className="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100">Lưu ý: Các thiết lập Image Mode bên dưới sẽ bị bỏ qua.</p>
+                              )}
+                            </div>
+
+                            {/* Helper note */}
+                            <div className="col-span-2">
+                              <p className="text-[11px] text-amber-600 font-medium bg-amber-50 p-2 rounded-md border border-amber-100">
+                                Desktop và mobile là 2 slot độc lập. Hệ thống không tự đảo ảnh theo kích thước.
+                              </p>
+                            </div>
+
+                            {/* Desktop upload card */}
+                            <div className="col-span-2">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh desktop ngang — Active Ingredients</label>
+                              <p className="text-[10px] text-slate-400 mb-2">Khuyến nghị: 1600×1000 px</p>
+                              {renderSlotCard({ id: 'cosmetic-luminous-active-ingredients-desktop', name: 'Ảnh desktop ngang — Active Ingredients', size: '1600×1000' })}
+                            </div>
+
+                            {/* Mobile upload card */}
+                            <div className="col-span-2">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh mobile dọc — Active Ingredients</label>
+                              <p className="text-[10px] text-slate-400 mb-2">Khuyến nghị: 1080×1600 px</p>
+                              {renderSlotCard({ id: 'cosmetic-luminous-active-ingredients-mobile', name: 'Ảnh mobile dọc — Active Ingredients', size: '1080×1600' })}
+                            </div>
+
+                            {/* Fallback upload card */}
+                            <div className="col-span-2">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh fallback — Active Ingredients</label>
+                              {renderSlotCard({ id: 'cosmetic-luminous-active-ingredients-image', name: 'Ảnh fallback — Active Ingredients', size: '1600×1000' })}
+                            </div>
+
+                            {/* Image mode & position selects */}
+                            <div className="col-span-2 grid grid-cols-2 gap-4 mt-2">
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Image Mode</label>
+                                <select value={landAiDesktopImageMode} onChange={e => setLandAiDesktopImageMode(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="cover">Cover (Phủ kín)</option>
+                                  <option value="contain">Contain (Vừa khung)</option>
+                                </select>
                               </div>
-                              <div className="col-span-2">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả (Description)</label>
-                                <textarea value={landActiveIngredientsDescription} onChange={e => setLandActiveIngredientsDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mobile Image Mode</label>
+                                <select value={landAiMobileImageMode} onChange={e => setLandAiMobileImageMode(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="cover">Cover (Phủ kín)</option>
+                                  <option value="contain">Contain (Vừa khung)</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Object Position</label>
+                                <select value={landAiDesktopObjectPosition} onChange={e => setLandAiDesktopObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="center center">Giữa (Center)</option>
+                                  <option value="center top">Giữa trên (Top Center)</option>
+                                  <option value="center bottom">Giữa dưới (Bottom Center)</option>
+                                  <option value="left center">Trái (Left Center)</option>
+                                  <option value="right center">Phải (Right Center)</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mobile Object Position</label>
+                                <select value={landAiMobileObjectPosition} onChange={e => setLandAiMobileObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="center center">Giữa (Center)</option>
+                                  <option value="center top">Giữa trên (Top Center)</option>
+                                  <option value="center bottom">Giữa dưới (Bottom Center)</option>
+                                  <option value="left center">Trái (Left Center)</option>
+                                  <option value="right center">Phải (Right Center)</option>
+                                </select>
                               </div>
                             </div>
                           </div>
 
                           {/* Ingredients Repeater */}
-                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
-                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Danh sách thành phần</h4>
+                          <div className="space-y-3 p-5 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[13px] font-bold text-[#050A5C] uppercase tracking-wider border-b border-slate-200 pb-2">Danh sách thành phần hoạt chất</h4>
                             <div className="space-y-4">
-                              {landActiveIngredientsItems.map((item: any, idx: number) => (
-                                <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-white flex items-start gap-3 relative">
+                              {landAiItems.map((item: any, idx: number) => (
+                                <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-white flex items-start gap-3">
                                   <div className="flex-1 grid grid-cols-2 gap-3">
-                                    <div className="col-span-2 md:col-span-1">
-                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Tên thành phần (Name)</label>
-                                      <input type="text" value={item.name || ''} onChange={e => { const l = [...landActiveIngredientsItems]; l[idx] = { ...l[idx], name: e.target.value }; setLandActiveIngredientsItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold text-[#050A5C]" />
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Tên (Name)</label>
+                                      <input type="text" value={item.name || ''} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], name: e.target.value }; setLandAiItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold text-[#050A5C]" />
                                     </div>
-                                    <div className="col-span-2 md:col-span-1">
-                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Phụ đề (Subtitle)</label>
-                                      <input type="text" value={item.subtitle || ''} onChange={e => { const l = [...landActiveIngredientsItems]; l[idx] = { ...l[idx], subtitle: e.target.value }; setLandActiveIngredientsItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-yellow-700" />
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Tên tiếng Anh (English Name)</label>
+                                      <input type="text" value={item.englishName || ''} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], englishName: e.target.value }; setLandAiItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-500 italic" />
+                                    </div>
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Vai trò (Role)</label>
+                                      <input type="text" value={item.role || ''} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], role: e.target.value }; setLandAiItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-indigo-700" />
+                                    </div>
+                                    <div>
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Lợi ích (Benefit)</label>
+                                      <input type="text" value={item.benefit || ''} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], benefit: e.target.value }; setLandAiItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-emerald-700" />
                                     </div>
                                     <div className="col-span-2">
                                       <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Mô tả (Description)</label>
-                                      <textarea value={item.description || ''} onChange={e => { const l = [...landActiveIngredientsItems]; l[idx] = { ...l[idx], description: e.target.value }; setLandActiveIngredientsItems(l); }} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-600" />
+                                      <textarea value={item.description || ''} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], description: e.target.value }; setLandAiItems(l); }} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-600" />
+                                    </div>
+                                    <div className="col-span-2 flex items-center gap-2">
+                                      <input type="checkbox" id={`ai-highlight-${idx}`} checked={item.highlight || false} onChange={e => { const l = [...landAiItems]; l[idx] = { ...l[idx], highlight: e.target.checked }; setLandAiItems(l); }} className="w-3 h-3 text-[#050A5C] border-slate-300 rounded focus:ring-[#050A5C]" />
+                                      <label htmlFor={`ai-highlight-${idx}`} className="text-[10px] text-slate-600 font-medium cursor-pointer">Nổi bật (Highlight)</label>
                                     </div>
                                   </div>
-                                  <button type="button" onClick={() => setLandActiveIngredientsItems(landActiveIngredientsItems.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-4">
+                                  <button type="button" onClick={() => setLandAiItems(landAiItems.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-1 shrink-0">
                                     <Trash2 className="h-4 w-4" />
                                   </button>
                                 </div>
                               ))}
-                              <button type="button" onClick={() => setLandActiveIngredientsItems([...landActiveIngredientsItems, { name: '', subtitle: '', description: '' }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
-                                <Plus className="h-4 w-4" />
-                                Thêm thành phần
+                              <button type="button" onClick={() => setLandAiItems([...landAiItems, { name: '', englishName: '', role: '', description: '', benefit: '', highlight: false }])} className="w-full py-1.5 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-3.5 w-3.5" />
+                                + Thêm thành phần
                               </button>
                             </div>
                           </div>
