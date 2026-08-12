@@ -9,23 +9,31 @@ interface ProductDetailFormProps {
 }
 
 export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductDetailFormProps) {
-  const shouldUseLegalInfo = Array.isArray(productDetailForm.legalInfo) && productDetailForm.legalInfo.length > 0;
-  const shouldUseProductItems = Array.isArray(productDetailForm.productItems) && productDetailForm.productItems.length > 0;
+  
+  
 
-  const legalInfoRows = shouldUseLegalInfo
-    ? productDetailForm.legalInfo
-    : (productDetailForm.info?.map(i => ({ label: i.label || '', value: i.value || '', highlight: false })) || []);
+  const legalInfoRows = Array.isArray(productDetailForm.legalInfo) && productDetailForm.legalInfo.length > 0
+    ? productDetailForm.legalInfo.filter(item => item && item.label && item.value)
+    : Array.isArray(productDetailForm.info)
+      ? productDetailForm.info.map(i => ({ label: i.label || '', value: i.value || '', highlight: false }))
+      : [];
 
-  const productItemsList = shouldUseProductItems
-    ? productDetailForm.productItems
-    : (productDetailForm.ingredientGroups?.map(g => ({
-        name: g.title || '',
-        volume: undefined,
-        functionClaim: g.subtitle || '',
-        ingredients: g.ingredients || ''
-      })) || []);
+  const productItemsList = Array.isArray(productDetailForm.productItems) && productDetailForm.productItems.length > 0
+    ? productDetailForm.productItems.filter(item => item && item.name)
+    : Array.isArray(productDetailForm.ingredientGroups)
+      ? productDetailForm.ingredientGroups.map(g => ({
+          name: g.title || '',
+          volume: undefined,
+          functionClaim: g.subtitle || '',
+          ingredients: g.ingredients || ''
+        }))
+      : [];
       
-  const dataSource = shouldUseLegalInfo ? "legalInfo" : "legacy";
+  const cautionsList = Array.isArray(productDetailForm.cautions)
+    ? productDetailForm.cautions.filter(Boolean)
+    : [];
+      
+  const dataSource = (Array.isArray(productDetailForm.legalInfo) && productDetailForm.legalInfo.length > 0) ? "legalInfo" : "legacy";
 
   // Visibility Flags with defaults
   const showDescription = productDetailForm.showDescription ?? true;
@@ -39,8 +47,8 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
   return (
     <section className="bg-slate-50 py-16 md:py-24 px-4 sm:px-6"
       data-product-detail-source={dataSource}
-      data-product-detail-legal-count={legalInfoRows?.length || 0}
-      data-product-detail-product-items-count={productItemsList?.length || 0}
+      data-product-detail-legal-count={legalInfoRows.length}
+      data-product-detail-product-items-count={productItemsList.length}
       data-luminous-product-detail-version="legal-2d-v2"
     >
       <div className="max-w-[1200px] mx-auto">
@@ -123,13 +131,13 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
             )}
 
             {/* Cautions */}
-            {showCautions && productDetailForm.cautions && productDetailForm.cautions.length > 0 && (
+            {showCautions && cautionsList.length > 0 && (
               <div className="space-y-4">
                 <h4 className="text-[13px] font-bold text-[#b91c1c] uppercase tracking-wider border-b border-red-100 pb-2">
                   Luu � khi s? d?ng (Cautions)
                 </h4>
                 <ul className="space-y-3">
-                  {productDetailForm.cautions.map((caution, idx) => (
+                  {cautionsList.map((caution, idx) => (
                     <li key={idx} className="flex items-start gap-3 text-[13px] sm:text-sm text-slate-600 font-light leading-relaxed">
                       <span className="text-[#b91c1c] mt-1 shrink-0 text-lg leading-none">�</span>
                       <span>{caution}</span>
