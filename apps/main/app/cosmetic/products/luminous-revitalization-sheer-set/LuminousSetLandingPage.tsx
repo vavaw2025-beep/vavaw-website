@@ -6,6 +6,75 @@ import { ProductDetailForm } from '../_components/ProductDetailForm';
 
 import { ProductJsonLd } from '../_components/ProductJsonLd';
 
+interface ScienceMediaBoxProps {
+  url?: string | null;
+  alt: string;
+  caption?: string;
+  showCaption?: boolean;
+  mediaRenderType?: 'diagram' | 'photo';
+  imageMode?: 'cover' | 'contain-blur';
+  objectPosition?: string;
+  placeholderLabel: string;
+  captionPosition?: 'bottom-right' | 'bottom-left';
+  className?: string;
+}
+
+function ScienceMediaBox({
+  url,
+  alt,
+  caption,
+  showCaption = true,
+  mediaRenderType = 'diagram',
+  imageMode = 'cover',
+  objectPosition,
+  placeholderLabel,
+  captionPosition = 'bottom-right',
+  className = ''
+}: ScienceMediaBoxProps) {
+  const captionPosClass = captionPosition === 'bottom-left' 
+    ? 'bottom-4 left-4 md:bottom-6 md:left-6' 
+    : 'bottom-4 right-4 md:bottom-6 md:right-6';
+
+  return (
+    <div className={`relative w-full h-full bg-[#F8FAFD] flex items-center justify-center overflow-hidden ${className}`}>
+      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(5,10,92,0.03)] z-10" />
+
+      {!url ? (
+        <div className="absolute inset-0 flex items-center justify-center p-6">
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+          <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
+            <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">{placeholderLabel}</span>
+          </div>
+        </div>
+      ) : mediaRenderType === 'diagram' ? (
+        <>
+          <div className="absolute inset-0 z-0" style={{ background: 'radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, transparent 70%)' }} />
+          <img src={url} alt={alt} className="relative z-10 object-contain max-h-[78%] max-w-[82%]" style={objectPosition ? { objectPosition } : undefined} loading="lazy" />
+        </>
+      ) : (
+        <>
+          {imageMode === 'contain-blur' ? (
+            <>
+              <div className="absolute inset-0 overflow-hidden z-0">
+                <img src={url} alt="" className="w-full h-full object-cover blur-3xl opacity-60 scale-110" aria-hidden="true" />
+              </div>
+              <img src={url} alt={alt} className="absolute inset-0 z-10 w-full h-full object-contain" style={objectPosition ? { objectPosition } : undefined} loading="lazy" />
+            </>
+          ) : (
+            <img src={url} alt={alt} className="absolute inset-0 z-10 w-full h-full object-cover" style={objectPosition ? { objectPosition } : undefined} loading="lazy" />
+          )}
+        </>
+      )}
+
+      {showCaption && caption && (
+        <div className={`absolute ${captionPosClass} z-20 bg-white/90 backdrop-blur-md border border-[#D9DEEA] px-4 py-2 shadow-sm rounded-sm max-w-[80%]`}>
+          <span className="text-[9px] md:text-[10px] text-[#050A5C] tracking-widest font-medium uppercase">{caption}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface ProductLandingPageProps {
   content: ProductLandingContent;
   cosmeticMedia: any;
@@ -24,6 +93,8 @@ const DEFAULT_WHO_NEEDS_SHEER_SET = {
   desktopImageMode: "cover",
   desktopObjectPosition: "center center",
   mobileObjectPosition: "center top",
+  showDescription: true,
+  showCaption: true,
   items: [
     { text: "Da bị tác động sau treatment hoặc chăm sóc chuyên sâu", description: "Phù hợp khi da cần routine dịu nhẹ để ổn định lại cảm giác bề mặt." },
     { text: "Da cần bổ sung độ ẩm và cảm giác dễ chịu", description: "Hỗ trợ cảm giác da mềm, ẩm và ít khô căng hơn." },
@@ -41,7 +112,8 @@ const DEFAULT_SKIN_BARRIER = {
   mediaSlot: "cosmetic-luminous-skin-barrier-image",
   desktopMediaSlot: "cosmetic-luminous-skin-barrier-desktop",
   mobileMediaSlot: "cosmetic-luminous-skin-barrier-mobile",
-  desktopImageMode: "cover"
+  desktopImageMode: "cover",
+  mediaRenderType: "diagram"
 };
 
 const DEFAULT_MG3_PLUS = {
@@ -52,7 +124,8 @@ const DEFAULT_MG3_PLUS = {
   mediaSlot: "cosmetic-luminous-mg3-plus-image",
   desktopMediaSlot: "cosmetic-luminous-mg3-plus-desktop",
   mobileMediaSlot: "cosmetic-luminous-mg3-plus-mobile",
-  desktopImageMode: "contain-blur"
+  desktopImageMode: "contain-blur",
+  mediaRenderType: "diagram"
 };
 
 export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }: ProductLandingPageProps) {
@@ -518,13 +591,15 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
             className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100"
             data-skin-barrier-desktop-url={sbFinalDesktopUrl || ""}
             data-skin-barrier-mobile-url={sbFinalMobileUrl || ""}
+            data-skin-barrier-render-type={skinBarrier.mediaRenderType || 'diagram'}
             data-mg3-plus-desktop-url={mg3FinalDesktopUrl || ""}
             data-mg3-plus-mobile-url={mg3FinalMobileUrl || ""}
+            data-mg3-render-type={mg3.mediaRenderType || 'diagram'}
           >
             <div className="max-w-[1200px] mx-auto space-y-12 md:space-y-20">
               
-              {/* Panel 1: Skin Barrier (Text Left, Image Right) md:grid-cols-[0.46fr_0.54fr] */}
-              <div className="flex flex-col md:grid md:grid-cols-[0.46fr_0.54fr] overflow-hidden border border-[#D9DEEA] bg-[#F7F8FC] rounded-2xl shadow-[0_24px_80px_rgba(5,10,92,0.06)]">
+              {/* Panel 1: Skin Barrier (Text Left, Image Right) md:grid-cols-[0.44fr_0.56fr] */}
+              <div className="flex flex-col md:grid md:grid-cols-[0.44fr_0.56fr] overflow-hidden border border-[#D9DEEA] bg-[#F7F8FC] rounded-2xl shadow-[0_24px_80px_rgba(5,10,92,0.06)]">
                 {/* Text Content */}
                 <div className="flex flex-col justify-center px-6 py-10 md:px-14 md:py-20">
                   <div className="space-y-5">
@@ -548,103 +623,61 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 </div>
                 {/* Image */}
                 <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-l border-[#D9DEEA]/50">
-                  {/* Inner shadow overlay */}
-                  <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(5,10,92,0.03)] z-10" />
-                  
                   {/* Mobile Image */}
-                  <div className="absolute inset-0 w-full h-full block md:hidden">
-                    {sbFinalMobileUrl ? (
-                      <img src={sbFinalMobileUrl} alt={skinBarrier.title} className="w-full h-full object-cover" loading="lazy" />
-                    ) : (
-                       <div className="w-full h-full bg-gradient-to-br from-[#F7F8FC] to-[#EEF2F8] flex items-center justify-center p-6 relative overflow-hidden">
-                         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-                         <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
-                           <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">Skin Barrier Visual</span>
-                         </div>
-                       </div>
-                    )}
-                  </div>
+                  <ScienceMediaBox
+                    className="absolute inset-0 block md:hidden"
+                    url={sbFinalMobileUrl}
+                    alt={skinBarrier.title || 'Skin Barrier Visual'}
+                    caption={skinBarrier.caption}
+                    showCaption={showSbCaption}
+                    mediaRenderType={(skinBarrier as any).mediaRenderType || 'diagram'}
+                    imageMode={(skinBarrier as any).mobileImageMode || (skinBarrier as any).imageMode || 'cover'}
+                    placeholderLabel="Skin Barrier Visual"
+                    captionPosition="bottom-right"
+                  />
                   {/* Desktop Image */}
-                  <div className="absolute inset-0 w-full h-full hidden md:block">
-                    {sbFinalDesktopUrl ? (
-                      <>
-                        {skinBarrier.desktopImageMode === 'contain-blur' ? (
-                          <>
-                            <div className="absolute inset-0 overflow-hidden">
-                              <img src={sbFinalDesktopUrl} alt="" className="w-full h-full object-cover blur-3xl opacity-60 scale-110" aria-hidden="true" />
-                            </div>
-                            <img src={sbFinalDesktopUrl} alt={skinBarrier.title} className="absolute inset-0 w-full h-full object-contain" loading="lazy" />
-                          </>
-                        ) : (
-                          <img src={sbFinalDesktopUrl} alt={skinBarrier.title} className="w-full h-full object-cover" loading="lazy" />
-                        )}
-                      </>
-                    ) : (
-                       <div className="w-full h-full bg-gradient-to-br from-[#F7F8FC] to-[#EEF2F8] flex items-center justify-center p-6 relative overflow-hidden">
-                         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-                         <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
-                           <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">Skin Barrier Visual</span>
-                         </div>
-                       </div>
-                    )}
-                  </div>
-                  {showSbCaption && skinBarrier.caption && (
-                    <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-20 bg-white/90 backdrop-blur-md border border-[#D9DEEA] px-4 py-2 shadow-sm rounded-sm max-w-[80%]">
-                      <span className="text-[9px] md:text-[10px] text-[#050A5C] tracking-widest font-medium uppercase">{skinBarrier.caption}</span>
-                    </div>
-                  )}
+                  <ScienceMediaBox
+                    className="absolute inset-0 hidden md:block"
+                    url={sbFinalDesktopUrl}
+                    alt={skinBarrier.title || 'Skin Barrier Visual'}
+                    caption={skinBarrier.caption}
+                    showCaption={showSbCaption}
+                    mediaRenderType={(skinBarrier as any).mediaRenderType || 'diagram'}
+                    imageMode={(skinBarrier as any).desktopImageMode || (skinBarrier as any).imageMode || 'cover'}
+                    placeholderLabel="Skin Barrier Visual"
+                    captionPosition="bottom-right"
+                  />
                 </div>
               </div>
 
-              {/* Panel 2: MG3-Plus (Image Left, Text Right) md:grid-cols-[0.54fr_0.46fr] */}
-              <div className="flex flex-col-reverse md:grid md:grid-cols-[0.54fr_0.46fr] overflow-hidden border border-[#D9DEEA] bg-[#F7F8FC] rounded-2xl shadow-[0_24px_80px_rgba(5,10,92,0.06)]">
+              {/* Panel 2: MG3-Plus (Image Left, Text Right) md:grid-cols-[0.56fr_0.44fr] */}
+              <div className="flex flex-col-reverse md:grid md:grid-cols-[0.56fr_0.44fr] overflow-hidden border border-[#D9DEEA] bg-[#F7F8FC] rounded-2xl shadow-[0_24px_80px_rgba(5,10,92,0.06)]">
                 {/* Image */}
                 <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-r border-[#D9DEEA]/50">
-                  {/* Inner shadow overlay */}
-                  <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(5,10,92,0.03)] z-10" />
-
                   {/* Mobile Image */}
-                  <div className="absolute inset-0 w-full h-full block md:hidden">
-                    {mg3FinalMobileUrl ? (
-                      <img src={mg3FinalMobileUrl} alt={mg3.title} className="w-full h-full object-cover" loading="lazy" />
-                    ) : (
-                       <div className="w-full h-full bg-gradient-to-br from-[#F7F8FC] to-[#EEF2F8] flex items-center justify-center p-6 relative overflow-hidden">
-                         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-                         <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
-                           <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">MG3-Plus Visual</span>
-                         </div>
-                       </div>
-                    )}
-                  </div>
+                  <ScienceMediaBox
+                    className="absolute inset-0 block md:hidden"
+                    url={mg3FinalMobileUrl}
+                    alt={mg3.title || 'MG3-Plus Visual'}
+                    caption={mg3.caption}
+                    showCaption={showMg3Caption}
+                    mediaRenderType={(mg3 as any).mediaRenderType || 'diagram'}
+                    imageMode={(mg3 as any).mobileImageMode || (mg3 as any).imageMode || 'cover'}
+                    placeholderLabel="MG3-Plus Visual"
+                    captionPosition="bottom-left"
+                  />
                   {/* Desktop Image */}
-                  <div className="absolute inset-0 w-full h-full hidden md:block">
-                    {mg3FinalDesktopUrl ? (
-                      <>
-                        {mg3.desktopImageMode === 'contain-blur' ? (
-                          <>
-                            <div className="absolute inset-0 overflow-hidden">
-                              <img src={mg3FinalDesktopUrl} alt="" className="w-full h-full object-cover blur-3xl opacity-60 scale-110" aria-hidden="true" />
-                            </div>
-                            <img src={mg3FinalDesktopUrl} alt={mg3.title} className="absolute inset-0 w-full h-full object-contain" loading="lazy" />
-                          </>
-                        ) : (
-                          <img src={mg3FinalDesktopUrl} alt={mg3.title} className="w-full h-full object-cover" loading="lazy" />
-                        )}
-                      </>
-                    ) : (
-                       <div className="w-full h-full bg-gradient-to-br from-[#F7F8FC] to-[#EEF2F8] flex items-center justify-center p-6 relative overflow-hidden">
-                         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-                         <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
-                           <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">MG3-Plus Visual</span>
-                         </div>
-                       </div>
-                    )}
-                  </div>
-                  {showMg3Caption && mg3.caption && (
-                    <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 z-20 bg-white/90 backdrop-blur-md border border-[#D9DEEA] px-4 py-2 shadow-sm rounded-sm max-w-[80%]">
-                      <span className="text-[9px] md:text-[10px] text-[#050A5C] tracking-widest font-medium uppercase">{mg3.caption}</span>
-                    </div>
-                  )}
+                  <ScienceMediaBox
+                    className="absolute inset-0 hidden md:block"
+                    url={mg3FinalDesktopUrl}
+                    alt={mg3.title || 'MG3-Plus Visual'}
+                    caption={mg3.caption}
+                    showCaption={showMg3Caption}
+                    mediaRenderType={(mg3 as any).mediaRenderType || 'diagram'}
+                    imageMode={(mg3 as any).desktopImageMode || (mg3 as any).imageMode || 'cover'}
+                    placeholderLabel="MG3-Plus Visual"
+                    captionPosition="bottom-left"
+                  />
                 </div>
                 {/* Text Content */}
                 <div className="flex flex-col justify-center px-6 py-10 md:px-14 md:py-20">

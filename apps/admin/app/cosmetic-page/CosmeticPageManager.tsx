@@ -207,6 +207,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landBarrierDesktopImageMode, setLandBarrierDesktopImageMode] = useState('cover');
   const [landBarrierDesktopObjectPosition, setLandBarrierDesktopObjectPosition] = useState('center center');
   const [landBarrierMobileObjectPosition, setLandBarrierMobileObjectPosition] = useState('center top');
+  const [landSkinBarrierMediaRenderType, setLandSkinBarrierMediaRenderType] = useState('diagram');
 
   const [landBarrierMg3Eyebrow, setLandBarrierMg3Eyebrow] = useState('');
   const [landBarrierMg3Title, setLandBarrierMg3Title] = useState('');
@@ -219,6 +220,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landBarrierMg3DesktopImageMode, setLandBarrierMg3DesktopImageMode] = useState('cover');
   const [landBarrierMg3DesktopObjectPosition, setLandBarrierMg3DesktopObjectPosition] = useState('center center');
   const [landBarrierMg3MobileObjectPosition, setLandBarrierMg3MobileObjectPosition] = useState('center top');
+  const [landMg3PlusMediaRenderType, setLandMg3PlusMediaRenderType] = useState('diagram');
 
   // Active Ingredients states
   const [landActiveIngredientsEyebrow, setLandActiveIngredientsEyebrow] = useState('');
@@ -521,6 +523,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandBarrierDesktopImageMode(skinBarrier.desktopImageMode || 'cover');
       setLandBarrierDesktopObjectPosition(skinBarrier.desktopObjectPosition || 'center center');
       setLandBarrierMobileObjectPosition(skinBarrier.mobileObjectPosition || 'center top');
+      setLandSkinBarrierMediaRenderType(skinBarrier.mediaRenderType || 'diagram');
 
       setLandBarrierMg3Eyebrow(mg3Plus.mg3Eyebrow || mg3Plus.eyebrow || '');
       setLandBarrierMg3Title(mg3Plus.mg3Title || mg3Plus.title || 'Phương pháp phục hồi đa tầng');
@@ -533,6 +536,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandBarrierMg3DesktopImageMode(mg3Plus.desktopImageMode || 'cover');
       setLandBarrierMg3DesktopObjectPosition(mg3Plus.desktopObjectPosition || 'center center');
       setLandBarrierMg3MobileObjectPosition(mg3Plus.mobileObjectPosition || 'center top');
+      setLandMg3PlusMediaRenderType(mg3Plus.mediaRenderType || 'diagram');
 
       const activeIngredients = content.activeIngredients || {};
       setLandActiveIngredientsEyebrow(activeIngredients.eyebrow || '');
@@ -790,7 +794,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               mobileMediaSlot: 'cosmetic-luminous-skin-barrier-mobile',
               desktopImageMode: landBarrierDesktopImageMode,
               desktopObjectPosition: landBarrierDesktopObjectPosition,
-              mobileObjectPosition: landBarrierMobileObjectPosition
+              mobileObjectPosition: landBarrierMobileObjectPosition,
+              mediaRenderType: landSkinBarrierMediaRenderType
             },
             mg3Plus: {
               eyebrow: landBarrierMg3Eyebrow,
@@ -803,7 +808,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
               mobileMediaSlot: 'cosmetic-luminous-mg3-plus-mobile',
               desktopImageMode: landBarrierMg3DesktopImageMode,
               desktopObjectPosition: landBarrierMg3DesktopObjectPosition,
-              mobileObjectPosition: landBarrierMg3MobileObjectPosition
+              mobileObjectPosition: landBarrierMg3MobileObjectPosition,
+              mediaRenderType: landMg3PlusMediaRenderType
             }
           };
           updatedContent.activeIngredients = {
@@ -2976,6 +2982,21 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                   </div>
                                 </div>
                                 
+                                <div className="mt-4 border-t border-slate-200 pt-4">
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Dạng hiển thị ảnh</label>
+                                  <select value={landSkinBarrierMediaRenderType} onChange={e => setLandSkinBarrierMediaRenderType(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-700 font-semibold mb-2">
+                                    <option value="diagram">Sơ đồ / hình khoa học</option>
+                                    <option value="photo">Ảnh sản phẩm / lifestyle</option>
+                                  </select>
+                                  <p className="text-[11px] text-slate-500 mb-4">Sơ đồ / hình khoa học sẽ hiển thị theo object-contain trên nền sạch, không dùng blur để tránh bị lẫn hình.</p>
+                                  
+                                  {landSkinBarrierMediaRenderType === 'diagram' && (
+                                    <p className="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100 mb-4">
+                                      Lưu ý: Các thiết lập Image Mode bên dưới sẽ bị bỏ qua khi render ở dạng Sơ đồ.
+                                    </p>
+                                  )}
+                                </div>
+                                
                                 <div className="grid grid-cols-2 gap-4 mt-4">
                                   <div>
                                     <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Image Mode</label>
@@ -3063,6 +3084,21 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                                   <div className="flex gap-2 mb-2">
                                     <input type="text" value={landBarrierMg3MediaSlot} onChange={e => setLandBarrierMg3MediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-mg3-plus-image" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
                                   </div>
+                                </div>
+                                
+                                <div className="mt-4 border-t border-slate-200 pt-4">
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Dạng hiển thị ảnh</label>
+                                  <select value={landMg3PlusMediaRenderType} onChange={e => setLandMg3PlusMediaRenderType(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-700 font-semibold mb-2">
+                                    <option value="diagram">Sơ đồ / hình khoa học</option>
+                                    <option value="photo">Ảnh sản phẩm / lifestyle</option>
+                                  </select>
+                                  <p className="text-[11px] text-slate-500 mb-4">Sơ đồ / hình khoa học sẽ hiển thị theo object-contain trên nền sạch, không dùng blur để tránh bị lẫn hình.</p>
+                                  
+                                  {landMg3PlusMediaRenderType === 'diagram' && (
+                                    <p className="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100 mb-4">
+                                      Lưu ý: Các thiết lập Image Mode bên dưới sẽ bị bỏ qua khi render ở dạng Sơ đồ.
+                                    </p>
+                                  )}
                                 </div>
                                 
                                 <div className="grid grid-cols-2 gap-4 mt-4">
