@@ -9,9 +9,6 @@ interface ProductDetailFormProps {
 }
 
 export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductDetailFormProps) {
-  
-  
-
   const legalInfoRows = Array.isArray(productDetailForm.legalInfo) && productDetailForm.legalInfo.length > 0
     ? productDetailForm.legalInfo.filter(item => item && item.label && item.value)
     : Array.isArray(productDetailForm.info)
@@ -28,11 +25,11 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
           ingredients: g.ingredients || ''
         }))
       : [];
-      
+
   const cautionsList = Array.isArray(productDetailForm.cautions)
     ? productDetailForm.cautions.filter(Boolean)
     : [];
-      
+
   const dataSource = (Array.isArray(productDetailForm.legalInfo) && productDetailForm.legalInfo.length > 0) ? "legalInfo" : "legacy";
 
   // Visibility Flags with defaults
@@ -44,30 +41,35 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
   const showStorage = productDetailForm.showStorage ?? true;
   const showQualityGuarantee = productDetailForm.showQualityGuarantee ?? true;
 
+  const isMfdsRow = (item: { label: string; value: string }) => {
+    const l = (item.label || '').toLowerCase();
+    return l.includes('mfds') || l.includes('phê duyệt') || l.includes('phe duyeth') || l.includes('tình trạng');
+  };
+
   return (
-    <section className="bg-slate-50 py-16 md:py-24 px-4 sm:px-6"
+    <section className="bg-slate-50/50 py-12 md:py-20 px-4 sm:px-6"
       data-product-detail-source={dataSource}
       data-product-detail-legal-count={legalInfoRows.length}
       data-product-detail-product-items-count={productItemsList.length}
-      data-luminous-product-detail-version="legal-2d-v2"
+      data-luminous-product-detail-version="legal-2d-polished"
     >
       <div className="max-w-[1200px] mx-auto">
-        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-white border border-[#D8DEEA] rounded-[22px] overflow-hidden shadow-[0_30px_90px_rgba(5,10,92,0.08)]">
           
           {/* Header */}
-          <div className="p-8 md:p-12 border-b border-slate-100 bg-slate-50/50">
+          <div className="p-6 sm:p-8 md:p-12 border-b border-[#D8DEEA] bg-slate-50/40">
             {productDetailForm.eyebrow && (
-              <span className="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase block mb-3">
+              <span className="text-xs font-bold text-[#050A5C]/60 tracking-[0.2em] uppercase block mb-3">
                 {productDetailForm.eyebrow}
               </span>
             )}
             {productDetailForm.title && (
-              <h2 className="text-2xl md:text-3xl text-[#050A5C] cosmetic-heading-soft leading-[1.08]">
+              <h2 className="text-2xl md:text-3xl text-[#050A5C] cosmetic-heading-soft leading-[1.1]">
                 {productDetailForm.title}
               </h2>
             )}
             {showDescription && productDetailForm.description && (
-              <p className="mt-3 text-sm text-slate-500 font-light leading-relaxed">
+              <p className="mt-3 text-sm md:text-base text-slate-600 font-light leading-7 max-w-[760px]">
                 {productDetailForm.description}
               </p>
             )}
@@ -75,51 +77,81 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
 
           {/* Legal Info Grid */}
           {showLegalInfo && legalInfoRows.length > 0 && (
-            <div className="border-b border-slate-100">
-              {legalInfoRows.map((item, idx) => (
-                <div key={idx} className={`flex flex-col sm:flex-row ${idx !== legalInfoRows.length - 1 ? 'border-b border-slate-50' : ''}`}>
-                  <div className={`w-full sm:w-1/3 p-4 sm:px-8 sm:py-5 flex items-center ${item.highlight ? 'bg-[#050A5C]/5' : 'bg-slate-50/50'} sm:border-r sm:border-slate-50`}>
-                    <span className="text-[11px] sm:text-xs font-bold text-[#050A5C] uppercase tracking-wider">{item.label}</span>
+            <div className="border-b border-[#D8DEEA]">
+              {legalInfoRows.map((item, idx) => {
+                if (isMfdsRow(item)) {
+                  return (
+                    <div key={idx} className="bg-[#F7F8FC] border-y border-[#D8DEEA] px-6 md:px-8 py-6 my-1">
+                      <span className="text-xs font-bold text-[#050A5C] uppercase tracking-[0.08em] block mb-2">
+                        {item.label}
+                      </span>
+                      <span className="text-sm md:text-[15px] leading-7 text-slate-800 font-medium whitespace-pre-wrap break-words">
+                        {item.value}
+                      </span>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div 
+                    key={idx} 
+                    className={`grid grid-cols-1 md:grid-cols-[0.32fr_0.68fr] border-b border-slate-100 px-6 md:px-8 py-4 md:py-5 transition-colors ${
+                      item.highlight ? 'bg-[#F8FAFC] border-l-4 border-l-[#D8A13A]' : ''
+                    }`}
+                  >
+                    <div className="flex items-center py-1 md:py-0">
+                      <span className="text-[11px] md:text-xs font-bold uppercase tracking-[0.08em] text-[#050A5C]">
+                        {item.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center py-1 md:py-0">
+                      <span className="text-sm md:text-[15px] leading-7 text-slate-700 font-light whitespace-pre-wrap break-words">
+                        {item.value}
+                      </span>
+                    </div>
                   </div>
-                  <div className={`w-full sm:w-2/3 p-4 sm:px-8 sm:py-5 flex items-center ${item.highlight ? 'bg-[#050A5C]/[0.02]' : ''}`}>
-                    <span className="text-[13px] sm:text-sm text-slate-600 font-light leading-relaxed whitespace-pre-wrap">{item.value}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
-          <div className="p-8 md:p-12 space-y-12">
+          <div className="p-6 sm:p-8 md:p-12 space-y-12">
             {/* Product Items */}
             {showProductItems && productItemsList.length > 0 && (
               <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                   {productItemsList.map((item, idx) => (
-                    <div key={idx} className="space-y-4 bg-slate-50/30 p-6 rounded-xl border border-slate-100">
-                      <div>
-                        <h4 className="text-[15px] font-bold text-[#050A5C]">{item.name}</h4>
-                        {item.volume && (
-                          <span className="inline-block mt-2 text-[11px] font-bold bg-[#050A5C]/10 text-[#050A5C] px-2 py-0.5 rounded-sm">
-                            {item.volume}
+                    <div key={idx} className="border border-[#D8DEEA] rounded-2xl bg-white shadow-sm p-6 sm:p-8 flex flex-col justify-between space-y-5">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold tracking-widest text-[#D8A13A] uppercase">
+                            {String(idx + 1).padStart(2, '0')}
                           </span>
+                          {item.volume && (
+                            <span className="text-xs font-bold bg-[#050A5C]/5 border border-[#050A5C]/15 text-[#050A5C] px-3 py-1 rounded-full">
+                              {item.volume}
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="text-base md:text-lg font-semibold text-[#050A5C] leading-snug">
+                          {item.name}
+                        </h4>
+                        {item.functionClaim && (
+                          <div className="bg-[#F8FAFC] border-l-2 border-[#D8A13A] px-4 py-3 text-sm leading-6 text-slate-700 font-medium rounded-r-md">
+                            {item.functionClaim}
+                          </div>
                         )}
                       </div>
-                      
-                      {item.functionClaim && (
-                        <p className="text-[13px] text-slate-600 font-medium">
-                          {item.functionClaim}
-                        </p>
-                      )}
 
                       {showIngredients && item.ingredients && (
-                        <details className="group [&_summary::-webkit-details-marker]:hidden">
-                          <summary className="flex items-center gap-2 cursor-pointer text-[12px] font-bold text-slate-400 uppercase tracking-wider hover:text-[#050A5C] transition-colors select-none">
-                            <span>Th�nh ph?n (Ingredients)</span>
-                            <span className="text-[10px] bg-slate-200 text-slate-500 rounded-full w-4 h-4 flex items-center justify-center group-open:rotate-180 transition-transform">
-                              ?
+                        <details className="group [&_summary::-webkit-details-marker]:hidden border-t border-slate-100 pt-4">
+                          <summary className="flex items-center justify-between cursor-pointer text-xs font-bold text-slate-500 uppercase tracking-wider hover:text-[#050A5C] transition-colors select-none py-1">
+                            <span>Xem thành phần đầy đủ</span>
+                            <span className="text-slate-400 group-open:rotate-180 transition-transform duration-200 text-[10px]">
+                              ▼
                             </span>
                           </summary>
-                          <div className="mt-3 text-[13px] text-slate-500 font-light leading-relaxed break-words whitespace-pre-wrap pl-2 border-l-2 border-slate-200">
+                          <div className="mt-3 p-4 bg-[#F8FAFC] rounded-xl border border-slate-100 text-[12px] md:text-[13px] text-slate-600 font-light leading-[1.8] break-words whitespace-pre-wrap">
                             {item.ingredients}
                           </div>
                         </details>
@@ -132,15 +164,16 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
 
             {/* Cautions */}
             {showCautions && cautionsList.length > 0 && (
-              <div className="space-y-4">
-                <h4 className="text-[13px] font-bold text-[#b91c1c] uppercase tracking-wider border-b border-red-100 pb-2">
-                  Luu � khi s? d?ng (Cautions)
+              <div className="space-y-4 pt-4 border-t border-slate-100">
+                <h4 className="text-xs uppercase tracking-[0.12em] text-red-600 font-bold flex items-center gap-2 border-b border-red-100 pb-3">
+                  <span className="w-2 h-2 rounded-full bg-red-600 inline-block shrink-0"></span>
+                  Lưu ý khi sử dụng (Cautions)
                 </h4>
-                <ul className="space-y-3">
+                <ul className="space-y-3 pt-1">
                   {cautionsList.map((caution, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-[13px] sm:text-sm text-slate-600 font-light leading-relaxed">
-                      <span className="text-[#b91c1c] mt-1 shrink-0 text-lg leading-none">�</span>
-                      <span>{caution}</span>
+                    <li key={idx} className="flex items-start gap-3 text-sm leading-7 text-slate-700 font-light">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2.5 shrink-0 inline-block"></span>
+                      <span className="whitespace-normal break-words">{caution}</span>
                     </li>
                   ))}
                 </ul>
@@ -149,19 +182,23 @@ export function ProductDetailForm({ productDetailForm, cosmeticMedia }: ProductD
 
             {/* Storage & Quality Guarantee */}
             {(showStorage || showQualityGuarantee) && (productDetailForm.storage || productDetailForm.qualityGuarantee) && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-6 border-t border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-slate-100">
                 {showStorage && productDetailForm.storage && (
-                  <div className="space-y-2">
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">B?o qu?n (Storage)</h4>
-                    <p className="text-[13px] sm:text-sm text-slate-600 font-light leading-relaxed whitespace-pre-wrap">
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-5 md:p-6 space-y-2">
+                    <h4 className="text-[11px] uppercase tracking-[0.1em] text-[#050A5C] font-bold">
+                      Bảo quản (Storage)
+                    </h4>
+                    <p className="text-sm leading-7 text-slate-700 font-light whitespace-pre-wrap break-words">
                       {productDetailForm.storage}
                     </p>
                   </div>
                 )}
                 {showQualityGuarantee && productDetailForm.qualityGuarantee && (
-                  <div className="space-y-2">
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">B?o d?m ch?t lu?ng</h4>
-                    <p className="text-[13px] sm:text-sm text-slate-600 font-light leading-relaxed whitespace-pre-wrap">
+                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-5 md:p-6 space-y-2">
+                    <h4 className="text-[11px] uppercase tracking-[0.1em] text-[#050A5C] font-bold">
+                      Bảo đảm chất lượng
+                    </h4>
+                    <p className="text-sm leading-7 text-slate-700 font-light whitespace-pre-wrap break-words">
                       {productDetailForm.qualityGuarantee}
                     </p>
                   </div>
