@@ -285,6 +285,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [landDetailOfflineMobileObjectPosition, setLandDetailOfflineMobileObjectPosition] = useState('center center');
   const [landDetailOfflineTextAlign, setLandDetailOfflineTextAlign] = useState('left');
   const [landDetailOfflineOverlayStrength, setLandDetailOfflineOverlayStrength] = useState('medium');
+  const [landDetailShowDescription, setLandDetailShowDescription] = useState(true);
+  const [landDetailShowLegalInfo, setLandDetailShowLegalInfo] = useState(true);
+  const [landDetailShowProductItems, setLandDetailShowProductItems] = useState(true);
+  const [landDetailShowIngredients, setLandDetailShowIngredients] = useState(true);
+  const [landDetailShowCautions, setLandDetailShowCautions] = useState(true);
+  const [landDetailShowStorage, setLandDetailShowStorage] = useState(true);
+  const [landDetailShowQualityGuarantee, setLandDetailShowQualityGuarantee] = useState(true);
+  const [landProductDetailFormLegalInfo, setLandProductDetailFormLegalInfo] = useState<any[]>([]);
+  const [landProductDetailFormProductItems, setLandProductDetailFormProductItems] = useState<any[]>([]);
   const [landProductDetailFormInfo, setLandProductDetailFormInfo] = useState<any[]>([]);
   const [landProductDetailFormIngredientGroups, setLandProductDetailFormIngredientGroups] = useState<any[]>([]);
   const [landProductDetailFormCautions, setLandProductDetailFormCautions] = useState<string[]>([]);
@@ -627,6 +636,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandDetailOfflineMobileObjectPosition(detailForm.offlineMobileObjectPosition || 'center center');
       setLandDetailOfflineTextAlign(detailForm.offlineTextAlign || 'left');
       setLandDetailOfflineOverlayStrength(detailForm.offlineOverlayStrength || 'medium');
+      setLandDetailShowDescription(detailForm.showDescription ?? true);
+      setLandDetailShowLegalInfo(detailForm.showLegalInfo ?? true);
+      setLandDetailShowProductItems(detailForm.showProductItems ?? true);
+      setLandDetailShowIngredients(detailForm.showIngredients ?? true);
+      setLandDetailShowCautions(detailForm.showCautions ?? true);
+      setLandDetailShowStorage(detailForm.showStorage ?? true);
+      setLandDetailShowQualityGuarantee(detailForm.showQualityGuarantee ?? true);
+      setLandProductDetailFormLegalInfo(detailForm.legalInfo && detailForm.legalInfo.length > 0 ? detailForm.legalInfo : (block.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.legalInfo : []));
+      setLandProductDetailFormProductItems(detailForm.productItems && detailForm.productItems.length > 0 ? detailForm.productItems : (block.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.productItems : []));
       setLandProductDetailFormInfo(detailForm.info || []);
       setLandProductDetailFormIngredientGroups(detailForm.ingredientGroups || []);
       setLandProductDetailFormCautions(detailForm.cautions || []);
@@ -936,6 +954,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             offlineMobileObjectPosition: landDetailOfflineMobileObjectPosition,
             offlineTextAlign: landDetailOfflineTextAlign,
             offlineOverlayStrength: landDetailOfflineOverlayStrength,
+            showDescription: landDetailShowDescription,
+            showLegalInfo: landDetailShowLegalInfo,
+            showProductItems: landDetailShowProductItems,
+            showIngredients: landDetailShowIngredients,
+            showCautions: landDetailShowCautions,
+            showStorage: landDetailShowStorage,
+            showQualityGuarantee: landDetailShowQualityGuarantee,
+            legalInfo: landProductDetailFormLegalInfo.length > 0 ? landProductDetailFormLegalInfo : (block.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.legalInfo : []),
+            productItems: landProductDetailFormProductItems.length > 0 ? landProductDetailFormProductItems : (block.block_type === 'cosmetic-product-landing-luminous-set' ? DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL.productItems : []),
             info: landProductDetailFormInfo,
             ingredientGroups: landProductDetailFormIngredientGroups,
             cautions: landProductDetailFormCautions,
@@ -3774,7 +3801,128 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             )}
                           </div>
 
-                          {/* Info Repeater */}
+                          
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50 mt-6">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Ghi chú quan trọng</h4>
+                            <p className="text-[11px] text-slate-500 bg-white p-3 rounded-lg border border-slate-200">
+                              <span className="font-bold text-[#050A5C]">Public ưu tiên legalInfo/productItems.</span> Public đang ưu tiên legalInfo/productItems. Các trường info/ingredientGroups cũ chỉ dùng fallback cho template cũ, không còn hiển thị trên Luminous Set nếu legalInfo đã có.
+                            </p>
+                          </div>
+
+                          {/* Visibility Toggles */}
+                          <div className="col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="col-span-full text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Tuỳ chỉnh hiển thị</h4>
+                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer">
+                              <input type="checkbox" checked={landDetailShowDescription} onChange={e => setLandDetailShowDescription(e.target.checked)} className="rounded border-slate-300 text-[#050A5C]" />
+                              Hiện mô tả (Description)
+                            </label>
+                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer">
+                              <input type="checkbox" checked={landDetailShowLegalInfo} onChange={e => setLandDetailShowLegalInfo(e.target.checked)} className="rounded border-slate-300 text-[#050A5C]" />
+                              Hiện Thông tin pháp lý
+                            </label>
+                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer">
+                              <input type="checkbox" checked={landDetailShowProductItems} onChange={e => setLandDetailShowProductItems(e.target.checked)} className="rounded border-slate-300 text-[#050A5C]" />
+                              Hiện Thông tin SP chi tiết
+                            </label>
+                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer">
+                              <input type="checkbox" checked={landDetailShowIngredients} onChange={e => setLandDetailShowIngredients(e.target.checked)} className="rounded border-slate-300 text-[#050A5C]" />
+                              Hiện thành phần chi tiết
+                            </label>
+                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer">
+                              <input type="checkbox" checked={landDetailShowCautions} onChange={e => setLandDetailShowCautions(e.target.checked)} className="rounded border-slate-300 text-[#050A5C]" />
+                              Hiện Lưu ý (Cautions)
+                            </label>
+                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer">
+                              <input type="checkbox" checked={landDetailShowStorage} onChange={e => setLandDetailShowStorage(e.target.checked)} className="rounded border-slate-300 text-[#050A5C]" />
+                              Hiện Bảo quản (Storage)
+                            </label>
+                            <label className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase cursor-pointer">
+                              <input type="checkbox" checked={landDetailShowQualityGuarantee} onChange={e => setLandDetailShowQualityGuarantee(e.target.checked)} className="rounded border-slate-300 text-[#050A5C]" />
+                              Hiện Đảm bảo chất lượng
+                            </label>
+                          </div>
+
+                          {/* Legal Info (Mới) Repeater */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Thông tin pháp lý (Legal Info - Thay thế Info cũ)</h4>
+                            <div className="space-y-4">
+                              {landProductDetailFormLegalInfo.map((item: any, idx: number) => (
+                                <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-white flex items-start gap-3 relative">
+                                  <div className="flex-1 grid grid-cols-2 gap-3">
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Nhãn (Label)</label>
+                                      <input type="text" value={item.label || ''} onChange={e => { const l = [...landProductDetailFormLegalInfo]; l[idx] = { ...l[idx], label: e.target.value }; setLandProductDetailFormLegalInfo(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold" />
+                                    </div>
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase mb-0.5 h-full pt-4">
+                                        <input type="checkbox" checked={item.highlight || false} onChange={e => { const l = [...landProductDetailFormLegalInfo]; l[idx] = { ...l[idx], highlight: e.target.checked }; setLandProductDetailFormLegalInfo(l); }} className="rounded border-slate-300 text-[#050A5C]" />
+                                        Highlight dòng này
+                                      </label>
+                                    </div>
+                                    <div className="col-span-2">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Giá trị (Value)</label>
+                                      <textarea value={item.value || ''} onChange={e => { const l = [...landProductDetailFormLegalInfo]; l[idx] = { ...l[idx], value: e.target.value }; setLandProductDetailFormLegalInfo(l); }} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col gap-2 mt-4">
+                                    <button type="button" onClick={() => { if(idx > 0) { const l = [...landProductDetailFormLegalInfo]; const tmp = l[idx-1]; l[idx-1] = l[idx]; l[idx] = tmp; setLandProductDetailFormLegalInfo(l); } }} className="text-slate-400 hover:text-[#050A5C]">
+                                      ↑
+                                    </button>
+                                    <button type="button" onClick={() => { if(idx < landProductDetailFormLegalInfo.length - 1) { const l = [...landProductDetailFormLegalInfo]; const tmp = l[idx+1]; l[idx+1] = l[idx]; l[idx] = tmp; setLandProductDetailFormLegalInfo(l); } }} className="text-slate-400 hover:text-[#050A5C]">
+                                      ↓
+                                    </button>
+                                    <button type="button" onClick={() => setLandProductDetailFormLegalInfo(landProductDetailFormLegalInfo.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-2">
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setLandProductDetailFormLegalInfo([...landProductDetailFormLegalInfo, { label: '', value: '', highlight: false }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-4 w-4" />
+                                Thêm thông tin pháp lý
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Product Items (Mới) Repeater */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Sản phẩm chi tiết (Product Items - Thay thế Ingredient Groups cũ)</h4>
+                            <div className="space-y-4">
+                              {landProductDetailFormProductItems.map((item: any, idx: number) => (
+                                <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-white flex items-start gap-3 relative">
+                                  <div className="flex-1 grid grid-cols-2 gap-3">
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Tên sản phẩm (Name)</label>
+                                      <input type="text" value={item.name || ''} onChange={e => { const l = [...landProductDetailFormProductItems]; l[idx] = { ...l[idx], name: e.target.value }; setLandProductDetailFormProductItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold" />
+                                    </div>
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Dung tích (Volume)</label>
+                                      <input type="text" value={item.volume || ''} onChange={e => { const l = [...landProductDetailFormProductItems]; l[idx] = { ...l[idx], volume: e.target.value }; setLandProductDetailFormProductItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" placeholder="VD: 35 ml" />
+                                    </div>
+                                    <div className="col-span-2">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Chức năng (Function Claim)</label>
+                                      <input type="text" value={item.functionClaim || ''} onChange={e => { const l = [...landProductDetailFormProductItems]; l[idx] = { ...l[idx], functionClaim: e.target.value }; setLandProductDetailFormProductItems(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                    </div>
+                                    <div className="col-span-2">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Thành phần chi tiết (Ingredients)</label>
+                                      <textarea value={item.ingredients || ''} onChange={e => { const l = [...landProductDetailFormProductItems]; l[idx] = { ...l[idx], ingredients: e.target.value }; setLandProductDetailFormProductItems(l); }} rows={4} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white" />
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col gap-2 mt-4">
+                                    <button type="button" onClick={() => setLandProductDetailFormProductItems(landProductDetailFormProductItems.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-2">
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setLandProductDetailFormProductItems([...landProductDetailFormProductItems, { name: '', volume: '', functionClaim: '', ingredients: '' }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                                <Plus className="h-4 w-4" />
+                                Thêm sản phẩm chi tiết
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Info Repeater (Legacy) */}
                           <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
                             <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Thông tin sản phẩm (Info)</h4>
                             <div className="space-y-4">

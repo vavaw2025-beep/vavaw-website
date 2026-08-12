@@ -250,6 +250,47 @@ export interface ProductLandingContent {
     eyebrow?: string;
     title?: string;
     description?: string;
+    
+    // Visibility Toggles
+    showDescription?: boolean;
+    showLegalInfo?: boolean;
+    showProductItems?: boolean;
+    showIngredients?: boolean;
+    showCautions?: boolean;
+    showStorage?: boolean;
+    showQualityGuarantee?: boolean;
+
+    // Legal Info
+    legalInfo?: Array<{
+      label: string;
+      value: string;
+      highlight?: boolean;
+    }>;
+
+    // Detailed Product Items
+    productItems?: Array<{
+      name: string;
+      volume?: string;
+      functionClaim?: string;
+      ingredients?: string;
+    }>;
+
+    // Legacy fields
+    info?: Array<{
+      label?: string;
+      value?: string;
+    }>;
+    ingredientGroups?: Array<{
+      title?: string;
+      subtitle?: string;
+      ingredients?: string;
+    }>;
+    
+    cautions?: string[];
+    storage?: string;
+    qualityGuarantee?: string;
+
+    // Offline bridge
     offlineTitle?: string;
     offlineDescription?: string;
     offlineMediaSlot?: string;
@@ -262,18 +303,6 @@ export interface ProductLandingContent {
     offlineMobileObjectPosition?: string;
     offlineTextAlign?: 'left' | 'center';
     offlineOverlayStrength?: 'light' | 'medium' | 'heavy';
-    info?: Array<{
-      label?: string;
-      value?: string;
-    }>;
-    ingredientGroups?: Array<{
-      title?: string;
-      subtitle?: string;
-      ingredients?: string;
-    }>;
-    cautions?: string[];
-    storage?: string;
-    qualityGuarantee?: string;
   };
   insideSet: ProductLandingInsideSetItem[];
   recoveryLogic: ProductLandingRecoveryStep[];
