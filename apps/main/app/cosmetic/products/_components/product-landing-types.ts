@@ -44,6 +44,27 @@ export interface LuminousWhoNeedsItem {
   highlight?: boolean;
 }
 
+export interface LuminousSciencePanel {
+  showDescription?: boolean;
+  showCaption?: boolean;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  caption?: string;
+  mediaSlot?: string;
+  desktopMediaSlot?: string;
+  mobileMediaSlot?: string;
+  desktopImageMode?: "cover" | "contain-blur";
+  mobileImageMode?: "cover" | "contain-blur" | "contain";
+  desktopObjectPosition?: string;
+  mobileObjectPosition?: string;
+}
+
+export interface LuminousSkinBarrierMg3Plus {
+  skinBarrier?: LuminousSciencePanel;
+  mg3Plus?: LuminousSciencePanel;
+}
+
 export interface LuminousWhoNeedsSheerSet {
   showNote?: boolean;
   showDescription?: boolean;
@@ -113,6 +134,7 @@ export interface ProductLandingContent {
     }>;
   };
   whoNeedsSheerSet?: LuminousWhoNeedsSheerSet;
+  skinBarrierMg3Plus?: LuminousSkinBarrierMg3Plus;
   barrierScience?: {
     eyebrow?: string;
     title?: string;
@@ -122,6 +144,30 @@ export interface ProductLandingContent {
     mg3Title?: string;
     mg3Description?: string;
     mg3MediaSlot?: string;
+  };
+  skinBarrier?: {
+    showDescription?: boolean;
+    showCaption?: boolean;
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    caption?: string;
+    mediaSlot?: string;
+    desktopMediaSlot?: string;
+    mobileMediaSlot?: string;
+    desktopImageMode?: "cover" | "contain-blur";
+  };
+  mg3Plus?: {
+    showDescription?: boolean;
+    showCaption?: boolean;
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    caption?: string;
+    mediaSlot?: string;
+    desktopMediaSlot?: string;
+    mobileMediaSlot?: string;
+    desktopImageMode?: "cover" | "contain-blur";
   };
   activeIngredients?: {
     eyebrow?: string;

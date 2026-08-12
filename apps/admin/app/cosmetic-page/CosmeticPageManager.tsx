@@ -198,12 +198,27 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   // Skin Barrier & MG3-Plus states
   const [landBarrierEyebrow, setLandBarrierEyebrow] = useState('');
   const [landBarrierTitle, setLandBarrierTitle] = useState('');
+  const [landBarrierShowTitle, setLandBarrierShowTitle] = useState(true);
   const [landBarrierDescription, setLandBarrierDescription] = useState('');
+  const [landBarrierShowDescription, setLandBarrierShowDescription] = useState(true);
   const [landBarrierMediaSlot, setLandBarrierMediaSlot] = useState('');
+  const [landBarrierDesktopMediaSlot, setLandBarrierDesktopMediaSlot] = useState('');
+  const [landBarrierMobileMediaSlot, setLandBarrierMobileMediaSlot] = useState('');
+  const [landBarrierDesktopImageMode, setLandBarrierDesktopImageMode] = useState('cover');
+  const [landBarrierDesktopObjectPosition, setLandBarrierDesktopObjectPosition] = useState('center center');
+  const [landBarrierMobileObjectPosition, setLandBarrierMobileObjectPosition] = useState('center top');
+
   const [landBarrierMg3Eyebrow, setLandBarrierMg3Eyebrow] = useState('');
   const [landBarrierMg3Title, setLandBarrierMg3Title] = useState('');
+  const [landBarrierMg3ShowTitle, setLandBarrierMg3ShowTitle] = useState(true);
   const [landBarrierMg3Description, setLandBarrierMg3Description] = useState('');
+  const [landBarrierMg3ShowDescription, setLandBarrierMg3ShowDescription] = useState(true);
   const [landBarrierMg3MediaSlot, setLandBarrierMg3MediaSlot] = useState('');
+  const [landBarrierMg3DesktopMediaSlot, setLandBarrierMg3DesktopMediaSlot] = useState('');
+  const [landBarrierMg3MobileMediaSlot, setLandBarrierMg3MobileMediaSlot] = useState('');
+  const [landBarrierMg3DesktopImageMode, setLandBarrierMg3DesktopImageMode] = useState('cover');
+  const [landBarrierMg3DesktopObjectPosition, setLandBarrierMg3DesktopObjectPosition] = useState('center center');
+  const [landBarrierMg3MobileObjectPosition, setLandBarrierMg3MobileObjectPosition] = useState('center top');
 
   // Active Ingredients states
   const [landActiveIngredientsEyebrow, setLandActiveIngredientsEyebrow] = useState('');
@@ -491,15 +506,33 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         { text: 'Da khô ráp, thiếu ẩm', description: 'Bề mặt da sần sùi, mất nước qua biểu bì (TEWL) cao.' }
       ]);
 
-      const barrierScience = content.barrierScience || {};
-      setLandBarrierEyebrow(barrierScience.eyebrow || '');
-      setLandBarrierTitle(barrierScience.title || '');
-      setLandBarrierDescription(barrierScience.description || '');
-      setLandBarrierMediaSlot(barrierScience.mediaSlot || 'cosmetic-luminous-skin-barrier-image');
-      setLandBarrierMg3Eyebrow(barrierScience.mg3Eyebrow || '');
-      setLandBarrierMg3Title(barrierScience.mg3Title || '');
-      setLandBarrierMg3Description(barrierScience.mg3Description || '');
-      setLandBarrierMg3MediaSlot(barrierScience.mg3MediaSlot || 'cosmetic-luminous-mg3-plus-image');
+      const barrierData = content.skinBarrierMg3Plus || content.barrierScience || {};
+      const skinBarrier = barrierData.skinBarrier || barrierData;
+      const mg3Plus = barrierData.mg3Plus || barrierData;
+
+      setLandBarrierEyebrow(skinBarrier.eyebrow || '');
+      setLandBarrierTitle(skinBarrier.title || 'Khoa học về Hàng rào bảo vệ da');
+      setLandBarrierShowTitle(skinBarrier.showTitle ?? true);
+      setLandBarrierDescription(skinBarrier.description || 'Luminous Sheer Set áp dụng cơ chế tự sửa chữa tự nhiên của làn da...');
+      setLandBarrierShowDescription(skinBarrier.showDescription ?? true);
+      setLandBarrierMediaSlot(skinBarrier.mediaSlot || 'cosmetic-luminous-skin-barrier-image');
+      setLandBarrierDesktopMediaSlot(skinBarrier.desktopMediaSlot || 'cosmetic-luminous-skin-barrier-desktop');
+      setLandBarrierMobileMediaSlot(skinBarrier.mobileMediaSlot || 'cosmetic-luminous-skin-barrier-mobile');
+      setLandBarrierDesktopImageMode(skinBarrier.desktopImageMode || 'cover');
+      setLandBarrierDesktopObjectPosition(skinBarrier.desktopObjectPosition || 'center center');
+      setLandBarrierMobileObjectPosition(skinBarrier.mobileObjectPosition || 'center top');
+
+      setLandBarrierMg3Eyebrow(mg3Plus.mg3Eyebrow || mg3Plus.eyebrow || '');
+      setLandBarrierMg3Title(mg3Plus.mg3Title || mg3Plus.title || 'Phương pháp phục hồi đa tầng');
+      setLandBarrierMg3ShowTitle(mg3Plus.showTitle ?? true);
+      setLandBarrierMg3Description(mg3Plus.mg3Description || mg3Plus.description || 'Cơ chế MG3+ độc quyền giúp dẫn truyền dưỡng chất sâu hơn...');
+      setLandBarrierMg3ShowDescription(mg3Plus.showDescription ?? true);
+      setLandBarrierMg3MediaSlot(mg3Plus.mg3MediaSlot || mg3Plus.mediaSlot || 'cosmetic-luminous-mg3-plus-image');
+      setLandBarrierMg3DesktopMediaSlot(mg3Plus.desktopMediaSlot || 'cosmetic-luminous-mg3-plus-desktop');
+      setLandBarrierMg3MobileMediaSlot(mg3Plus.mobileMediaSlot || 'cosmetic-luminous-mg3-plus-mobile');
+      setLandBarrierMg3DesktopImageMode(mg3Plus.desktopImageMode || 'cover');
+      setLandBarrierMg3DesktopObjectPosition(mg3Plus.desktopObjectPosition || 'center center');
+      setLandBarrierMg3MobileObjectPosition(mg3Plus.mobileObjectPosition || 'center top');
 
       const activeIngredients = content.activeIngredients || {};
       setLandActiveIngredientsEyebrow(activeIngredients.eyebrow || '');
@@ -745,15 +778,33 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             showImageCaption: landWhoNeedsShowImageCaption,
             items: landWhoNeedsItems
           };
-          updatedContent.barrierScience = {
-            eyebrow: landBarrierEyebrow,
-            title: landBarrierTitle,
-            description: landBarrierDescription,
-            mediaSlot: landBarrierMediaSlot,
-            mg3Eyebrow: landBarrierMg3Eyebrow,
-            mg3Title: landBarrierMg3Title,
-            mg3Description: landBarrierMg3Description,
-            mg3MediaSlot: landBarrierMg3MediaSlot
+          updatedContent.skinBarrierMg3Plus = {
+            skinBarrier: {
+              eyebrow: landBarrierEyebrow,
+              title: landBarrierTitle,
+              showTitle: landBarrierShowTitle,
+              description: landBarrierDescription,
+              showDescription: landBarrierShowDescription,
+              mediaSlot: landBarrierMediaSlot,
+              desktopMediaSlot: landBarrierDesktopMediaSlot,
+              mobileMediaSlot: landBarrierMobileMediaSlot,
+              desktopImageMode: landBarrierDesktopImageMode,
+              desktopObjectPosition: landBarrierDesktopObjectPosition,
+              mobileObjectPosition: landBarrierMobileObjectPosition
+            },
+            mg3Plus: {
+              eyebrow: landBarrierMg3Eyebrow,
+              title: landBarrierMg3Title,
+              showTitle: landBarrierMg3ShowTitle,
+              description: landBarrierMg3Description,
+              showDescription: landBarrierMg3ShowDescription,
+              mediaSlot: landBarrierMg3MediaSlot,
+              desktopMediaSlot: landBarrierMg3DesktopMediaSlot,
+              mobileMediaSlot: landBarrierMg3MobileMediaSlot,
+              desktopImageMode: landBarrierMg3DesktopImageMode,
+              desktopObjectPosition: landBarrierMg3DesktopObjectPosition,
+              mobileObjectPosition: landBarrierMg3MobileObjectPosition
+            }
           };
           updatedContent.activeIngredients = {
             eyebrow: landActiveIngredientsEyebrow,
@@ -2870,44 +2921,174 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
                           
                           {/* Skin Barrier */}
-                          <div className="col-span-2 md:col-span-1 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
-                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Skin Barrier</h4>
-                            <div>
-                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
-                              <input type="text" value={landBarrierEyebrow} onChange={e => setLandBarrierEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
-                            </div>
-                            <div>
-                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
-                              <input type="text" value={landBarrierMediaSlot} onChange={e => setLandBarrierMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
-                            </div>
-                            <div>
-                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
-                              <input type="text" value={landBarrierTitle} onChange={e => setLandBarrierTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
-                            </div>
-                            <div>
-                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả (Description)</label>
-                              <textarea value={landBarrierDescription} onChange={e => setLandBarrierDescription(e.target.value)} rows={4} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          <div className="col-span-2 space-y-6 p-5 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[13px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Skin Barrier</h4>
+                            <div className="grid grid-cols-2 gap-6">
+                              <div className="col-span-2 md:col-span-1 space-y-4">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                                  <input type="text" value={landBarrierEyebrow} onChange={e => setLandBarrierEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div>
+                                  <div className="flex items-center justify-between mb-1">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Tiêu đề (Title)</label>
+                                    <label className="flex items-center gap-1 cursor-pointer">
+                                      <input type="checkbox" checked={landBarrierShowTitle} onChange={e => setLandBarrierShowTitle(e.target.checked)} className="rounded text-blue-600 focus:ring-blue-500 bg-white" />
+                                      <span className="text-[10px] text-slate-500 font-semibold">Hiển thị</span>
+                                    </label>
+                                  </div>
+                                  <input type="text" value={landBarrierTitle} onChange={e => setLandBarrierTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                                </div>
+                                <div>
+                                  <div className="flex items-center justify-between mb-1">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Mô tả (Description)</label>
+                                    <label className="flex items-center gap-1 cursor-pointer">
+                                      <input type="checkbox" checked={landBarrierShowDescription} onChange={e => setLandBarrierShowDescription(e.target.checked)} className="rounded text-blue-600 focus:ring-blue-500 bg-white" />
+                                      <span className="text-[10px] text-slate-500 font-semibold">Hiển thị</span>
+                                    </label>
+                                  </div>
+                                  <textarea value={landBarrierDescription} onChange={e => setLandBarrierDescription(e.target.value)} rows={4} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                              </div>
+                              
+                              <div className="col-span-2 md:col-span-1 space-y-4">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Desktop (Bắt buộc)</label>
+                                  <div className="flex gap-2 mb-2">
+                                    <input type="text" value={landBarrierDesktopMediaSlot} onChange={e => setLandBarrierDesktopMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-skin-barrier-desktop" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
+                                  </div>
+                                  {renderSlotCard({ id: landBarrierDesktopMediaSlot || 'cosmetic-luminous-skin-barrier-desktop', name: 'Ảnh Skin Barrier (Desktop)', size: '1600x1200' })}
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Mobile (Bắt buộc)</label>
+                                  <div className="flex gap-2 mb-2">
+                                    <input type="text" value={landBarrierMobileMediaSlot} onChange={e => setLandBarrierMobileMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-skin-barrier-mobile" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
+                                  </div>
+                                  {renderSlotCard({ id: landBarrierMobileMediaSlot || 'cosmetic-luminous-skin-barrier-mobile', name: 'Ảnh Skin Barrier (Mobile)', size: '800x1000' })}
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Fallback</label>
+                                  <div className="flex gap-2 mb-2">
+                                    <input type="text" value={landBarrierMediaSlot} onChange={e => setLandBarrierMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-skin-barrier-image" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
+                                  </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4 mt-4">
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Image Mode</label>
+                                    <select value={landBarrierDesktopImageMode} onChange={e => setLandBarrierDesktopImageMode(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                      <option value="cover">Cover (Phủ kín)</option>
+                                      <option value="contain">Contain (Vừa khung)</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Object Position</label>
+                                    <select value={landBarrierDesktopObjectPosition} onChange={e => setLandBarrierDesktopObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                      <option value="center center">Giữa (Center)</option>
+                                      <option value="center top">Giữa trên (Top Center)</option>
+                                      <option value="center bottom">Giữa dưới (Bottom Center)</option>
+                                      <option value="left center">Trái (Left Center)</option>
+                                      <option value="right center">Phải (Right Center)</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mobile Object Position</label>
+                                    <select value={landBarrierMobileObjectPosition} onChange={e => setLandBarrierMobileObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                      <option value="center center">Giữa (Center)</option>
+                                      <option value="center top">Giữa trên (Top Center)</option>
+                                      <option value="center bottom">Giữa dưới (Bottom Center)</option>
+                                      <option value="left center">Trái (Left Center)</option>
+                                      <option value="right center">Phải (Right Center)</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
 
                           {/* MG3-Plus */}
-                          <div className="col-span-2 md:col-span-1 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
-                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">MG3-Plus Method</h4>
-                            <div>
-                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
-                              <input type="text" value={landBarrierMg3Eyebrow} onChange={e => setLandBarrierMg3Eyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
-                            </div>
-                            <div>
-                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh (Media Slot)</label>
-                              <input type="text" value={landBarrierMg3MediaSlot} onChange={e => setLandBarrierMg3MediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
-                            </div>
-                            <div>
-                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
-                              <input type="text" value={landBarrierMg3Title} onChange={e => setLandBarrierMg3Title(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
-                            </div>
-                            <div>
-                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả (Description)</label>
-                              <textarea value={landBarrierMg3Description} onChange={e => setLandBarrierMg3Description(e.target.value)} rows={4} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                          <div className="col-span-2 space-y-6 p-5 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[13px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">MG3-Plus Method</h4>
+                            <div className="grid grid-cols-2 gap-6">
+                              <div className="col-span-2 md:col-span-1 space-y-4">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
+                                  <input type="text" value={landBarrierMg3Eyebrow} onChange={e => setLandBarrierMg3Eyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                                <div>
+                                  <div className="flex items-center justify-between mb-1">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Tiêu đề (Title)</label>
+                                    <label className="flex items-center gap-1 cursor-pointer">
+                                      <input type="checkbox" checked={landBarrierMg3ShowTitle} onChange={e => setLandBarrierMg3ShowTitle(e.target.checked)} className="rounded text-blue-600 focus:ring-blue-500 bg-white" />
+                                      <span className="text-[10px] text-slate-500 font-semibold">Hiển thị</span>
+                                    </label>
+                                  </div>
+                                  <input type="text" value={landBarrierMg3Title} onChange={e => setLandBarrierMg3Title(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                                </div>
+                                <div>
+                                  <div className="flex items-center justify-between mb-1">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Mô tả (Description)</label>
+                                    <label className="flex items-center gap-1 cursor-pointer">
+                                      <input type="checkbox" checked={landBarrierMg3ShowDescription} onChange={e => setLandBarrierMg3ShowDescription(e.target.checked)} className="rounded text-blue-600 focus:ring-blue-500 bg-white" />
+                                      <span className="text-[10px] text-slate-500 font-semibold">Hiển thị</span>
+                                    </label>
+                                  </div>
+                                  <textarea value={landBarrierMg3Description} onChange={e => setLandBarrierMg3Description(e.target.value)} rows={4} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                </div>
+                              </div>
+                              
+                              <div className="col-span-2 md:col-span-1 space-y-4">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Desktop (Bắt buộc)</label>
+                                  <div className="flex gap-2 mb-2">
+                                    <input type="text" value={landBarrierMg3DesktopMediaSlot} onChange={e => setLandBarrierMg3DesktopMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-mg3-plus-desktop" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
+                                  </div>
+                                  {renderSlotCard({ id: landBarrierMg3DesktopMediaSlot || 'cosmetic-luminous-mg3-plus-desktop', name: 'Ảnh MG3-Plus (Desktop)', size: '1600x1200' })}
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Mobile (Bắt buộc)</label>
+                                  <div className="flex gap-2 mb-2">
+                                    <input type="text" value={landBarrierMg3MobileMediaSlot} onChange={e => setLandBarrierMg3MobileMediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-mg3-plus-mobile" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
+                                  </div>
+                                  {renderSlotCard({ id: landBarrierMg3MobileMediaSlot || 'cosmetic-luminous-mg3-plus-mobile', name: 'Ảnh MG3-Plus (Mobile)', size: '800x1000' })}
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ảnh Fallback</label>
+                                  <div className="flex gap-2 mb-2">
+                                    <input type="text" value={landBarrierMg3MediaSlot} onChange={e => setLandBarrierMg3MediaSlot(e.target.value)} placeholder="Ví dụ: cosmetic-luminous-mg3-plus-image" className="flex-1 text-xs p-1.5 border border-slate-300 rounded bg-white font-mono text-slate-500" />
+                                  </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4 mt-4">
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Image Mode</label>
+                                    <select value={landBarrierMg3DesktopImageMode} onChange={e => setLandBarrierMg3DesktopImageMode(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                      <option value="cover">Cover (Phủ kín)</option>
+                                      <option value="contain">Contain (Vừa khung)</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Object Position</label>
+                                    <select value={landBarrierMg3DesktopObjectPosition} onChange={e => setLandBarrierMg3DesktopObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                      <option value="center center">Giữa (Center)</option>
+                                      <option value="center top">Giữa trên (Top Center)</option>
+                                      <option value="center bottom">Giữa dưới (Bottom Center)</option>
+                                      <option value="left center">Trái (Left Center)</option>
+                                      <option value="right center">Phải (Right Center)</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mobile Object Position</label>
+                                    <select value={landBarrierMg3MobileObjectPosition} onChange={e => setLandBarrierMg3MobileObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                      <option value="center center">Giữa (Center)</option>
+                                      <option value="center top">Giữa trên (Top Center)</option>
+                                      <option value="center bottom">Giữa dưới (Bottom Center)</option>
+                                      <option value="left center">Trái (Left Center)</option>
+                                      <option value="right center">Phải (Right Center)</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>

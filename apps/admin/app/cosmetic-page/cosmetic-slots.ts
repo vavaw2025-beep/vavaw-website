@@ -97,9 +97,29 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     aliases: ['skin-barrier', 'barrier-diagram', 'skin-barrier-science'],
   },
   {
+    value: 'cosmetic-luminous-skin-barrier-desktop',
+    label: 'Luminous Set — Skin Barrier Desktop',
+    aliases: ['skin-barrier-desktop'],
+  },
+  {
+    value: 'cosmetic-luminous-skin-barrier-mobile',
+    label: 'Luminous Set — Skin Barrier Mobile',
+    aliases: ['skin-barrier-mobile'],
+  },
+  {
     value: 'cosmetic-luminous-mg3-plus-image',
     label: 'Luminous Set — MG3-Plus Technology Diagram',
     aliases: ['mg3-plus', 'mg3-technology', 'mg3-diagram'],
+  },
+  {
+    value: 'cosmetic-luminous-mg3-plus-desktop',
+    label: 'Luminous Set — MG3-Plus Desktop',
+    aliases: ['mg3-plus-desktop'],
+  },
+  {
+    value: 'cosmetic-luminous-mg3-plus-mobile',
+    label: 'Luminous Set — MG3-Plus Mobile',
+    aliases: ['mg3-plus-mobile'],
   },
   {
     value: 'cosmetic-luminous-active-ingredients-image',

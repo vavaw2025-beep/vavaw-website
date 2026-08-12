@@ -82,8 +82,16 @@ export interface CosmeticPageMedia {
   whoForMobile?: string;
   /** Skin Barrier Science image for Luminous Set */
   barrierScience?: string;
+  /** Skin Barrier Science desktop background */
+  skinBarrierDesktop?: string;
+  /** Skin Barrier Science mobile background */
+  skinBarrierMobile?: string;
   /** MG3-Plus Technology image for Luminous Set */
   mg3Plus?: string;
+  /** MG3-Plus Technology desktop background */
+  mg3PlusDesktop?: string;
+  /** MG3-Plus Technology mobile background */
+  mg3PlusMobile?: string;
   /** Active Ingredients image for Luminous Set */
   activeIngredients?: string;
   /** Usage Guide main set image for Luminous Set */
@@ -104,7 +112,11 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-luminous-ampoule-instruction-image': 'usageInstruction',
   'cosmetic-luminous-active-ingredients-image': 'activeIngredients',
   'cosmetic-luminous-skin-barrier-image': 'barrierScience',
+  'cosmetic-luminous-skin-barrier-desktop': 'skinBarrierDesktop',
+  'cosmetic-luminous-skin-barrier-mobile': 'skinBarrierMobile',
   'cosmetic-luminous-mg3-plus-image': 'mg3Plus',
+  'cosmetic-luminous-mg3-plus-desktop': 'mg3PlusDesktop',
+  'cosmetic-luminous-mg3-plus-mobile': 'mg3PlusMobile',
   'cosmetic-luminous-who-for-image': 'whoForImage',
   'cosmetic-luminous-who-for-desktop': 'whoForDesktop',
   'cosmetic-luminous-who-for-mobile': 'whoForMobile',

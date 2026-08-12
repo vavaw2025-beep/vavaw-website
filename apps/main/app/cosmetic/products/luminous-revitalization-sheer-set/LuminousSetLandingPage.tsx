@@ -33,6 +33,28 @@ const DEFAULT_WHO_NEEDS_SHEER_SET = {
   ]
 };
 
+const DEFAULT_SKIN_BARRIER = {
+  eyebrow: "SKIN BARRIER SCIENCE",
+  title: "Khoa học hàng rào bảo vệ",
+  description: "Hàng rào bảo vệ biểu bì đóng vai trò then chốt trong việc duy trì độ ẩm và ngăn chặn các tác nhân gây hại từ môi trường. Công thức Luminous Sheer Set được thiết kế để hỗ trợ cấu trúc nền tảng này, giúp làn da duy trì trạng thái ổn định và khỏe mạnh.",
+  caption: "Skin barrier repair and protection.",
+  mediaSlot: "cosmetic-luminous-skin-barrier-image",
+  desktopMediaSlot: "cosmetic-luminous-skin-barrier-desktop",
+  mobileMediaSlot: "cosmetic-luminous-skin-barrier-mobile",
+  desktopImageMode: "cover"
+};
+
+const DEFAULT_MG3_PLUS = {
+  eyebrow: "EXCLUSIVE TECHNOLOGY",
+  title: "Cơ chế MG3-Plus™ đa tầng",
+  description: "Cơ chế thẩm thấu đa tầng MG3-Plus™ tạo môi trường thuận lợi để đưa các dưỡng chất phục hồi và độ ẩm xuống sâu bề mặt da. Công nghệ này giúp tối ưu hóa cảm giác dịu nhẹ, hạn chế sự bay hơi ẩm và duy trì độ mềm mại suốt cả ngày.",
+  caption: "Advanced MG3-Plus™ delivery system.",
+  mediaSlot: "cosmetic-luminous-mg3-plus-image",
+  desktopMediaSlot: "cosmetic-luminous-mg3-plus-desktop",
+  mobileMediaSlot: "cosmetic-luminous-mg3-plus-mobile",
+  desktopImageMode: "contain-blur"
+};
+
 export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }: ProductLandingPageProps) {
   // Helper for rendering slot images safely with a gradient card fallback
   const renderSlotImage = (srcUrl: string | undefined, altText: string, fallbackGrad: string) => {
@@ -468,72 +490,158 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       })()}
 
       {/* ─── SKIN BARRIER & MG3-PLUS TECHNOLOGY ───────────────────────────────── */}
-      {content.barrierScience && (
-        <section className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100">
-          <div className="max-w-[1200px] mx-auto lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-            {/* Left Card: Skin Barrier Science */}
-            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col">
-              <div className="p-8 md:p-10 space-y-4 flex-1">
-                {content.barrierScience.eyebrow && (
-                  <span className="cosmetic-kicker text-[#050A5C]/60 block">
-                    {content.barrierScience.eyebrow}
-                  </span>
-                )}
-                {content.barrierScience.title && (
-                  <h3 className="cosmetic-heading text-xl md:text-2xl text-[#050A5C] leading-tight">
-                    {content.barrierScience.title}
-                  </h3>
-                )}
-                {content.barrierScience.description && (
-                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
-                    {content.barrierScience.description}
-                  </p>
-                )}
-              </div>
-              <div className="relative aspect-[4/3] bg-slate-50 border-t border-slate-100 p-6 flex items-center justify-center">
-                {renderSlotImage(
-                  cosmeticMedia[content.barrierScience.mediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.barrierScience,
-                  content.barrierScience.title || 'Skin Barrier Science',
-                  'from-[#EEF2F8] to-[#DDE3EE]'
-                )}
-              </div>
-            </div>
+      {(() => {
+        const rawSkinBarrier = content.skinBarrier || {};
+        const skinBarrier = { ...DEFAULT_SKIN_BARRIER, ...rawSkinBarrier };
+        const showSbDesc = rawSkinBarrier.showDescription !== false;
+        const showSbCaption = rawSkinBarrier.showCaption !== false;
 
-            {/* Right Card: MG3-Plus Method */}
-            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col">
-              <div className="p-8 md:p-10 space-y-4 flex-1">
-                {content.barrierScience.mg3Eyebrow && (
-                  <div className="inline-flex items-center gap-2">
-                    <span className="cosmetic-kicker text-[#050A5C] block">
-                      {content.barrierScience.mg3Eyebrow}
-                    </span>
-                    <span className="bg-yellow-100 text-yellow-800 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                      Exclusive
-                    </span>
+        const sbDesktopUrl = cosmeticMedia[skinBarrier.desktopMediaSlot as string] || cosmeticMedia[skinBarrier.mediaSlot as string] || cosmeticMedia['cosmetic-luminous-skin-barrier-image'];
+        const sbMobileUrl = cosmeticMedia[skinBarrier.mobileMediaSlot as string] || sbDesktopUrl;
+        const sbFinalDesktopUrl = (typeof sbDesktopUrl === 'string' && sbDesktopUrl.trim() && !sbDesktopUrl.includes('/PASTE')) ? sbDesktopUrl.trim() : null;
+        const sbFinalMobileUrl = (typeof sbMobileUrl === 'string' && sbMobileUrl.trim() && !sbMobileUrl.includes('/PASTE')) ? sbMobileUrl.trim() : null;
+
+        const rawMg3 = content.mg3Plus || {};
+        const mg3 = { ...DEFAULT_MG3_PLUS, ...rawMg3 };
+        const showMg3Desc = rawMg3.showDescription !== false;
+        const showMg3Caption = rawMg3.showCaption !== false;
+
+        const mg3DesktopUrl = cosmeticMedia[mg3.desktopMediaSlot as string] || cosmeticMedia[mg3.mediaSlot as string] || cosmeticMedia['cosmetic-luminous-mg3-plus-image'];
+        const mg3MobileUrl = cosmeticMedia[mg3.mobileMediaSlot as string] || mg3DesktopUrl;
+        const mg3FinalDesktopUrl = (typeof mg3DesktopUrl === 'string' && mg3DesktopUrl.trim() && !mg3DesktopUrl.includes('/PASTE')) ? mg3DesktopUrl.trim() : null;
+        const mg3FinalMobileUrl = (typeof mg3MobileUrl === 'string' && mg3MobileUrl.trim() && !mg3MobileUrl.includes('/PASTE')) ? mg3MobileUrl.trim() : null;
+
+        return (
+          <section className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100">
+            <div className="max-w-[1200px] mx-auto space-y-12 md:space-y-16">
+              
+              {/* Panel 1: Skin Barrier (Text Left, Image Right) md:grid-cols-[0.46fr_0.54fr] */}
+              <div className="flex flex-col md:grid md:grid-cols-[0.46fr_0.54fr] overflow-hidden border border-slate-200 bg-white rounded-2xl shadow-sm">
+                {/* Text Content */}
+                <div className="flex flex-col justify-center px-6 py-10 md:px-12 md:py-16">
+                  <div className="space-y-4">
+                    {skinBarrier.eyebrow && (
+                      <span className="cosmetic-kicker text-[#050A5C]/60 block">
+                        {skinBarrier.eyebrow}
+                      </span>
+                    )}
+                    {skinBarrier.title && (
+                      <h3 className="cosmetic-heading text-2xl md:text-3.5xl text-[#050A5C] leading-tight">
+                        {skinBarrier.title}
+                      </h3>
+                    )}
+                    {showSbDesc && skinBarrier.description && (
+                      <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
+                        {skinBarrier.description}
+                      </p>
+                    )}
                   </div>
-                )}
-                {content.barrierScience.mg3Title && (
-                  <h3 className="cosmetic-heading text-xl md:text-2xl text-[#050A5C] leading-tight">
-                    {content.barrierScience.mg3Title}
-                  </h3>
-                )}
-                {content.barrierScience.mg3Description && (
-                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
-                    {content.barrierScience.mg3Description}
-                  </p>
-                )}
+                </div>
+                {/* Image */}
+                <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-l border-slate-100">
+                  {/* Mobile Image */}
+                  <div className="absolute inset-0 w-full h-full md:hidden">
+                    {sbFinalMobileUrl ? (
+                      <img src={sbFinalMobileUrl} alt={skinBarrier.title} className="w-full h-full object-cover" loading="lazy" />
+                    ) : (
+                       <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                    )}
+                  </div>
+                  {/* Desktop Image */}
+                  <div className="absolute inset-0 w-full h-full hidden md:block">
+                    {sbFinalDesktopUrl ? (
+                      <>
+                        {skinBarrier.desktopImageMode === 'contain-blur' ? (
+                          <>
+                            <div className="absolute inset-0 overflow-hidden">
+                              <img src={sbFinalDesktopUrl} alt="" className="w-full h-full object-cover blur-3xl opacity-60 scale-110" aria-hidden="true" />
+                            </div>
+                            <img src={sbFinalDesktopUrl} alt={skinBarrier.title} className="absolute inset-0 w-full h-full object-contain" loading="lazy" />
+                          </>
+                        ) : (
+                          <img src={sbFinalDesktopUrl} alt={skinBarrier.title} className="w-full h-full object-cover" loading="lazy" />
+                        )}
+                      </>
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                    )}
+                  </div>
+                  {showSbCaption && skinBarrier.caption && (
+                    <div className="absolute bottom-4 right-4 z-10 bg-white/90 backdrop-blur border border-white/20 px-3 py-1.5 shadow-sm rounded-sm">
+                      <span className="text-[9px] text-[#050A5C] tracking-widest font-semibold uppercase">{skinBarrier.caption}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="relative aspect-[4/3] bg-slate-50 border-t border-slate-100 p-6 flex items-center justify-center">
-                {renderSlotImage(
-                  cosmeticMedia[content.barrierScience.mg3MediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.mg3Plus,
-                  content.barrierScience.mg3Title || 'MG3-Plus Method',
-                  'from-[#EEF2F8] to-[#DDE3EE]'
-                )}
+
+              {/* Panel 2: MG3-Plus (Image Left, Text Right) md:grid-cols-[0.54fr_0.46fr] */}
+              <div className="flex flex-col-reverse md:grid md:grid-cols-[0.54fr_0.46fr] overflow-hidden border border-slate-200 bg-white rounded-2xl shadow-sm">
+                {/* Image */}
+                <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-r border-slate-100">
+                  {/* Mobile Image */}
+                  <div className="absolute inset-0 w-full h-full md:hidden">
+                    {mg3FinalMobileUrl ? (
+                      <img src={mg3FinalMobileUrl} alt={mg3.title} className="w-full h-full object-cover" loading="lazy" />
+                    ) : (
+                       <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                    )}
+                  </div>
+                  {/* Desktop Image */}
+                  <div className="absolute inset-0 w-full h-full hidden md:block">
+                    {mg3FinalDesktopUrl ? (
+                      <>
+                        {mg3.desktopImageMode === 'contain-blur' ? (
+                          <>
+                            <div className="absolute inset-0 overflow-hidden">
+                              <img src={mg3FinalDesktopUrl} alt="" className="w-full h-full object-cover blur-3xl opacity-60 scale-110" aria-hidden="true" />
+                            </div>
+                            <img src={mg3FinalDesktopUrl} alt={mg3.title} className="absolute inset-0 w-full h-full object-contain" loading="lazy" />
+                          </>
+                        ) : (
+                          <img src={mg3FinalDesktopUrl} alt={mg3.title} className="w-full h-full object-cover" loading="lazy" />
+                        )}
+                      </>
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                    )}
+                  </div>
+                  {showMg3Caption && mg3.caption && (
+                    <div className="absolute bottom-4 left-4 md:right-auto z-10 bg-white/90 backdrop-blur border border-white/20 px-3 py-1.5 shadow-sm rounded-sm">
+                      <span className="text-[9px] text-[#050A5C] tracking-widest font-semibold uppercase">{mg3.caption}</span>
+                    </div>
+                  )}
+                </div>
+                {/* Text Content */}
+                <div className="flex flex-col justify-center px-6 py-10 md:px-12 md:py-16">
+                  <div className="space-y-4">
+                    {mg3.eyebrow && (
+                      <div className="inline-flex items-center gap-2">
+                        <span className="cosmetic-kicker text-[#050A5C]/60 block">
+                          {mg3.eyebrow}
+                        </span>
+                        <span className="bg-yellow-100 text-yellow-800 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          Exclusive
+                        </span>
+                      </div>
+                    )}
+                    {mg3.title && (
+                      <h3 className="cosmetic-heading text-2xl md:text-3.5xl text-[#050A5C] leading-tight">
+                        {mg3.title}
+                      </h3>
+                    )}
+                    {showMg3Desc && mg3.description && (
+                      <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
+                        {mg3.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
+
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       {/* ─── ACTIVE INGREDIENTS ────────────────────────────────────────────────── */}
       {content.activeIngredients && (
