@@ -513,16 +513,17 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
 
         return (
           <section className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100">
-            <div className="max-w-[1200px] mx-auto space-y-12 md:space-y-16">
+            <div className="max-w-[1200px] mx-auto space-y-12 md:space-y-20">
               
               {/* Panel 1: Skin Barrier (Text Left, Image Right) md:grid-cols-[0.46fr_0.54fr] */}
-              <div className="flex flex-col md:grid md:grid-cols-[0.46fr_0.54fr] overflow-hidden border border-slate-200 bg-white rounded-2xl shadow-sm">
+              <div className="flex flex-col md:grid md:grid-cols-[0.46fr_0.54fr] overflow-hidden border border-[#D9DEEA] bg-[#F7F8FC] rounded-2xl shadow-[0_24px_80px_rgba(5,10,92,0.06)]">
                 {/* Text Content */}
-                <div className="flex flex-col justify-center px-6 py-10 md:px-12 md:py-16">
-                  <div className="space-y-4">
+                <div className="flex flex-col justify-center px-6 py-10 md:px-14 md:py-20">
+                  <div className="space-y-5">
                     {skinBarrier.eyebrow && (
-                      <span className="cosmetic-kicker text-[#050A5C]/60 block">
-                        {skinBarrier.eyebrow}
+                      <span className="cosmetic-kicker block">
+                        <span className="text-[#050A5C]/30 mr-3">01</span>
+                        <span className="text-[#050A5C]/60">{skinBarrier.eyebrow}</span>
                       </span>
                     )}
                     {skinBarrier.title && (
@@ -538,13 +539,21 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                   </div>
                 </div>
                 {/* Image */}
-                <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-l border-slate-100">
+                <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-l border-[#D9DEEA]/50">
+                  {/* Inner shadow overlay */}
+                  <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(5,10,92,0.03)] z-10" />
+                  
                   {/* Mobile Image */}
                   <div className="absolute inset-0 w-full h-full md:hidden">
                     {sbFinalMobileUrl ? (
                       <img src={sbFinalMobileUrl} alt={skinBarrier.title} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
-                       <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                       <div className="w-full h-full bg-gradient-to-br from-[#F7F8FC] to-[#EEF2F8] flex items-center justify-center p-6 relative overflow-hidden">
+                         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                         <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
+                           <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">Skin Barrier Visual</span>
+                         </div>
+                       </div>
                     )}
                   </div>
                   {/* Desktop Image */}
@@ -563,27 +572,40 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                         )}
                       </>
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                       <div className="w-full h-full bg-gradient-to-br from-[#F7F8FC] to-[#EEF2F8] flex items-center justify-center p-6 relative overflow-hidden">
+                         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                         <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
+                           <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">Skin Barrier Visual</span>
+                         </div>
+                       </div>
                     )}
                   </div>
                   {showSbCaption && skinBarrier.caption && (
-                    <div className="absolute bottom-4 right-4 z-10 bg-white/90 backdrop-blur border border-white/20 px-3 py-1.5 shadow-sm rounded-sm">
-                      <span className="text-[9px] text-[#050A5C] tracking-widest font-semibold uppercase">{skinBarrier.caption}</span>
+                    <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-20 bg-white/90 backdrop-blur-md border border-[#D9DEEA] px-4 py-2 shadow-sm rounded-sm max-w-[80%]">
+                      <span className="text-[9px] md:text-[10px] text-[#050A5C] tracking-widest font-medium uppercase">{skinBarrier.caption}</span>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Panel 2: MG3-Plus (Image Left, Text Right) md:grid-cols-[0.54fr_0.46fr] */}
-              <div className="flex flex-col-reverse md:grid md:grid-cols-[0.54fr_0.46fr] overflow-hidden border border-slate-200 bg-white rounded-2xl shadow-sm">
+              <div className="flex flex-col-reverse md:grid md:grid-cols-[0.54fr_0.46fr] overflow-hidden border border-[#D9DEEA] bg-[#F7F8FC] rounded-2xl shadow-[0_24px_80px_rgba(5,10,92,0.06)]">
                 {/* Image */}
-                <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-r border-slate-100">
+                <div className="relative aspect-square md:aspect-auto md:h-full bg-slate-50 border-t md:border-t-0 md:border-r border-[#D9DEEA]/50">
+                  {/* Inner shadow overlay */}
+                  <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(5,10,92,0.03)] z-10" />
+
                   {/* Mobile Image */}
                   <div className="absolute inset-0 w-full h-full md:hidden">
                     {mg3FinalMobileUrl ? (
                       <img src={mg3FinalMobileUrl} alt={mg3.title} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
-                       <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                       <div className="w-full h-full bg-gradient-to-br from-[#F7F8FC] to-[#EEF2F8] flex items-center justify-center p-6 relative overflow-hidden">
+                         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                         <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
+                           <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">MG3-Plus Visual</span>
+                         </div>
+                       </div>
                     )}
                   </div>
                   {/* Desktop Image */}
@@ -602,22 +624,28 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                         )}
                       </>
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]" />
+                       <div className="w-full h-full bg-gradient-to-br from-[#F7F8FC] to-[#EEF2F8] flex items-center justify-center p-6 relative overflow-hidden">
+                         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#050A5C 1px, transparent 1px), linear-gradient(90deg, #050A5C 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                         <div className="bg-white/80 backdrop-blur-sm border border-[#D9DEEA] px-4 py-2 rounded-full z-10 shadow-sm">
+                           <span className="text-[#050A5C]/60 text-[10px] tracking-widest font-medium uppercase">MG3-Plus Visual</span>
+                         </div>
+                       </div>
                     )}
                   </div>
                   {showMg3Caption && mg3.caption && (
-                    <div className="absolute bottom-4 left-4 md:right-auto z-10 bg-white/90 backdrop-blur border border-white/20 px-3 py-1.5 shadow-sm rounded-sm">
-                      <span className="text-[9px] text-[#050A5C] tracking-widest font-semibold uppercase">{mg3.caption}</span>
+                    <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 z-20 bg-white/90 backdrop-blur-md border border-[#D9DEEA] px-4 py-2 shadow-sm rounded-sm max-w-[80%]">
+                      <span className="text-[9px] md:text-[10px] text-[#050A5C] tracking-widest font-medium uppercase">{mg3.caption}</span>
                     </div>
                   )}
                 </div>
                 {/* Text Content */}
-                <div className="flex flex-col justify-center px-6 py-10 md:px-12 md:py-16">
-                  <div className="space-y-4">
+                <div className="flex flex-col justify-center px-6 py-10 md:px-14 md:py-20">
+                  <div className="space-y-5">
                     {mg3.eyebrow && (
                       <div className="inline-flex items-center gap-2">
-                        <span className="cosmetic-kicker text-[#050A5C]/60 block">
-                          {mg3.eyebrow}
+                        <span className="cosmetic-kicker block">
+                          <span className="text-[#050A5C]/30 mr-3">02</span>
+                          <span className="text-[#050A5C]/60">{mg3.eyebrow}</span>
                         </span>
                         <span className="bg-yellow-100 text-yellow-800 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
                           Exclusive
