@@ -1364,43 +1364,43 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
         const offlineMobileUrl = (typeof offlineMobileRaw === 'string' && offlineMobileRaw.trim() && !offlineMobileRaw.includes('/PASTE')) ? offlineMobileRaw.trim() : null;
 
         return offlineSettings.show && offlineSettings.title && (
-          <div className="mt-16 mb-24 w-full max-w-[1200px] mx-auto px-5 md:px-8">
-            <div className="relative overflow-hidden rounded-[24px] md:rounded-[28px] shadow-[0_10px_40px_rgba(5,10,92,0.06)] min-h-[460px] md:min-h-[420px] aspect-[4/5] md:aspect-[21/8] bg-slate-50 border border-slate-200/50">
+          <section 
+            className="mt-16 mb-24 px-5 md:px-8"
+            data-offline-bridge-has-image={!!(offlineDesktopUrl || offlineMobileUrl)}
+            data-offline-bridge-desktop-url={offlineDesktopUrl || ""}
+            data-offline-bridge-mobile-url={offlineMobileUrl || ""}
+            data-offline-bridge-slot={offlineSettings.desktopMediaSlot}
+          >
+            <div className="relative mx-auto max-w-[1200px] overflow-hidden rounded-[24px] md:rounded-[28px] border border-[#D9DEEA] shadow-[0_30px_90px_rgba(5,10,92,0.14)] min-h-[460px] md:min-h-[440px] aspect-[4/5] md:aspect-auto bg-slate-50">
               {/* Background Image Layer */}
               {offlineDesktopUrl ? (
-                <ScienceMediaBox
-                  className="absolute inset-0 hidden md:block"
-                  url={offlineDesktopUrl}
+                <img
+                  src={offlineDesktopUrl}
                   alt={offlineSettings.title}
-                  mediaRenderType="full-bleed-artwork"
-                  imageMode={offlineSettings.desktopImageMode as any}
-                  objectPosition={offlineSettings.desktopObjectPosition}
-                  placeholderLabel="Offline Visual"
+                  className="absolute inset-0 z-0 hidden md:block h-full w-full object-cover"
+                  style={{ objectPosition: offlineSettings.desktopObjectPosition }}
                 />
               ) : (
-                <div className="absolute inset-0 hidden md:block bg-gradient-to-br from-slate-200 to-slate-100" />
+                <div className="absolute inset-0 z-0 hidden md:block bg-gradient-to-br from-[#E2E8F0] to-[#F8FAFC]" />
               )}
               
               {offlineMobileUrl ? (
-                <ScienceMediaBox
-                  className="absolute inset-0 block md:hidden"
-                  url={offlineMobileUrl}
+                <img
+                  src={offlineMobileUrl}
                   alt={offlineSettings.title}
-                  mediaRenderType="full-bleed-artwork"
-                  imageMode={offlineSettings.mobileImageMode as any}
-                  objectPosition={offlineSettings.mobileObjectPosition}
-                  placeholderLabel="Offline Visual"
+                  className="absolute inset-0 z-0 block md:hidden h-full w-full object-cover"
+                  style={{ objectPosition: offlineSettings.mobileObjectPosition }}
                 />
               ) : (
-                <div className="absolute inset-0 block md:hidden bg-gradient-to-br from-slate-200 to-slate-100" />
+                <div className="absolute inset-0 z-0 block md:hidden bg-gradient-to-br from-[#E2E8F0] to-[#F8FAFC]" />
               )}
 
               {/* Overlay Layer */}
-              <div className={`absolute inset-0 bg-gradient-to-r from-black/60 to-transparent ${offlineSettings.overlayStrength === 'light' ? 'opacity-50' : offlineSettings.overlayStrength === 'heavy' ? 'opacity-90' : 'opacity-75'}`} />
+              <div className={`absolute inset-0 z-10 bg-gradient-to-r from-black/60 to-transparent ${offlineSettings.overlayStrength === 'light' ? 'opacity-50' : offlineSettings.overlayStrength === 'heavy' ? 'opacity-90' : 'opacity-75'}`} />
 
               {/* Text Content Layer */}
-              <div className="absolute inset-0 flex flex-col justify-start p-8 md:p-14 lg:p-16 z-10">
-                <div className={`max-w-[90%] md:max-w-[45%] ${offlineSettings.textAlign === 'center' ? 'mx-auto text-center' : 'text-left'}`}>
+              <div className="relative z-20 flex min-h-[460px] md:min-h-[440px] flex-col justify-start p-8 md:p-14 lg:p-16">
+                <div className={`max-w-[100%] md:max-w-[520px] ${offlineSettings.textAlign === 'center' ? 'mx-auto text-center' : 'text-left'}`}>
                   <h3 className="text-white text-[28px] md:text-4xl leading-snug mb-5" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontWeight: 600 }}>
                     {offlineSettings.title}
                   </h3>
@@ -1412,7 +1412,7 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         );
       })()}
 
