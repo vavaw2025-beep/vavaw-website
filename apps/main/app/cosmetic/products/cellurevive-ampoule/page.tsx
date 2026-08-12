@@ -39,7 +39,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
   description: "CELLUREVIVE Ampoule là bước treatment chuyên sâu trong routine phục hồi VAVAW, được thiết kế để hỗ trợ làn da cần cấp ẩm, làm dịu và cải thiện bề mặt da trông mịn màng hơn.",
   ctaLabel: "Nhận tư vấn CELLUREVIVE Ampoule",
   ctaHref: "/contact?type=cosmetic_interest&product=cellurevive_ampoule&source=product_landing",
-  secondaryCtaLabel: "Xem Luminous Set",
+  secondaryCtaLabel: "Khám phá Luminous Set",
   secondaryCtaHref: "/cosmetic/products/luminous-revitalization-sheer-set",
   heroMediaSlot: "cosmetic-set-cellurevive-ampoule",
   insideSet: [
@@ -112,6 +112,47 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     { label: "Gợi ý kết hợp", value: "REGENAGLOW NOURISH SHEER CREAM" },
     { label: "Lưu ý", value: "Chỉ dùng ngoài da. Tránh tiếp xúc trực tiếp với mắt." }
   ],
+  productDetailForm: {
+    eyebrow: "PRODUCT INFORMATION",
+    title: "CELLUREVIVE INTENSIVE SHEER AMPOULE",
+    description: "Thông tin chi tiết về sản phẩm Tinh chất CelluRevive Intensive Sheer Ampoule theo hồ sơ mỹ phẩm chính thức.",
+    showDescription: true,
+    showLegalInfo: true,
+    showProductItems: true,
+    showIngredients: true,
+    showCautions: true,
+    showStorage: true,
+    showQualityGuarantee: true,
+    legalInfo: [
+      { label: "Tên sản phẩm", value: "Tinh chất CelluRevive Intensive Sheer Ampoule" },
+      { label: "Dung tích", value: "7 ml × 4 ống" },
+      { label: "Đối tượng sử dụng", value: "Phù hợp cho mọi loại da, đặc biệt là da mỏng yếu và da cần phục hồi", highlight: true },
+      { label: "Hạn sử dụng sau khi mở nắp", value: "12 tháng" },
+      { label: "Hạn sử dụng trước khi mở nắp", value: "Xem trên bao bì sản phẩm" },
+      { label: "Nhà sản xuất", value: "IRE Cosmetic Co., Ltd." },
+      { label: "Đơn vị phân phối", value: "BRL Company Co., Ltd.", highlight: true },
+      { label: "Trung tâm chăm sóc khách hàng", value: "070-7633-0987", highlight: true },
+      { label: "Nước sản xuất", value: "Hàn Quốc" },
+      { label: "Tình trạng phê duyệt MFDS", value: "Có (Mỹ phẩm chức năng: Hỗ trợ cải thiện nếp nhăn)", highlight: true },
+      { label: "Hướng dẫn sử dụng", value: "Lấy một lượng vừa đủ thoa đều lên da mặt sau bước toner, vỗ nhẹ để tinh chất thẩm thấu.", highlight: true }
+    ],
+    productItems: [
+      {
+        name: "Tinh chất CelluRevive Intensive Sheer Ampoule",
+        volume: "7 ml × 4 ống",
+        functionClaim: "Mỹ phẩm chức năng: Hỗ trợ cải thiện nếp nhăn",
+        ingredients: "Nước Collagen (830,000 ppm), Methylpropanediol, Glycerin, Glyceryl Acrylate/Acrylic Acid Copolymer, Sodium Hyaluronate, 1,2-Hexanediol, Túi ngoại bào từ tế bào mô sẹo Rau Má (Centella Asiatica Callus Extracellular Vesicles) (10,000 ppm), SH-Oligopeptide-2, Carbomer, Arginine, Polyglyceryl-10 Laurate, Ethylhexylglycerin, Adenosine, Trisodium EDTA, SH-Polypeptide-1, RH-Oligopeptide-1, Hydrolyzed Hyaluronic Acid, Hyaluronic Acid, Hydroxypropyltrimonium Hyaluronate, Sodium Acetylated Hyaluronate, Sodium Hyaluronate Crosspolymer, Hydrolyzed Sodium Hyaluronate, Potassium Hyaluronate, Sodium Hyaluronate Dimethylsilanol, Dimethylsilanol Hyaluronate, Butylene Glycol."
+      }
+    ],
+    cautions: [
+      "Nếu xuất hiện triệu chứng bất thường như nổi mẩn đỏ, sưng tấy hoặc ngứa do tiếp xúc trực tiếp với ánh nắng khi sử dụng, hãy ngưng sử dụng và tham khảo ý kiến bác sĩ chuyên khoa da liễu.",
+      "Không dùng trên vùng da có vết thương hở.",
+      "Bảo quản xa tầm tay trẻ em.",
+      "Tránh ánh nắng trực tiếp."
+    ],
+    storage: "Bảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp.",
+    qualityGuarantee: "Trong trường hợp sản phẩm có lỗi, việc bồi thường sẽ được thực hiện theo Tiêu chuẩn giải quyết tranh chấp người tiêu dùng do Ủy ban Thương mại Công bằng Hàn Quốc ban hành."
+  },
   finalCta: {
     title: "Bắt đầu tư vấn CELLUREVIVE Ampoule",
     description: "Nhận gợi ý cách kết hợp CELLUREVIVE Ampoule vào routine phục hồi phù hợp với tình trạng da của bạn.",
@@ -141,5 +182,11 @@ export default async function CellureviveAmpoulePage() {
   const media = await loadPublicCosmeticMedia();
 
   // 5. Render using the shared template
-  return <ProductLandingPage content={mergedContent} cosmeticMedia={media}  canonicalPath="/cosmetic/products/${product}" />;
+  return (
+    <ProductLandingPage
+      content={mergedContent}
+      cosmeticMedia={media}
+      canonicalPath="/cosmetic/products/cellurevive-ampoule"
+    />
+  );
 }
