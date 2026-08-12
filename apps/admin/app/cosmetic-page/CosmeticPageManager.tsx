@@ -248,14 +248,28 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   ];
   const [landAiItems, setLandAiItems] = useState<any[]>(DEFAULT_AI_ITEMS);
 
-  // Usage Guide states
-  const [landUsageGuideEyebrow, setLandUsageGuideEyebrow] = useState('');
-  const [landUsageGuideTitle, setLandUsageGuideTitle] = useState('');
-  const [landUsageGuideDescription, setLandUsageGuideDescription] = useState('');
-  const [landUsageGuideMediaSlot, setLandUsageGuideMediaSlot] = useState('');
-  const [landUsageGuideInstructionMediaSlot, setLandUsageGuideInstructionMediaSlot] = useState('');
-  const [landUsageGuideNote, setLandUsageGuideNote] = useState('');
-  const [landUsageGuideSteps, setLandUsageGuideSteps] = useState<any[]>([]);
+  // Usage Guide states (Block 6)
+  const [landUsageEyebrow, setLandUsageEyebrow] = useState('');
+  const [landUsageTitle, setLandUsageTitle] = useState('');
+  const [landUsageDescription, setLandUsageDescription] = useState('');
+  const [landUsageNote, setLandUsageNote] = useState('');
+  const [landUsageCaption, setLandUsageCaption] = useState('');
+  const [landUsageShowDescription, setLandUsageShowDescription] = useState(true);
+  const [landUsageShowNote, setLandUsageShowNote] = useState(true);
+  const [landUsageShowCaption, setLandUsageShowCaption] = useState(true);
+  const [landUsageMediaRenderType, setLandUsageMediaRenderType] = useState('full-bleed-artwork');
+  const [landUsageDesktopImageMode, setLandUsageDesktopImageMode] = useState('cover');
+  const [landUsageMobileImageMode, setLandUsageMobileImageMode] = useState('cover');
+  const [landUsageDesktopObjectPosition, setLandUsageDesktopObjectPosition] = useState('center center');
+  const [landUsageMobileObjectPosition, setLandUsageMobileObjectPosition] = useState('center top');
+  const DEFAULT_USAGE_STEPS = [
+    { step: 'Step 1', title: 'Prepare', description: 'Apply P30 Toner to balance skin pH.', product: 'P30 Toner', timing: 'Morning/Evening', highlight: false },
+    { step: 'Step 2', title: 'Activate', description: 'Apply Renew Ampoule.', product: 'Renew Ampoule', timing: 'Morning/Evening', highlight: true },
+    { step: 'Step 3', title: 'Repair', description: 'Apply Calmiance Gel.', product: 'Calmiance Gel', timing: 'Morning/Evening', highlight: false },
+    { step: 'Step 4', title: 'Nourish', description: 'Apply Regenaglow Cream.', product: 'Regenaglow Cream', timing: 'Morning/Evening', highlight: true },
+    { step: 'Step 5', title: 'Protect', description: 'Apply Lumiglow Sunscreen.', product: 'Lumiglow Sunscreen', timing: 'Morning', highlight: false },
+  ];
+  const [landUsageSteps, setLandUsageSteps] = useState<any[]>(DEFAULT_USAGE_STEPS);
 
   // Product Detail Form states
   const [landProductDetailFormEyebrow, setLandProductDetailFormEyebrow] = useState('');
@@ -576,14 +590,21 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
       setLandAiShowIcons(aiMap.showIngredientIcons ?? true);
       setLandAiHighlightActive(aiMap.highlightActiveIngredient ?? true);
 
-      const usageGuide = content.usageGuide || {};
-      setLandUsageGuideEyebrow(usageGuide.eyebrow || '');
-      setLandUsageGuideTitle(usageGuide.title || '');
-      setLandUsageGuideDescription(usageGuide.description || '');
-      setLandUsageGuideMediaSlot(usageGuide.mediaSlot || 'cosmetic-luminous-usage-set-image');
-      setLandUsageGuideInstructionMediaSlot(usageGuide.instructionMediaSlot || 'cosmetic-luminous-ampoule-instruction-image');
-      setLandUsageGuideNote(usageGuide.note || '');
-      setLandUsageGuideSteps(usageGuide.steps || []);
+      const usageGuide = content.usageGuide || content.howToUse || {};
+      setLandUsageEyebrow(usageGuide.eyebrow || '');
+      setLandUsageTitle(usageGuide.title || '');
+      setLandUsageDescription(usageGuide.description || '');
+      setLandUsageNote(usageGuide.note || '');
+      setLandUsageCaption(usageGuide.caption || '');
+      setLandUsageShowDescription(usageGuide.showDescription ?? true);
+      setLandUsageShowNote(usageGuide.showNote ?? true);
+      setLandUsageShowCaption(usageGuide.showCaption ?? true);
+      setLandUsageMediaRenderType(usageGuide.mediaRenderType || 'full-bleed-artwork');
+      setLandUsageDesktopImageMode(usageGuide.desktopImageMode || 'cover');
+      setLandUsageMobileImageMode(usageGuide.mobileImageMode || 'cover');
+      setLandUsageDesktopObjectPosition(usageGuide.desktopObjectPosition || 'center center');
+      setLandUsageMobileObjectPosition(usageGuide.mobileObjectPosition || 'center top');
+      setLandUsageSteps(usageGuide.steps && usageGuide.steps.length > 0 ? usageGuide.steps : DEFAULT_USAGE_STEPS);
 
       const detailForm = content.productDetailForm || {};
       setLandProductDetailFormEyebrow(detailForm.eyebrow || '');
@@ -866,13 +887,25 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             highlightActiveIngredient: landAiHighlightActive,
           };
           updatedContent.usageGuide = {
-            eyebrow: landUsageGuideEyebrow,
-            title: landUsageGuideTitle,
-            description: landUsageGuideDescription,
-            mediaSlot: landUsageGuideMediaSlot,
-            instructionMediaSlot: landUsageGuideInstructionMediaSlot,
-            note: landUsageGuideNote,
-            steps: landUsageGuideSteps
+            eyebrow: landUsageEyebrow,
+            title: landUsageTitle,
+            description: landUsageDescription,
+            note: landUsageNote,
+            caption: landUsageCaption,
+            showDescription: landUsageShowDescription,
+            showNote: landUsageShowNote,
+            showCaption: landUsageShowCaption,
+            mediaRenderType: landUsageMediaRenderType,
+            mediaSlot: 'cosmetic-luminous-usage-set-image',
+            desktopMediaSlot: 'cosmetic-luminous-usage-desktop',
+            mobileMediaSlot: 'cosmetic-luminous-usage-mobile',
+            instructionMediaSlot: 'cosmetic-luminous-ampoule-instruction-image',
+            creamInstructionMediaSlot: 'cosmetic-luminous-cream-instruction-image',
+            desktopImageMode: landUsageDesktopImageMode,
+            mobileImageMode: landUsageMobileImageMode,
+            desktopObjectPosition: landUsageDesktopObjectPosition,
+            mobileObjectPosition: landUsageMobileObjectPosition,
+            steps: landUsageSteps
           };
           updatedContent.productDetailForm = {
             eyebrow: landProductDetailFormEyebrow,
@@ -3459,27 +3492,97 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                             <div className="grid grid-cols-2 gap-4">
                               <div className="col-span-2 md:col-span-1">
                                 <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Nhãn nhỏ (Eyebrow)</label>
-                                <input type="text" value={landUsageGuideEyebrow} onChange={e => setLandUsageGuideEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                <input type="text" value={landUsageEyebrow} onChange={e => setLandUsageEyebrow(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
                               </div>
                               <div className="col-span-2 md:col-span-1">
                                 <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Tiêu đề (Title)</label>
-                                <input type="text" value={landUsageGuideTitle} onChange={e => setLandUsageGuideTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
+                                <input type="text" value={landUsageTitle} onChange={e => setLandUsageTitle(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-semibold" />
                               </div>
                               <div className="col-span-2">
                                 <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Mô tả (Description)</label>
-                                <textarea value={landUsageGuideDescription} onChange={e => setLandUsageGuideDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
+                                <textarea value={landUsageDescription} onChange={e => setLandUsageDescription(e.target.value)} rows={3} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white" />
                               </div>
-                              <div className="col-span-2 md:col-span-1">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình ảnh bộ sản phẩm (Media Slot)</label>
-                                <input type="text" value={landUsageGuideMediaSlot} onChange={e => setLandUsageGuideMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
-                              </div>
-                              <div className="col-span-2 md:col-span-1">
-                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Slot hình hướng dẫn (Instruction Media)</label>
-                                <input type="text" value={landUsageGuideInstructionMediaSlot} onChange={e => setLandUsageGuideInstructionMediaSlot(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white font-mono text-slate-500" />
+                              <div className="col-span-2">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={landUsageShowDescription} onChange={e => setLandUsageShowDescription(e.target.checked)} className="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+                                  <span className="text-[11px] text-slate-600 font-medium">Hiển thị mô tả</span>
+                                </label>
                               </div>
                               <div className="col-span-2">
                                 <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Ghi chú (Note)</label>
-                                <input type="text" value={landUsageGuideNote} onChange={e => setLandUsageGuideNote(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white italic text-slate-500" />
+                                <input type="text" value={landUsageNote} onChange={e => setLandUsageNote(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white italic text-slate-500" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={landUsageShowNote} onChange={e => setLandUsageShowNote(e.target.checked)} className="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+                                  <span className="text-[11px] text-slate-600 font-medium">Hiển thị ghi chú</span>
+                                </label>
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Chú thích (Caption)</label>
+                                <input type="text" value={landUsageCaption} onChange={e => setLandUsageCaption(e.target.value)} className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white text-slate-500" />
+                              </div>
+                              <div className="col-span-2">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={landUsageShowCaption} onChange={e => setLandUsageShowCaption(e.target.checked)} className="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+                                  <span className="text-[11px] text-slate-600 font-medium">Hiển thị chú thích</span>
+                                </label>
+                              </div>
+                              <div className="col-span-2">
+                                <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Media Render Type</label>
+                                <select value={landUsageMediaRenderType} onChange={e => setLandUsageMediaRenderType(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="full-bleed-artwork">Full Bleed Artwork</option>
+                                  <option value="diagram">Diagram</option>
+                                  <option value="photo">Photo</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Media section */}
+                          <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Hình ảnh hướng dẫn</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {renderSlotCard({ id: 'cosmetic-luminous-usage-desktop', name: 'Ảnh desktop ngang — Usage Guide', size: '1600x1000' })}
+                              {renderSlotCard({ id: 'cosmetic-luminous-usage-mobile', name: 'Ảnh mobile dọc — Usage Guide', size: '1080x1600' })}
+                              {renderSlotCard({ id: 'cosmetic-luminous-usage-set-image', name: 'Ảnh bộ sản phẩm — Usage Set', size: '1600x1000' })}
+                              {renderSlotCard({ id: 'cosmetic-luminous-ampoule-instruction-image', name: 'Ảnh hướng dẫn ampoule', size: '800x800' })}
+                              {renderSlotCard({ id: 'cosmetic-luminous-cream-instruction-image', name: 'Ảnh hướng dẫn cream', size: '800x800' })}
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 mt-4">
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Image Mode</label>
+                                <select value={landUsageDesktopImageMode} onChange={e => setLandUsageDesktopImageMode(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="cover">Cover (Phủ kín)</option>
+                                  <option value="contain">Contain (Vừa khung)</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mobile Image Mode</label>
+                                <select value={landUsageMobileImageMode} onChange={e => setLandUsageMobileImageMode(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="cover">Cover (Phủ kín)</option>
+                                  <option value="contain">Contain (Vừa khung)</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Desktop Object Position</label>
+                                <select value={landUsageDesktopObjectPosition} onChange={e => setLandUsageDesktopObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="center center">Giữa (Center)</option>
+                                  <option value="center top">Giữa trên (Top Center)</option>
+                                  <option value="center bottom">Giữa dưới (Bottom Center)</option>
+                                  <option value="left center">Trái (Left Center)</option>
+                                  <option value="right center">Phải (Right Center)</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mobile Object Position</label>
+                                <select value={landUsageMobileObjectPosition} onChange={e => setLandUsageMobileObjectPosition(e.target.value)} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-700">
+                                  <option value="center center">Giữa (Center)</option>
+                                  <option value="center top">Giữa trên (Top Center)</option>
+                                  <option value="center bottom">Giữa dưới (Bottom Center)</option>
+                                  <option value="left center">Trái (Left Center)</option>
+                                  <option value="right center">Phải (Right Center)</option>
+                                </select>
                               </div>
                             </div>
                           </div>
@@ -3488,30 +3591,42 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                           <div className="col-span-2 space-y-3 p-4 border border-slate-100 rounded-xl bg-slate-50/50">
                             <h4 className="text-[11px] font-bold text-[#050A5C] uppercase tracking-wider mb-2 border-b border-slate-200 pb-2">Danh sách các bước</h4>
                             <div className="space-y-4">
-                              {landUsageGuideSteps.map((item: any, idx: number) => (
+                              {landUsageSteps.map((item: any, idx: number) => (
                                 <div key={idx} className="p-3 border border-slate-200 rounded-lg bg-white flex items-start gap-3 relative">
                                   <div className="flex-1 grid grid-cols-2 gap-3">
                                     <div className="col-span-2 md:col-span-1">
                                       <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Số hiệu bước (Step)</label>
-                                      <input type="text" value={item.step || ''} onChange={e => { const l = [...landUsageGuideSteps]; l[idx] = { ...l[idx], step: e.target.value }; setLandUsageGuideSteps(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-mono font-semibold" />
+                                      <input type="text" value={item.step || ''} onChange={e => { const l = [...landUsageSteps]; l[idx] = { ...l[idx], step: e.target.value }; setLandUsageSteps(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-mono font-semibold" />
                                     </div>
                                     <div className="col-span-2 md:col-span-1">
                                       <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Tên bước (Title)</label>
-                                      <input type="text" value={item.title || ''} onChange={e => { const l = [...landUsageGuideSteps]; l[idx] = { ...l[idx], title: e.target.value }; setLandUsageGuideSteps(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold text-[#050A5C]" />
+                                      <input type="text" value={item.title || ''} onChange={e => { const l = [...landUsageSteps]; l[idx] = { ...l[idx], title: e.target.value }; setLandUsageSteps(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold text-[#050A5C]" />
                                     </div>
                                     <div className="col-span-2">
                                       <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Mô tả (Description)</label>
-                                      <textarea value={item.description || ''} onChange={e => { const l = [...landUsageGuideSteps]; l[idx] = { ...l[idx], description: e.target.value }; setLandUsageGuideSteps(l); }} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-600" />
+                                      <textarea value={item.description || ''} onChange={e => { const l = [...landUsageSteps]; l[idx] = { ...l[idx], description: e.target.value }; setLandUsageSteps(l); }} rows={2} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white text-slate-600" />
+                                    </div>
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Sản phẩm (Product)</label>
+                                      <input type="text" value={item.product || ''} onChange={e => { const l = [...landUsageSteps]; l[idx] = { ...l[idx], product: e.target.value }; setLandUsageSteps(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold" />
+                                    </div>
+                                    <div className="col-span-2 md:col-span-1">
+                                      <label className="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Thời gian (Timing)</label>
+                                      <input type="text" value={item.timing || ''} onChange={e => { const l = [...landUsageSteps]; l[idx] = { ...l[idx], timing: e.target.value }; setLandUsageSteps(l); }} className="w-full text-[11px] p-1.5 border border-slate-200 rounded bg-white font-semibold" />
+                                    </div>
+                                    <div className="col-span-2 flex items-center gap-2 mt-2">
+                                      <input type="checkbox" checked={item.highlight || false} onChange={e => { const l = [...landUsageSteps]; l[idx] = { ...l[idx], highlight: e.target.checked }; setLandUsageSteps(l); }} className="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+                                      <span className="text-[11px] text-slate-600 font-medium">Nổi bật (Highlight)</span>
                                     </div>
                                   </div>
-                                  <button type="button" onClick={() => setLandUsageGuideSteps(landUsageGuideSteps.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-4">
+                                  <button type="button" onClick={() => setLandUsageSteps(landUsageSteps.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-600 mt-4">
                                     <Trash2 className="h-4 w-4" />
                                   </button>
                                 </div>
                               ))}
-                              <button type="button" onClick={() => setLandUsageGuideSteps([...landUsageGuideSteps, { step: `0${landUsageGuideSteps.length + 1}`, title: '', description: '' }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                              <button type="button" onClick={() => setLandUsageSteps([...landUsageSteps, { step: `Step ${landUsageSteps.length + 1}`, title: '', description: '', product: '', timing: '', highlight: false }])} className="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-1">
                                 <Plus className="h-4 w-4" />
-                                Thêm bước
+                                + Thêm bước
                               </button>
                             </div>
                           </div>

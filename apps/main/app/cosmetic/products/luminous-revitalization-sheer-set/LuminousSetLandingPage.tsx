@@ -312,6 +312,33 @@ const DEFAULT_ACTIVE_INGREDIENTS_MAP = {
   ]
 };
 
+const DEFAULT_USAGE_GUIDE = {
+  eyebrow: "VAVAW SHEER SET RITUAL",
+  title: "Hướng dẫn sử dụng Luminous Sheer Set",
+  description: "Sử dụng theo thứ tự ampoule trước, cream sau để hỗ trợ bổ sung dưỡng chất, khóa ẩm và hoàn thiện routine phục hồi tại nhà.",
+  note: "Ban ngày nên hoàn thiện routine bằng kem chống nắng phù hợp.",
+  caption: "Simple recovery ritual for daily home-care continuity.",
+  setMediaSlot: "cosmetic-luminous-usage-set-image",
+  instructionMediaSlot: "cosmetic-luminous-ampoule-instruction-image",
+  desktopMediaSlot: "cosmetic-luminous-usage-desktop",
+  mobileMediaSlot: "cosmetic-luminous-usage-mobile",
+  mediaRenderType: "full-bleed-artwork" as const,
+  desktopImageMode: "cover" as const,
+  mobileImageMode: "cover" as const,
+  desktopObjectPosition: "center center",
+  mobileObjectPosition: "center top",
+  showDescription: true,
+  showNote: true,
+  showCaption: true,
+  steps: [
+    { step: "01", title: "Làm sạch và cân bằng da", description: "Sau bước làm sạch, cân bằng da bằng toner để chuẩn bị bề mặt da cho routine phục hồi.", product: "Prepare", timing: "AM · PM" },
+    { step: "02", title: "Thoa CELLUREVIVE Ampoule", description: "Lấy 2–3 giọt ampoule, thoa lần lượt lên trán, hai má và cằm.", product: "CELLUREVIVE Ampoule", timing: "PM preferred", highlight: true },
+    { step: "03", title: "Vỗ nhẹ đến khi thẩm thấu", description: "Massage hoặc vỗ nhẹ để ampoule thấm đều, tránh vùng mắt.", product: "Absorption", timing: "30–60s" },
+    { step: "04", title: "Khóa ẩm bằng REGENAGLOW NOURISH SHEER CREAM", description: "Thoa một lớp kem mỏng để hỗ trợ duy trì độ ẩm và cảm giác mềm mại.", product: "REGENAGLOW Cream", timing: "AM · PM", highlight: true },
+    { step: "05", title: "Layer thêm nếu cần", description: "Khi lớp đầu đã thấm, có thể thoa thêm một lớp mỏng ở vùng da khô hoặc cần chăm sóc nhiều hơn.", product: "Optional Layering", timing: "As needed" }
+  ]
+};
+
 // ─── BLOCK 5: ACTIVE INGREDIENTS (COMPONENT WITH HOOKS) ──────────────────────
 
 function LuminousActiveIngredientsBlock({
@@ -600,6 +627,119 @@ function LuminousActiveIngredientsBlock({
             )}
           </div>
 
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LuminousUsageGuideBlock({
+  content,
+  cosmeticMedia
+}: {
+  content: ProductLandingContent;
+  cosmeticMedia: any;
+}) {
+  const rawGuide = (content as any).usageGuide || (content as any).howToUse || {};
+  const usageGuide = {
+    ...DEFAULT_USAGE_GUIDE,
+    ...rawGuide,
+    showDescription: rawGuide.showDescription !== false,
+    showNote: rawGuide.showNote !== false,
+    showCaption: rawGuide.showCaption !== false,
+    steps: Array.isArray(rawGuide.steps) && rawGuide.steps.length > 0 ? rawGuide.steps : DEFAULT_USAGE_GUIDE.steps
+  };
+
+  const desktopRaw = cosmeticMedia['cosmetic-luminous-usage-desktop'] || cosmeticMedia[usageGuide.desktopMediaSlot as string] || cosmeticMedia['cosmetic-luminous-usage-set-image'] || cosmeticMedia[usageGuide.setMediaSlot as string] || null;
+  const desktopUrl = (typeof desktopRaw === 'string' && desktopRaw.trim() && !desktopRaw.includes('/PASTE')) ? desktopRaw.trim() : null;
+
+  const mobileRaw = cosmeticMedia['cosmetic-luminous-usage-mobile'] || cosmeticMedia[usageGuide.mobileMediaSlot as string] || cosmeticMedia['cosmetic-luminous-usage-set-image'] || cosmeticMedia[usageGuide.setMediaSlot as string] || desktopUrl || null;
+  const mobileUrl = (typeof mobileRaw === 'string' && mobileRaw.trim() && !mobileRaw.includes('/PASTE')) ? mobileRaw.trim() : null;
+
+  // Render the Block 6 section
+  return (
+    <section className="bg-[#F8FAFC] py-20 md:py-28 px-5 md:px-8 border-b border-slate-100">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="grid md:grid-cols-[0.48fr_0.52fr] gap-12 md:gap-20">
+          {/* Left Column: Text and Steps */}
+          <div className="flex flex-col">
+            <div className="mb-12">
+               {usageGuide.eyebrow && <p className="text-[9px] tracking-[0.22em] uppercase font-semibold text-[#050A5C]/50 mb-3">{usageGuide.eyebrow}</p>}
+               {usageGuide.title && <h2 className="text-[#050A5C] leading-snug mb-4" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif", fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)", fontWeight: 600 }}>{usageGuide.title}</h2>}
+               {usageGuide.showDescription && usageGuide.description && <p className="text-sm text-slate-500 leading-relaxed">{usageGuide.description}</p>}
+            </div>
+            
+            <div className="space-y-8">
+              {usageGuide.steps.map((step: any, i: number) => (
+                <div key={i} className="relative flex gap-6 group">
+                  {/* Vertical Line */}
+                  <div className="absolute left-[11px] top-8 bottom-[-24px] w-px bg-[#D9DEEA] last:hidden" />
+                  
+                  {/* Step Number Circle */}
+                  <div className={`relative z-10 w-6 h-6 rounded-full flex items-center justify-center shrink-0 border mt-1 transition-colors duration-300 ${step.highlight ? 'bg-[#C8AB6E] border-[#C8AB6E] text-white shadow-[0_0_10px_rgba(200,171,110,0.4)]' : 'bg-white border-[#D9DEEA] text-[#050A5C] group-hover:border-[#C8AB6E] group-hover:text-[#C8AB6E]'}`}>
+                    <span className="text-[10px] font-bold tracking-wider">{step.step || `0${i+1}`}</span>
+                  </div>
+                  
+                  {/* Step Content */}
+                  <div className="flex-1 pb-2">
+                    <h4 className="text-[15px] font-semibold text-[#050A5C] mb-2">{step.title}</h4>
+                    {step.description && <p className="text-[13px] text-slate-500 leading-relaxed mb-3">{step.description}</p>}
+                    
+                    {/* Pills */}
+                    {(step.product || step.timing) && (
+                      <div className="flex flex-wrap gap-2">
+                        {step.product && <span className="inline-flex items-center px-2 py-1 rounded-sm bg-[#050A5C]/5 text-[#050A5C]/70 text-[9px] uppercase tracking-wider font-medium border border-[#050A5C]/10">{step.product}</span>}
+                        {step.timing && <span className="inline-flex items-center px-2 py-1 rounded-sm bg-white text-[#C8AB6E] text-[9px] uppercase tracking-wider font-medium border border-[#C8AB6E]/30">{step.timing}</span>}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {usageGuide.showNote && usageGuide.note && (
+              <div className="mt-12 bg-white border border-[#D9DEEA] p-5 rounded-lg shadow-sm">
+                <p className="text-xs text-slate-500 italic"><span className="font-semibold not-italic text-[#050A5C] mr-2">Note:</span>{usageGuide.note}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Visual */}
+          <div className="flex flex-col justify-center">
+            <div className="relative rounded-2xl overflow-hidden shadow-[0_24px_80px_rgba(5,10,92,0.08)] bg-white border border-[#D9DEEA] aspect-[4/5] md:aspect-auto md:min-h-[600px] w-full">
+               {/* Desktop Image */}
+               <ScienceMediaBox
+                  className="absolute inset-0 hidden md:block"
+                  url={desktopUrl}
+                  alt={usageGuide.title || 'Usage Guide Visual'}
+                  caption={undefined}
+                  showCaption={false}
+                  mediaRenderType={usageGuide.mediaRenderType}
+                  imageMode={usageGuide.desktopImageMode}
+                  objectPosition={usageGuide.desktopObjectPosition}
+                  placeholderLabel="Usage Guide Visual"
+                  captionPosition="bottom-left"
+                />
+               {/* Mobile Image */}
+               <ScienceMediaBox
+                  className="absolute inset-0 block md:hidden"
+                  url={mobileUrl}
+                  alt={usageGuide.title || 'Usage Guide Visual'}
+                  caption={undefined}
+                  showCaption={false}
+                  mediaRenderType={usageGuide.mediaRenderType}
+                  imageMode={usageGuide.mobileImageMode}
+                  objectPosition={usageGuide.mobileObjectPosition}
+                  placeholderLabel="Usage Guide Visual"
+                  captionPosition="bottom-right"
+                />
+            </div>
+            {usageGuide.showCaption && usageGuide.caption && (
+              <p className="mt-4 text-center text-[10px] tracking-widest uppercase text-[#050A5C]/40 italic">
+                {usageGuide.caption}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </section>
@@ -1193,76 +1333,8 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
       {/* ─── BLOCK 5: ACTIVE INGREDIENTS ───────────────────────────────────────── */}
       <LuminousActiveIngredientsBlock content={content} cosmeticMedia={cosmeticMedia} />
 
-      {/* ─── HOW TO USE SET ────────────────────────────────────────────────────── */}
-      {content.usageGuide && (
-        <section className="bg-slate-50/50 py-16 md:py-24 px-6 border-b border-slate-100">
-          <div className="max-w-[1200px] mx-auto lg:px-8 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-10 items-center">
-            {/* Left Column: Text & Steps */}
-            <div className="space-y-10">
-              <div className="space-y-4">
-                {content.usageGuide.eyebrow && (
-                  <span className="cosmetic-kicker text-[#050A5C]/60 block">
-                    {content.usageGuide.eyebrow}
-                  </span>
-                )}
-                {content.usageGuide.title && (
-                  <h2 className="cosmetic-heading text-2xl md:text-3.5xl text-[#050A5C] leading-tight">
-                    {content.usageGuide.title}
-                  </h2>
-                )}
-                {content.usageGuide.description && (
-                  <p className="cosmetic-body text-slate-500 text-sm whitespace-pre-wrap pt-2">
-                    {content.usageGuide.description}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-6">
-                {content.usageGuide.steps && content.usageGuide.steps.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-4">
-                    {item.step && (
-                      <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full border border-[#050A5C]/20 bg-white text-[#050A5C] text-xs font-bold font-mono">
-                        {item.step}
-                      </div>
-                    )}
-                    <div className="space-y-1 pt-1">
-                      <h4 className="cosmetic-heading-soft text-[14px] text-[#050A5C]">{item.title}</h4>
-                      <p className="cosmetic-body text-[13px] text-slate-500">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {content.usageGuide.note && (
-                <div className="bg-white border border-slate-200 p-4 rounded-lg flex gap-3 items-start">
-                  <div className="shrink-0 mt-0.5 w-1.5 h-1.5 rounded-full bg-yellow-500"></div>
-                  <p className="cosmetic-subheading text-xs text-slate-500">
-                    {content.usageGuide.note}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Right Column: Images */}
-            <div className="space-y-6">
-              <div className="relative aspect-[4/3] w-full bg-white border border-slate-200 rounded-xl overflow-hidden flex items-center justify-center p-4 shadow-sm">
-                {renderSlotImage(
-                  cosmeticMedia[content.usageGuide.mediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.usageSet,
-                  content.usageGuide.title || 'How to use set',
-                  'from-[#EEF2F8] to-[#DDE3EE]'
-                )}
-              </div>
-              <div className="relative aspect-video w-full max-w-[80%] mx-auto bg-white border border-slate-200 rounded-xl overflow-hidden flex items-center justify-center p-4 shadow-sm">
-                {renderSlotImage(
-                  cosmeticMedia[content.usageGuide.instructionMediaSlot as keyof typeof cosmeticMedia] || cosmeticMedia.usageInstruction,
-                  'Instruction diagram',
-                  'from-[#EEF2F8] to-[#DDE3EE]'
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      {/* ─── BLOCK 6: HOW TO USE ───────────────────────────────────────────────── */}
+      <LuminousUsageGuideBlock content={content} cosmeticMedia={cosmeticMedia} />
 
       {/* ─── PRODUCT DETAIL & COMPLIANCE FORM ─────────────────────────────────── */}
       {content.productDetailForm && (

@@ -98,10 +98,16 @@ export interface CosmeticPageMedia {
   activeIngredientsDesktop?: string;
   /** Active Ingredients mobile background for Luminous Set */
   activeIngredientsMobile?: string;
+  /** Usage Guide desktop artwork for Luminous Set */
+  usageDesktop?: string;
+  /** Usage Guide mobile artwork for Luminous Set */
+  usageMobile?: string;
   /** Usage Guide main set image for Luminous Set */
   usageSet?: string;
   /** Ampoule Instruction diagram for Luminous Set */
   usageInstruction?: string;
+  /** Cream Instruction diagram for Luminous Set */
+  usageCreamInstruction?: string;
   /** Offline Experience image for Luminous Set */
   offlineExperience?: string;
   /** Allow raw DB slot keys */
@@ -112,8 +118,11 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-luminous-hero-desktop': 'luminousHeroDesktop',
   'cosmetic-luminous-hero-mobile': 'luminousHeroMobile',
   'cosmetic-luminous-offline-experience-image': 'offlineExperience',
+  'cosmetic-luminous-usage-desktop': 'usageDesktop',
+  'cosmetic-luminous-usage-mobile': 'usageMobile',
   'cosmetic-luminous-usage-set-image': 'usageSet',
   'cosmetic-luminous-ampoule-instruction-image': 'usageInstruction',
+  'cosmetic-luminous-cream-instruction-image': 'usageCreamInstruction',
   'cosmetic-luminous-active-ingredients-image': 'activeIngredients',
   'cosmetic-luminous-active-ingredients-desktop': 'activeIngredientsDesktop',
   'cosmetic-luminous-active-ingredients-mobile': 'activeIngredientsMobile',

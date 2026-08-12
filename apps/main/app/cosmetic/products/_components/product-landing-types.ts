@@ -117,6 +117,36 @@ export interface LuminousActiveIngredientsMap {
   highlightActiveIngredient?: boolean;
 }
 
+export interface LuminousUsageStep {
+  step: string
+  title: string
+  description?: string
+  product?: string
+  timing?: string
+  highlight?: boolean
+}
+
+export interface LuminousUsageGuide {
+  eyebrow?: string
+  title?: string
+  description?: string
+  note?: string
+  caption?: string
+  showDescription?: boolean
+  showNote?: boolean
+  showCaption?: boolean
+  setMediaSlot?: string
+  instructionMediaSlot?: string
+  desktopMediaSlot?: string
+  mobileMediaSlot?: string
+  mediaRenderType?: 'full-bleed-artwork' | 'diagram' | 'photo'
+  desktopImageMode?: 'cover' | 'contain-blur'
+  mobileImageMode?: 'cover' | 'contain-blur'
+  desktopObjectPosition?: string
+  mobileObjectPosition?: string
+  steps?: LuminousUsageStep[]
+}
+
 export interface ProductLandingContent {
   eyebrow: string;
   title: string;
@@ -215,19 +245,7 @@ export interface ProductLandingContent {
       description?: string;
     }>;
   };
-  usageGuide?: {
-    eyebrow?: string;
-    title?: string;
-    description?: string;
-    mediaSlot?: string;
-    instructionMediaSlot?: string;
-    note?: string;
-    steps?: Array<{
-      step?: string;
-      title?: string;
-      description?: string;
-    }>;
-  };
+  usageGuide?: LuminousUsageGuide;
   productDetailForm?: {
     eyebrow?: string;
     title?: string;

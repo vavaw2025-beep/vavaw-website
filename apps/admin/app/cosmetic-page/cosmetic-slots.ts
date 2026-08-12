@@ -140,14 +140,34 @@ export const COSMETIC_PRODUCT_MEDIA_SLOTS: CosmeticSlotDef[] = [
     description: 'Recommended: 1080×1600 or 1080×1920',
   },
   {
+    value: 'cosmetic-luminous-usage-desktop',
+    label: 'Usage Guide desktop artwork',
+    aliases: ['usage-desktop'],
+    description: 'Recommended: 1200×760, 1440×900, or 1600×1000',
+  },
+  {
+    value: 'cosmetic-luminous-usage-mobile',
+    label: 'Usage Guide mobile artwork',
+    aliases: ['usage-mobile'],
+    description: 'Recommended: 1080×1600 or 1080×1920',
+  },
+  {
     value: 'cosmetic-luminous-usage-set-image',
-    label: 'Luminous Set — Usage Set Image',
+    label: 'Usage Set product image',
     aliases: ['usage-set', 'how-to-use-set'],
+    description: 'Recommended: 1200×1200 or product packshot',
   },
   {
     value: 'cosmetic-luminous-ampoule-instruction-image',
-    label: 'Luminous Set — Ampoule Instruction Diagram',
+    label: 'Ampoule instruction diagram',
     aliases: ['ampoule-instruction', 'instruction-diagram'],
+    description: 'Recommended: 1200×760 or 1080×1080',
+  },
+  {
+    value: 'cosmetic-luminous-cream-instruction-image',
+    label: 'Cream instruction diagram',
+    aliases: ['cream-instruction'],
+    description: 'Recommended: 1200×760 or 1080×1080',
   },
   {
     value: 'cosmetic-luminous-offline-experience-image',

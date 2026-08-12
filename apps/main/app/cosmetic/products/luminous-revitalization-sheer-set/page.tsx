@@ -74,7 +74,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     eyebrow: 'VAVAW SHEER SET RITUAL',
     title: 'Hướng dẫn sử dụng VAVAW Sheer Set',
     description: 'Sử dụng theo thứ tự ampoule trước, cream sau để hỗ trợ bổ sung dưỡng chất, khóa ẩm và hoàn thiện routine phục hồi tại nhà.',
-    mediaSlot: 'cosmetic-luminous-usage-set-image',
+    setMediaSlot: 'cosmetic-luminous-usage-set-image',
     instructionMediaSlot: 'cosmetic-luminous-ampoule-instruction-image',
     note: 'Ban ngày nên hoàn thiện routine bằng kem chống nắng phù hợp.',
     steps: [
