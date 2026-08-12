@@ -55,7 +55,7 @@ export function Header() {
             className="hidden md:flex"
           >
             <Link
-              href="#contact"
+              href="/contact"
               className="px-6 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
             >
               Get in Touch
@@ -90,7 +90,7 @@ export function Header() {
               </Link>
             ))}
             <Link
-              href="#contact"
+              href="/contact"
               className="block mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors text-center"
               onClick={() => setIsOpen(false)}
             >
