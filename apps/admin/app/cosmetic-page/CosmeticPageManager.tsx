@@ -3770,7 +3770,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                         <div className="p-4 border-t border-slate-200 bg-white grid grid-cols-2 gap-6">
                           
                           <div className="col-span-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-[11px] font-medium leading-relaxed">
-                            <span className="font-bold text-amber-950">Lưu ý:</span> Form này dùng chung ADN thiết kế legal/product information. Nội dung pháp lý chi tiết cần nhập theo hồ sơ từng sản phẩm, không dùng dữ liệu mẫu làm thông tin cuối cùng.
+                            <span className="font-bold text-amber-950">Lưu ý:</span> Form này dùng chung ADN thiết kế legal/product information. Không dùng dữ liệu mẫu làm thông tin pháp lý cuối cùng. Nội dung cần đối chiếu theo hồ sơ sản phẩm chính thức.
                           </div>
                           
                           {/* Header section */}
