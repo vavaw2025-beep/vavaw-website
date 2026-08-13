@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { getSortedBusinessEntries } from '@vavaw/brand-config';
+import { CrossAppLink } from './cross-app-link';
 import { useState } from 'react';
 
 function isValidHeroImageUrl(value?: string | null): value is string {
@@ -56,7 +57,7 @@ export function BusinessEcosystem() {
                 className="group flex flex-col h-full"
               >
                 {/* Media Placeholder / Image */}
-                <Link href={entry.redirectPath} prefetch={false} className="block relative w-full aspect-[4/5] overflow-hidden bg-slate-50 mb-8">
+                <CrossAppLink href={entry.redirectPath} className="block relative w-full aspect-[4/5] overflow-hidden bg-slate-50 mb-8">
                   {!isValidHeroImageUrl(entry.media.previewImage) || hasError ? (
                     <div className="absolute inset-0 bg-gradient-to-br from-[#f4f1eb] to-[#e5e5e5] flex items-center justify-center">
                       <span className="text-xs uppercase tracking-[0.2em] font-medium text-[#a3a3a3] group-hover:text-[#737373] transition-colors">
@@ -74,7 +75,7 @@ export function BusinessEcosystem() {
                   )}
                   {/* Subtle overlay on hover */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
-                </Link>
+                </CrossAppLink>
 
                 {/* Content */}
                 <div className="flex flex-col flex-1">
@@ -88,14 +89,13 @@ export function BusinessEcosystem() {
                     {entry.description}
                   </p>
                   
-                  <Link
+                  <CrossAppLink
                     href={entry.redirectPath}
-                    prefetch={false}
                     className="inline-flex items-center text-xs font-medium tracking-[0.15em] uppercase text-slate-900 hover:text-slate-600 transition-colors w-fit"
                   >
                     {entry.ctaLabel}
                     <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </Link>
+                  </CrossAppLink>
                 </div>
               </motion.div>
             );

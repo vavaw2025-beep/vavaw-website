@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import type { Brand } from '@/lib/data';
-import { resolvePublicHref } from '@/lib/unfinished-links';
+import { CrossAppLink } from './cross-app-link';
 
 interface BrandPortfolioProps {
   brands: Brand[];
@@ -96,21 +96,14 @@ export function BrandPortfolio({ brands }: BrandPortfolioProps) {
                 </p>
 
                 {/* Link */}
-                {(() => {
-                  const resolvedHref = resolvePublicHref(brand.link, '/brand-portfolio');
-                  const isFallback = resolvedHref.includes('/system-update');
-                  return (
-                    <Link
-                      href={resolvedHref}
-                      data-link-status={isFallback ? 'fallback' : 'approved'}
-                      data-original-href={isFallback ? brand.link : undefined}
-                      className="mt-4 inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
-                    >
-                      Explore
-                      <ArrowRight size={16} />
-                    </Link>
-                  );
-                })()}
+                <CrossAppLink
+                  href={brand.link}
+                  sourcePath="/brand-portfolio"
+                  className="mt-4 inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
+                >
+                  Explore
+                  <ArrowRight size={16} />
+                </CrossAppLink>
               </div>
             </motion.div>
           ))}

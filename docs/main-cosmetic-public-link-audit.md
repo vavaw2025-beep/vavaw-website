@@ -21,10 +21,18 @@
   - `/cosmetic/products/p30-boost-facial-moisturizer`
   - `/cosmetic/products/lumiglow-rosy-sheer-sunscreen`
 
-### External Allowed Domains
+### 2. External Approvals
+
 - `https://vavaw.vn`
 - `https://beauty.vavaw.vn`
 - `https://franchise.vavaw.vn`
+
+### 3. Cross-App CTA Navigation Policy
+
+- **Internal Routes**: Use Next.js `<Link>`.
+- **Cross-app VAVAW Domains**: Use standard `<a>` anchor tags. Do not use Next `<Link>` or `router.push()` for external domains to prevent Next.js from intercepting the click and causing a blank/dark loading state hang.
+- **Legacy Routes**: `/go/beauty` and `/go/franchise` are no longer approved as final CTA `href`s. They remain only as backward-compatible fallback paths.
+- **Normalization**: Any un-updated CMS row returning `/go/beauty` or `/go/franchise` will be dynamically normalized to their production domain by `resolvePublicHref` at render time.
 
 ---
 

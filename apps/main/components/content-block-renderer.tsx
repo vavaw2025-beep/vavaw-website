@@ -7,6 +7,7 @@ import { ChevronRight, ArrowLeft } from 'lucide-react';
 import type { NormalizedContentBlock } from '../lib/public-cms-types';
 import { ReactNode } from 'react';
 import { resolvePublicHref } from '@/lib/unfinished-links';
+import { CrossAppLink } from './cross-app-link';
 
 // Safety helpers
 function getString(value: unknown, fallback = ''): string {
@@ -228,37 +229,35 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
                     const resolvedHref = resolvePublicHref(rawHref, '/button');
                     const isFallback = resolvedHref.includes('/system-update');
                     return (
-                      <Link 
-                        href={resolvedHref}
-                        data-link-status={isFallback ? 'fallback' : 'approved'}
-                        data-original-href={isFallback ? rawHref : undefined}
+                      <CrossAppLink 
+                        href={rawHref}
+                        sourcePath="/button"
                         className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
                       >
                         {getString(content.buttonLabel, 'Learn More')}
-                      </Link>
+                      </CrossAppLink>
                     );
                   })() : (
-                    <Link 
+                    <CrossAppLink 
                       href="/"
                       className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
                     >
                       Back to VAVAW
-                    </Link>
+                    </CrossAppLink>
                   )}
                   {getString(content.secondaryButtonHref) && (() => {
                     const rawHref = getString(content.secondaryButtonHref);
                     const resolvedHref = resolvePublicHref(rawHref, '/secondary-button');
                     const isFallback = resolvedHref.includes('/system-update');
                     return (
-                      <Link 
-                        href={resolvedHref}
-                        data-link-status={isFallback ? 'fallback' : 'approved'}
-                        data-original-href={isFallback ? rawHref : undefined}
+                      <CrossAppLink 
+                        href={rawHref}
+                        sourcePath="/secondary-button"
                         className="group flex items-center text-sm tracking-widest uppercase text-white/70 hover:text-white transition-colors"
                       >
                         {getString(content.secondaryButtonLabel)}
                         <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                      </CrossAppLink>
                     );
                   })()}
                 </motion.div>

@@ -9,12 +9,12 @@ interface CosmeticCtaButtonProps {
   children?: React.ReactNode;
 }
 
+import { CrossAppLink } from '@/components/cross-app-link';
 import { resolvePublicHref } from '@/lib/unfinished-links';
 
 export function CosmeticCtaTracker({ label, href, className, children }: CosmeticCtaButtonProps) {
   const resolvedHref = resolvePublicHref(href, '/cosmetic');
-  const isFallback = resolvedHref.includes('/system-update');
-
+  
   const handleClick = () => {
     trackEvent('cosmetic_cta_click', {
       app: 'main',
@@ -25,14 +25,14 @@ export function CosmeticCtaTracker({ label, href, className, children }: Cosmeti
   };
 
   return (
-    <a
-      href={resolvedHref}
+    <CrossAppLink
+      href={href}
+      sourcePath="/cosmetic"
       onClick={handleClick}
       className={className}
-      data-link-status={isFallback ? 'fallback' : 'approved'}
-      data-original-href={isFallback ? href : undefined}
+      linkType="cta"
     >
       {children ?? label}
-    </a>
+    </CrossAppLink>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { CrossAppLink } from './cross-app-link';
 import { usePathname } from 'next/navigation';
 import { isValidImageUrl } from '../lib/url-guards';
 import { Menu, X } from 'lucide-react';
@@ -44,32 +45,30 @@ export function SiteHeader({ logoUrl, logoDarkUrl }: SiteHeaderProps) {
         </Link>
       </div>
       <nav className="hidden md:flex items-center gap-10 pointer-events-auto drop-shadow-sm">
-        <Link 
+        <CrossAppLink 
           href="/cosmetic" 
           className={`text-xs font-medium tracking-[0.15em] uppercase transition-colors ${pathname === '/cosmetic' ? activeColor : inactiveColor} ${textColorHover}`}
         >
           Cosmetic
-        </Link>
-        <Link 
+        </CrossAppLink>
+        <CrossAppLink 
           href="https://beauty.vavaw.vn" 
-          prefetch={false} 
           className={`${inactiveColor} ${textColorHover} text-xs font-medium tracking-[0.15em] uppercase transition-colors`}
         >
           Beauty
-        </Link>
-        <Link 
+        </CrossAppLink>
+        <CrossAppLink 
           href="https://franchise.vavaw.vn" 
-          prefetch={false} 
           className={`${inactiveColor} ${textColorHover} text-xs font-medium tracking-[0.15em] uppercase transition-colors`}
         >
           Franchise
-        </Link>
-        <Link 
+        </CrossAppLink>
+        <CrossAppLink 
           href="/contact" 
           className={`text-xs font-medium tracking-[0.15em] uppercase transition-colors ${pathname === '/contact' ? activeColor : inactiveColor} ${textColorHover}`}
         >
           Contact
-        </Link>
+        </CrossAppLink>
       </nav>
 
       {/* Mobile Menu Toggle */}
@@ -84,36 +83,34 @@ export function SiteHeader({ logoUrl, logoDarkUrl }: SiteHeaderProps) {
       {/* Mobile Dropdown Nav */}
       {mobileMenuOpen && (
         <nav className="absolute top-full left-0 right-0 bg-[#050505]/95 backdrop-blur-xl border-t border-white/10 p-6 flex flex-col gap-6 md:hidden pointer-events-auto shadow-2xl">
-          <Link 
+          <CrossAppLink 
             href="/cosmetic" 
             onClick={() => setMobileMenuOpen(false)}
             className={`flex items-center h-11 px-4 text-sm font-medium tracking-[0.2em] uppercase ${pathname === '/cosmetic' ? 'text-white bg-white/5' : 'text-[#F8F7F2]/70 hover:text-white hover:bg-white/5'}`}
           >
             Cosmetic
-          </Link>
-          <Link 
+          </CrossAppLink>
+          <CrossAppLink 
             href="https://beauty.vavaw.vn" 
-            prefetch={false}
             onClick={() => setMobileMenuOpen(false)} 
             className="flex items-center h-11 px-4 text-[#F8F7F2]/70 hover:text-white hover:bg-white/5 text-sm font-medium tracking-[0.2em] uppercase"
           >
             Beauty
-          </Link>
-          <Link 
+          </CrossAppLink>
+          <CrossAppLink 
             href="https://franchise.vavaw.vn" 
-            prefetch={false}
             onClick={() => setMobileMenuOpen(false)} 
             className="flex items-center h-11 px-4 text-[#F8F7F2]/70 hover:text-white hover:bg-white/5 text-sm font-medium tracking-[0.2em] uppercase"
           >
             Franchise
-          </Link>
-          <Link 
+          </CrossAppLink>
+          <CrossAppLink 
             href="/contact" 
             onClick={() => setMobileMenuOpen(false)}
             className={`flex items-center h-11 px-4 text-sm font-medium tracking-[0.2em] uppercase ${pathname === '/contact' ? 'text-white bg-white/5' : 'text-[#F8F7F2]/70 hover:text-white hover:bg-white/5'}`}
           >
             Contact
-          </Link>
+          </CrossAppLink>
         </nav>
       )}
     </header>
