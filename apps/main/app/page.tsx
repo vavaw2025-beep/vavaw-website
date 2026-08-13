@@ -39,18 +39,20 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Checks if a main landing content block is active for public rendering.
- * If block is not defined in DB, defaults to fallback boolean.
+ * Strictly checks whether a main block is active.
+ * If block is not present in CMS blockMap, returns fallbackWhenMissing (preserves static fallback).
+ * If block is present in CMS blockMap, returns its exact is_active state.
  */
 function isMainBlockVisible(
-  blocks: any[] | null | undefined,
+  blockMap: Map<string, { isActive?: boolean; is_active?: boolean }>,
   blockType: string,
-  fallback = true
+  fallbackWhenMissing = true
 ): boolean {
-  if (!blocks || blocks.length === 0) return fallback;
-  const block = blocks.find((b: any) => b.blockType === blockType || b.block_type === blockType);
-  if (!block) return fallback;
-  return block.isActive === true || block.is_active === true;
+  if (!blockMap.has(blockType)) {
+    return fallbackWhenMissing;
+  }
+  const block = blockMap.get(blockType);
+  return block?.isActive === true || block?.is_active === true;
 }
 
 export default async function HomePage() {
@@ -58,33 +60,29 @@ export default async function HomePage() {
   const cms = await loadPublicHomeCms(isPreview);
   const { blocks } = await loadPublicContentBlocks({ siteKey: 'main', pagePath: '/', isPreview });
 
-  // Section visibility checks mapped to main content blocks
-  const showEcosystem = isMainBlockVisible(blocks, 'main-ecosystem-intro', true);
-  const showFinalCta = isMainBlockVisible(blocks, 'main-final-cta', true);
-
-  const finalCtaBlock = blocks?.find((b: any) => (b.blockType === 'main-final-cta' || b.block_type === 'main-final-cta') && (b.isActive || b.is_active));
-  const ctaContent = (finalCtaBlock?.content as any) || null;
-
-  const showCmsDebug = process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
-
-  if (showCmsDebug) {
-    console.info('[main cms source]', {
-      cmsSource: cms.source,
-      hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
-      hasAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
-      rawHeroRowsCount: cms.rawHeroRowsCount ?? 'n/a',
-      activeHeroRowsCount: cms.activeHeroRowsCount ?? 'n/a',
-      normalizedSlidesCount: cms.heroSlides.length,
-      showEcosystem,
-      showFinalCta,
-      fallbackUsed: cms.fallbackUsed ?? false,
-      fallbackReason: cms.fallbackReason ?? null,
-      error: cms.error ?? null,
+  // Map blocks by blockType
+  const blockMap = new Map<string, any>();
+  if (Array.isArray(blocks)) {
+    blocks.forEach((b: any) => {
+      const type = b.blockType || b.block_type;
+      if (type) blockMap.set(type, b);
     });
   }
 
+  // Strictly evaluate section visibility flags
+  const showEcosystem = isMainBlockVisible(blockMap, 'main-ecosystem-intro', true);
+  const showFinalCta = isMainBlockVisible(blockMap, 'main-final-cta', true);
+
+  const finalCtaBlock = blockMap.get('main-final-cta');
+  const isCtaActive = finalCtaBlock ? (finalCtaBlock.isActive === true || finalCtaBlock.is_active === true) : true;
+  const ctaContent = isCtaActive && finalCtaBlock?.content ? (finalCtaBlock.content as any) : null;
+
   return (
-    <main>
+    <main
+      data-main-landing-cms-block-count={blocks?.length ?? 0}
+      data-main-ecosystem-intro-state={blockMap.has('main-ecosystem-intro') ? (showEcosystem ? 'visible' : 'hidden') : 'missing'}
+      data-main-ecosystem-visible={showEcosystem ? 'true' : 'false'}
+    >
       <BrandHero
         slides={cms.heroSlides}
         dataSource={cms.source}

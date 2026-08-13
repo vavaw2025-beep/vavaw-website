@@ -758,7 +758,7 @@ export function MainLandingManager({
                     <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                       <span>
                         {block.block_type === 'main-ecosystem-intro'
-                          ? 'Điều khiển section portfolio 3 thương hiệu trên trang chủ.'
+                          ? 'Điều khiển section portfolio 3 thương hiệu trên trang chủ. Nếu đã ẩn nhưng public vẫn hiện, hãy kiểm tra vavaw-main deployment/revalidation.'
                           : block.block_type === 'main-final-cta'
                           ? 'Điều khiển CTA cuối trang chủ.'
                           : block.block_type === 'main-brand-story'

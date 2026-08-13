@@ -48,18 +48,14 @@ export async function loadPublicContentBlocks({
   }
 
   try {
-    let query = supabase
+    // Fetch ALL blocks for siteKey and pagePath (both active and inactive)
+    // so caller can accurately check is_active flag instead of assuming fallback when inactive.
+    const { data, error } = await supabase
       .from('content_blocks')
       .select('*')
       .eq('site_key', 'main')
       .eq('page_path', pagePath)
       .order('sort_order', { ascending: true });
-
-    if (!isPreview) {
-      query = query.eq('is_active', true);
-    }
-
-    const { data, error } = await query;
 
     if (error) {
       console.error(`Error loading content blocks for ${siteKey}${pagePath}:`, error);
@@ -72,7 +68,6 @@ export async function loadPublicContentBlocks({
     }
 
     if (!data || data.length === 0) {
-      console.log(`[loadPublicContentBlocks] No blocks found for ${siteKey}${pagePath}`);
       return {
         blocks: [],
         source: 'static',
@@ -80,40 +75,24 @@ export async function loadPublicContentBlocks({
       };
     }
 
-    const activeBlocks = data.filter(b => b.is_active);
-    
-    // In this updated query, data should already be filtered by is_active if not in preview mode.
-    // We compute lengths for debug badge.
     const rawCount = data.length;
+    const activeBlocks = data.filter(b => b.is_active);
     const activeCount = activeBlocks.length;
 
-    const blocksToReturn = isPreview ? data : activeBlocks;
-    
-    if (blocksToReturn.length === 0 && !isPreview) {
-       return {
-         blocks: [],
-         source: 'static',
-         rawCount,
-         activeCount,
-         fallbackReason: 'All returned blocks were inactive'
-       };
-    }
-
-    const normalizedBlocks: NormalizedContentBlock[] = blocksToReturn.map(block => {
-      // Safely resolve the section key according to actual DB schema
+    const normalizedBlocks: NormalizedContentBlock[] = data.map(block => {
       const rawSectionKey = block.block_type ?? (block as any).blockType ?? block.content?.sectionKey ?? '';
-      
+
       return {
         id: block.id,
         siteKey: block.site_key,
         pagePath: block.page_path,
-        blockType: block.block_type, // The DB column block_type
+        blockType: block.block_type,
         content: {
           ...(block.content as Record<string, unknown>),
-          sectionKey: rawSectionKey // Inject it safely so mapping doesn't break
+          sectionKey: rawSectionKey
         },
         sortOrder: block.sort_order,
-        isActive: block.is_active,
+        isActive: Boolean(block.is_active),
       };
     });
 
