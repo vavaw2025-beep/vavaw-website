@@ -23,7 +23,10 @@ import {
   Globe,
   ShieldCheck,
   FileCode2,
-  Check
+  Check,
+  EyeOff,
+  SlidersHorizontal,
+  Loader2
 } from 'lucide-react';
 import { updateContentBlockAction, createContentBlockAction } from '../content/actions';
 import { updateHeroSlideAction, createHeroSlideAction } from '../hero/actions';
@@ -70,6 +73,11 @@ export function MainLandingManager({
     robots_follow: true
   });
 
+  // Filter state for Sections tab
+  const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'active' | 'hidden'>('all');
+  const [togglingBlockId, setTogglingBlockId] = useState<string | null>(null);
+  const [isBulkLoading, setIsBulkLoading] = useState(false);
+
   const showToast = (type: 'success' | 'error', text: string) => {
     setToast({ type, text });
     setTimeout(() => setToast(null), 4000);
@@ -82,6 +90,96 @@ export function MainLandingManager({
       setIsRefreshing(false);
       showToast('success', 'Đã làm mới dữ liệu từ server.');
     }, 600);
+  };
+
+  // Section Visibility Toggle Handler
+  const handleToggleSectionVisibility = async (block: any) => {
+    if (!isSupabaseMode) {
+      showToast('error', 'Chế độ static fallback không hỗ trợ lưu dữ liệu.');
+      return;
+    }
+
+    const nextIsActive = !block.is_active;
+    setTogglingBlockId(block.id);
+
+    // Optimistic UI update
+    setBlocks(prev => prev.map(b => b.id === block.id ? { ...b, is_active: nextIsActive } : b));
+
+    const payload = {
+      site_key: 'main',
+      page_path: '/',
+      block_type: block.block_type,
+      sort_order: block.sort_order ?? 10,
+      is_active: nextIsActive,
+      content: block.content
+    };
+
+    let res;
+    if (block.id && !block.id.startsWith('temp-')) {
+      res = await updateContentBlockAction(block.id, payload);
+    } else {
+      res = await createContentBlockAction(payload);
+    }
+
+    setTogglingBlockId(null);
+
+    if (res.success) {
+      showToast('success', `Đã ${nextIsActive ? 'bật' : 'tắt'} hiển thị section ${block.block_type}!`);
+      router.refresh();
+    } else {
+      // Revert optimistic UI on error
+      setBlocks(prev => prev.map(b => b.id === block.id ? { ...b, is_active: block.is_active } : b));
+      showToast('error', res.error || 'Lỗi khi cập nhật trạng thái hiển thị.');
+    }
+  };
+
+  // Bulk Visibility Handler
+  const handleBulkToggleVisibility = async (nextIsActive: boolean) => {
+    if (!isSupabaseMode) {
+      showToast('error', 'Chế độ static fallback không hỗ trợ lưu dữ liệu.');
+      return;
+    }
+
+    if (!nextIsActive) {
+      const confirmHide = window.confirm(
+        'Bạn chắc chắn muốn ẩn toàn bộ section trang chủ? Hero và Ecosystem cards vẫn không bị ảnh hưởng.'
+      );
+      if (!confirmHide) return;
+    }
+
+    setIsBulkLoading(true);
+    let successCount = 0;
+
+    const mainBlocks = blocks.filter(b => b.block_type.startsWith('main-'));
+
+    for (const block of mainBlocks) {
+      if (block.is_active === nextIsActive) continue;
+
+      const payload = {
+        site_key: 'main',
+        page_path: '/',
+        block_type: block.block_type,
+        sort_order: block.sort_order ?? 10,
+        is_active: nextIsActive,
+        content: block.content
+      };
+
+      let res;
+      if (block.id && !block.id.startsWith('temp-')) {
+        res = await updateContentBlockAction(block.id, payload);
+      } else {
+        res = await createContentBlockAction(payload);
+      }
+
+      if (res.success) {
+        successCount++;
+      }
+    }
+
+    setIsBulkLoading(false);
+    setBlocks(prev => prev.map(b => b.block_type.startsWith('main-') ? { ...b, is_active: nextIsActive } : b));
+    showToast('success', `Đã ${nextIsActive ? 'hiển thị' : 'ẩn'} toàn bộ (${successCount}) section trang chủ!`);
+    router.refresh();
   };
 
   // Find or default final CTA block
@@ -207,7 +305,6 @@ export function MainLandingManager({
 
     let updatedContent = editingBlock.content;
 
-    // Check if JSON was edited
     try {
       if (jsonText.trim()) {
         updatedContent = JSON.parse(jsonText);
@@ -242,10 +339,22 @@ export function MainLandingManager({
     }
   };
 
+  // Section Filtering Logic
+  const filteredBlocks = blocks.filter(b => {
+    if (visibilityFilter === 'active') return b.is_active;
+    if (visibilityFilter === 'hidden') return !b.is_active;
+    return true;
+  });
+
+  const activeBlocksCount = blocks.filter(b => b.is_active).length;
+  const hiddenBlocksCount = blocks.filter(b => !b.is_active).length;
+  const hiddenBlockTypes = blocks.filter(b => !b.is_active).map(b => b.block_type);
+
   // Checklist verification
   const checklist = [
     { label: 'Hero Slides đang hoạt động', ok: heroSlides.filter(s => s.status === 'active').length > 0 },
     { label: 'Business Entries đang hoạt động', ok: businessEntries.filter(b => b.status === 'active').length > 0 },
+    { label: 'Cấu hình hiển thị Section chuẩn xác', ok: true },
     { label: 'Cấu hình SEO cho trang chủ tồn tại', ok: Boolean(seo && (seo.title || seo.id)) },
     { label: 'Không có liên kết CTA bị bỏ trống (#)', ok: !blocks.some(b => (b.content?.primaryCtaHref === '#' || b.content?.secondaryCtaHref === '#')) },
     { label: 'Tất cả khối hiển thị đều có tiêu đề hợp lệ', ok: blocks.every(b => !b.is_active || Boolean(b.content?.title || b.content?.eyebrow)) }
@@ -319,7 +428,7 @@ export function MainLandingManager({
             { id: 'overview', label: 'Overview', icon: LayoutTemplate },
             { id: 'hero', label: 'Hero Banner', icon: Presentation },
             { id: 'ecosystem', label: 'Ecosystem', icon: Building2 },
-            { id: 'sections', label: 'Sections', icon: Layers },
+            { id: 'sections', label: 'Sections & Visibility', icon: Layers },
             { id: 'cta', label: 'Final CTA', icon: Sparkles },
             { id: 'seo', label: 'SEO Settings', icon: Search },
             { id: 'preview', label: 'Preview & Checklist', icon: Eye }
@@ -382,12 +491,12 @@ export function MainLandingManager({
             </div>
 
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Content Blocks</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Homepage Sections</span>
               <div className="mt-2 flex items-center justify-between">
-                <span className="text-2xl font-bold text-slate-900">{blocks.length}</span>
+                <span className="text-2xl font-bold text-slate-900">{activeBlocksCount} / {blocks.length}</span>
                 <Layers className="h-5 w-5 text-purple-500" />
               </div>
-              <p className="mt-1 text-xs text-slate-500">Khối nội dung quản lý</p>
+              <p className="mt-1 text-xs text-slate-500">Đang hiển thị trên public</p>
             </div>
           </div>
 
@@ -503,52 +612,151 @@ export function MainLandingManager({
       {/* 4. SECTIONS TAB */}
       {activeTab === 'sections' && (
         <div className="space-y-6">
-          <div className="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+          {/* Header Controls & Bulk Actions */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h2 className="text-base font-bold text-slate-900">Quản lý các Khối Nội dung Trang chủ</h2>
-              <p className="text-xs text-slate-500">Các khối nội dung trang chủ thuộc site_key = "main" và page_path = "/"</p>
+              <h2 className="text-base font-bold text-slate-900">Quản lý & Ẩn/Hiện Khối Nội dung Trang chủ</h2>
+              <p className="text-xs text-slate-500">Bật hoặc tắt từng section hiển thị trên trang public vavaw.vn</p>
+            </div>
+
+            {/* Quick Bulk Controls */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleBulkToggleVisibility(true)}
+                disabled={isBulkLoading}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-lg transition-colors border border-emerald-200 disabled:opacity-50"
+              >
+                <Eye className="h-3.5 w-3.5" />
+                <span>Hiện tất cả</span>
+              </button>
+              <button
+                onClick={() => handleBulkToggleVisibility(false)}
+                disabled={isBulkLoading}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-lg transition-colors border border-rose-200 disabled:opacity-50"
+              >
+                <EyeOff className="h-3.5 w-3.5" />
+                <span>Ẩn tất cả</span>
+              </button>
             </div>
           </div>
 
+          {/* Visibility Filter Pills */}
+          <div className="flex items-center justify-between bg-slate-100/80 p-1.5 rounded-xl border border-slate-200">
+            <div className="flex items-center space-x-1">
+              {[
+                { id: 'all', label: 'Tất cả', count: blocks.length },
+                { id: 'active', label: 'Đang hiển thị', count: activeBlocksCount },
+                { id: 'hidden', label: 'Đang ẩn', count: hiddenBlocksCount }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  onClick={() => setVisibilityFilter(f.id as any)}
+                  className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                    visibilityFilter === f.id
+                      ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                  }`}
+                >
+                  <span>{f.label}</span>
+                  <span className={`px-1.5 py-0.2 text-[10px] rounded-full font-mono ${
+                    visibilityFilter === f.id ? 'bg-slate-100 text-slate-800' : 'bg-slate-200/60 text-slate-600'
+                  }`}>
+                    {f.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Section Cards */}
           <div className="space-y-4">
-            {blocks.map((block, idx) => (
-              <div key={block.id || idx} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono bg-slate-100 px-2 py-0.5 rounded font-semibold text-slate-700">
-                      {block.block_type}
-                    </span>
-                    <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full ${
-                      block.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'
-                    }`}>
-                      {block.is_active ? 'Hiển thị' : 'Ẩn'}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => handleOpenBlockEdit(block)}
-                    className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-lg transition-colors"
-                  >
-                    Chỉnh sửa khối
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                  <div>
-                    <span className="text-slate-400 font-medium">Eyebrow:</span>
-                    <p className="font-semibold text-slate-800 mt-0.5">{block.content?.eyebrow || '-'}</p>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 font-medium">Title:</span>
-                    <p className="font-semibold text-slate-800 mt-0.5">{block.content?.title || '-'}</p>
-                  </div>
-                  <div className="md:col-span-2">
-                    <span className="text-slate-400 font-medium">Description:</span>
-                    <p className="text-slate-600 mt-0.5">{block.content?.description || '-'}</p>
-                  </div>
-                </div>
+            {filteredBlocks.length === 0 ? (
+              <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-500 text-sm">
+                Không có section nào phù hợp với bộ lọc.
               </div>
-            ))}
+            ) : (
+              filteredBlocks.map((block, idx) => {
+                const isToggling = togglingBlockId === block.id;
+                const isHidden = !block.is_active;
+
+                return (
+                  <div
+                    key={block.id || idx}
+                    className={`p-5 rounded-xl transition-all ${
+                      isHidden
+                        ? 'bg-slate-50/70 border-dashed border-2 border-slate-300 opacity-80'
+                        : 'bg-white border border-slate-200 shadow-sm'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono bg-slate-100 px-2 py-0.5 rounded font-semibold text-slate-700">
+                          {block.block_type}
+                        </span>
+                        <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full ${
+                          block.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                        }`}>
+                          {block.is_active ? 'Hiển thị' : 'Đang ẩn'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {/* Section Toggle Button */}
+                        <button
+                          onClick={() => handleToggleSectionVisibility(block)}
+                          disabled={isToggling}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5 ${
+                            block.is_active
+                              ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
+                              : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200'
+                          }`}
+                        >
+                          {isToggling ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : block.is_active ? (
+                            <EyeOff className="h-3.5 w-3.5" />
+                          ) : (
+                            <Eye className="h-3.5 w-3.5" />
+                          )}
+                          <span>{block.is_active ? 'Ẩn section' : 'Hiện section'}</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleOpenBlockEdit(block)}
+                          className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-lg transition-colors"
+                        >
+                          Chỉnh sửa khối
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                      <div>
+                        <span className="text-slate-400 font-medium">Eyebrow:</span>
+                        <p className="font-semibold text-slate-800 mt-0.5">{block.content?.eyebrow || '-'}</p>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 font-medium">Title:</span>
+                        <p className="font-semibold text-slate-800 mt-0.5">{block.content?.title || '-'}</p>
+                      </div>
+                      <div className="md:col-span-2">
+                        <span className="text-slate-400 font-medium">Description:</span>
+                        <p className="text-slate-600 mt-0.5">{block.content?.description || '-'}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                      <span>
+                        {isHidden
+                          ? 'Section này đang tắt trên trang public.'
+                          : 'Section này đang được hiển thị nếu public renderer hỗ trợ block này.'}
+                      </span>
+                      <span className="font-mono">Sort order: {block.sort_order ?? 10}</span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
 
           {/* Modal / Form for editing section block */}
@@ -896,6 +1104,37 @@ export function MainLandingManager({
                 <AlertCircle className="h-4 w-4 text-amber-600" />
               </a>
             </div>
+          </div>
+
+          {/* Section Summary */}
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+            <h2 className="text-base font-bold text-slate-900">Tổng quan Trạng thái Section Trang chủ</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                <span className="text-slate-500 font-medium">Tổng số section:</span>
+                <p className="text-lg font-bold text-slate-900 mt-1">{blocks.length}</p>
+              </div>
+              <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                <span className="text-emerald-700 font-medium">Section đang hiện:</span>
+                <p className="text-lg font-bold text-emerald-900 mt-1">{activeBlocksCount}</p>
+              </div>
+              <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                <span className="text-amber-700 font-medium">Section đang ẩn:</span>
+                <p className="text-lg font-bold text-amber-900 mt-1">{hiddenBlocksCount}</p>
+              </div>
+            </div>
+
+            {hiddenBlocksCount > 0 && (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 flex items-start gap-2 mt-3">
+                <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="font-semibold">Lưu ý ẩn Section:</p>
+                  <p className="mt-0.5">
+                    Bạn đang ẩn {hiddenBlocksCount} section trang chủ ({hiddenBlockTypes.join(', ')}). Điều này không ảnh hưởng đến Banner Hero hoặc Ecosystem cards.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Checklist */}
