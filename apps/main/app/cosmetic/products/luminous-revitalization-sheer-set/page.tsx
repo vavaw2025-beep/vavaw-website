@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+export const revalidate = 60;
 import { Suspense } from 'react';
 import { draftMode } from 'next/headers';
 import { loadPublicCosmeticMedia } from '@/lib/load-public-cosmetic-media';
@@ -229,5 +230,6 @@ export default async function LuminousProductLandingPage() {
     <LuminousSetLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} canonicalPath="/cosmetic/products/luminous-revitalization-sheer-set" />
   );
 }
+
 
 

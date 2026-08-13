@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { resolvePublicHref } from '@/lib/unfinished-links';
+import { shouldUseDocumentNavigation } from '@/lib/navigation-policy';
 
 export type CrossAppLinkProps = {
   href: string;
@@ -45,9 +46,18 @@ export const CrossAppLink = React.forwardRef<HTMLAnchorElement, CrossAppLinkProp
   else if (isExternalVavaw) linkStatus = 'external-vavaw';
 
   const dataOriginalHref = href !== resolvedHref ? href : undefined;
+  
+  const useDocumentNavigation = shouldUseDocumentNavigation(resolvedHref);
+  let navMode = 'external';
+  
+  if (useDocumentNavigation) {
+    navMode = 'document';
+  } else if (isInternal || isHash || isFallback) {
+    navMode = 'next-link';
+  }
 
-  // 3 & 5. Internal links and fallbacks use Next Link
-  if (isInternal || isHash || isFallback) {
+  // 3 & 5. Internal links (that don't need document reload) use Next Link
+  if (navMode === 'next-link') {
     return (
       <Link
         href={resolvedHref}
@@ -59,6 +69,7 @@ export const CrossAppLink = React.forwardRef<HTMLAnchorElement, CrossAppLinkProp
         data-link-status={linkStatus}
         data-original-href={dataOriginalHref}
         data-final-href={resolvedHref}
+        data-navigation-mode={navMode}
         prefetch={false}
         ref={ref}
       >
@@ -67,7 +78,10 @@ export const CrossAppLink = React.forwardRef<HTMLAnchorElement, CrossAppLinkProp
     );
   }
 
-  // 4. External trusted VAVAW domains use standard <a> tag
+  // 4. External trusted VAVAW domains, CMS-heavy routes, and fallback pages use standard <a> tag.
+  // We use document navigation (native <a> tag) for CMS-heavy routes to bypass Next.js 
+  // SPA hydration and RSC state, ensuring the server-rendered HTML is immediately 
+  // presented without stale client-side lags or rendering freezes.
   return (
     <a
       href={resolvedHref}
@@ -79,6 +93,7 @@ export const CrossAppLink = React.forwardRef<HTMLAnchorElement, CrossAppLinkProp
       data-link-status={linkStatus}
       data-original-href={dataOriginalHref}
       data-final-href={resolvedHref}
+      data-navigation-mode={navMode}
       ref={ref}
     >
       {children}

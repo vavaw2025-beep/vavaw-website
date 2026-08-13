@@ -90,24 +90,24 @@ export function UnavailableLandingPage({ reason = "default", fromPath }: Unavail
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3.5 pt-4">
-              <Link
+              <a
                 href="/"
                 className="h-[48px] px-7 flex items-center justify-center bg-[#050A5C] hover:bg-[#101A8C] text-white text-xs font-bold tracking-[0.15em] uppercase transition-colors rounded-md shadow-lg shadow-indigo-950/50"
               >
                 Quay về VAVAW
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/contact?type=general_inquiry&source=system_update"
                 className="h-[48px] px-7 flex items-center justify-center border border-white/20 hover:bg-white/10 text-slate-200 text-xs font-medium tracking-[0.15em] uppercase transition-colors rounded-md"
               >
                 Liên hệ tư vấn
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/cosmetic"
                 className="h-[48px] px-7 flex items-center justify-center border border-transparent hover:border-white/10 text-slate-400 hover:text-white text-xs font-medium tracking-[0.15em] uppercase transition-colors rounded-md"
               >
                 Khám phá VAVAW Cosmetic
-              </Link>
+              </a>
             </div>
 
           </div>

@@ -35,6 +35,19 @@
 
 ---
 
+## 4. Navigation Mode QA
+
+To prevent stale client-side rendering (React Server Components caching) or overlay hangs, navigation is split by policy:
+
+- **CMS-Heavy / System Routes (Document Navigation)**:
+  - `/system-update` uses document navigation.
+  - `/cosmetic/products/*` uses document navigation.
+  - Beauty/Franchise fallback links use document navigation.
+- **Lightweight Routes (Next Link)**:
+  - `/contact` can use Next Link or document navigation.
+
+---
+
 ## Static Link Audit Table
 
 | Page / Component | CMS / Hardcoded | Link Label / Context | Current Href | Link Type | Status | Recommended Final Href | Notes |

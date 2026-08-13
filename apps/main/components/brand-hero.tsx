@@ -137,26 +137,43 @@ export function BrandHero({ slides, dataSource, fallbackUsed, fallbackReason, ra
   const handleRouteTransition = (url: string | null | undefined, title: string) => {
     if (!url || transitionState.active) return;
     
-    // Respect user's motion preferences
-    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isCosmetic = title.toLowerCase().includes('cosmetic') || url.includes('cosmetic');
-    const delay = prefersReducedMotion ? 50 : (isCosmetic ? 260 : 420);
-
-    setTransitionState({ active: true, url, brand: title.toLowerCase() });
-    
     let targetUrl = url;
+    const isCosmetic = title.toLowerCase().includes('cosmetic') || targetUrl.includes('cosmetic');
     if (isCosmetic) {
       targetUrl = '/cosmetic?from=main';
     } else if (targetUrl.startsWith('/go/') && !targetUrl.includes('?')) {
       targetUrl = `${targetUrl}?from=main`;
     }
 
+    // Resolve URL through our policy to get the final fallback if any
+    const finalUrl = targetUrl.startsWith('/') || targetUrl.startsWith('http') 
+      ? targetUrl 
+      : `/${targetUrl}`;
+
+    const isSystemUpdate = finalUrl.includes('/system-update');
+    const isDocumentNav = isSystemUpdate || isCosmetic || finalUrl === '/'; // CMS heavy
+    const isExternal = finalUrl.startsWith('http');
+
+    if (isDocumentNav || isExternal) {
+      // Document navigation: skip overlay, navigate immediately
+      window.location.href = finalUrl;
+      return;
+    }
+
+    // Same-app Next Link navigation: trigger overlay
+    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const delay = prefersReducedMotion ? 50 : 260;
+
+    setTransitionState({ active: true, url: finalUrl, brand: title.toLowerCase() });
+    
+    // Safety timeout to clear overlay
+    const overlayTimeout = setTimeout(() => {
+      setTransitionState({ active: false, url: null, brand: null });
+    }, 2500);
+
     setTimeout(() => {
-      if (isCosmetic || (targetUrl.startsWith('/') && !targetUrl.startsWith('/go/'))) {
-        router.push(targetUrl);
-      } else {
-        window.location.href = targetUrl;
-      }
+      router.push(finalUrl);
+      // We rely on the timeout or a route change complete event to clear the overlay.
     }, delay);
   };
 
