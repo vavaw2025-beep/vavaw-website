@@ -42,7 +42,7 @@ function deriveLegacyRitual(items: any[]) {
   });
 
   return {
-    title: "Daily Clinical Skincare Routine",
+    title: "Nghi thức chăm sóc da lâm sàng hàng ngày",
     description: "A balanced clinical routine derived from your customized skincare steps.",
     whyThisFits: "Phù hợp cho chu trình phục hồi da cơ bản hằng ngày, duy trì độ mịn màng và cân bằng tự nhiên của hàng rào bảo vệ da.",
     morning: morning.length > 0 ? morning : ["P30 Boost Facial Hydrating Toner", "P30 Boost Facial Moisturizer"],
@@ -186,7 +186,7 @@ export function SkinRitualFinder({ dailyRitual, products, cosmeticMedia }: SkinR
             {content.title || 'Find Your Clinical Ritual'}
           </h2>
           <p className="text-sm md:text-base text-[#6B7280] font-light max-w-2xl mx-auto leading-relaxed">
-            {content.description || 'Answer a few quick questions to discover a Korean clinical skincare ritual designed for your skin stage and concern.'}
+            {content.description || 'Trả lời vài câu hỏi để khám phá nghi thức chăm sóc da lâm sàng Hàn Quốc được thiết kế cho tình trạng và vấn đề da của bạn.'}
           </p>
         </div>
 

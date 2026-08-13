@@ -15,15 +15,20 @@ import {
   isCosmeticVideoMediaSlot,
 } from './cosmetic-slots';
 import { 
+  Eye, 
   Settings, 
-  Layers, 
+  Save, 
+  Image as ImageIcon,
+  CheckCircle2,
+  AlertCircle,
+  Video,
+  ExternalLink,
+  Layers,
+  AlertTriangle,
   Package, 
   ListPlus, 
   Clock, 
-  Image as ImageIcon, 
-  Eye, 
   Check, 
-  AlertCircle, 
   Trash2, 
   ArrowUp, 
   ArrowDown, 
@@ -31,10 +36,9 @@ import {
   Upload, 
   FolderOpen,
   Sparkles,
-  ExternalLink,
-  Video,
   ChevronDown
 } from 'lucide-react';
+import { COSMETIC_VI_COPY_MAP, findEnglishCopyCandidates } from '@vavaw/brand-config';
 
 interface CosmeticPageManagerProps {
   initialBlocks: ContentBlockRecord[];
@@ -50,7 +54,7 @@ const REQUIRED_SLOTS = [
   { id: 'cosmetic-product-p30-moisturizer', name: 'Kem dưỡng ẩm P30 Moisturizer', size: '1200x1500' },
   { id: 'cosmetic-product-p30-toner', name: 'Toner cân bằng P30 Toner', size: '1200x1500' },
   { id: 'cosmetic-product-lumiglow-sunscreen', name: 'Ảnh kem chống nắng Lumiglow Rosy Sheer Sunscreen', size: '1200x1500' },
-  { id: 'cosmetic-premium-program', name: 'Premium Program / Spa Clinic', size: '1800x1200' },
+  { id: 'cosmetic-premium-program', name: 'Chương trình cao cấp / Spa Clinic', size: '1800x1200' },
   { id: 'cosmetic-gallery-ritual-panel', name: 'Ảnh banner Ritual Panel', size: '1800x1200' },
   { id: 'cosmetic-gallery-product-set', name: 'Thư viện - Bộ sản phẩm overview', size: '1600x2000' },
   { id: 'cosmetic-gallery-texture', name: 'Thư viện - Kết cấu sản phẩm', size: '1600x1600' },
@@ -77,7 +81,7 @@ const BLOCK_NAMES: Record<string, string> = {
   'cosmetic-product-cards': 'Công thức lâm sàng',
   'cosmetic-daily-ritual': 'Quy trình chăm sóc',
   'cosmetic-ingredients': 'Thành phần hoạt chất',
-  'cosmetic-premium-program': 'Premium Program',
+  'cosmetic-premium-program': 'Chương trình cao cấp',
   'cosmetic-editorial-gallery': 'Thư viện hình ảnh',
   'cosmetic-final-cta': 'CTA cuối trang'
 };
@@ -103,7 +107,7 @@ const ALLOWED_ICONS = [
 
 
 const DEFAULT_LUMINOUS_PRODUCT_DETAIL_FORM_LEGAL = {
-  eyebrow: "PRODUCT INFORMATION",
+  eyebrow: "THÔNG TIN SẢN PHẨM",
   title: "LUMINOUS REVITALIZATION SHEER SET",
   description: "Thông tin sản phẩm được trình bày để khách hàng tham khảo trước khi nhận tư vấn routine phù hợp.",
   legalInfo: [
@@ -161,7 +165,7 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vavaw-main.vercel.app';
   const router = useRouter();
   const [blocks, setBlocks] = useState<ContentBlockRecord[]>(initialBlocks);
-  const [activeTab, setActiveTab] = useState<'overview' | 'sections' | 'products' | 'ingredients' | 'ritual' | 'images' | 'preview' | 'landings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'sections' | 'products' | 'ingredients' | 'ritual' | 'images' | 'preview' | 'landings' | 'qa'>('overview');
   
   // Modals & pickers
   const [editingBlock, setEditingBlock] = useState<ContentBlockRecord | null>(null);
@@ -1651,6 +1655,15 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           <Layers className="h-4 w-4" />
           <span>Landing sản phẩm</span>
         </button>
+        <button
+          onClick={() => setActiveTab('qa')}
+          className={`py-3 px-5 text-sm font-semibold border-b-2 whitespace-nowrap flex items-center gap-2 transition ${
+            activeTab === 'qa' ? 'border-amber-600 text-amber-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+          }`}
+        >
+          <AlertTriangle className="h-4 w-4" />
+          <span>Kiểm tra ngôn ngữ</span>
+        </button>
         </div>
       </div>
 
@@ -2613,6 +2626,92 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
           </div>
         </div>
       )}
+
+      {/* ─── TAB CONTENT 9: COPY QA ─────────────────────────────────────── */}
+      {activeTab === 'qa' && (() => {
+        let allCandidates: Array<{ path: string; blockType: string; id: string; text: string; match: string | null }> = [];
+        blocks.forEach(b => {
+          if (!b.content) return;
+          const candidates = findEnglishCopyCandidates(b.content);
+          candidates.forEach(cand => {
+            allCandidates.push({
+              path: b.page_path,
+              blockType: b.block_type,
+              id: b.id,
+              text: cand.text,
+              match: cand.match
+            });
+          });
+        });
+
+        return (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex justify-between items-start">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-amber-500" />
+                  Kiểm tra ngôn ngữ (Copy QA)
+                </h2>
+                <p className="text-sm text-slate-500 max-w-2xl mt-1">
+                  Nội dung public có thể đến từ CMS. Nếu code fallback đã dịch nhưng public vẫn hiện tiếng Anh, hãy kiểm tra tab này và chạy migration/cập nhật CMS.
+                </p>
+              </div>
+              <div className="bg-amber-50 px-4 py-2 rounded-lg border border-amber-200">
+                <span className="text-amber-800 font-semibold text-sm">
+                  Phát hiện: {allCandidates.length} chuỗi
+                </span>
+              </div>
+            </div>
+
+            {allCandidates.length === 0 ? (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-8 text-center flex flex-col items-center">
+                <CheckCircle2 className="h-10 w-10 text-emerald-500 mb-3" />
+                <h3 className="text-emerald-800 font-bold">Không tìm thấy nội dung tiếng Anh sót lại</h3>
+                <p className="text-emerald-600 text-sm mt-1">Tất cả copy đã được dịch hoặc thuộc danh sách từ khóa hệ thống.</p>
+              </div>
+            ) : (
+              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+                      <th className="p-4 font-semibold">Vị trí (Block)</th>
+                      <th className="p-4 font-semibold">Chuỗi tiếng Anh</th>
+                      <th className="p-4 font-semibold">Trạng thái / Đề xuất</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {allCandidates.map((cand, idx) => (
+                      <tr key={`${cand.id}-${idx}`} className="hover:bg-slate-50 transition-colors">
+                        <td className="p-4 align-top w-1/4">
+                          <div className="font-mono text-xs text-slate-600 font-semibold">{cand.blockType}</div>
+                          <div className="text-[10px] text-slate-400 mt-1">{cand.path}</div>
+                        </td>
+                        <td className="p-4 align-top w-1/2">
+                          <div className="text-sm text-slate-800 whitespace-pre-wrap font-medium">{cand.text}</div>
+                        </td>
+                        <td className="p-4 align-top w-1/4">
+                          {cand.match ? (
+                            <div>
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-blue-50 text-blue-700 text-[10px] font-bold mb-2">
+                                Có bản dịch đề xuất
+                              </span>
+                              <div className="text-sm text-slate-600 italic">"{cand.match}"</div>
+                            </div>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-50 text-amber-700 text-[10px] font-bold">
+                              Cần duyệt thủ công
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* ─── SECTION EDITOR MODAL ────────────────────────────────────────── */}
       {editingBlock && (

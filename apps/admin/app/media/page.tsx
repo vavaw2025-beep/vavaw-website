@@ -91,13 +91,13 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Media Assets</h1>
-          <p className="mt-1 text-sm text-slate-500">View and upload visual assets across the ecosystem.</p>
+          <p className="mt-1 text-sm text-slate-500">Xem và tải lên các tệp media trong hệ sinh thái.</p>
         </div>
         <div>
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
             isSupabaseMode ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
           }`}>
-            Data Source: {isSupabaseMode ? 'Supabase' : 'Static Config'}
+            Nguồn dữ liệu: {isSupabaseMode ? 'Supabase' : 'Static Config'}
           </span>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
       {!isSupabaseMode ? (
         <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-xs flex items-center gap-2">
           <AlertCircle className="h-4 w-4 flex-shrink-0 text-amber-600" />
-          <span>Upload requires Supabase mode. Switch to Supabase mode to enable file uploads to Storage.</span>
+          <span>Yêu cầu chế độ Supabase để tải lên. Chuyển sang chế độ Supabase để cho phép tải tệp lên Storage.</span>
         </div>
       ) : (
         canUpload && (
@@ -115,11 +115,11 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
             <details className="bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 overflow-hidden">
               <summary className="px-4 py-3 font-medium cursor-pointer flex items-center gap-2 hover:bg-slate-100 transition-colors select-none">
                 <ImageIcon className="w-4 h-4 text-slate-500" />
-                Recommended launch image sizes & tips
+                Kích thước hình ảnh khuyến nghị & mẹo
               </summary>
               <div className="px-4 pb-4 pt-1 space-y-4 border-t border-slate-200 mt-1">
                 <div>
-                  <h4 className="font-semibold text-slate-900 mb-2 mt-2">Recommended Sizes</h4>
+                  <h4 className="font-semibold text-slate-900 mb-2 mt-2">Kích thước khuyến nghị</h4>
                   <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs">
                     <li><strong>Main Hero:</strong> 2400x1600 or 2560x1440, 16:9 or 3:2, cinematic horizontal image with space for text.</li>
                     <li><strong>Cosmetic Preview:</strong> 1600x2000 or 1500x2000, 4:5 or 3:4, portrait image for main preview/card.</li>
@@ -131,7 +131,7 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900 mb-2">Preparation Tips</h4>
+                  <h4 className="font-semibold text-slate-900 mb-2">Mẹo chuẩn bị</h4>
                   <ul className="list-disc pl-5 space-y-1 text-slate-600 text-xs">
                     <li>WEBP or JPG recommended.</li>
                     <li>Keep images under 1.5MB when possible.</li>
@@ -149,14 +149,14 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
 
       {queryError && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-          <p className="font-semibold">Error Loading Supabase Data:</p>
+          <p className="font-semibold">Lỗi tải dữ liệu Supabase:</p>
           <p>{queryError}</p>
         </div>
       )}
 
       {!queryError && assets.length === 0 && (
         <div className="p-8 text-center bg-white border border-slate-200 rounded-lg text-slate-500 text-sm">
-          No media assets registered in database.
+          Không có media asset nào được đăng ký trong cơ sở dữ liệu.
         </div>
       )}
 
@@ -164,32 +164,32 @@ export default async function MediaPage(props: { searchParams?: Promise<{ filter
         <div className="bg-white shadow rounded-lg border border-slate-200 overflow-hidden">
           <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-4">
-              <h3 className="text-sm font-semibold text-slate-700">Registered Media</h3>
+              <h3 className="text-sm font-semibold text-slate-700">Media đã đăng ký</h3>
               <div className="flex bg-slate-200 p-1 rounded-md text-xs">
-                <a href="/media" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'all' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>All</a>
-                <a href="/media?filter=image" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'image' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>Images</a>
-                <a href="/media?filter=video" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'video' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>Videos</a>
+                <a href="/media" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'all' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>Tất cả</a>
+                <a href="/media?filter=image" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'image' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>Hình ảnh</a>
+                <a href="/media?filter=video" className={`px-3 py-1.5 rounded-sm transition-colors ${filter === 'video' ? 'bg-white shadow font-medium text-slate-900' : 'text-slate-600 hover:text-slate-900'}`}>Video</a>
               </div>
             </div>
-            <span className="text-xs text-slate-500">{filteredAssets.length} items</span>
+            <span className="text-xs text-slate-500">{filteredAssets.length} mục</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200">
               <thead className="bg-slate-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Preview</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Site Key / Type</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Details</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Bản xem trước</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Site Key / Loại</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Chi tiết</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">URL</th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
                 {filteredAssets.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-500">
-                      No assets found matching the selected filter.
+                      Không tìm thấy media asset nào phù hợp với bộ lọc.
                     </td>
                   </tr>
                 )}

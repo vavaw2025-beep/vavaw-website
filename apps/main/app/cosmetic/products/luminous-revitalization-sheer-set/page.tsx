@@ -34,7 +34,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     ]
   },
   whoNeedsSet: {
-    eyebrow: 'WHO NEEDS SHEER SET',
+    eyebrow: 'AI NÊN SỬ DỤNG BỘ SẢN PHẨM NÀY',
     title: 'Sheer Set dành cho làn da cần phục hồi chuyên sâu',
     note: 'Hiệu quả cảm nhận có thể khác nhau tùy tình trạng da và cách sử dụng của từng người.',
     description: 'Luminous Revitalization Sheer Set phù hợp với làn da cần routine phục hồi tại nhà sau chăm sóc chuyên sâu, giúp hỗ trợ cảm giác ẩm mượt, mềm mại và rạng rỡ hơn.',
@@ -59,7 +59,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     mg3MediaSlot: 'cosmetic-luminous-mg3-plus-image'
   },
   activeIngredients: {
-    eyebrow: 'ACTIVE INGREDIENTS',
+    eyebrow: 'HOẠT CHẤT CHÍNH',
     title: 'Các thành phần hỗ trợ làn da rạng rỡ hơn',
     description: 'Luminous Revitalization Sheer Set kết hợp các thành phần chăm sóc da được chọn lọc để hỗ trợ độ ẩm, hàng rào bảo vệ, vẻ mịn màng và cảm giác tươi sáng của làn da.',
     mediaSlot: 'cosmetic-luminous-active-ingredients-image',
@@ -87,7 +87,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     ]
   },
   productDetailForm: {
-    eyebrow: 'PRODUCT INFORMATION',
+    eyebrow: 'THÔNG TIN SẢN PHẨM',
     title: 'LUMINOUS REVITALIZATION SHEER SET',
     description: 'Thông tin sản phẩm được trình bày để khách hàng tham khảo trước khi nhận tư vấn routine phù hợp.',
     offlineTitle: 'Bạn cũng có thể trải nghiệm VAVAW tại cửa hàng offline',

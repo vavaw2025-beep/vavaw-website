@@ -5,10 +5,17 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean",
+    "translate:cosmetic-copy": "npx tsx scripts/translate-cosmetic-cms-copy-vi.ts",
+    "revalidate:cosmetic": "npx tsx scripts/revalidate-cosmetic-routes.ts"
   },
   "devDependencies": {
+    "@supabase/supabase-js": "^2.110.8",
+    "dotenv": "^17.4.2",
     "turbo": "^2.0.0"
   },
-  "packageManager": "pnpm@9.0.0"
+  "packageManager": "pnpm@9.0.0",
+  "dependencies": {
+    "@vavaw/brand-config": "workspace:^"
+  }
 }

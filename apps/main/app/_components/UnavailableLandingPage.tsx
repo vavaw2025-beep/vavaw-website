@@ -141,11 +141,11 @@ export function UnavailableLandingPage({ reason = "default", fromPath }: Unavail
               <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
                 <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] font-mono text-slate-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Content Sync
+                  Đồng bộ nội dung
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] font-mono text-slate-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                  CMS Update
+                  Cập nhật CMS
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] font-mono text-slate-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
@@ -156,7 +156,7 @@ export function UnavailableLandingPage({ reason = "default", fromPath }: Unavail
 
             {/* Bottom Footer Line */}
             <div className="border-t border-white/10 pt-3 flex items-center justify-between text-[9px] font-mono text-slate-500 uppercase tracking-widest">
-              <span>SECURITY & ACCURACY</span>
+              <span>BẢO MẬT & CHÍNH XÁC</span>
               <span>EST. 2025</span>
             </div>
 

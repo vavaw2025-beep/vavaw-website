@@ -317,27 +317,27 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
   };
 
   const brandPhilosophy = getBlockContent(blocks, 'cosmetic-brand-philosophy', {
-    title: 'Scientific beauty, refined into a pure Korean skincare ritual.',
-    eyebrow: 'The Premium RAW Skincare System',
-    description: 'VAVAW is a clinical Korean cosmetic system designed to restore the skin from its origin — pure, balanced, and resilient.',
+    title: 'Vẻ đẹp khoa học, được tinh chỉnh thành nghi thức chăm sóc da Hàn Quốc thuần khiết.',
+    eyebrow: 'Hệ thống chăm sóc da RAW cao cấp',
+    description: 'VAVAW là hệ mỹ phẩm Hàn Quốc định hướng lâm sàng, được phát triển để hỗ trợ làn da phục hồi từ nền tảng — tinh khiết, cân bằng và bền vững.',
     items: [
-      { num: '01', title: 'Scientific Beauty', desc: 'Clinical skincare system shaped by professional care standards — developed for visible, lasting results.' },
-      { num: '02', title: 'Premium Program', desc: 'Personalized skincare experience for modern skin concerns — designed for spa, clinic, and home ritual.' },
-      { num: '03', title: 'Functional Cosmetics', desc: 'Korean-developed formulas designed for visible skin recovery, balancing efficacy with elegance.' }
+      { num: '01', title: 'Vẻ đẹp khoa học', desc: 'Hệ thống chăm sóc da lâm sàng được định hình bởi các tiêu chuẩn chăm sóc chuyên nghiệp — phát triển cho kết quả hiển hiện và lâu dài.' },
+      { num: '02', title: 'Chương trình chăm sóc cao cấp', desc: 'Trải nghiệm chăm sóc da cá nhân hóa cho các vấn đề về da hiện đại — thiết kế cho spa, clinic và nghi thức tại nhà.' },
+      { num: '03', title: 'Mỹ phẩm chức năng', desc: 'Các công thức phát triển tại Hàn Quốc được thiết kế để phục hồi da rõ rệt, cân bằng giữa hiệu quả và sự thanh lịch.' }
     ]
   });
 
   const signatureCollection = getBlockContent(blocks, 'cosmetic-signature-collection', {
-    eyebrow: 'SIGNATURE RECOVERY COLLECTION',
-    title: 'A Complete Recovery System for Modern Skin',
-    description: 'A curated Korean clinical skincare ritual designed to hydrate, calm, renew, protect, and restore visible skin balance.',
+    eyebrow: 'BỘ SƯU TẬP PHỤC HỒI ĐẶC TRƯNG',
+    title: 'Hệ thống phục hồi toàn diện cho làn da hiện đại',
+    description: 'Nghi thức chăm sóc da lâm sàng Hàn Quốc được tinh tuyển để cấp ẩm, làm dịu, tái tạo, bảo vệ và phục hồi sự cân bằng rõ rệt của làn da.',
     featured: {
       name: 'Luminous Revitalization Sheer Set',
-      type: 'FEATURED SET',
-      description: 'A complete recovery set designed to support the skin barrier and restore a luminous, balanced appearance.',
+      type: 'BỘ SẢN PHẨM NỔI BẬT',
+      description: 'Bộ sản phẩm phục hồi toàn diện được thiết kế để hỗ trợ hàng rào bảo vệ da và phục hồi vẻ ngoài rạng rỡ, cân bằng.',
       ingredients: ['Exosome', 'Collagen', 'Peptide Complex'],
       mediaSlot: 'cosmetic-product-luminous-set',
-      ctaLabel: 'Explore the Ritual',
+      ctaLabel: 'Khám phá nghi thức',
       ctaHref: '/contact?type=cosmetic_interest',
     },
     items: [
@@ -352,17 +352,17 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
 
   const heroProduct = getBlockContent(blocks, 'cosmetic-hero-product', {
     title: 'Luminous Revitalization\nSheer Set',
-    eyebrow: 'Featured Product',
-    description: 'A complete recovery set designed to support the skin barrier and restore a luminous, balanced appearance through a synergistic blend of clinical actives.',
+    eyebrow: 'Sản phẩm nổi bật',
+    description: 'Bộ sản phẩm phục hồi toàn diện được thiết kế để hỗ trợ hàng rào bảo vệ da và phục hồi vẻ ngoài rạng rỡ, cân bằng thông qua sự kết hợp của các hoạt chất lâm sàng.',
     ingredients: ['Exosome', 'Collagen', 'Peptide Complex'],
-    benefits: ['Skin barrier recovery', 'Moisture protection', 'Luminous radiance glow'],
-    ctaLabel: 'Start an Inquiry',
+    benefits: ['Phục hồi hàng rào bảo vệ da', 'Khóa ẩm bảo vệ', 'Tỏa sáng rạng rỡ'],
+    ctaLabel: 'Nhận tư vấn',
     ctaHref: '/contact?type=cosmetic_interest'
   });
 
   const productCards = getBlockContent(blocks, 'cosmetic-product-cards', {
-    title: 'Clinical Formulas',
-    eyebrow: 'The Collection',
+    title: 'Công thức lâm sàng',
+    eyebrow: 'Bộ sưu tập',
     items: [
       {
         name: 'Regenaglow Nourish Sheer Cream',
@@ -403,14 +403,14 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
   });
 
   const dailyRitual = getBlockContent(blocks, 'cosmetic-daily-ritual', {
-    title: 'Daily Clinical Ritual',
-    eyebrow: 'Daily Clinical Ritual',
+    title: 'Nghi thức lâm sàng hàng ngày',
+    eyebrow: 'Nghi thức hàng ngày',
     items: [
-      { step: '01', name: 'Cleanse', detail: 'Begin with a gentle clinical cleanser to remove impurities without disrupting the skin microbiome.' },
-      { step: '02', name: 'Hydrating Toner', detail: 'P30 Boost Facial Hydrating Toner — balance pH and prime for maximum absorption.' },
-      { step: '03', name: 'Renew Ampoule', detail: 'Gentle Activation Renew Ampoule — activate cellular renewal and luminosity.' },
-      { step: '04', name: 'Moisturizer / Cream', detail: 'P30 Boost Facial Moisturizer or Regenaglow Nourish Sheer Cream — seal in moisture.' },
-      { step: '05', name: 'Sheer Gel / Recovery Care', detail: 'Calmiance Superior Sheer Gel — calm, protect, and fortify the skin barrier.' },
+      { step: '01', name: 'Làm sạch', detail: 'Bắt đầu với sữa rửa mặt lâm sàng dịu nhẹ để loại bỏ tạp chất mà không phá vỡ hệ vi sinh vật của da.' },
+      { step: '02', name: 'Toner cấp ẩm', detail: 'P30 Boost Facial Hydrating Toner — cân bằng pH và chuẩn bị da tối ưu cho bước hấp thụ.' },
+      { step: '03', name: 'Tinh chất tái sinh', detail: 'Gentle Activation Renew Ampoule — kích hoạt quá trình làm mới tế bào và mang lại vẻ rạng rỡ.' },
+      { step: '04', name: 'Kem dưỡng ẩm', detail: 'P30 Boost Facial Moisturizer hoặc Regenaglow Nourish Sheer Cream — khóa ẩm sâu.' },
+      { step: '05', name: 'Gel / Chăm sóc phục hồi', detail: 'Calmiance Superior Sheer Gel — làm dịu, bảo vệ và củng cố hàng rào bảo vệ da.' },
     ]
   });
 
@@ -529,29 +529,29 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
   });
 
   const premiumProgram = getBlockContent(blocks, 'cosmetic-premium-program', {
-    title: 'Premium Program',
-    eyebrow: 'Premium Program',
-    description: 'A personalized skincare experience designed for spa, clinic, and professional treatment environments — where expertise meets Korean clinical precision.',
+    title: 'Chương trình chăm sóc cao cấp',
+    eyebrow: 'Chương trình chăm sóc cao cấp',
+    description: 'Trải nghiệm chăm sóc da cá nhân hóa được thiết kế cho spa, clinic và môi trường điều trị chuyên nghiệp — nơi sự chuyên môn kết hợp với độ chuẩn xác của lâm sàng Hàn Quốc.',
     items: [
-      { icon: '◆', text: 'Skin recovery ritual tailored to individual skin concerns' },
-      { icon: '◆', text: 'Professional treatment compatibility for spa and clinic use' },
-      { icon: '◆', text: 'Personalized care guidance from certified skincare specialists' },
+      { icon: '◆', text: 'Nghi thức phục hồi da được tinh chỉnh theo từng vấn đề da cá nhân' },
+      { icon: '◆', text: 'Độ tương thích cao với các liệu trình chuyên nghiệp tại spa và clinic' },
+      { icon: '◆', text: 'Hướng dẫn chăm sóc cá nhân hóa từ các chuyên gia chăm sóc da được chứng nhận' },
     ],
-    ctaLabel: 'Start a Consultation',
+    ctaLabel: 'Nhận tư vấn',
     ctaHref: '/contact?type=cosmetic_interest'
   });
 
   const editorialGallery = getBlockContent(blocks, 'cosmetic-editorial-gallery', {
-    title: 'The Ritual Aesthetic',
-    eyebrow: 'Visual Harmony'
+    title: 'Tính thẩm mỹ của nghi thức',
+    eyebrow: 'Sự hài hòa thị giác'
   });
   const editorialGalleryBlock = blocks?.find(b => b.blockType === 'cosmetic-editorial-gallery');
   const isGalleryActive = editorialGalleryBlock ? (editorialGalleryBlock.isActive === true || (editorialGalleryBlock as any).is_active === true) : false;
 
   const finalCta = getBlockContent(blocks, 'cosmetic-final-cta', {
-    title: 'Premium RAW Skincare System',
+    title: 'Hệ thống chăm sóc da RAW cao cấp',
     eyebrow: 'VAVAW Cosmetic',
-    ctaLabel: 'Start an Inquiry',
+    ctaLabel: 'Nhận tư vấn',
     ctaHref: '/contact?type=cosmetic_interest'
   });
 
@@ -731,16 +731,16 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
         // ── Data resolution ────────────────────────────────────────────────
         const feat = signatureCollection.featured || signatureCollection.featuredProduct || {};
         const featName = feat.name || 'Luminous Revitalization Sheer Set';
-        const featType = feat.type || 'FEATURED SET';
+        const featType = feat.type || 'BỘ SẢN PHẨM NỔI BẬT';
         const featDesc = feat.description || '';
         const featIngredients: string[] = Array.isArray(feat.ingredients) ? feat.ingredients : [];
         const featImg = getProductImage(featName, feat.mediaSlot, cosmeticMedia);
         const featCta = safeCosmeticHref(feat.ctaHref || signatureCollection.ctaHref);
-        const featCtaLabel = feat.ctaLabel || signatureCollection.ctaLabel || 'Explore the Ritual';
+        const featCtaLabel = feat.ctaLabel || signatureCollection.ctaLabel || 'Khám phá nghi thức';
 
-        const sectionEyebrow = signatureCollection.eyebrow || 'SIGNATURE RECOVERY SYSTEM';
-        const sectionTitle = signatureCollection.title || 'The complete skin\nrecovery ritual.';
-        const sectionDesc = signatureCollection.description || 'A complete Korean clinical skincare ritual designed to cleanse, prepare, treat, seal, and protect the skin.';
+        const sectionEyebrow = signatureCollection.eyebrow || 'HỆ THỐNG PHỤC HỒI ĐẶC TRƯNG';
+        const sectionTitle = signatureCollection.title || 'Nghi thức phục hồi da\ntoàn diện.';
+        const sectionDesc = signatureCollection.description || 'Nghi thức chăm sóc da lâm sàng Hàn Quốc toàn diện được thiết kế để làm sạch, chuẩn bị, đặc trị, khóa ẩm và bảo vệ da.';
 
         const clinicalInsight = 'Skin recovery is not a single step, but a systematic process. Each formula works in harmony with the skin\'s natural cycle — strengthening the barrier, restoring balance, and supporting long-term resilience.';
 
@@ -864,7 +864,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                   <div className="w-px self-stretch bg-[#C5CEDF]/60 mr-8 hidden lg:block shrink-0" aria-hidden="true" />
                   <div className="pt-2 lg:pt-12">
                     <span className="block text-[9px] tracking-[0.35em] uppercase text-[#050A5C]/40 font-semibold mb-4">
-                      Clinical Insight
+                      Góc nhìn lâm sàng
                     </span>
                     <p className="text-[#3D4A5C] text-sm leading-[1.9] font-light">
                       {clinicalInsight}
@@ -1313,7 +1313,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
       ─────────────────────────────────────────────────────────────────────── */}
       {heroProduct && (() => {
         const content = heroProduct.content || heroProduct;
-        const eyebrow = content.eyebrow || 'FEATURED SET';
+        const eyebrow = content.eyebrow || 'BỘ SẢN PHẨM NỔI BẬT';
         const title = content.title || 'Luminous Revitalization Sheer Set';
         const headline = content.headline || 'Chăm sóc chuyên sâu — củng cố hàng rào bảo vệ và phục hồi làn da rạng rỡ.';
         const description = content.description || 'Bộ chăm sóc phục hiệu chuyên sâu kết hợp ampoule cô đặc và kem dưỡng phục hồi, giúp hỗ trợ hàng rào bảo vệ da, cải thiện độ ẩm và mang lại làn da rạng rỡ hơn.';
@@ -1588,7 +1588,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                         className="space-y-6"
                       >
                         <div className="space-y-2">
-                          <SectionLabel>{eyebrow || 'FEATURED SET'}</SectionLabel>
+                          <SectionLabel>{eyebrow || 'BỘ SẢN PHẨM NỔI BẬT'}</SectionLabel>
                           <h2 className="text-3xl md:text-4xl text-[#050A5C] cosmetic-heading-soft">
                             {heroProduct.title}
                           </h2>

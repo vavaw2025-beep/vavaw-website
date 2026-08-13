@@ -59,14 +59,14 @@ export default async function ContentPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Website Content</h1>
-          <p className="mt-1 text-sm text-slate-500">Manage rich text, sections, and marketing content blocks.</p>
+          <h1 className="text-2xl font-bold text-slate-900">Nội dung Website</h1>
+          <p className="mt-1 text-sm text-slate-500">Quản lý văn bản, các khối nội dung và section.</p>
         </div>
         <div className="flex items-center gap-3">
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
             mode === 'supabase' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
           }`}>
-            Data Source: {mode === 'supabase' ? 'Supabase' : 'Static Config'}
+            Nguồn dữ liệu: {mode === 'supabase' ? 'Supabase' : 'Static Config'}
           </span>
 
           {mode === 'supabase' && canEdit && (
@@ -75,7 +75,7 @@ export default async function ContentPage() {
               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow transition-colors"
             >
               <PlusCircle className="h-4 w-4" />
-              Add Content Block
+              Thêm khối nội dung
             </Link>
           )}
         </div>
@@ -85,9 +85,9 @@ export default async function ContentPage() {
         <>
           <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 text-center">
             <Lock className="mx-auto h-12 w-12 text-slate-400 mb-4" />
-            <h3 className="text-lg font-medium text-slate-900">Content block management requires Supabase mode.</h3>
+            <h3 className="text-lg font-medium text-slate-900">Yêu cầu chế độ Supabase để quản lý khối nội dung.</h3>
             <p className="mt-2 text-sm text-slate-500 max-w-xl mx-auto">
-              Set <code>NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase</code> to enable full Content Block CRUD. Currently, the marketing content is statically defined in the frontend components.
+              Đặt <code>NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase</code> để bật quản lý khối nội dung. Hiện tại, nội dung đang được cấu hình mặc định ở frontend.
             </p>
           </div>
 
@@ -95,7 +95,7 @@ export default async function ContentPage() {
             <div className="bg-white shadow rounded-lg border border-slate-200 p-6 opacity-75">
               <div className="flex items-center gap-3 mb-4 text-slate-400">
                 <FileText className="h-5 w-5" />
-                <h3 className="font-medium">Main Website Content</h3>
+                <h3 className="font-medium">Main Nội dung Website</h3>
               </div>
               <div className="space-y-3">
                 <div className="h-4 bg-slate-100 rounded w-3/4"></div>
@@ -125,7 +125,7 @@ export default async function ContentPage() {
         <>
           {queryError && (
             <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-              <p className="font-semibold">Error Loading Supabase Data:</p>
+              <p className="font-semibold">Lỗi tải dữ liệu Supabase:</p>
               <p>{queryError}</p>
             </div>
           )}
@@ -133,11 +133,11 @@ export default async function ContentPage() {
           {!queryError && blocks.length === 0 && (
             <div className="p-8 text-center bg-white border border-slate-200 rounded-lg text-slate-500 text-sm">
               <div className="space-y-3">
-                <p>No content blocks found in database.</p>
+                <p>Không tìm thấy khối nội dung nào trong cơ sở dữ liệu.</p>
                 {canEdit && (
                   <Link href="/content/new" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm">
                     <PlusCircle className="h-4 w-4" />
-                    Create your first content block
+                    Tạo khối nội dung đầu tiên
                   </Link>
                 )}
               </div>
@@ -151,12 +151,12 @@ export default async function ContentPage() {
                   <thead className="bg-slate-50">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Site Key</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Page Path</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Block Type</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Sort Order</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Đường dẫn trang</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Loại khối</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Thứ tự sắp xếp</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Trạng thái</th>
                       {!isViewer && (
-                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Thao tác</th>
                       )}
                     </tr>
                   </thead>

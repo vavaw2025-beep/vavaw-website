@@ -7,7 +7,17 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@vavaw/brand-config':
+        specifier: workspace:^
+        version: link:packages/brand-config
     devDependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.110.8
+        version: 2.110.8
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       turbo:
         specifier: ^2.0.0
         version: 2.10.5

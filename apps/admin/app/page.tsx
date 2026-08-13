@@ -17,26 +17,26 @@ export default function DashboardPage() {
   const internal = getInternalBusinessEntries().length;
 
   const stats = [
-    { name: 'Total Businesses', value: total, icon: Building2 },
-    { name: 'Active Entries', value: active, icon: Rocket },
-    { name: 'Coming Soon', value: comingSoon, icon: MonitorPlay },
-    { name: 'Draft Entries', value: draft, icon: Pencil },
-    { name: 'Internal Apps', value: internal, icon: Globe },
-    { name: 'External Apps', value: external, icon: Link2 },
+    { name: 'Tổng số Business', value: total, icon: Building2 },
+    { name: 'Mục đang hoạt động', value: active, icon: Rocket },
+    { name: 'Sắp ra mắt', value: comingSoon, icon: MonitorPlay },
+    { name: 'Bản nháp', value: draft, icon: Pencil },
+    { name: 'Ứng dụng nội bộ', value: internal, icon: Globe },
+    { name: 'Ứng dụng bên ngoài', value: external, icon: Link2 },
   ];
 
   const authStatus = [
-    { label: 'Auth Mode', value: 'Mock UI', icon: Shield, badge: 'Mock', badgeColor: 'bg-amber-100 text-amber-800' },
-    { label: 'Current Role', value: `${MOCK_ADMIN_USER.role.charAt(0).toUpperCase() + MOCK_ADMIN_USER.role.slice(1)} / Mock`, icon: Shield, badge: 'Mock', badgeColor: 'bg-purple-100 text-purple-800' },
-    { label: 'Database', value: 'Not connected', icon: Database, badge: 'Offline', badgeColor: 'bg-slate-100 text-slate-600' },
-    { label: 'Storage', value: 'Not connected', icon: Cloud, badge: 'Offline', badgeColor: 'bg-slate-100 text-slate-600' },
+    { label: 'Chế độ xác thực', value: 'Mock UI', icon: Shield, badge: 'Giả lập', badgeColor: 'bg-amber-100 text-amber-800' },
+    { label: 'Vai trò hiện tại', value: `${MOCK_ADMIN_USER.role.charAt(0).toUpperCase() + MOCK_ADMIN_USER.role.slice(1)} / Giả lập`, icon: Shield, badge: 'Giả lập', badgeColor: 'bg-purple-100 text-purple-800' },
+    { label: 'Cơ sở dữ liệu', value: 'Chưa kết nối', icon: Database, badge: 'Ngoại tuyến', badgeColor: 'bg-slate-100 text-slate-600' },
+    { label: 'Lưu trữ', value: 'Chưa kết nối', icon: Cloud, badge: 'Ngoại tuyến', badgeColor: 'bg-slate-100 text-slate-600' },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">VAVAW Admin Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">Manage the VAVAW brand ecosystem</p>
+        <h1 className="text-2xl font-bold text-slate-900">Bảng điều khiển VAVAW Admin</h1>
+        <p className="mt-1 text-sm text-slate-500">Quản lý hệ sinh thái thương hiệu VAVAW</p>
       </div>
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -62,8 +62,8 @@ export default function DashboardPage() {
             <HardDrive className="h-5 w-5 text-amber-600" />
           </div>
           <div>
-            <h3 className="text-lg leading-6 font-medium text-slate-900">Backend &amp; Auth Status</h3>
-            <p className="text-sm text-slate-500">Current infrastructure connection state</p>
+            <h3 className="text-lg leading-6 font-medium text-slate-900">Trạng thái Backend &amp; Auth</h3>
+            <p className="text-sm text-slate-500">Trạng thái kết nối hạ tầng hiện tại</p>
           </div>
         </div>
         <ul role="list" className="divide-y divide-slate-200">
@@ -87,7 +87,7 @@ export default function DashboardPage() {
       {/* Quick Overview */}
       <div className="bg-white shadow rounded-lg border border-slate-200">
         <div className="px-4 py-5 sm:px-6 border-b border-slate-200">
-          <h3 className="text-lg leading-6 font-medium text-slate-900">Quick Overview</h3>
+          <h3 className="text-lg leading-6 font-medium text-slate-900">Tổng quan nhanh</h3>
         </div>
         <ul role="list" className="divide-y divide-slate-200">
           {businessEntries.map((entry) => (
@@ -109,7 +109,7 @@ export default function DashboardPage() {
               <div className="mt-2 sm:flex sm:justify-between">
                 <div className="sm:flex">
                   <p className="flex items-center text-sm text-slate-500">
-                    Redirect Path: <code className="ml-1 text-slate-700 bg-slate-100 px-1 rounded">{entry.redirectPath}</code>
+                    Đường dẫn chuyển hướng: <code className="ml-1 text-slate-700 bg-slate-100 px-1 rounded">{entry.redirectPath}</code>
                   </p>
                 </div>
               </div>

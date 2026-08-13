@@ -199,9 +199,9 @@ export function MainLandingManager({
       secondaryCtaLabel: 'Liên hệ tư vấn',
       secondaryCtaHref: '/contact?type=general_inquiry&source=main_final_cta',
       trustPoints: [
-        'Clinical Korean cosmetic direction',
-        'Premium beauty ecosystem',
-        'Franchise-ready brand platform'
+        'Định hướng mỹ phẩm lâm sàng Hàn Quốc',
+        'Hệ sinh thái sắc đẹp cao cấp',
+        'Nền tảng thương hiệu sẵn sàng nhượng quyền'
       ]
     }
   };

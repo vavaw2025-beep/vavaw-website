@@ -191,3 +191,6 @@ export function getBusinessMedia(slug: string): BusinessMedia | undefined {
 export function getBusinessSeo(slug: string): BusinessSeo | undefined {
   return getBusinessBySlug(slug)?.seo;
 }
+
+export * from './cosmetic-vietnamese-copy-map';
+export * from './translate-json-copy';

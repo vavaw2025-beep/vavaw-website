@@ -82,7 +82,7 @@ export default async function SeoPage() {
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
             mode === 'supabase' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
           }`}>
-            Data Source: {mode === 'supabase' ? 'Supabase' : 'Static Config'}
+            Nguồn dữ liệu: {mode === 'supabase' ? 'Supabase' : 'Static Config'}
           </span>
 
           {mode === 'supabase' && canEdit && (
@@ -91,7 +91,7 @@ export default async function SeoPage() {
               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow transition-colors"
             >
               <PlusCircle className="h-4 w-4" />
-              Add SEO Setting
+              Thêm cấu hình SEO
             </Link>
           )}
         </div>
@@ -100,14 +100,14 @@ export default async function SeoPage() {
       {/* Mock mode notice */}
       {mode !== 'supabase' && (
         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
-          <p className="font-semibold">SEO management requires Supabase mode.</p>
+          <p className="font-semibold">Yêu cầu chế độ Supabase để quản lý SEO.</p>
           <p className="mt-1">Currently showing read-only static data from <code>@vavaw/brand-config</code>. Set <code>NEXT_PUBLIC_ADMIN_AUTH_MODE=supabase</code> to enable full SEO CRUD.</p>
         </div>
       )}
 
       {queryError && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-          <p className="font-semibold">Error Loading Supabase Data:</p>
+          <p className="font-semibold">Lỗi tải dữ liệu Supabase:</p>
           <p>{queryError}</p>
         </div>
       )}
@@ -120,7 +120,7 @@ export default async function SeoPage() {
               {canEdit && (
                 <Link href="/seo/new" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm">
                   <PlusCircle className="h-4 w-4" />
-                  Create your first SEO setting
+                  Tạo cấu hình SEO đầu tiên
                 </Link>
               )}
             </div>
@@ -137,9 +137,9 @@ export default async function SeoPage() {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Site Key & Path</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Title & Description</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Robots & Canonical</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Keywords</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Từ khóa</th>
                   {mode === 'supabase' && !isViewer && (
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Thao tác</th>
                   )}
                 </tr>
               </thead>

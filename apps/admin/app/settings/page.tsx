@@ -30,7 +30,7 @@ export default function SettingsPage() {
   const configs = [
     { name: 'Environment', value: 'Production', icon: Server, status: 'Active' },
     { name: 'Domains', value: '*.vavaw.vn', icon: Globe, status: 'Configured' },
-    { name: 'Data Source Mode', value: mode === 'supabase' ? 'Supabase Database' : 'Static Config (@vavaw/brand-config)', icon: HardDrive, status: mode === 'supabase' ? 'Active' : 'Static' },
+    { name: 'Chế độ nguồn dữ liệu', value: mode === 'supabase' ? 'Supabase Database' : 'Static Config (@vavaw/brand-config)', icon: HardDrive, status: mode === 'supabase' ? 'Active' : 'Static' },
     { name: 'CMS Read Mode', value: mode === 'supabase' ? 'Enabled (Reading from Supabase RLS)' : 'Enabled (Reading from Static Config)', icon: Database, status: 'Enabled' },
     { name: 'CMS Write / Mutation', value: mode === 'supabase' ? 'Enabled (Business, Hero & SEO CRUD)' : 'Disabled in Mock Mode', icon: Pencil, status: mode === 'supabase' ? 'Active' : 'Disabled' },
     { name: 'SEO CRUD', value: mode === 'supabase' ? 'Enabled (owner/admin/editor can manage, owner/admin can delete)' : 'Requires Supabase Mode', icon: Pencil, status: mode === 'supabase' ? 'Active' : 'Disabled' },
