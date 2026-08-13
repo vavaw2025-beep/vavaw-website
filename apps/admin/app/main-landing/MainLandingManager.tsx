@@ -350,11 +350,21 @@ export function MainLandingManager({
   const hiddenBlocksCount = blocks.filter(b => !b.is_active).length;
   const hiddenBlockTypes = blocks.filter(b => !b.is_active).map(b => b.block_type);
 
+  const ecosystemBlock = blocks.find(b => b.block_type === 'main-ecosystem-intro');
+  const ctaBlock = blocks.find(b => b.block_type === 'main-final-cta');
+
   // Checklist verification
   const checklist = [
     { label: 'Hero Slides đang hoạt động', ok: heroSlides.filter(s => s.status === 'active').length > 0 },
     { label: 'Business Entries đang hoạt động', ok: businessEntries.filter(b => b.status === 'active').length > 0 },
-    { label: 'Cấu hình hiển thị Section chuẩn xác', ok: true },
+    {
+      label: `Portfolio 3 thương hiệu: ${ecosystemBlock ? (ecosystemBlock.is_active ? 'Đang hiển thị' : 'Đang ẩn trên public') : 'Mặc định (Hiển thị)'}`,
+      ok: true
+    },
+    {
+      label: `Final CTA: ${ctaBlock ? (ctaBlock.is_active ? 'Đang hiển thị' : 'Đang ẩn trên public') : 'Mặc định (Hiển thị)'}`,
+      ok: true
+    },
     { label: 'Cấu hình SEO cho trang chủ tồn tại', ok: Boolean(seo && (seo.title || seo.id)) },
     { label: 'Không có liên kết CTA bị bỏ trống (#)', ok: !blocks.some(b => (b.content?.primaryCtaHref === '#' || b.content?.secondaryCtaHref === '#')) },
     { label: 'Tất cả khối hiển thị đều có tiêu đề hợp lệ', ok: blocks.every(b => !b.is_active || Boolean(b.content?.title || b.content?.eyebrow)) }
@@ -747,7 +757,13 @@ export function MainLandingManager({
 
                     <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                       <span>
-                        {isHidden
+                        {block.block_type === 'main-ecosystem-intro'
+                          ? 'Điều khiển section portfolio 3 thương hiệu trên trang chủ.'
+                          : block.block_type === 'main-final-cta'
+                          ? 'Điều khiển CTA cuối trang chủ.'
+                          : block.block_type === 'main-brand-story'
+                          ? 'Điều khiển section brand story/trình bày thương hiệu nếu public renderer hỗ trợ.'
+                          : isHidden
                           ? 'Section này đang tắt trên trang public.'
                           : 'Section này đang được hiển thị nếu public renderer hỗ trợ block này.'}
                       </span>

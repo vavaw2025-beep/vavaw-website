@@ -38,12 +38,31 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+/**
+ * Checks if a main landing content block is active for public rendering.
+ * If block is not defined in DB, defaults to fallback boolean.
+ */
+function isMainBlockVisible(
+  blocks: any[] | null | undefined,
+  blockType: string,
+  fallback = true
+): boolean {
+  if (!blocks || blocks.length === 0) return fallback;
+  const block = blocks.find((b: any) => b.blockType === blockType || b.block_type === blockType);
+  if (!block) return fallback;
+  return block.isActive === true || block.is_active === true;
+}
+
 export default async function HomePage() {
   const isPreview = (await draftMode()).isEnabled;
   const cms = await loadPublicHomeCms(isPreview);
   const { blocks } = await loadPublicContentBlocks({ siteKey: 'main', pagePath: '/', isPreview });
 
-  const finalCtaBlock = blocks?.find(b => b.blockType === 'main-final-cta' && b.isActive);
+  // Section visibility checks mapped to main content blocks
+  const showEcosystem = isMainBlockVisible(blocks, 'main-ecosystem-intro', true);
+  const showFinalCta = isMainBlockVisible(blocks, 'main-final-cta', true);
+
+  const finalCtaBlock = blocks?.find((b: any) => (b.blockType === 'main-final-cta' || b.block_type === 'main-final-cta') && (b.isActive || b.is_active));
   const ctaContent = (finalCtaBlock?.content as any) || null;
 
   const showCmsDebug = process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
@@ -56,6 +75,8 @@ export default async function HomePage() {
       rawHeroRowsCount: cms.rawHeroRowsCount ?? 'n/a',
       activeHeroRowsCount: cms.activeHeroRowsCount ?? 'n/a',
       normalizedSlidesCount: cms.heroSlides.length,
+      showEcosystem,
+      showFinalCta,
       fallbackUsed: cms.fallbackUsed ?? false,
       fallbackReason: cms.fallbackReason ?? null,
       error: cms.error ?? null,
@@ -72,9 +93,9 @@ export default async function HomePage() {
         rawHeroRowsCount={cms.rawHeroRowsCount}
       />
 
-      <BusinessEcosystem />
+      {showEcosystem && <BusinessEcosystem />}
 
-      {ctaContent && (
+      {showFinalCta && ctaContent && (
         <section className="py-24 px-6 bg-[#111111] text-white text-center border-t border-[#222222]">
           <div className="max-w-3xl mx-auto space-y-6">
             {ctaContent.eyebrow && (
