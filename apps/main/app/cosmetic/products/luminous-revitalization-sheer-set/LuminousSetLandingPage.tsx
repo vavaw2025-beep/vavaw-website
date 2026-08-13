@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { ShieldCheck, ChevronRight, ArrowRight, Check, ChevronDown, Droplets, Shield, Sparkles } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Check, ChevronDown, Droplets, Shield, Sparkles } from 'lucide-react';
 import { CosmeticCtaTracker } from '../../cosmetic-tracker';
 import { SiteFooter } from '@vavaw/ui';
 import { ProductLandingContent } from '../_components/product-landing-types';
@@ -937,25 +937,10 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
             {/* Content */}
             <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] flex-col justify-end px-5 pb-14 pt-32 md:min-h-[840px] md:flex-row md:items-center md:justify-start md:px-12 md:py-28 lg:px-20">
               <div className="max-w-[620px] space-y-6">
-                {/* Breadcrumb */}
-                <nav className="flex items-center gap-1.5 text-[9px] md:text-[11px] text-white/50 font-medium uppercase tracking-[0.15em]">
-                  <a href="/cosmetic" className="hover:text-white/80 transition-colors">Cosmetic</a>
-                  <ChevronRight className="h-3 w-3 shrink-0" />
-                  <span className="text-white/70 font-semibold truncate max-w-[180px] md:max-w-none">
-                    <span className="md:hidden">Luminous Set</span>
-                    <span className="hidden md:inline">{content.title}</span>
-                  </span>
-                </nav>
-
-                {/* Eyebrow */}
-                <span className="cosmetic-kicker text-white/60 block">
-                  {content.eyebrow}
-                </span>
-
-                {/* H1 */}
-                <h1 className="cosmetic-heading font-semibold text-5xl md:text-6xl lg:text-7xl text-white leading-[1.08] md:leading-[1.02]">
-                  {content.title}
-                </h1>
+              {/* H1 — hero starts cleanly with product title */}
+              <h1 className="cosmetic-heading font-semibold text-5xl md:text-6xl lg:text-7xl text-white leading-[1.08] md:leading-[1.02]">
+                {content.title}
+              </h1>
 
                 {/* Subheadline */}
                 {content.headline && (
