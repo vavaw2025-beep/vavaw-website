@@ -58,22 +58,17 @@ WHERE
 -- 3. Extract hero slides CTAs
 SELECT
     id,
-    site_key,
-    page_path,
+    business_entry_id,
     title,
-    is_active,
-    cta_text,
-    cta_link,
+    status,
+    cta_label as cta_text,
+    redirect_path as cta_link,
     CASE 
-        WHEN cta_link LIKE '%beauty.vavaw.vn%' OR cta_link LIKE '%/go/beauty%' THEN 'fallback-required'
-        WHEN cta_link LIKE '%franchise.vavaw.vn%' OR cta_link LIKE '%/go/franchise%' THEN 'fallback-required'
+        WHEN redirect_path LIKE '%beauty.vavaw.vn%' OR redirect_path LIKE '%/go/beauty%' THEN 'fallback-required'
+        WHEN redirect_path LIKE '%franchise.vavaw.vn%' OR redirect_path LIKE '%/go/franchise%' THEN 'fallback-required'
         ELSE 'audit-needed'
     END as link_classification
 FROM
     hero_slides
 WHERE
-    site_key = 'main'
-    AND (
-        page_path = '/' 
-        OR page_path LIKE '/cosmetic%'
-    );
+    status = 'active';

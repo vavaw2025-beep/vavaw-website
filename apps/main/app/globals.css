@@ -225,3 +225,25 @@
     font-weight: 700;
   }
 }
+
+/* Cosmetic hero scroll-down arrow bounce */
+@keyframes cosmetic-scroll-bounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translateY(7px);
+    opacity: 1;
+  }
+}
+
+.cosmetic-scroll-arrow-icon {
+  animation: cosmetic-scroll-bounce 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmetic-scroll-arrow-icon {
+    animation: none !important;
+  }
+}

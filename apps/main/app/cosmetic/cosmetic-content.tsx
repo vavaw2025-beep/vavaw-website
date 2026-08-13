@@ -9,6 +9,7 @@ import { CosmeticCtaTracker } from './cosmetic-tracker';
 import type { PublicHeroMedia } from '@/lib/load-public-hero-media';
 import type { CosmeticPageMedia } from '@/lib/load-public-cosmetic-media';
 import { ClinicalFormulaLab } from './components/ClinicalFormulaLab';
+import { CosmeticHeroScrollButton } from './components/CosmeticHeroScrollButton';
 import { SkinRitualFinder } from './components/SkinRitualFinder';
 import IngredientIntelligenceMap from './components/IngredientIntelligenceMap';
 import { 
@@ -636,26 +637,17 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
             A cool blue and silver skincare experience designed for luminous, balanced, modern skin.
           </motion.p>
 
-          <motion.div variants={heroFadeUp} className="flex flex-col sm:flex-row items-center gap-4 w-full px-4 sm:px-0">
-            <CosmeticCtaTracker
-              label="START AN INQUIRY"
-              href="/contact?type=cosmetic_interest"
-              className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center bg-[#050A5C] text-white text-[12px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-colors shadow-md"
-            />
-            <CosmeticCtaTracker
-              label="BACK TO ECOSYSTEM"
-              href="/"
-              className="w-full sm:w-auto h-[54px] px-10 flex items-center justify-center bg-white/80 backdrop-blur border border-[#050A5C]/20 text-[#050A5C] text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors shadow-sm"
-            />
-          </motion.div>
+
         </motion.div>
+        {/* Scroll-down arrow — replaces previous CTA buttons for a cleaner editorial hero */}
+        <CosmeticHeroScrollButton />
       </section>
 
       {/* ───────────────────────────────────────────────────────────────────────
           SECTION 2 — BRAND PHILOSOPHY / RAW SKINCARE SYSTEM
       ─────────────────────────────────────────────────────────────────────── */}
       {brandPhilosophy && (
-      <section className={`${SECTION_WHITE} border-t ${SILVER_BORDER} py-28 md:py-36 px-6`}>
+      <section id="cosmetic-content-start" className={`${SECTION_WHITE} border-t ${SILVER_BORDER} py-28 md:py-36 px-6`}>
         <div className="max-w-6xl mx-auto">
           {/* Heading block */}
           <motion.div
