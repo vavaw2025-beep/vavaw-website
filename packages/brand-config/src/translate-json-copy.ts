@@ -86,6 +86,21 @@ export interface CandidateResult {
   match: string | null;
 }
 
+const VIETNAMESE_DIACRITICS_REGEX = /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]/;
+
+const COMMON_VIETNAMESE_WORDS = [
+  'và', 'của', 'cho', 'với', 'được', 'trong', 'một', 'không', 
+  'làn da', 'chăm sóc', 'phục hồi', 'thành phần', 'hướng dẫn', 
+  'bảo quản', 'lưu ý', 'sản phẩm', 'cao cấp', 'khoa học', 'lâm sàng'
+];
+
+const ENGLISH_SIGNALS = [
+  'the', 'and', 'for', 'with', 'from', 'into', 'designed', 'developed', 
+  'skincare', 'recovery', 'system', 'premium', 'clinical', 'beauty', 
+  'functional', 'ingredients', 'cautions', 'storage', 'quality', 
+  'guarantee', 'product information', 'how to use'
+];
+
 /**
  * Scans JSON recursively and returns likely English copy candidates.
  */
@@ -127,8 +142,27 @@ export function findEnglishCopyCandidates(
       return candidates;
     }
 
-    // Basic heuristic: likely English UI text
-    if (obj.split(' ').length > 1 && /[a-zA-Z]/.test(obj)) {
+    // Heuristic: check if it's likely English UI text
+    
+    // Rule A: Do NOT flag strings that contain Vietnamese diacritics
+    if (VIETNAMESE_DIACRITICS_REGEX.test(obj)) {
+      return candidates;
+    }
+
+    // Rule B: Do NOT flag strings containing common Vietnamese words
+    const lowerObj = obj.toLowerCase();
+    if (COMMON_VIETNAMESE_WORDS.some(word => lowerObj.includes(word))) {
+      return candidates;
+    }
+
+    // Rule D: DO flag likely English sentences if it matches English signals
+    // Also, we want to ensure it has words
+    const hasEnglishSignal = ENGLISH_SIGNALS.some(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'i');
+      return regex.test(obj);
+    });
+
+    if (hasEnglishSignal && obj.split(' ').length > 1 && /[a-zA-Z]/.test(obj)) {
       candidates.push({
         text: obj,
         match: null

@@ -2666,8 +2666,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
             {allCandidates.length === 0 ? (
               <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-8 text-center flex flex-col items-center">
                 <CheckCircle2 className="h-10 w-10 text-emerald-500 mb-3" />
-                <h3 className="text-emerald-800 font-bold">Không tìm thấy nội dung tiếng Anh sót lại</h3>
-                <p className="text-emerald-600 text-sm mt-1">Tất cả copy đã được dịch hoặc thuộc danh sách từ khóa hệ thống.</p>
+                <h3 className="text-emerald-800 font-bold">Không phát hiện nội dung tiếng Anh cần xử lý.</h3>
+                <p className="text-emerald-600 text-sm mt-1">Các nội dung tiếng Việt, tên thương hiệu, tên sản phẩm và thuật ngữ được bảo vệ đã được bỏ qua.</p>
               </div>
             ) : (
               <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
