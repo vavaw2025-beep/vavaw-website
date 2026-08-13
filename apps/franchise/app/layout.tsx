@@ -47,11 +47,27 @@ import { PreviewBanner } from '@/components/preview-banner';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const isPreview = (await draftMode()).isEnabled;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'VAVAW Franchise',
+    url: 'https://franchise.vavaw.vn',
+    logo: 'https://vavaw.vn/icon.svg',
+    parentOrganization: {
+      '@type': 'Organization',
+      name: 'VAVAW Ecosystem',
+      url: 'https://vavaw.vn'
+    }
+  };
 
   return (
     <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
       <body className="antialiased bg-[#FAFAFA] text-[#111111] min-h-screen flex flex-col">
         {isPreview && <PreviewBanner />}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {children}
       </body>
     </html>

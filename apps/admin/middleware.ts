@@ -4,9 +4,11 @@ import { NextResponse, type NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const mode = process.env.NEXT_PUBLIC_ADMIN_AUTH_MODE || process.env.ADMIN_AUTH_MODE || 'mock';
 
-  // If in mock mode, bypass all protection
+  // If in mock mode, bypass auth but enforce strict noindex
   if (mode === 'mock') {
-    return NextResponse.next();
+    const res = NextResponse.next();
+    res.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    return res;
   }
 
   const pathname = request.nextUrl.pathname;
@@ -98,6 +100,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  response.headers.set('X-Robots-Tag', 'noindex, nofollow');
   return response;
 }
 
