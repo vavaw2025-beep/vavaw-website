@@ -26,6 +26,12 @@
 3. **Admin Portal Safety**:
    - `apps/admin/middleware.ts` enforces `X-Robots-Tag: noindex, nofollow` on all responses, and `apps/admin/app/robots.ts` restricts crawlers via `Disallow: /`.
 
+> [!IMPORTANT]
+> **Canonical Host & Vercel Settings Note**:
+> - Main canonical host is `https://vavaw.vn`.
+> - Only `www.vavaw.vn` redirects to apex (`vavaw.vn`).
+> - Do **NOT** enable Vercel domain redirect from apex (`vavaw.vn`) $\rightarrow$ `www.vavaw.vn` in Vercel Dashboard settings, as this will trigger an infinite redirect loop (`ERR_TOO_MANY_REDIRECTS`).
+
 ---
 
 ## 3. Sitemap & Robots Configuration
