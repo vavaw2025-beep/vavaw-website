@@ -80,7 +80,7 @@ BEGIN
       "title": "Bước chuẩn bị da trong routine tại VAVAW Beauty & Co",
       "description": "P30 Boost Facial Hydrating Toner có thể được tư vấn như bước cân bằng và chuẩn bị làn da trước các bước phục hồi chuyên sâu trong routine tại nhà.",
       "ctaLabel": "Trải nghiệm tại VAVAW Beauty & Co",
-      "ctaHref": "/go/beauty"
+      "ctaHref": "https://beauty.vavaw.vn"
     },
     "productInfo": [
       { "label": "Tên sản phẩm", "value": "P30 Boost Facial Hydrating Toner" },
@@ -155,3 +155,4 @@ SELECT
   jsonb_array_length(CASE jsonb_typeof(content->'productInfo') WHEN 'array' THEN content->'productInfo' ELSE '[]'::jsonb END) AS product_info_count
 FROM content_blocks
 WHERE block_type = 'cosmetic-product-landing-p30-toner';
+

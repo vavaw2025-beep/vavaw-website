@@ -102,7 +102,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     title: "Bước treatment rạng rỡ trong routine tại VAVAW Beauty & Co",
     description: "Gentle Activation Renew Ampoule có thể được tư vấn như bước treatment hỗ trợ vẻ ngoài rạng rỡ và mịn màng hơn trong routine phục hồi tại nhà sau trải nghiệm chăm sóc chuyên sâu.",
     ctaLabel: "Trải nghiệm tại VAVAW Beauty & Co",
-    ctaHref: "/go/beauty"
+    ctaHref: "https://beauty.vavaw.vn"
   },
   productInfo: [
     { label: "Tên sản phẩm", "value": "Gentle Activation Renew Ampoule" },
@@ -143,3 +143,4 @@ export default async function RenewAmpoulePage() {
   // 5. Render using the shared template
   return <ProductLandingPage content={mergedContent} cosmeticMedia={media}  canonicalPath="/cosmetic/products/${product}" />;
 }
+

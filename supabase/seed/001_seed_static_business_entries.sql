@@ -27,7 +27,7 @@ INSERT INTO business_entries (
   'A dedicated beauty brand experience within the VAVAW ecosystem.',
   'external-app',
   'https://beauty.vavaw.vn',
-  '/go/beauty',
+  'https://beauty.vavaw.vn',
   'coming-soon',
   2,
   'Visit Beauty & Co',
@@ -44,7 +44,7 @@ INSERT INTO business_entries (
   'Learn about business partnership and franchise opportunities.',
   'external-app',
   'https://franchise.vavaw.vn',
-  '/go/franchise',
+  'https://franchise.vavaw.vn',
   'coming-soon',
   3,
   'Explore Franchise',
@@ -67,3 +67,4 @@ ON CONFLICT (slug) DO UPDATE SET
   theme = EXCLUDED.theme,
   media = EXCLUDED.media,
   seo = EXCLUDED.seo;
+

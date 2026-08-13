@@ -14,7 +14,16 @@ export function resolvePublicHref(
     return fallbackUrl;
   }
 
-  const cleanHref = href.trim();
+  let cleanHref = href.trim();
+
+  // Normalize legacy /go/* internal redirects to direct production domains
+  if (cleanHref === '/go/beauty' || cleanHref === 'https://vavaw.vn/go/beauty') {
+    cleanHref = 'https://beauty.vavaw.vn';
+  } else if (cleanHref === '/go/franchise' || cleanHref === 'https://vavaw.vn/go/franchise') {
+    cleanHref = 'https://franchise.vavaw.vn';
+  } else if (cleanHref === '/go/cosmetic' || cleanHref === 'https://vavaw.vn/go/cosmetic') {
+    cleanHref = '/cosmetic';
+  }
 
   // Block obvious placeholders
   if (cleanHref === '/coming-soon' || cleanHref === '/placeholder' || cleanHref.includes('PASTE_')) {

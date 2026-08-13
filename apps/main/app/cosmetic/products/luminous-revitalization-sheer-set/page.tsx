@@ -15,7 +15,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
   ctaLabel: 'Nhận tư vấn Luminous Set',
   ctaHref: '/contact?type=cosmetic_interest&product=luminous_set&source=product_landing',
   secondaryCtaLabel: 'Trải nghiệm tại VAVAW Beauty & Co',
-  secondaryCtaHref: '/go/beauty',
+  secondaryCtaHref: 'https://beauty.vavaw.vn',
   heroMediaSlot: 'cosmetic-product-luminous-set',
   heroDesktopMediaSlot: 'cosmetic-luminous-hero-desktop',
   heroMobileMediaSlot: 'cosmetic-luminous-hero-mobile',
@@ -170,7 +170,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     title: 'Có thể trải nghiệm trong quy trình chăm sóc tại VAVAW Beauty & Co',
     description: 'VAVAW Beauty & Co giúp khách hàng hiểu cách kết hợp sản phẩm trong trải nghiệm chăm sóc chuyên nghiệp và routine tại nhà.',
     ctaLabel: 'Trải nghiệm tại VAVAW Beauty & Co',
-    ctaHref: '/go/beauty',
+    ctaHref: 'https://beauty.vavaw.vn',
   },
   productInfo: [
     { label: 'Tên sản phẩm', value: 'Luminous Revitalization Sheer Set' },
@@ -229,4 +229,5 @@ export default async function LuminousProductLandingPage() {
     <LuminousSetLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} canonicalPath="/cosmetic/products/luminous-revitalization-sheer-set" />
   );
 }
+
 

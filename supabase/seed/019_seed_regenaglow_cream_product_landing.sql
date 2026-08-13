@@ -80,7 +80,7 @@ BEGIN
       "title": "Hoàn thiện routine phục hồi tại VAVAW Beauty & Co",
       "description": "REGENAGLOW NOURISH SHEER CREAM có thể được tư vấn như bước khóa ẩm sau treatment, giúp duy trì cảm giác mềm mại và hỗ trợ routine phục hồi tại nhà.",
       "ctaLabel": "Trải nghiệm tại VAVAW Beauty & Co",
-      "ctaHref": "/go/beauty"
+      "ctaHref": "https://beauty.vavaw.vn"
     },
     "productInfo": [
       { "label": "Tên sản phẩm", "value": "REGENAGLOW NOURISH SHEER CREAM" },
@@ -155,3 +155,4 @@ SELECT
   jsonb_array_length(CASE jsonb_typeof(content->'productInfo') WHEN 'array' THEN content->'productInfo' ELSE '[]'::jsonb END) AS product_info_count
 FROM content_blocks
 WHERE block_type = 'cosmetic-product-landing-regenaglow-cream';
+

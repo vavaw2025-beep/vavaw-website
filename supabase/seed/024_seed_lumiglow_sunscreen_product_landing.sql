@@ -80,7 +80,7 @@ BEGIN
       "title": "Bước bảo vệ ban ngày trong routine tại VAVAW Beauty & Co",
       "description": "LUMIGLOW ROSY SHEER SUNSCREEN có thể được tư vấn như bước bảo vệ ban ngày sau routine phục hồi, giúp duy trì làn da trông sáng khỏe và được chăm sóc đều đặn.",
       "ctaLabel": "Trải nghiệm tại VAVAW Beauty & Co",
-      "ctaHref": "/go/beauty"
+      "ctaHref": "https://beauty.vavaw.vn"
     },
     "productInfo": [
       { "label": "Tên sản phẩm", "value": "LUMIGLOW ROSY SHEER SUNSCREEN" },
@@ -155,3 +155,4 @@ SELECT
   jsonb_array_length(CASE jsonb_typeof(content->'productInfo') WHEN 'array' THEN content->'productInfo' ELSE '[]'::jsonb END) AS product_info_count
 FROM content_blocks
 WHERE block_type = 'cosmetic-product-landing-lumiglow-sunscreen';
+

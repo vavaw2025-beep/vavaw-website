@@ -102,7 +102,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     title: "Bước phục hồi nhẹ dịu trong routine tại VAVAW Beauty & Co",
     description: "Calmiance Superior Sheer Gel có thể được tư vấn như bước hỗ trợ phục hồi nhẹ nhàng sau trải nghiệm chăm sóc chuyên sâu, giúp duy trì cảm giác ẩm mát và dễ chịu cho làn da.",
     ctaLabel: "Trải nghiệm tại VAVAW Beauty & Co",
-    ctaHref: "/go/beauty"
+    ctaHref: "https://beauty.vavaw.vn"
   },
   productInfo: [
     { label: "Tên sản phẩm", "value": "Calmiance Superior Sheer Gel" },
@@ -143,3 +143,4 @@ export default async function CalmianceGelPage() {
   // 5. Render using the shared template
   return <ProductLandingPage content={mergedContent} cosmeticMedia={media}  canonicalPath="/cosmetic/products/${product}" />;
 }
+

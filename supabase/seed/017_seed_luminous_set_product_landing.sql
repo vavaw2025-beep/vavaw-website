@@ -18,7 +18,7 @@ BEGIN
     "ctaLabel": "Nhận tư vấn Luminous Set",
     "ctaHref": "/contact?type=cosmetic_interest&product=luminous_set&source=product_landing",
     "secondaryCtaLabel": "Trải nghiệm tại VAVAW Beauty & Co",
-    "secondaryCtaHref": "/go/beauty",
+    "secondaryCtaHref": "https://beauty.vavaw.vn",
     "heroMediaSlot": "cosmetic-product-luminous-set",
     "insideSet": [
       {
@@ -67,7 +67,7 @@ BEGIN
       "title": "Có thể trải nghiệm trong quy trình chăm sóc tại VAVAW Beauty & Co",
       "description": "VAVAW Beauty & Co giúp khách hàng hiểu cách kết hợp sản phẩm trong trải nghiệm chăm sóc chuyên nghiệp và routine tại nhà.",
       "ctaLabel": "Trải nghiệm tại VAVAW Beauty & Co",
-      "ctaHref": "/go/beauty"
+      "ctaHref": "https://beauty.vavaw.vn"
     },
     "productInfo": [
       { "label": "Tên sản phẩm", "value": "Luminous Revitalization Sheer Set" },
@@ -132,3 +132,4 @@ BEGIN
     RAISE NOTICE 'Content block cosmetic-product-landing-luminous-set updated and merged successfully.';
   END IF;
 END $$;
+

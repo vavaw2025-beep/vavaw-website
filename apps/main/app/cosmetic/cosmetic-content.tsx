@@ -1852,7 +1852,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
               <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-4">
                 <CosmeticCtaTracker
                   label={premiumProgram.ctaLabel || "Trải nghiệm tại VAVAW Beauty & Co"}
-                  href={premiumProgram.ctaHref || "/go/beauty"}
+                  href={premiumProgram.ctaHref || "https://beauty.vavaw.vn"}
                   className="w-full sm:w-auto h-[52px] px-8 flex items-center justify-center bg-[#050A5C] text-white text-[11px] tracking-[0.2em] uppercase hover:bg-[#101A8C] transition-all rounded-lg font-medium shadow-sm hover:shadow active:scale-[0.98]"
                 />
                 <CosmeticCtaTracker
@@ -2001,7 +2001,7 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
             />
             <CosmeticCtaTracker
               label={finalCta.secondaryCtaLabel || "Trải nghiệm tại VAVAW Beauty & Co"}
-              href={finalCta.secondaryCtaHref || "/go/beauty"}
+              href={finalCta.secondaryCtaHref || "https://beauty.vavaw.vn"}
               className="w-full sm:w-auto h-[48px] px-8 flex items-center justify-center border border-white/20 text-white text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-white/10 transition-colors rounded"
             />
           </motion.div>

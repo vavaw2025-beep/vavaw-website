@@ -321,11 +321,11 @@ async function loadSupabaseCmsData(isPreview = false): Promise<PublicCmsData> {
           // Resolve redirect path
           let redirectPath = s.redirect_path;
           if (!redirectPath || redirectPath === '-') redirectPath = linkedEntry?.redirectPath;
-          if (!redirectPath || redirectPath === '-') {
+          if (!redirectPath) {
             const t = (s.title ?? '').toLowerCase();
-            if (t.includes('cosmetic')) redirectPath = '/go/cosmetic';
-            else if (t.includes('beauty')) redirectPath = '/go/beauty';
-            else if (t.includes('franchise')) redirectPath = '/go/franchise';
+            if (t.includes('cosmetic')) redirectPath = '/cosmetic';
+            else if (t.includes('beauty')) redirectPath = 'https://beauty.vavaw.vn';
+            else if (t.includes('franchise')) redirectPath = 'https://franchise.vavaw.vn';
             else redirectPath = '/';
           }
 

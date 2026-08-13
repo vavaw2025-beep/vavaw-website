@@ -4,9 +4,7 @@ export const APPROVED_PUBLIC_LINKS = new Set([
   '/',
   '/cosmetic',
   '/contact',
-  '/go/cosmetic',
-  '/go/beauty',
-  '/go/franchise',
+  '/go/cosmetic', // legacy fallback, prefer /cosmetic
   '/cosmetic/products/luminous-revitalization-sheer-set',
   '/cosmetic/products/cellurevive-ampoule',
   '/cosmetic/products/regenaglow-nourish-sheer-cream',

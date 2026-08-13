@@ -41,7 +41,7 @@ BEGIN
         'ctaLabel', 'Nhận tư vấn sản phẩm',
         'ctaHref', '/contact?type=cosmetic_interest&source=final_cta',
         'secondaryCtaLabel', 'Trải nghiệm tại VAVAW Beauty & Co',
-        'secondaryCtaHref', '/go/beauty',
+        'secondaryCtaHref', 'https://beauty.vavaw.vn',
         'trustPoints', '[
           "Clinical Korean cosmetic ritual",
           "Spa-use recovery guidance",
@@ -81,7 +81,7 @@ BEGIN
   END IF;
 
   IF (v_content->>'secondaryCtaHref') IS NULL THEN
-    v_content := v_content || jsonb_build_object('secondaryCtaHref', '/go/beauty');
+    v_content := v_content || jsonb_build_object('secondaryCtaHref', 'https://beauty.vavaw.vn');
   END IF;
 
   -- Add trust points if missing or empty
@@ -104,3 +104,4 @@ BEGIN
 
   RAISE NOTICE 'Successfully updated cosmetic-final-cta block.';
 END $$;
+

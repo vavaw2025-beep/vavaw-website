@@ -22,7 +22,7 @@ BEGIN
         'primaryCtaLabel', 'Khám phá VAVAW Cosmetic',
         'primaryCtaHref', '/cosmetic',
         'secondaryCtaLabel', 'VAVAW Beauty & Co',
-        'secondaryCtaHref', '/go/beauty'
+        'secondaryCtaHref', 'https://beauty.vavaw.vn'
       ),
       10,
       true
@@ -45,7 +45,7 @@ BEGIN
         'headline', 'Mỹ phẩm phục hồi, không gian làm đẹp chuyên sâu và cơ hội hợp tác kinh doanh.',
         'description', 'Trải nghiệm đồng bộ từ sản phẩm chăm sóc tại nhà đến liệu trình chuyên nghiệp tại spa.',
         'primaryCtaLabel', 'Nhượng quyền VAVAW',
-        'primaryCtaHref', '/go/franchise'
+        'primaryCtaHref', 'https://franchise.vavaw.vn'
       ),
       20,
       true
@@ -81,3 +81,4 @@ BEGIN
     );
   END IF;
 END $$;
+

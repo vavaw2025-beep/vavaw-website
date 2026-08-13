@@ -102,7 +102,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     title: "Bước bảo vệ ban ngày trong routine tại VAVAW Beauty & Co",
     description: "LUMIGLOW ROSY SHEER SUNSCREEN có thể được tư vấn như bước bảo vệ ban ngày sau routine phục hồi, giúp duy trì làn da trông sáng khỏe và được chăm sóc đều đặn.",
     ctaLabel: "Trải nghiệm tại VAVAW Beauty & Co",
-    ctaHref: "/go/beauty"
+    ctaHref: "https://beauty.vavaw.vn"
   },
   productInfo: [
     { label: "Tên sản phẩm", "value": "LUMIGLOW ROSY SHEER SUNSCREEN" },
@@ -143,3 +143,4 @@ export default async function LumiglowSunscreenPage() {
   // 5. Render using the shared template
   return <ProductLandingPage content={mergedContent} cosmeticMedia={media}  canonicalPath="/cosmetic/products/${product}" />;
 }
+

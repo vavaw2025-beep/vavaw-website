@@ -102,7 +102,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     title: "Kết hợp trong routine phục hồi tại VAVAW Beauty & Co",
     description: "CELLUREVIVE Ampoule có thể được tư vấn như một bước treatment hỗ trợ routine phục hồi sau trải nghiệm chăm sóc chuyên sâu tại VAVAW Beauty & Co.",
     ctaLabel: "Trải nghiệm tại VAVAW Beauty & Co",
-    ctaHref: "/go/beauty"
+    ctaHref: "https://beauty.vavaw.vn"
   },
   productInfo: [
     { label: "Tên sản phẩm", value: "CELLUREVIVE Ampoule" },
@@ -190,3 +190,4 @@ export default async function CellureviveAmpoulePage() {
     />
   );
 }
+

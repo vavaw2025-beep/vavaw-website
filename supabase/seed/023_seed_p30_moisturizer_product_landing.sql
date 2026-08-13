@@ -80,7 +80,7 @@ BEGIN
       "title": "Bước khóa ẩm trong routine tại VAVAW Beauty & Co",
       "description": "P30 Boost Facial Moisturizer có thể được tư vấn như bước dưỡng ẩm hằng ngày, giúp hoàn thiện routine phục hồi sau các bước cấp ẩm hoặc treatment chuyên sâu.",
       "ctaLabel": "Trải nghiệm tại VAVAW Beauty & Co",
-      "ctaHref": "/go/beauty"
+      "ctaHref": "https://beauty.vavaw.vn"
     },
     "productInfo": [
       { "label": "Tên sản phẩm", "value": "P30 Boost Facial Moisturizer" },
@@ -155,3 +155,4 @@ SELECT
   jsonb_array_length(CASE jsonb_typeof(content->'productInfo') WHEN 'array' THEN content->'productInfo' ELSE '[]'::jsonb END) AS product_info_count
 FROM content_blocks
 WHERE block_type = 'cosmetic-product-landing-p30-moisturizer';
+

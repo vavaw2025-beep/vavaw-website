@@ -102,7 +102,7 @@ const DEFAULT_CONTENT: ProductLandingContent = {
     title: "Bước chuẩn bị da trong routine tại VAVAW Beauty & Co",
     description: "P30 Boost Facial Hydrating Toner có thể được tư vấn như bước cân bằng và chuẩn bị làn da trước các bước phục hồi chuyên sâu trong routine tại nhà.",
     ctaLabel: "Trải nghiệm tại VAVAW Beauty & Co",
-    ctaHref: "/go/beauty"
+    ctaHref: "https://beauty.vavaw.vn"
   },
   productInfo: [
     { label: "Tên sản phẩm", "value": "P30 Boost Facial Hydrating Toner" },
@@ -143,3 +143,4 @@ export default async function P30TonerPage() {
   // 5. Render using the shared template
   return <ProductLandingPage content={mergedContent} cosmeticMedia={media}  canonicalPath="/cosmetic/products/${product}" />;
 }
+

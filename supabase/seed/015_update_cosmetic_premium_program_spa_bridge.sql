@@ -60,7 +60,7 @@ BEGIN
           }
         ]'::jsonb,
         'ctaLabel', 'Trải nghiệm tại VAVAW Beauty & Co',
-        'ctaHref', '/go/beauty',
+        'ctaHref', 'https://beauty.vavaw.vn',
         'secondaryCtaLabel', 'Nhận tư vấn sản phẩm',
         'secondaryCtaHref', '/contact?type=cosmetic_interest&source=premium_program'
       ),
@@ -123,7 +123,7 @@ BEGIN
   END IF;
 
   IF (v_content->>'ctaHref') IS NULL OR v_content->>'ctaHref' = '/contact?type=cosmetic_interest' THEN
-    v_content := v_content || jsonb_build_object('ctaHref', '/go/beauty');
+    v_content := v_content || jsonb_build_object('ctaHref', 'https://beauty.vavaw.vn');
   END IF;
 
   IF (v_content->>'secondaryCtaLabel') IS NULL THEN
@@ -158,3 +158,4 @@ from public.content_blocks
 where site_key = 'main'
   and page_path = '/cosmetic'
   and block_type = 'cosmetic-premium-program';
+

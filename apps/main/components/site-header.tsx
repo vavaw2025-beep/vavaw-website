@@ -51,14 +51,14 @@ export function SiteHeader({ logoUrl, logoDarkUrl }: SiteHeaderProps) {
           Cosmetic
         </Link>
         <Link 
-          href="/go/beauty" 
+          href="https://beauty.vavaw.vn" 
           prefetch={false} 
           className={`${inactiveColor} ${textColorHover} text-xs font-medium tracking-[0.15em] uppercase transition-colors`}
         >
           Beauty
         </Link>
         <Link 
-          href="/go/franchise" 
+          href="https://franchise.vavaw.vn" 
           prefetch={false} 
           className={`${inactiveColor} ${textColorHover} text-xs font-medium tracking-[0.15em] uppercase transition-colors`}
         >
@@ -92,7 +92,7 @@ export function SiteHeader({ logoUrl, logoDarkUrl }: SiteHeaderProps) {
             Cosmetic
           </Link>
           <Link 
-            href="/go/beauty" 
+            href="https://beauty.vavaw.vn" 
             prefetch={false}
             onClick={() => setMobileMenuOpen(false)} 
             className="flex items-center h-11 px-4 text-[#F8F7F2]/70 hover:text-white hover:bg-white/5 text-sm font-medium tracking-[0.2em] uppercase"
@@ -100,7 +100,7 @@ export function SiteHeader({ logoUrl, logoDarkUrl }: SiteHeaderProps) {
             Beauty
           </Link>
           <Link 
-            href="/go/franchise" 
+            href="https://franchise.vavaw.vn" 
             prefetch={false}
             onClick={() => setMobileMenuOpen(false)} 
             className="flex items-center h-11 px-4 text-[#F8F7F2]/70 hover:text-white hover:bg-white/5 text-sm font-medium tracking-[0.2em] uppercase"

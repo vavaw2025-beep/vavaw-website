@@ -9,9 +9,7 @@
 - `/`
 - `/cosmetic`
 - `/contact`
-- `/go/cosmetic`
-- `/go/beauty`
-- `/go/franchise`
+- `/go/cosmetic` (legacy redirect)
 - `/system-update`
 - 8 explicit cosmetic product slugs:
   - `/cosmetic/products/luminous-revitalization-sheer-set`
@@ -39,7 +37,7 @@
 | `UnavailableLandingPage` | Hardcoded | "Khám phá Cosmetic" | `/cosmetic` | CTA | **approved** | `/cosmetic` | Safe route |
 | `BrandHero` | CMS `hero_slides` | Hero CTA | `heroSlide.ctaLink` | CTA | **fallback-required** | `resolvePublicHref(...)` | Wrap all CMS variables |
 | `BusinessEcosystem` | CMS `business_entries` | Brand Cards | `entry.redirectPath` | CTA | **fallback-required** | `resolvePublicHref(...)` | Map internal `/go/*` links safely |
-| `Header` / `SiteHeader` | Hardcoded / Config | Logo, Nav Links | `/`, `/cosmetic`, `/go/beauty`, `/go/franchise`, `/contact` | Nav | **approved** | (leave as is) | Only approved core nav links |
+| `Header` / `SiteHeader` | Hardcoded / Config | Logo, Nav Links | `/`, `/cosmetic`, `https://beauty.vavaw.vn`, `https://franchise.vavaw.vn`, `/contact` | Nav | **approved** | (leave as is) | Only approved core nav links |
 | `MainLanding: Final CTA` | CMS `content_blocks` | Primary / Secondary | `ctaContent.primaryCtaHref`, `secondaryCtaHref` | CTA | **fallback-required** | `resolvePublicHref(...)` | Fallback if incomplete |
 | `CosmeticLanding: FeaturedCollection` | CMS `content_blocks` | Collection CTA | `featCta` | CTA | **fallback-required** | `resolvePublicHref(...)` | |
 | `CosmeticLanding: ClinicalFormulaLab` | CMS `content_blocks` | Product Cards | `getProductLandingHref(...)` | Product | **fallback-required** | `resolvePublicHref(...)` | Ensure dynamic slugs match the 8 approved |
