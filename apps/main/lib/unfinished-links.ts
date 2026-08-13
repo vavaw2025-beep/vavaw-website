@@ -1,15 +1,62 @@
 import { getSystemUpdateUrl } from './get-system-update-url';
+import { APPROVED_PUBLIC_LINKS, isApprovedExternalDomain } from './public-link-policy';
 
-export function resolveUnfinishedHref(
+export function resolvePublicHref(
   href: string | undefined | null,
-  fromPath?: string,
-  reason: string = 'coming-soon'
-): string {
-  if (!href || href === '#' || href === '' || href.trim() === '#' || href === '/coming-soon' || href === '/placeholder' || href.includes('PASTE_')) {
-    return getSystemUpdateUrl(reason, fromPath || href || '/unfinished');
+  sourcePath?: string,
+  options?: {
+    linkType?: 'cta' | 'nav' | 'footer' | 'product' | 'external';
   }
-  return href;
+): string {
+  const fallbackUrl = getSystemUpdateUrl('coming-soon', sourcePath || href || '/unfinished');
+
+  if (!href || href.trim() === '' || href.trim() === '#') {
+    return fallbackUrl;
+  }
+
+  const cleanHref = href.trim();
+
+  // Block obvious placeholders
+  if (cleanHref === '/coming-soon' || cleanHref === '/placeholder' || cleanHref.includes('PASTE_')) {
+    return fallbackUrl;
+  }
+  
+  if (cleanHref.toLowerCase().startsWith('javascript:')) {
+    return fallbackUrl;
+  }
+
+  // Handle external or absolute URLs
+  if (cleanHref.startsWith('http://') || cleanHref.startsWith('https://')) {
+    if (isApprovedExternalDomain(cleanHref)) {
+      return cleanHref;
+    }
+    // Unapproved external links (like social, booking) go to system update
+    return fallbackUrl;
+  }
+
+  // Handle internal URLs with query params (e.g., /contact?type=...)
+  const [pathPart, queryPart] = cleanHref.split('?');
+  
+  // Hash anchors on the same page are allowed temporarily assuming they map to an ID.
+  if (pathPart === '' && cleanHref.startsWith('#')) {
+    return cleanHref;
+  }
+
+  // Explicit approval check
+  if (
+    APPROVED_PUBLIC_LINKS.has(pathPart) || 
+    pathPart.startsWith('/go/') // All /go/* shortlinks are safe redirects
+  ) {
+    return cleanHref;
+  }
+
+  // Anything else not in the allowlist is blocked
+  return fallbackUrl;
 }
+
+// Keep backward compatibility for the exact old import name in case it is deeply nested elsewhere
+// and gradually migrate. We export both.
+export const resolveUnfinishedHref = resolvePublicHref;
 
 export const unfinishedLinks = {
   booking: getSystemUpdateUrl('coming-soon', '/booking'),

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import type { NewsItem } from '@/lib/data';
-import { resolveUnfinishedHref } from '@/lib/unfinished-links';
+import { resolvePublicHref } from '@/lib/unfinished-links';
 
 interface NewsCarouselProps {
   items: NewsItem[];
@@ -116,13 +116,21 @@ export function NewsCarousel({ items }: NewsCarouselProps) {
                 </p>
 
                 {/* Link */}
-                <Link
-                  href={resolveUnfinishedHref(item.link, '/news')}
-                  className="mt-4 inline-flex items-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all"
-                >
-                  Read More
-                  <ArrowRight size={16} />
-                </Link>
+                {(() => {
+                  const resolvedHref = resolvePublicHref(item.link, '/news');
+                  const isFallback = resolvedHref.includes('/system-update');
+                  return (
+                    <Link
+                      href={resolvedHref}
+                      data-link-status={isFallback ? 'fallback' : 'approved'}
+                      data-original-href={isFallback ? item.link : undefined}
+                      className="mt-4 inline-flex items-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all"
+                    >
+                      Read More
+                      <ArrowRight size={16} />
+                    </Link>
+                  );
+                })()}
               </div>
             </motion.div>
           ))}

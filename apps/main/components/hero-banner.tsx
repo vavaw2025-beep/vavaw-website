@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import type { HeroBanner } from '@/lib/data';
-import { resolveUnfinishedHref } from '@/lib/unfinished-links';
+import { resolvePublicHref } from '@/lib/unfinished-links';
 
 interface HeroBannerProps {
   banners: HeroBanner[];
@@ -110,16 +110,24 @@ export function HeroBannerSection({ banners }: HeroBannerProps) {
                   {banners[current].subtitle}
                 </motion.p>
 
-                <motion.a
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                  href={resolveUnfinishedHref(banners[current].ctaLink, '/hero-banner')}
-                  className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-all hover:scale-105"
-                >
-                  {banners[current].cta}
-                  <ChevronRight size={20} />
-                </motion.a>
+                {(() => {
+                  const resolvedHref = resolvePublicHref(banners[current].ctaLink, '/hero-banner');
+                  const isFallback = resolvedHref.includes('/system-update');
+                  return (
+                    <motion.a
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.6, delay: 0.6 }}
+                      href={resolvedHref}
+                      data-link-status={isFallback ? 'fallback' : 'approved'}
+                      data-original-href={isFallback ? banners[current].ctaLink : undefined}
+                      className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-all hover:scale-105"
+                    >
+                      {banners[current].cta}
+                      <ChevronRight size={20} />
+                    </motion.a>
+                  );
+                })()}
               </motion.div>
             </div>
           </div>

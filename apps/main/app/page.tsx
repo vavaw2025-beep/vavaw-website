@@ -5,7 +5,7 @@ import { SiteFooter } from '@vavaw/ui';
 import { loadPublicHomeCms } from '@/lib/load-public-cms';
 import { loadPublicSeo } from '@/lib/load-public-seo';
 import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
-import { resolveUnfinishedHref } from '@/lib/unfinished-links';
+import { resolvePublicHref } from '@/lib/unfinished-links';
 import Link from 'next/link';
 import { draftMode } from 'next/headers';
 
@@ -145,22 +145,38 @@ export default async function HomePage() {
             )}
 
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-              {ctaContent.primaryCtaLabel && (
-                <Link
-                  href={resolveUnfinishedHref(String(ctaContent.primaryCtaHref || '/cosmetic'), '/main-final-cta')}
-                  className="px-8 py-3.5 bg-white text-black font-medium text-xs tracking-[0.15em] uppercase hover:bg-white/90 transition-colors rounded-sm"
-                >
-                  {String(ctaContent.primaryCtaLabel)}
-                </Link>
-              )}
-              {ctaContent.secondaryCtaLabel && (
-                <Link
-                  href={resolveUnfinishedHref(String(ctaContent.secondaryCtaHref || '/contact'), '/main-final-cta-secondary')}
-                  className="px-8 py-3.5 border border-[#333333] hover:border-white text-white font-medium text-xs tracking-[0.15em] uppercase transition-colors rounded-sm"
-                >
-                  {String(ctaContent.secondaryCtaLabel)}
-                </Link>
-              )}
+              {ctaContent.primaryCtaLabel && (() => {
+                const rawHref = String(ctaContent.primaryCtaHref || '/cosmetic');
+                const resolvedHref = resolvePublicHref(rawHref, '/main-final-cta');
+                const isFallback = resolvedHref.includes('/system-update');
+                
+                return (
+                  <Link
+                    href={resolvedHref}
+                    data-link-status={isFallback ? 'fallback' : 'approved'}
+                    data-original-href={isFallback ? rawHref : undefined}
+                    className="px-8 py-3.5 bg-white text-black font-medium text-xs tracking-[0.15em] uppercase hover:bg-white/90 transition-colors rounded-sm"
+                  >
+                    {String(ctaContent.primaryCtaLabel)}
+                  </Link>
+                );
+              })()}
+              {ctaContent.secondaryCtaLabel && (() => {
+                const rawHref = String(ctaContent.secondaryCtaHref || '/contact');
+                const resolvedHref = resolvePublicHref(rawHref, '/main-final-cta-secondary');
+                const isFallback = resolvedHref.includes('/system-update');
+                
+                return (
+                  <Link
+                    href={resolvedHref}
+                    data-link-status={isFallback ? 'fallback' : 'approved'}
+                    data-original-href={isFallback ? rawHref : undefined}
+                    className="px-8 py-3.5 border border-[#333333] hover:border-white text-white font-medium text-xs tracking-[0.15em] uppercase transition-colors rounded-sm"
+                  >
+                    {String(ctaContent.secondaryCtaLabel)}
+                  </Link>
+                );
+              })()}
             </div>
 
             {Array.isArray(ctaContent.trustPoints) && ctaContent.trustPoints.length > 0 && (

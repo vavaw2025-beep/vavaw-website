@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
 import type { NormalizedContentBlock } from '../lib/public-cms-types';
 import { ReactNode } from 'react';
-import { resolveUnfinishedHref } from '../lib/unfinished-links';
+import { resolvePublicHref } from '@/lib/unfinished-links';
 
 // Safety helpers
 function getString(value: unknown, fallback = ''): string {
@@ -223,14 +223,21 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
                   </motion.p>
                 )}
                 <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                  {getString(content.buttonHref) ? (
-                    <Link 
-                      href={resolveUnfinishedHref(getString(content.buttonHref), '/button')}
-                      className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
-                    >
-                      {getString(content.buttonLabel, 'Learn More')}
-                    </Link>
-                  ) : (
+                  {getString(content.buttonHref) ? (() => {
+                    const rawHref = getString(content.buttonHref);
+                    const resolvedHref = resolvePublicHref(rawHref, '/button');
+                    const isFallback = resolvedHref.includes('/system-update');
+                    return (
+                      <Link 
+                        href={resolvedHref}
+                        data-link-status={isFallback ? 'fallback' : 'approved'}
+                        data-original-href={isFallback ? rawHref : undefined}
+                        className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
+                      >
+                        {getString(content.buttonLabel, 'Learn More')}
+                      </Link>
+                    );
+                  })() : (
                     <Link 
                       href="/"
                       className="px-8 py-4 bg-white text-black text-sm tracking-widest uppercase hover:bg-white/90 transition-colors"
@@ -238,15 +245,22 @@ export function ContentBlockRenderer({ blocks, fallbackContent }: { blocks: Norm
                       Back to VAVAW
                     </Link>
                   )}
-                  {getString(content.secondaryButtonHref) && (
-                    <Link 
-                      href={resolveUnfinishedHref(getString(content.secondaryButtonHref), '/secondary-button')}
-                      className="group flex items-center text-sm tracking-widest uppercase text-white/70 hover:text-white transition-colors"
-                    >
-                      {getString(content.secondaryButtonLabel)}
-                      <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  )}
+                  {getString(content.secondaryButtonHref) && (() => {
+                    const rawHref = getString(content.secondaryButtonHref);
+                    const resolvedHref = resolvePublicHref(rawHref, '/secondary-button');
+                    const isFallback = resolvedHref.includes('/system-update');
+                    return (
+                      <Link 
+                        href={resolvedHref}
+                        data-link-status={isFallback ? 'fallback' : 'approved'}
+                        data-original-href={isFallback ? rawHref : undefined}
+                        className="group flex items-center text-sm tracking-widest uppercase text-white/70 hover:text-white transition-colors"
+                      >
+                        {getString(content.secondaryButtonLabel)}
+                        <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    );
+                  })()}
                 </motion.div>
               </motion.div>
             </section>
