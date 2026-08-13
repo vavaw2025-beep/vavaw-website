@@ -33,16 +33,6 @@ export const metadata: Metadata = {
     title: beautyEntry?.seo.title || 'VAVAW Beauty & Co | Premium Korean Beauty Spa',
     description: beautyEntry?.seo.description || beautyEntry?.description,
   },
-  icons: {
-    // TODO: Ensure favicon.ico and icon assets are manually uploaded to public/
-    icon: [
-      { url: '/favicon.ico', type: 'image/x-icon' },
-      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: '/apple-icon.png',
-  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

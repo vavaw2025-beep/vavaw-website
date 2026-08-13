@@ -106,6 +106,14 @@ curl -I https://franchise.vavaw.vn
 curl -I https://franchise.vavaw.vn/sitemap.xml
 
 # 6. Admin Disallow & Noindex Check
-curl -I https://admin.vavaw.vn
 curl -I https://admin.vavaw.vn/robots.txt
 ```
+
+---
+
+## 7. Favicon QA & Cache Busting
+
+- Test direct `/favicon.ico` first (e.g. `https://vavaw.vn/favicon.ico`).
+- If direct favicon is correct but browser tab still shows old icon, clear browser favicon cache or test in incognito/new browser profile.
+- Chrome can keep favicon cache longer than normal page cache.
+- After icon file changes, redeploy affected app.

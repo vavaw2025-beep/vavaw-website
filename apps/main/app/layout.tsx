@@ -27,16 +27,6 @@ export const metadata: Metadata = {
     title: 'VAVAW | Korean Beauty, Cosmetic & Franchise Ecosystem',
     description: 'VAVAW is a premium Korean beauty ecosystem connecting cosmetic rituals, spa experiences, and franchise growth.',
   },
-  icons: {
-    // TODO: Ensure favicon.ico and icon assets are manually uploaded to public/
-    icon: [
-      { url: '/favicon.ico', type: 'image/x-icon' },
-      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: '/apple-icon.png',
-  },
 }
 
 export const viewport: Viewport = {
