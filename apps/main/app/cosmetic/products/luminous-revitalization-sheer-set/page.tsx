@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 import { Suspense } from 'react';
 import { draftMode } from 'next/headers';
 import { loadPublicCosmeticMedia } from '@/lib/load-public-cosmetic-media';
@@ -226,8 +226,17 @@ export default async function LuminousProductLandingPage() {
   // Merge CMS and Default Fallback content safely
   const mergedContent = mergeProductLandingContent(DEFAULT_CONTENT, cmsBlock);
 
+  const contentSource = useCms ? 'supabase' : 'static-fallback';
+  const contentVersion = blockRecord ? (blockRecord.updatedAt || blockRecord.id) : 'default';
+
   return (
-    <LuminousSetLandingPage content={mergedContent} cosmeticMedia={cosmeticMedia} canonicalPath="/cosmetic/products/luminous-revitalization-sheer-set" />
+    <LuminousSetLandingPage 
+      content={mergedContent} 
+      cosmeticMedia={cosmeticMedia} 
+      canonicalPath="/cosmetic/products/luminous-revitalization-sheer-set"
+      contentSource={contentSource}
+      contentVersion={contentVersion}
+    />
   );
 }
 

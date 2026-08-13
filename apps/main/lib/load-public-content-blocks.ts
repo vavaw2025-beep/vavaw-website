@@ -93,6 +93,7 @@ export async function loadPublicContentBlocks({
         },
         sortOrder: block.sort_order,
         isActive: Boolean(block.is_active),
+        updatedAt: block.updated_at,
       };
     });
 

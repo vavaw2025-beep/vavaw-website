@@ -6,4 +6,5 @@ export type NormalizedContentBlock = {
   content: Record<string, unknown>;
   sortOrder: number;
   isActive: boolean;
+  updatedAt?: string;
 };

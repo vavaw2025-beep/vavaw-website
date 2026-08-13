@@ -239,6 +239,8 @@ interface ProductLandingPageProps {
   content: ProductLandingContent;
   cosmeticMedia: any;
   canonicalPath: string;
+  contentSource?: string;
+  contentVersion?: string;
 }
 
 const DEFAULT_WHO_NEEDS_SHEER_SET = {
@@ -834,7 +836,7 @@ function normalizeLuminousProductDetailForm(form: any) {
   return merged;
 }
 
-export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }: ProductLandingPageProps) {
+export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath, contentSource, contentVersion }: ProductLandingPageProps) {
   // Helper for rendering slot images safely with a gradient card fallback
   const renderSlotImage = (srcUrl: string | undefined, altText: string, fallbackGrad: string) => {
     if (srcUrl && srcUrl.trim() && !srcUrl.includes('PASTE_')) {
@@ -856,7 +858,12 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
   };
 
   return (
-    <div className="cosmetic-typography min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#E2E8F0] selection:text-[#050A5C]">
+    <div 
+      className="cosmetic-typography min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#E2E8F0] selection:text-[#050A5C]"
+      data-luminous-content-source={contentSource || 'static-fallback'}
+      data-luminous-content-version={contentVersion || 'default'}
+      data-luminous-media-ready={cosmeticMedia && Object.keys(cosmeticMedia).length > 0 ? "true" : "false"}
+    >
       <ProductJsonLd content={content} canonicalPath={canonicalPath} cosmeticMedia={cosmeticMedia} />
       
       {/* ─── FULL WIDTH PRODUCT HERO ───────────────────────────────────────────── */}
@@ -877,7 +884,11 @@ export function LuminousSetLandingPage({ content, cosmeticMedia, canonicalPath }
               null;
             if (!candidate || typeof candidate !== 'string') return null;
             if (!candidate.trim() || candidate.includes('/PASTE')) return null;
-            return candidate.trim();
+            let finalUrl = candidate.trim();
+            if (contentVersion && contentVersion !== 'default') {
+              finalUrl += `${finalUrl.includes('?') ? '&' : '?'}v=${encodeURIComponent(contentVersion)}`;
+            }
+            return finalUrl;
           }
           return null;
         };
