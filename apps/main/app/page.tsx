@@ -82,6 +82,8 @@ export default async function HomePage() {
       data-main-landing-cms-block-count={blocks?.length ?? 0}
       data-main-ecosystem-intro-state={blockMap.has('main-ecosystem-intro') ? (showEcosystem ? 'visible' : 'hidden') : 'missing'}
       data-main-ecosystem-visible={showEcosystem ? 'true' : 'false'}
+      data-main-final-cta-state={blockMap.has('main-final-cta') ? (showFinalCta ? 'visible' : 'hidden') : 'missing'}
+      data-main-final-cta-visible={showFinalCta ? 'true' : 'false'}
     >
       <BrandHero
         slides={cms.heroSlides}

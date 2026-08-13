@@ -14,11 +14,22 @@ export type RevalidateResult = {
 };
 
 export async function triggerPublicRevalidation(input: RevalidateInput): Promise<RevalidateResult> {
-  const isEnabled = process.env.CMS_REVALIDATION_ENABLED === 'true';
   const secret = process.env.REVALIDATION_SECRET;
 
-  if (!isEnabled || !secret) {
-    return { ok: true, skipped: true, error: 'Revalidation disabled or secret missing' };
+  // Revalidation is active whenever REVALIDATION_SECRET is configured.
+  // CMS_REVALIDATION_ENABLED is kept as an explicit opt-out escape hatch only.
+  const isExplicitlyDisabled = process.env.CMS_REVALIDATION_ENABLED === 'false';
+
+  if (isExplicitlyDisabled) {
+    return { ok: true, skipped: true, error: 'Revalidation explicitly disabled via CMS_REVALIDATION_ENABLED=false' };
+  }
+
+  if (!secret) {
+    console.warn(
+      `[revalidate] REVALIDATION_SECRET not set — skipping cross-app revalidation for app="${input.app}" paths=${input.paths.join(',')}. ` +
+      'Public homepage will refresh via revalidate=60 fallback.'
+    );
+    return { ok: true, skipped: true, error: 'REVALIDATION_SECRET not configured' };
   }
 
   const urls: { name: string; url: string | undefined }[] = [];

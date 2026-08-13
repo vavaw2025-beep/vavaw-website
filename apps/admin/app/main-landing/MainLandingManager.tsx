@@ -650,6 +650,17 @@ export function MainLandingManager({
             </div>
           </div>
 
+          {/* Cross-app Revalidation Info */}
+          <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
+            <SlidersHorizontal className="h-4 w-4 mt-0.5 shrink-0 text-blue-500" />
+            <p>
+              <span className="font-semibold">Admin và Main là 2 deployment riêng.</span>{' '}
+              Sau khi ẩn/hiện section, <span className="font-mono">vavaw-main</span> sẽ được revalidate qua API;
+              nếu thiếu <span className="font-mono">REVALIDATION_SECRET</span>, public có thể cập nhật sau tối đa{' '}
+              <span className="font-semibold">60 giây</span> (ISR fallback tự động).
+            </p>
+          </div>
+
           {/* Visibility Filter Pills */}
           <div className="flex items-center justify-between bg-slate-100/80 p-1.5 rounded-xl border border-slate-200">
             <div className="flex items-center space-x-1">
