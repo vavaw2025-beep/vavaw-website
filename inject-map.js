@@ -1,27 +1,7 @@
-export const COSMETIC_VI_COPY_MAP = {
-  "The Premium RAW Skincare System": "Hệ thống chăm sóc da RAW cao cấp",
-  "Scientific beauty, refined into a pure Korean skincare ritual.": "Vẻ đẹp khoa học, được tinh chỉnh thành nghi thức chăm sóc da Hàn Quốc thuần khiết.",
-  "Scientific Beauty": "Vẻ đẹp khoa học",
-  "Premium Program": "Chương trình chăm sóc cao cấp",
-  "Functional Cosmetics": "Mỹ phẩm chức năng",
-  "SIGNATURE RECOVERY COLLECTION": "BỘ SẢN PHẨM PHỤC HỒI ĐẶC TRƯNG",
-  "Signature Recovery Collection": "Bộ sản phẩm phục hồi đặc trưng",
-  "A complete Korean clinical skincare ritual for recovery, hydration, radiance, and skin barrier support.": "Nghi thức chăm sóc da Hàn Quốc định hướng lâm sàng, hỗ trợ phục hồi, cấp ẩm, cải thiện vẻ rạng rỡ và củng cố hàng rào bảo vệ da.",
-  "EXPLORE THE RITUAL": "KHÁM PHÁ NGHI THỨC",
-  "CLINICAL INSIGHT": "GÓC NHÌN LÂM SÀNG",
-  "FEATURED SET": "BỘ SẢN PHẨM NỔI BẬT",
-  "RECOVERY RITUAL · 6 STEPS": "NGHI THỨC PHỤC HỒI · 6 BƯỚC",
-  "PEPTIDE COMPLEX": "PHỨC HỢP PEPTIDE",
-  "VAVAW is a clinical Korean cosmetic system designed to restore the skin from its origin — pure, balanced, and resilient.": "VAVAW là hệ mỹ phẩm Hàn Quốc định hướng lâm sàng, được phát triển để hỗ trợ làn da phục hồi từ nền tảng — tinh khiết, cân bằng và bền vững.",
-  "Clinical skincare system shaped by professional care standards — developed for visible, lasting results.": "Hệ chăm sóc da định hướng lâm sàng, được phát triển theo tiêu chuẩn chăm sóc chuyên nghiệp để mang lại hiệu quả rõ ràng và bền vững.",
-  "Personalized skincare experience for modern skin concerns — designed for spa, clinic, and home ritual.": "Trải nghiệm chăm sóc da cá nhân hóa cho các vấn đề da hiện đại — phù hợp cho spa, clinic và routine tại nhà.",
-  "Korean-developed formulas designed for visible skin recovery, balancing efficacy with elegance.": "Công thức phát triển theo định hướng Hàn Quốc, hỗ trợ phục hồi làn da rõ rệt và cân bằng giữa hiệu quả với sự tinh tế.",
-  "The complete skin\nrecovery ritual.": "Nghi thức phục hồi da\ntoàn diện.",
-  "A complete Korean clinical skincare ritual designed to cleanse, prepare, treat, seal, and protect the skin.": "Nghi thức chăm sóc da lâm sàng Hàn Quốc toàn diện được thiết kế để làm sạch, chuẩn bị, đặc trị, khóa ẩm và bảo vệ da.",
-  "SIGNATURE RECOVERY SYSTEM": "HỆ THỐNG PHỤC HỒI ĐẶC TRƯNG",
-  "Daily Clinical Skincare Routine": "Nghi thức chăm sóc da lâm sàng hàng ngày",
-  "Answer a few quick questions to discover a Korean clinical skincare ritual designed for your skin stage and concern.": "Trả lời vài câu hỏi để khám phá nghi thức chăm sóc da lâm sàng Hàn Quốc được thiết kế cho tình trạng và vấn đề da của bạn.",
-  "Scientific beauty, refined into a pure Korean skincare ritual.\n\nVAVAW is a clinical Korean cosmetic system designed to restore the skin from its origin — pure, balanced, and resilient.": "Vẻ đẹp khoa học, được tinh chỉnh thành nghi thức chăm sóc da Hàn Quốc thuần khiết. VAVAW là hệ mỹ phẩm Hàn Quốc định hướng lâm sàng, được phát triển để hỗ trợ làn da phục hồi từ nền tảng — tinh khiết, cân bằng và bền vững.",
+import * as fs from 'fs';
+
+const translationsToAdd = {
+  "Scientific beauty, refined into a pure Korean skincare ritual.  VAVAW is a clinical Korean cosmetic system designed to restore the skin from its origin — pure, balanced, and resilient.": "Vẻ đẹp khoa học, được tinh chỉnh thành nghi thức chăm sóc da Hàn Quốc thuần khiết. VAVAW là hệ mỹ phẩm Hàn Quốc định hướng lâm sàng, được phát triển để hỗ trợ làn da phục hồi từ nền tảng — tinh khiết, cân bằng và bền vững.",
   "Clinical Korean cosmetic ritual": "Nghi thức mỹ phẩm lâm sàng Hàn Quốc",
   "Spa-use recovery guidance": "Hướng dẫn phục hồi chuẩn spa",
   "Clinical Formula Logic": "Logic công thức lâm sàng",
@@ -43,6 +23,7 @@ export const COSMETIC_VI_COPY_MAP = {
   "A calming recovery routine designed to restore skin comfort, hydration, and resilience.": "Quy trình phục hồi làm dịu được thiết kế để khôi phục sự thoải mái, độ ẩm và sức đề kháng cho làn da.",
   "A lightweight clinical hydration routine to plump, smooth and refresh dehydrated skin.": "Quy trình cấp ẩm lâm sàng mỏng nhẹ giúp làm căng mọng, mịn màng và tươi mới làn da thiếu nước.",
   "An advanced regenerative skincare regimen to improve cell turnover, firmness, and reduce fine lines.": "Phác đồ chăm sóc chuyên sâu, hỗ trợ quá trình làm mới bề mặt da, cải thiện cảm giác săn chắc và làm mềm vẻ xuất hiện của nếp nhăn nhỏ.",
+  "FEATURED SET": "BỘ SẢN PHẨM NỔI BẬT",
   "Radiance Recovery": "Phục hồi độ rạng rỡ",
   "Korean Recovery Ritual": "Nghi thức phục hồi Hàn Quốc",
   "PRODUCT INFORMATION": "THÔNG TIN SẢN PHẨM",
@@ -59,45 +40,28 @@ export const COSMETIC_VI_COPY_MAP = {
   "Professional treatment compatibility for spa and clinic use": "Phù hợp với quy trình chăm sóc chuyên nghiệp tại spa và clinic",
   "Personalized care guidance from certified skincare specialists": "Hướng dẫn chăm sóc cá nhân hóa từ các chuyên gia chăm sóc da",
   "A personalized skincare experience designed for spa, clinic, and professional treatment environments — where expertise meets Korean clinical precision.": "Trải nghiệm chăm sóc da cá nhân hóa dành cho spa, clinic và môi trường chăm sóc chuyên nghiệp — nơi chuyên môn kết hợp cùng sự chính xác theo định hướng Hàn Quốc.",
+  "Signature Recovery Collection": "Bộ sản phẩm phục hồi đặc trưng",
   "Explore the Ritual": "Khám phá nghi thức",
   "A complete recovery set designed to support the skin barrier and restore a luminous, balanced appearance.": "Bộ sản phẩm phục hồi toàn diện được thiết kế để hỗ trợ hàng rào bảo vệ da và khôi phục vẻ ngoài cân bằng, rạng rỡ."
-} as const;
+};
 
-export const COSMETIC_COPY_PROTECTED_PHRASES = [
-  "VAVAW",
-  "VAVAW Cosmetic",
-  "VAVAW Beauty & Co",
-  "VAVAW Franchise",
-  "Luminous Revitalization Sheer Set",
-  "CELLUREVIVE Ampoule",
-  "REGENAGLOW NOURISH SHEER CREAM",
-  "Calmiance Superior Sheer Gel",
-  "P30 Boost Facial Hydrating Toner",
-  "Gentle Activation Renew Ampoule",
-  "P30 Boost Facial Moisturizer",
-  "LUMIGLOW ROSY SHEER SUNSCREEN",
-  "EXOSOME",
-  "COLLAGEN",
-  "RAW"
-];
+const mapFilePath = 'e:/Downloads/VAVAW-web/packages/brand-config/src/cosmetic-vietnamese-copy-map.ts';
+let content = fs.readFileSync(mapFilePath, 'utf-8');
 
-export const COSMETIC_COPY_PROTECTED_KEYS = [
-  "href",
-  "url",
-  "src",
-  "image",
-  "imageUrl",
-  "mediaSlot",
-  "videoSlot",
-  "slug",
-  "path",
-  "page_path",
-  "block_type",
-  "canonical",
-  "canonicalUrl",
-  "productSlug",
-  "route",
-  "id",
-  "key",
-  "icon"
-];
+const injectionPoint = 'export const COSMETIC_VI_COPY_MAP: Record<string, string> = {';
+
+if (content.includes(injectionPoint)) {
+    let toInject = '';
+    for (const [en, vi] of Object.entries(translationsToAdd)) {
+        // Only inject if not already present
+        if (!content.includes(JSON.stringify(en))) {
+            toInject += `  ${JSON.stringify(en)}: ${JSON.stringify(vi)},\n`;
+        }
+    }
+    
+    content = content.replace(injectionPoint, injectionPoint + '\n' + toInject);
+    fs.writeFileSync(mapFilePath, content);
+    console.log('Successfully injected translations.');
+} else {
+    console.error('Could not find injection point');
+}

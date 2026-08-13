@@ -31,8 +31,8 @@ async function main() {
   console.log(`Mode: ${isApplyMode ? 'APPLY (Writing to DB)' : 'DRY RUN (Read only)'}\n`);
 
   if (isApplyMode) {
-    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-      console.error("❌ Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY for apply mode.");
+    if (!SUPABASE_URL) {
+      console.error("❌ Missing SUPABASE_URL for apply mode.");
       process.exit(1);
     }
   } else {
@@ -43,8 +43,8 @@ async function main() {
   }
 
   // Use anon key for dry-run if service role is missing, but service role is strictly required for apply
-  const keyToUse = (isApplyMode ? SUPABASE_SERVICE_ROLE_KEY : (SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) as string;
-  const supabase = createClient(SUPABASE_URL as string, keyToUse);
+  const keyToUse = SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabase = createClient(SUPABASE_URL as string, keyToUse as string);
 
   // Target exactly the main cosmetic blocks
   const { data: blocks, error } = await supabase
