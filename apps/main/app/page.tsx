@@ -1,33 +1,15 @@
-// build: phase-56H-v2
 import type { Metadata } from 'next';
 import { BrandHero } from '@/components/brand-hero';
+import { BusinessEcosystem } from '@/components/business-ecosystem';
 import { SiteFooter } from '@vavaw/ui';
 import { loadPublicHomeCms } from '@/lib/load-public-cms';
 import { loadPublicSeo } from '@/lib/load-public-seo';
-
-/**
- * Revalidation strategy for the public homepage (ISR):
- *
- * - CMS_DATA_SOURCE=static:  Page is effectively static (revalidation is a no-op since data
- *   doesn't change between rebuilds). The 60s interval adds negligible overhead.
- * - CMS_DATA_SOURCE=supabase: Page revalidates every 60 seconds so CMS changes appear
- *   without a full rebuild. Increase this value to reduce Supabase read load.
- *
- * Next.js requires `revalidate` to be a static number literal — it cannot be computed
- * from environment variables at module parse time. To change the interval:
- *   1. Update this constant.
- *   2. Redeploy.
- *
- * Webhook-based on-demand revalidation (revalidatePath / revalidateTag) is planned
- * for a future phase to enable instant cache invalidation.
- */
-export const revalidate = 60;
-
-/**
- * Dynamic metadata for the homepage — reads from Supabase seo_settings if available,
- * falls back to static brand-config values.
- */
+import { loadPublicContentBlocks } from '@/lib/load-public-content-blocks';
+import { resolveUnfinishedHref } from '@/lib/unfinished-links';
+import Link from 'next/link';
 import { draftMode } from 'next/headers';
+
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const isPreview = (await draftMode()).isEnabled;
@@ -56,16 +38,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-import { BusinessEcosystem } from '@/components/business-ecosystem';
-
 export default async function HomePage() {
   const isPreview = (await draftMode()).isEnabled;
   const cms = await loadPublicHomeCms(isPreview);
+  const { blocks } = await loadPublicContentBlocks({ siteKey: 'main', pagePath: '/', isPreview });
+
+  const finalCtaBlock = blocks?.find(b => b.blockType === 'main-final-cta' && b.isActive);
+  const ctaContent = (finalCtaBlock?.content as any) || null;
 
   const showCmsDebug = process.env.NEXT_PUBLIC_SHOW_CMS_DEBUG === 'true';
 
   if (showCmsDebug) {
-    // Server-side CMS diagnostic — safe, never logs actual key values
     console.info('[main cms source]', {
       cmsSource: cms.source,
       hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
@@ -76,16 +59,6 @@ export default async function HomePage() {
       fallbackUsed: cms.fallbackUsed ?? false,
       fallbackReason: cms.fallbackReason ?? null,
       error: cms.error ?? null,
-    });
-
-    console.info('[main cms slides]', {
-      slideCount: cms.heroSlides.length,
-      slides: cms.heroSlides.map((slide) => ({
-        title: slide.title,
-        isDerived: slide.id.startsWith('derived-'),
-        bgValid: Boolean(slide.backgroundImageUrl) && !slide.backgroundImageUrl!.includes('PASTE_'),
-        previewValid: Boolean(slide.previewImageUrl) && !slide.previewImageUrl!.includes('PASTE_'),
-      }))
     });
   }
 
@@ -98,7 +71,61 @@ export default async function HomePage() {
         fallbackReason={cms.fallbackReason}
         rawHeroRowsCount={cms.rawHeroRowsCount}
       />
+
       <BusinessEcosystem />
+
+      {ctaContent && (
+        <section className="py-24 px-6 bg-[#111111] text-white text-center border-t border-[#222222]">
+          <div className="max-w-3xl mx-auto space-y-6">
+            {ctaContent.eyebrow && (
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#A3A3A3] block">
+                {String(ctaContent.eyebrow)}
+              </span>
+            )}
+            {ctaContent.title && (
+              <h2 className="text-3xl md:text-4xl font-light tracking-tight text-white">
+                {String(ctaContent.title)}
+              </h2>
+            )}
+            {ctaContent.description && (
+              <p className="text-sm md:text-base text-[#A3A3A3] font-light max-w-xl mx-auto leading-relaxed">
+                {String(ctaContent.description)}
+              </p>
+            )}
+
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              {ctaContent.primaryCtaLabel && (
+                <Link
+                  href={resolveUnfinishedHref(String(ctaContent.primaryCtaHref || '/cosmetic'), '/main-final-cta')}
+                  className="px-8 py-3.5 bg-white text-black font-medium text-xs tracking-[0.15em] uppercase hover:bg-white/90 transition-colors rounded-sm"
+                >
+                  {String(ctaContent.primaryCtaLabel)}
+                </Link>
+              )}
+              {ctaContent.secondaryCtaLabel && (
+                <Link
+                  href={resolveUnfinishedHref(String(ctaContent.secondaryCtaHref || '/contact'), '/main-final-cta-secondary')}
+                  className="px-8 py-3.5 border border-[#333333] hover:border-white text-white font-medium text-xs tracking-[0.15em] uppercase transition-colors rounded-sm"
+                >
+                  {String(ctaContent.secondaryCtaLabel)}
+                </Link>
+              )}
+            </div>
+
+            {Array.isArray(ctaContent.trustPoints) && ctaContent.trustPoints.length > 0 && (
+              <div className="pt-8 border-t border-[#222222] flex flex-wrap justify-center gap-6 text-xs text-[#737373] tracking-wider uppercase font-mono">
+                {ctaContent.trustPoints.map((tp: string, idx: number) => (
+                  <span key={idx} className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    {tp}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       <SiteFooter variant="main" />
     </main>
   );

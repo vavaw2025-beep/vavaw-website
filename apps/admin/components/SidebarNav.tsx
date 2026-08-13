@@ -14,13 +14,15 @@ import {
   Users,
   Mail,
   ShieldCheck,
-  Map
+  Map,
+  LayoutTemplate
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Business', href: '/business', icon: Building2 },
   { name: 'Hero', href: '/hero', icon: Presentation },
+  { name: 'Main Landing', href: '/main-landing', icon: LayoutTemplate },
   { name: 'Media', href: '/media', icon: ImageIcon },
   { name: 'SEO', href: '/seo', icon: Search },
   { name: 'Redirects', href: '/redirects', icon: LinkIcon },
