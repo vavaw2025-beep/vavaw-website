@@ -650,15 +650,21 @@ export function MainLandingManager({
             </div>
           </div>
 
-          {/* Cross-app Revalidation Info */}
+          {/* Cross-app Revalidation & Managed Visibility Info */}
           <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
             <SlidersHorizontal className="h-4 w-4 mt-0.5 shrink-0 text-blue-500" />
-            <p>
-              <span className="font-semibold">Admin và Main là 2 deployment riêng.</span>{' '}
-              Sau khi ẩn/hiện section, <span className="font-mono">vavaw-main</span> sẽ được revalidate qua API;
-              nếu thiếu <span className="font-mono">REVALIDATION_SECRET</span>, public có thể cập nhật sau tối đa{' '}
-              <span className="font-semibold">60 giây</span> (ISR fallback tự động).
-            </p>
+            <div className="space-y-1">
+              <p>
+                <span className="font-semibold">Public chỉ render section Main Landing khi block tương ứng đang active.</span>{' '}
+                Nếu block bị ẩn, section legacy tương ứng cũng sẽ không hiển thị.
+              </p>
+              <p className="text-blue-700">
+                Admin và Main là 2 deployment riêng — sau khi ẩn/hiện section,{' '}
+                <span className="font-mono">vavaw-main</span> sẽ được revalidate qua API.
+                Nếu thiếu <span className="font-mono">REVALIDATION_SECRET</span>, public cập nhật sau tối đa{' '}
+                <span className="font-semibold">30 giây</span> (ISR fallback tự động).
+              </p>
+            </div>
           </div>
 
           {/* Visibility Filter Pills */}
