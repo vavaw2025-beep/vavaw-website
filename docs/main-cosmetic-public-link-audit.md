@@ -24,15 +24,14 @@
 ### 2. External Approvals
 
 - `https://vavaw.vn`
-- `https://beauty.vavaw.vn`
-- `https://franchise.vavaw.vn`
 
 ### 3. Cross-App CTA Navigation Policy
 
 - **Internal Routes**: Use Next.js `<Link>`.
 - **Cross-app VAVAW Domains**: Use standard `<a>` anchor tags. Do not use Next `<Link>` or `router.push()` for external domains to prevent Next.js from intercepting the click and causing a blank/dark loading state hang.
-- **Legacy Routes**: `/go/beauty` and `/go/franchise` are no longer approved as final CTA `href`s. They remain only as backward-compatible fallback paths.
-- **Normalization**: Any un-updated CMS row returning `/go/beauty` or `/go/franchise` will be dynamically normalized to their production domain by `resolvePublicHref` at render time.
+- **Legacy Routes**: `/go/beauty` and `/go/franchise` are no longer approved as final CTA `href`s.
+- **Unfinished Destinations**: `https://beauty.vavaw.vn`, `https://franchise.vavaw.vn`, `/go/beauty`, and `/go/franchise` currently have status **fallback-required**.
+- **Normalization**: Any un-updated CMS row returning these destinations will be dynamically normalized to their system update fallback by `resolvePublicHref` at render time (e.g. `/system-update?reason=coming-soon&from=https%3A%2F%2Fbeauty.vavaw.vn`).
 
 ---
 

@@ -16,12 +16,19 @@ export function resolvePublicHref(
 
   let cleanHref = href.trim();
 
-  // Normalize legacy /go/* internal redirects to direct production domains
-  if (cleanHref === '/go/beauty' || cleanHref === 'https://vavaw.vn/go/beauty') {
-    cleanHref = 'https://beauty.vavaw.vn';
-  } else if (cleanHref === '/go/franchise' || cleanHref === 'https://vavaw.vn/go/franchise') {
-    cleanHref = 'https://franchise.vavaw.vn';
-  } else if (cleanHref === '/go/cosmetic' || cleanHref === 'https://vavaw.vn/go/cosmetic') {
+  // Fallback for unfinished Beauty and Franchise domains
+  const beautyUrls = ['https://beauty.vavaw.vn', 'http://beauty.vavaw.vn', 'https://beauty.vavaw.vn/', '/go/beauty', 'https://vavaw.vn/go/beauty'];
+  if (beautyUrls.includes(cleanHref)) {
+    return getSystemUpdateUrl('coming-soon', 'https://beauty.vavaw.vn');
+  }
+
+  const franchiseUrls = ['https://franchise.vavaw.vn', 'http://franchise.vavaw.vn', 'https://franchise.vavaw.vn/', '/go/franchise', 'https://vavaw.vn/go/franchise'];
+  if (franchiseUrls.includes(cleanHref)) {
+    return getSystemUpdateUrl('coming-soon', 'https://franchise.vavaw.vn');
+  }
+
+  // Normalize legacy /go/* internal redirects
+  if (cleanHref === '/go/cosmetic' || cleanHref === 'https://vavaw.vn/go/cosmetic') {
     cleanHref = '/cosmetic';
   }
 

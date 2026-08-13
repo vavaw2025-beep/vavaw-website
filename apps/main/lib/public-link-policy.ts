@@ -17,9 +17,8 @@ export const APPROVED_PUBLIC_LINKS = new Set([
 ]);
 
 export const APPROVED_EXTERNAL_DOMAINS = new Set([
-  'vavaw.vn',
-  'beauty.vavaw.vn',
-  'franchise.vavaw.vn'
+  'vavaw.vn'
+  // Note: beauty.vavaw.vn and franchise.vavaw.vn are temporarily marked as unfinished
 ]);
 
 /**
