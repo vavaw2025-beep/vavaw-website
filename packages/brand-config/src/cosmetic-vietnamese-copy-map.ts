@@ -1,4 +1,14 @@
 export const COSMETIC_VI_COPY_MAP = {
+  "Quy trình phục hồi làm dịu được thiết kế để khôi phục sự thoải mái, độ ẩm và sức đề kháng cho làn da.": "Quy trình phục hồi làm dịu, hỗ trợ khôi phục cảm giác dễ chịu, độ ẩm và khả năng tự bảo vệ của làn da.",
+
+  "Gentle Activation Renew Ampoule — kích hoạt tái tạo tế bào và độ rạng rỡ.": "Gentle Activation Renew Ampoule — hỗ trợ quá trình làm mới làn da và cải thiện vẻ rạng rỡ.",
+
+  "Bắt đầu với sữa rửa mặt lâm sàng dịu nhẹ để loại bỏ tạp chất mà không làm ảnh hưởng đến hệ vi sinh trên da.": "Bắt đầu với bước làm sạch dịu nhẹ để loại bỏ tạp chất mà vẫn hỗ trợ duy trì cảm giác cân bằng tự nhiên của da.",
+
+  "Gel làm dịu da với phức hợp Cica 7 chiết xuất giúp xoa dịu làn da nhạy cảm và phục hồi hàng rào bảo vệ.": "Gel làm dịu da với phức hợp Cica 7 chiết xuất, hỗ trợ làm dịu làn da nhạy cảm và củng cố hàng rào bảo vệ da.",
+
+  "Phục hồi và tái tạo tế bào": "Phục hồi & hỗ trợ làm mới làn da",
+
   "The Premium RAW Skincare System": "Hệ thống chăm sóc da RAW cao cấp",
   "Scientific beauty, refined into a pure Korean skincare ritual.": "Vẻ đẹp khoa học, được tinh chỉnh thành nghi thức chăm sóc da Hàn Quốc thuần khiết.",
   "Scientific Beauty": "Vẻ đẹp khoa học",
@@ -25,22 +35,22 @@ export const COSMETIC_VI_COPY_MAP = {
   "Clinical Korean cosmetic ritual": "Nghi thức mỹ phẩm lâm sàng Hàn Quốc",
   "Spa-use recovery guidance": "Hướng dẫn phục hồi chuẩn spa",
   "Clinical Formula Logic": "Logic công thức lâm sàng",
-  "Cellular regeneration & recovery": "Phục hồi và tái tạo tế bào",
+  "Cellular regeneration & recovery": "Phục hồi & hỗ trợ làm mới làn da",
   "A rich yet lightweight cream that deeply nourishes while encouraging cellular renewal for visibly rejuvenated skin.": "Chất kem đậm đặc nhưng mỏng nhẹ, hỗ trợ nuôi dưỡng chuyên sâu và cải thiện vẻ tươi mới cho làn da rạng rỡ hơn.",
-  "A soothing gel formulated with a seven-extract Cica complex to calm reactive skin and restore the protective barrier.": "Gel làm dịu da với phức hợp Cica 7 chiết xuất giúp xoa dịu làn da nhạy cảm và phục hồi hàng rào bảo vệ.",
+  "A soothing gel formulated with a seven-extract Cica complex to calm reactive skin and restore the protective barrier.": "Gel làm dịu da với phức hợp Cica 7 chiết xuất, hỗ trợ làm dịu làn da nhạy cảm và củng cố hàng rào bảo vệ da.",
   "A next-generation ampoule harnessing Exosome technology and plant-derived Bakuchiol for visible skin renewal without irritation.": "Tinh chất thế hệ mới ứng dụng công nghệ Exosome và Bakuchiol nguồn gốc thực vật, hỗ trợ cải thiện vẻ tươi mới của làn da theo hướng êm dịu hơn.",
   "A high-performance moisturizer delivering an immediate and sustained surge of hydration for plumper, smoother skin.": "Kem dưỡng ẩm hiệu suất cao mang lại nguồn độ ẩm tức thì và duy trì dài lâu cho làn da căng mọng, mịn màng hơn.",
   "A lightweight preparatory toner that balances, hydrates, and primes the skin to maximize subsequent skincare absorption.": "Toner chuẩn bị với kết cấu mỏng nhẹ giúp cân bằng, cấp ẩm và tạo bước đệm hoàn hảo để tối đa hóa sự hấp thụ dưỡng chất sau đó.",
   "Clinical Formulas": "Công thức lâm sàng",
   "The Collection": "Bộ sưu tập",
-  "Begin with a gentle clinical cleanser to remove impurities without disrupting the skin microbiome.": "Bắt đầu với sữa rửa mặt lâm sàng dịu nhẹ để loại bỏ tạp chất mà không làm ảnh hưởng đến hệ vi sinh trên da.",
+  "Begin with a gentle clinical cleanser to remove impurities without disrupting the skin microbiome.": "Bắt đầu với bước làm sạch dịu nhẹ để loại bỏ tạp chất mà vẫn hỗ trợ duy trì cảm giác cân bằng tự nhiên của da.",
   "P30 Boost Facial Hydrating Toner — balance pH and prime for maximum absorption.": "P30 Boost Facial Hydrating Toner — cân bằng độ pH và tạo bước đệm tối đa hóa khả năng hấp thụ dưỡng chất.",
-  "Gentle Activation Renew Ampoule — activate cellular renewal and luminosity.": "Gentle Activation Renew Ampoule — kích hoạt tái tạo tế bào và độ rạng rỡ.",
+  "Gentle Activation Renew Ampoule — activate cellular renewal and luminosity.": "Gentle Activation Renew Ampoule — hỗ trợ quá trình làm mới làn da và cải thiện vẻ rạng rỡ.",
   "Sheer Gel / Recovery Care": "Sheer Gel / Chăm sóc phục hồi",
   "Calmiance Superior Sheer Gel — calm, protect, and fortify the skin barrier.": "Calmiance Superior Sheer Gel — làm dịu, bảo vệ và củng cố hàng rào bảo vệ da.",
   "Daily Clinical Ritual": "Nghi thức lâm sàng hàng ngày",
   "Barrier Recovery Ritual": "Nghi thức phục hồi hàng rào bảo vệ",
-  "A calming recovery routine designed to restore skin comfort, hydration, and resilience.": "Quy trình phục hồi làm dịu được thiết kế để khôi phục sự thoải mái, độ ẩm và sức đề kháng cho làn da.",
+  "A calming recovery routine designed to restore skin comfort, hydration, and resilience.": "Quy trình phục hồi làm dịu, hỗ trợ khôi phục cảm giác dễ chịu, độ ẩm và khả năng tự bảo vệ của làn da.",
   "A lightweight clinical hydration routine to plump, smooth and refresh dehydrated skin.": "Quy trình cấp ẩm lâm sàng mỏng nhẹ giúp làm căng mọng, mịn màng và tươi mới làn da thiếu nước.",
   "An advanced regenerative skincare regimen to improve cell turnover, firmness, and reduce fine lines.": "Phác đồ chăm sóc chuyên sâu, hỗ trợ quá trình làm mới bề mặt da, cải thiện cảm giác săn chắc và làm mềm vẻ xuất hiện của nếp nhăn nhỏ.",
   "Radiance Recovery": "Phục hồi độ rạng rỡ",

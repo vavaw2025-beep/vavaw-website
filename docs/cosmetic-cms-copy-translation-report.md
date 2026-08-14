@@ -1,5 +1,5 @@
 # Cosmetic CMS Copy Translation Report
-Generated at: 2026-08-13T16:13:29.884Z
+Generated at: 2026-08-14T02:01:33.003Z
 Mode: APPLY
 
 | Page Path | Block Type | Row ID | English Match | Vietnamese Replacement | Action |
