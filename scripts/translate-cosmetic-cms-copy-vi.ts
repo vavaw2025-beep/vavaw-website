@@ -31,6 +31,7 @@ async function main() {
   console.log(`Mode: ${isApplyMode ? 'APPLY (Writing to DB)' : 'DRY RUN (Read only)'}\n`);
 
   if (isApplyMode) {
+    if (!SUPABASE_SERVICE_ROLE_KEY) { console.error('❌ Missing SUPABASE_SERVICE_ROLE_KEY for apply mode.'); process.exit(1); }
     if (!SUPABASE_URL) {
       console.error("❌ Missing SUPABASE_URL for apply mode.");
       process.exit(1);

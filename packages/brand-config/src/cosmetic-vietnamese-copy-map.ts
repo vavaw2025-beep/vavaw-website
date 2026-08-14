@@ -10,7 +10,7 @@ export const COSMETIC_VI_COPY_MAP = {
   "Phục hồi và tái tạo tế bào": "Phục hồi & hỗ trợ làm mới làn da",
 
   "The Premium RAW Skincare System": "Hệ thống chăm sóc da RAW cao cấp",
-  "Scientific beauty, refined into a pure Korean skincare ritual.": "Vẻ đẹp khoa học, được tinh chỉnh thành nghi thức chăm sóc da Hàn Quốc thuần khiết.",
+  "Scientific beauty, refined into a pure Korean skincare ritual.\n\nVAVAW is a clinical Korean cosmetic system designed to restore the skin from its origin — pure, balanced, and resilient.": "Vẻ đẹp khoa học, được tinh chỉnh thành nghi thức chăm sóc da Hàn Quốc thuần khiết.\n\nVAVAW là hệ mỹ phẩm Hàn Quốc định hướng lâm sàng, được phát triển để hỗ trợ làn da phục hồi từ nền tảng — tinh khiết, cân bằng và bền vững.",
   "Scientific Beauty": "Vẻ đẹp khoa học",
   "Premium Program": "Chương trình chăm sóc cao cấp",
   "Functional Cosmetics": "Mỹ phẩm chức năng",
@@ -31,7 +31,6 @@ export const COSMETIC_VI_COPY_MAP = {
   "SIGNATURE RECOVERY SYSTEM": "HỆ THỐNG PHỤC HỒI ĐẶC TRƯNG",
   "Daily Clinical Skincare Routine": "Nghi thức chăm sóc da lâm sàng hàng ngày",
   "Answer a few quick questions to discover a Korean clinical skincare ritual designed for your skin stage and concern.": "Trả lời vài câu hỏi để khám phá nghi thức chăm sóc da lâm sàng Hàn Quốc được thiết kế cho tình trạng và vấn đề da của bạn.",
-  "Scientific beauty, refined into a pure Korean skincare ritual.\n\nVAVAW is a clinical Korean cosmetic system designed to restore the skin from its origin — pure, balanced, and resilient.": "Vẻ đẹp khoa học, được tinh chỉnh thành nghi thức chăm sóc da Hàn Quốc thuần khiết. VAVAW là hệ mỹ phẩm Hàn Quốc định hướng lâm sàng, được phát triển để hỗ trợ làn da phục hồi từ nền tảng — tinh khiết, cân bằng và bền vững.",
   "Clinical Korean cosmetic ritual": "Nghi thức mỹ phẩm lâm sàng Hàn Quốc",
   "Spa-use recovery guidance": "Hướng dẫn phục hồi chuẩn spa",
   "Clinical Formula Logic": "Logic công thức lâm sàng",
