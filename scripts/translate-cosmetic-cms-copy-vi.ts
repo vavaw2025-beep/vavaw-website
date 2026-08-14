@@ -18,17 +18,19 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const isApplyPassed = process.argv.includes('--apply');
 const isDryRunPassed = process.argv.includes('--dry-run');
+const isAuditPassed = process.argv.includes('--audit');
 
 // Default to dry run if no flags
 const isApplyMode = isApplyPassed;
+const isAuditMode = isAuditPassed;
 
 async function main() {
-  if (!isApplyPassed && !isDryRunPassed) {
+  if (!isApplyPassed && !isDryRunPassed && !isAuditPassed) {
     console.log("⚠️ No mode provided. Running in --dry-run mode.");
   }
 
   console.log(`\n🚀 Starting Cosmetic CMS Copy Translation Pipeline`);
-  console.log(`Mode: ${isApplyMode ? 'APPLY (Writing to DB)' : 'DRY RUN (Read only)'}\n`);
+  console.log(`Mode: ${isApplyMode ? 'APPLY (Writing to DB)' : isAuditMode ? 'AUDIT (Checking DB)' : 'DRY RUN (Read only)'}\n`);
 
   if (isApplyMode) {
     if (!SUPABASE_SERVICE_ROLE_KEY) { console.error('❌ Missing SUPABASE_SERVICE_ROLE_KEY for apply mode.'); process.exit(1); }
@@ -64,6 +66,28 @@ async function main() {
     process.exit(0);
   }
 
+  if (isAuditMode) {
+    console.log(`\n🔍 Running Audit on ${blocks.length} blocks...`);
+    let remainingCandidates = 0;
+    for (const block of blocks) {
+      if (!block.content) continue;
+      const candidates = findEnglishCopyCandidates(block.content);
+      if (candidates.length > 0) {
+        remainingCandidates += candidates.length;
+        for (const cand of candidates) {
+          console.log(`[AUDIT] Found English Candidate in ${block.page_path} (${block.block_type}): "${cand.text}"`);
+        }
+      }
+    }
+    if (remainingCandidates === 0) {
+      console.log(`\n✅ Audit Passed: No known dictionary English keys remain for cosmetic pages.`);
+    } else {
+      console.log(`\n⚠️ Audit Failed: ${remainingCandidates} English candidates found.`);
+      process.exit(1);
+    }
+    return;
+  }
+
   console.log(`Found ${blocks.length} blocks to inspect.`);
 
   let changedCount = 0;
@@ -88,15 +112,12 @@ async function main() {
       changedCount++;
       blocksToUpdate.push({ id: block.id, content: res.value });
       
-      // We don't have the exact strings returned from translateJsonCopy in the current API,
-      // so we use (multiple) or we can infer it. For the report, we'll mark the block as updated.
       reportLines.push(`| \`${block.page_path}\` | \`${block.block_type}\` | \`${block.id}\` | (multiple) | (multiple) | ${isApplyMode ? 'UPDATED' : 'WOULD UPDATE'} |`);
     } else {
       // Find remaining English candidates to flag
       const remainingCandidates = findEnglishCopyCandidates(block.content);
       if (remainingCandidates.length > 0) {
         for (const cand of remainingCandidates) {
-          // If match is found, it means it should have been translated, but we report candidates
           const matchText = cand.match ? cand.match : "(None)";
           reportLines.push(`| \`${block.page_path}\` | \`${block.block_type}\` | \`${block.id}\` | "${cand.text}" | ${matchText} | SKIPPED (Needs review) |`);
         }
@@ -104,10 +125,8 @@ async function main() {
     }
   }
 
-  // Write report
   const reportDir = path.resolve(__dirname, '../docs');
   if (!fs.existsSync(reportDir)) fs.mkdirSync(reportDir, { recursive: true });
-  
   const reportPath = path.join(reportDir, 'cosmetic-cms-copy-translation-report.md');
   fs.writeFileSync(reportPath, reportLines.join('\n'), 'utf8');
 
@@ -118,22 +137,37 @@ async function main() {
       console.log(`\n✅ No blocks need updating.`);
     } else {
       console.log(`\nApplying updates to ${blocksToUpdate.length} blocks...`);
+      let verifiedCount = 0;
       for (const update of blocksToUpdate) {
-        const { error: updateError } = await supabase
+        const { data: updatedData, error: updateError } = await supabase
           .from('content_blocks')
           .update({
             content: update.content,
             updated_at: new Date().toISOString()
           })
-          .eq('id', update.id);
+          .eq('id', update.id)
+          .select('id');
 
         if (updateError) {
           console.error(`❌ Failed to update block ${update.id}:`, updateError);
+        } else if (!updatedData || updatedData.length === 0) {
+          console.error(`❌ Update silently failed for block ${update.id} (RLS blocked or row not found)`);
         } else {
-          console.log(`✅ Updated block ${update.id}`);
+          verifiedCount++;
+          console.log(`✅ Updated & verified block ${update.id}`);
         }
       }
-      console.log(`\n✅ Completed.`);
+      
+      console.log(`\nUpdated rows: ${blocksToUpdate.length}`);
+      console.log(`Verified rows: ${verifiedCount}`);
+      
+      if (verifiedCount === 0 && blocksToUpdate.length > 0) {
+        console.error(`\n❌ CRITICAL ERROR: 0 rows were verified but dry-run had matches.`);
+        console.error(`This likely means your SUPABASE_SERVICE_ROLE_KEY is invalid or missing, and RLS blocked the update.`);
+        process.exit(1);
+      } else {
+        console.log(`\n✅ Completed.`);
+      }
     }
   } else {
     console.log(`\nReport written to: docs/cosmetic-cms-copy-translation-report.md`);
