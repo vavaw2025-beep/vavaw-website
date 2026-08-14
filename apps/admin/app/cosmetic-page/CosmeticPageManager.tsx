@@ -195,6 +195,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
   const [featuredDesc, setFeaturedDesc] = useState('');
   const [featuredIngredients, setFeaturedIngredients] = useState('');
   const [featuredMediaSlot, setFeaturedMediaSlot] = useState('');
+  const [featuredDesktopMediaSlot, setFeaturedDesktopMediaSlot] = useState('');
+  const [featuredMobileMediaSlot, setFeaturedMobileMediaSlot] = useState('');
   const [featuredCtaLabel, setFeaturedCtaLabel] = useState('');
   const [featuredCtaHref, setFeaturedCtaHref] = useState('');
   const [sigItems, setSigItems] = useState<any[]>([]);
@@ -508,17 +510,18 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
     if (block.block_type === 'cosmetic-signature-collection') {
       const feat = content.featured || content.featuredProduct || {};
       setFeaturedName(feat.name || '');
-      setFeaturedType(feat.type || '');
-      setFeaturedDesc(feat.description || '');
+      setFeaturedType(feat?.type || content.featuredSetLabel || '');
+      setFeaturedDesc(feat?.description || '');
       setFeaturedIngredients(
         Array.isArray(feat.ingredients) ? feat.ingredients.join(', ') : (feat.ingredients || '')
       );
       // Normalize legacy short slot key → canonical on load
       setFeaturedMediaSlot(
-        normalizeCosmeticMediaSlot(feat.mediaSlot) ??
-        normalizeCosmeticMediaSlot('cosmetic-product-luminous-set') ??
+        normalizeCosmeticMediaSlot(feat?.mediaSlot || content.featuredSetMediaSlot) ??
         'cosmetic-product-luminous-set'
       );
+      setFeaturedDesktopMediaSlot(feat?.desktopMediaSlot || content.featuredSetDesktopMediaSlot || '');
+      setFeaturedMobileMediaSlot(feat?.mobileMediaSlot || content.featuredSetMobileMediaSlot || '');
       setFeaturedCtaLabel(feat.ctaLabel || content.ctaLabel || 'Explore the Ritual');
       setFeaturedCtaHref(feat.ctaHref || content.ctaHref || '/contact?type=cosmetic_interest');
       // Normalize each item's mediaSlot on load and populate step/role/usage/highlight defaults
@@ -810,6 +813,8 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
         description: featuredDesc,
         ingredients: ingArray,
         mediaSlot: featuredMediaSlot || 'cosmetic-product-luminous-set',
+        desktopMediaSlot: featuredDesktopMediaSlot || 'cosmetic-signature-recovery-set-desktop',
+        mobileMediaSlot: featuredMobileMediaSlot || 'cosmetic-signature-recovery-set-mobile',
         ctaLabel: featuredCtaLabel || 'Explore the Ritual',
         ctaHref: safeFeaturedHref,
       };
@@ -4841,12 +4846,24 @@ export function CosmeticPageManager({ initialBlocks, mediaAssets, role }: Cosmet
                               placeholder="Ví dụ: FEATURED SET" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Media Slot ảnh</label>
-                            <select value={featuredMediaSlot} onChange={e => setFeaturedMediaSlot(e.target.value)}
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ảnh bộ sản phẩm (Desktop)</label>
+                            <select value={featuredDesktopMediaSlot} onChange={e => setFeaturedDesktopMediaSlot(e.target.value)}
                               className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]">
-                              <option value="">-- chọn slot --</option>
+                              <option value="">-- mặc định / trống --</option>
                               {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}
+                              <option value="cosmetic-signature-recovery-set-desktop">Set Recovery (Desktop) - Mặc định</option>
                             </select>
+                            <p className="text-[9px] text-slate-400 mt-1">Dùng ảnh ngang cho PC/tablet. Nên là ảnh whole set, không dùng thumbnail dọc.</p>
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ảnh bộ sản phẩm (Mobile)</label>
+                            <select value={featuredMobileMediaSlot} onChange={e => setFeaturedMobileMediaSlot(e.target.value)}
+                              className="w-full text-xs p-2 border border-slate-300 rounded-md bg-white h-[34px]">
+                              <option value="">-- mặc định / trống --</option>
+                              {COSMETIC_PRODUCT_MEDIA_SLOTS.map(slot => <option key={slot.value} value={slot.value}>{slot.label}</option>)}
+                              <option value="cosmetic-signature-recovery-set-mobile">Set Recovery (Mobile) - Mặc định</option>
+                            </select>
+                            <p className="text-[9px] text-slate-400 mt-1">Dùng ảnh dọc cho mobile. Nên là ảnh whole set được crop riêng cho màn hình nhỏ.</p>
                           </div>
                           <div className="md:col-span-2">
                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mô tả ngắn</label>

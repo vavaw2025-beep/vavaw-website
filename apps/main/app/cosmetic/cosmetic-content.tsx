@@ -734,7 +734,16 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
         const featType = feat.type || 'BỘ SẢN PHẨM NỔI BẬT';
         const featDesc = feat.description || '';
         const featIngredients: string[] = Array.isArray(feat.ingredients) ? feat.ingredients : [];
-        const featImg = getProductImage(featName, feat.mediaSlot, cosmeticMedia);
+        const featImgDesktopKey = signatureCollection.featuredSetDesktopMediaSlot || feat.desktopMediaSlot || 'cosmetic-signature-recovery-set-desktop';
+        const featImgMobileKey = signatureCollection.featuredSetMobileMediaSlot || feat.mobileMediaSlot || 'cosmetic-signature-recovery-set-mobile';
+        const featImgLegacyKey = signatureCollection.featuredSetMediaSlot || feat.mediaSlot;
+
+        const featImgDesktopRaw = getProductImage(featName, featImgDesktopKey, cosmeticMedia);
+        const featImgMobileRaw = getProductImage(featName, featImgMobileKey, cosmeticMedia);
+        const featImgLegacyRaw = getProductImage(featName, featImgLegacyKey, cosmeticMedia);
+
+        const featImgDesktop = featImgDesktopRaw || featImgLegacyRaw || cosmeticMedia.luminousSet;
+        const featImgMobile = featImgMobileRaw || featImgDesktopRaw || featImgLegacyRaw || cosmeticMedia.luminousSet;
         const featCta = safeCosmeticHref(feat.ctaHref || signatureCollection.ctaHref);
         const featCtaLabel = feat.ctaLabel || signatureCollection.ctaLabel || 'Khám phá nghi thức';
 
@@ -871,15 +880,16 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                     </p>
 
                     {/* Featured set image */}
-                    {(featImg || true) && (
-                      <div className="mt-8 relative aspect-[3/4] max-w-[200px] bg-[#F3F6FC] border border-[#D9DEE8] overflow-hidden flex items-center justify-center p-4">
-                        {featImg ? (
+                    <div className="mt-8 relative w-full lg:max-w-none max-w-md bg-[#F3F6FC] border border-[#D9DEE8] overflow-hidden flex items-center justify-center">
+                      
+                      {/* Desktop Image */}
+                      <div className="hidden md:block w-full aspect-[16/10]">
+                        {featImgDesktop ? (
                           <img
-                            src={featImg}
+                            src={featImgDesktop}
                             alt={featName}
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-cover"
                             onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).style.display = 'none';
                               (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
                             }}
                           />
@@ -888,13 +898,32 @@ export function CosmeticContent({ entry, heroMedia, cosmeticMedia = {}, blocks =
                             <div className="absolute inset-4 border border-[#C5CEDF]/30" />
                           </div>
                         )}
-                        {/* Featured label */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-[#050A5C]/90 px-3 py-2">
-                          <span className="text-[8px] tracking-[0.3em] uppercase text-white/80 block">{featType}</span>
-                          <span className="text-[10px] text-white font-light leading-tight block mt-0.5">{featName}</span>
-                        </div>
                       </div>
-                    )}
+                      
+                      {/* Mobile Image */}
+                      <div className="block md:hidden w-full aspect-[4/5]">
+                        {featImgMobile ? (
+                          <img
+                            src={featImgMobile}
+                            alt={featName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #EEF2F8, #DDE3EE)';
+                            }}
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#EEF2F8] to-[#DDE3EE]">
+                            <div className="absolute inset-4 border border-[#C5CEDF]/30" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Featured label */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-[#050A5C]/90 px-4 py-3 backdrop-blur-sm">
+                        <span className="text-[9px] tracking-[0.3em] uppercase text-white/80 block">{featType}</span>
+                        <span className="text-xs text-white font-light leading-tight block mt-1">{featName}</span>
+                      </div>
+                    </div>
                     {featIngredients.length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mt-4">
                         {featIngredients.map((ing: string) => (

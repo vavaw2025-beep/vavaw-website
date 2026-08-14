@@ -52,6 +52,10 @@ export interface CosmeticPageMedia {
   gallerySkin?: string;
   /** Gallery slot 6 — serum / ampoule close-up */
   gallerySerum?: string;
+  /** Signature Recovery Collection Desktop */
+  signatureRecoveryDesktop?: string;
+  /** Signature Recovery Collection Mobile */
+  signatureRecoveryMobile?: string;
   /** CELLUREVIVE Ampoule in Luminous Set */
   setCellureviveAmpoule?: string;
   /** REGENAGLOW cream in Luminous Set */
@@ -157,6 +161,8 @@ const SLOT_MAP: Record<string, keyof CosmeticPageMedia> = {
   'cosmetic-gallery-packaging':        'galleryPackaging',
   'cosmetic-gallery-skin':             'gallerySkin',
   'cosmetic-gallery-serum':            'gallerySerum',
+  'cosmetic-signature-recovery-set-desktop': 'signatureRecoveryDesktop',
+  'cosmetic-signature-recovery-set-mobile': 'signatureRecoveryMobile',
   'cosmetic-set-cellurevive-ampoule':   'setCellureviveAmpoule',
   'cosmetic-set-regenaglow-sheer-cream': 'setRegenaglowSheerCream',
   // Video slots for Clinical Formula Lab
